@@ -1,0 +1,10 @@
+language: python
+
+python:
+  - "3.6"
+  - "3.8"
+
+install: true
+
+script:
+  - PYTHONPATH=. pytest tests
