@@ -1,0 +1,174 @@
+#
+#   YaLafi: Yet another LaTeX filter
+#   Copyright (C) 2020 Matthias Baumann
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+
+#
+#   a simple LaTeX scanner
+#   - each "normal" character is an own token
+#
+
+from . import defs
+from . import utils
+
+
+class Scanner:
+    def __init__(self, parms, latex):
+        self.parms = parms
+
+        # sort list of special tokens: long tokens first
+        self.special_tokens_sorted = list(parms.special_tokens.keys())
+        self.special_tokens_sorted.sort(key=(lambda s: -len(s)))
+
+        self.latex = latex
+        self.max_pos = len(latex)
+        self.tokens = []
+        self.pos = 0
+        while self.pos < self.max_pos:
+            self.tokens.append(self.next_token())
+
+    #   return list of all tokens
+    #
+    def all(self):
+        return self.tokens
+
+    #   determine next token
+    #
+    def next_token(self):
+        latex = self.latex
+        start = self.pos
+        c = latex[start]
+
+        if c.isspace():
+            return self.scan_space(latex, start)
+        if c == '%':
+            return self.scan_comment(latex, start)
+        if c == '#':
+            return self.scan_arg_token(latex, start)
+        # XXX: better with re.match()?
+        # (but would need to create latex[start:] for each token)
+        for t in self.special_tokens_sorted:
+            if latex.startswith(t, start):
+                self.pos += len(t)
+                return defs.SpecialToken(start, t)
+        if c == '\\':
+            return self.scan_macro(latex, start)
+        # single character
+        self.pos += 1
+        return defs.TextToken(start, c)
+
+    #   scan a % comment
+    #
+    def scan_comment(self, latex, start):
+        self.pos = next((i for i in range(start + 1, self.max_pos)
+                                if latex[i] == '\n'), self.max_pos)
+        next_non_space = next((i for i in range(self.pos + 1, self.max_pos)
+                                if not latex[i].isspace()), self.max_pos)
+        if latex.count('\n', self.pos + 1, next_non_space) == 0:
+            # next line not empty: progress further
+            self.pos = next_non_space
+        return defs.CommentToken(start, latex[start:self.pos])
+
+    #   scan a space or paragraph token
+    #
+    def scan_space(self, latex, start):
+        self.pos = next((i for i in range(start + 1, self.max_pos)
+                                if not latex[i].isspace()), self.max_pos)
+        space = latex[start:self.pos]
+        if space.count('\n') < 2:
+            return defs.SpaceToken(start, space)
+        return defs.ParagraphToken(start, space)
+
+    #   scan a macro
+    #
+    def scan_macro(self, latex, start):
+        self.pos = next((i for i in range(start + 1, self.max_pos)
+                            if not self.parms.macro_character(latex[i])),
+                            self.max_pos)
+        if self.pos == start + 1 and self.pos < self.max_pos:
+            # an accent macro like \'
+            self.pos += 1
+        mac = latex[start:self.pos]
+        if mac == '\\verb':
+            return self.scan_verb(latex, start)
+        if mac in self.parms.accent_macros:
+            return defs.AccentToken(start, mac)
+        return defs.MacroToken(start, mac)
+
+    #   scan argument number #1 etc.
+    #
+    def scan_arg_token(self, latex, start):
+        self.pos += 1
+        if self.pos >= self.max_pos or not latex[self.pos].isdecimal():
+            return defs.SpecialToken(start, latex[start])
+        arg = int(latex[self.pos])
+        self.pos += 1
+        return defs.ArgumentToken(start, latex[start:self.pos], arg)
+
+    #   scan \verb
+    #
+    def scan_verb(self, latex, start):
+        def verb_err():
+            utils.latex_error('bad \\verb argument', start)
+        start_arg = start + len('\\verb')
+        if start_arg >= self.max_pos:
+            verb_err()
+        end_arg = latex[start_arg] + '\n'
+        start_arg += 1
+        self.pos = next((i for i in range(start_arg, self.max_pos)
+                                if latex[i] in end_arg), self.max_pos)
+        if self.pos == self.max_pos or latex[self.pos] == '\n':
+            verb_err()
+        self.pos += 1
+        return defs.VerbatimToken(start_arg, latex[start_arg:self.pos-1])
+
+
+class Buffer:
+    def __init__(self, tokens):
+        self.tokens = tokens
+
+    #   return list of all remaining tokens
+    #
+    def all(self):
+        return self.tokens
+
+    #   return current token or None
+    #
+    def cur(self):
+        if len(self.tokens):
+            return self.tokens[0]
+        return None
+
+    #   advance to next token, return it or None
+    #
+    def next(self):
+        if len(self.tokens):
+            self.tokens.pop(0)
+        return self.cur()
+
+    #   push back a list of tokens
+    #
+    def back(self, toks):
+        self.tokens[:0] = toks
+
+    #   skip space and comments (but not paragraphs)
+    #
+    def skip_space(self):
+        tok = self.cur()
+        while type(tok) in (defs.SpaceToken, defs.CommentToken):
+            tok = self.next()
+        return tok
+
