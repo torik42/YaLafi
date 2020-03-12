@@ -88,8 +88,5 @@ class Macro(Printable):
             self.repl = repl
         else:
             self.repl = scanner.Scanner(repl).all()
-        self.opts = []
-        for op in opts:
-            self.opts.append(scanner.Scanner(op).all())
-
+        self.opts = [scanner.Scanner(op).all() for op in opts]
 

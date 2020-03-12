@@ -133,11 +133,11 @@ class Parser:
         for code in mac.args:
             tok = buf.skip_space()
             if code == '*':
-                if tok.txt == '*':
+                if tok and tok.txt == '*':
                     buf.next()
                 continue
             if code == 'O':
-                if tok.txt == '[':
+                if tok and tok.txt == '[':
                     arg = self.arg_buffer(buf, end=']').all()
                 else:
                     if opt < len(mac.opts):
@@ -157,25 +157,22 @@ class Parser:
 
         # preparation for position tracking
         #
-        first_ref = next((tok.arg - 1 for tok in mac.repl
-                            if type(tok) is defs.ArgumentToken), -1)
-        if first_ref >= 0:
-            # expansion contains a reference:
-            # take position of first token in corresponding argument
-            cur_pos = arguments[first_ref][0].pos
-        else:
-            # no reference: take position of macro or \begin
-            cur_pos = start
+        cur_pos = start
+        for tok in mac.repl:
+            if type(tok) is defs.ArgumentToken and arguments[tok.arg-1]:
+                # NB: may be an absent optional argument
+                cur_pos = arguments[tok.arg-1][0].pos
 
         # macro expansion
         #
         for tok in mac.repl:
             if type(tok) is defs.ArgumentToken:
                 arg = arguments[tok.arg - 1]
-                out.append(defs.ActionToken(arg[0].pos))
-                out += arg
-                out.append(defs.ActionToken(arg[-1].pos))
-                cur_pos = arg[-1].pos
+                if arg:
+                    out.append(defs.ActionToken(arg[0].pos))
+                    out += arg
+                    out.append(defs.ActionToken(arg[-1].pos))
+                    cur_pos = arg[-1].pos
             else:
                 tok = copy.copy(tok)
                 tok.pos = cur_pos

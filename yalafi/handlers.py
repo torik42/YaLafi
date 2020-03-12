@@ -28,9 +28,13 @@ def handle_newcommand(parser, buf, mac, args):
             utils.latex_error('illegal argument #' + str(a.arg)
                                 + ' in definition of macro ' + name, a.pos)
     if args[2]:
-        TBD
+        if nargs < 1:
+            utils.latex_error('illegal default value in definition of macro '
+                                    + name, args[0][0].pos)
+        parser.the_macros[name] = defs.Macro(name, args='O' + 'A' * (nargs-1),
+                                repl=args[3], opts=[args[2]], scanned=True)
     else:
-        parser.the_macros[name] = defs.Macro(name, args='A'*nargs,
+        parser.the_macros[name] = defs.Macro(name, args='A' * nargs,
                                         repl=args[3], scanned=True)
     return []
 
