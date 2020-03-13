@@ -22,6 +22,7 @@
 
 from .defs import Environment, EquEnvironment, Macro
 from . import handlers
+from . import scanner
 
 
 class Parameters:
@@ -134,10 +135,10 @@ class Parameters:
         }
 
         self.set_language(language)
+        self.scanner = scanner.Scanner(self)
         self.define_macs_envs()
 
     def set_language(self, language):
-
         if language == 'de':
             self.special_tokens.update(self.special_tokens_de)
             self.proof_name = 'Beweis'

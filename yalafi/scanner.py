@@ -19,6 +19,7 @@
 #
 #   a simple LaTeX scanner
 #   - each "normal" character is an own token
+#   - space is divided into "normal" space and paragraph-breaking space
 #
 
 from . import defs
@@ -26,24 +27,23 @@ from . import utils
 
 
 class Scanner:
-    def __init__(self, parms, latex):
+    def __init__(self, parms):
         self.parms = parms
 
         # sort list of special tokens: long tokens first
         self.special_tokens_sorted = list(parms.special_tokens.keys())
         self.special_tokens_sorted.sort(key=(lambda s: -len(s)))
 
+    #   scan the given LaTeX string, return token list
+    #
+    def scan(self, latex):
         self.latex = latex
         self.max_pos = len(latex)
-        self.tokens = []
         self.pos = 0
+        tokens = []
         while self.pos < self.max_pos:
-            self.tokens.append(self.next_token())
-
-    #   return list of all tokens
-    #
-    def all(self):
-        return self.tokens
+            tokens.append(self.next_token())
+        return tokens
 
     #   determine next token
     #

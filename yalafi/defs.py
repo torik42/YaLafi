@@ -16,7 +16,6 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from . import scanner
 
 class Printable:
     def __repr__(self):
@@ -89,8 +88,8 @@ class Expandable(Printable):
         if callable(repl):
             self.repl = repl
         else:
-            self.repl = scanner.Scanner(parms, repl).all()
-        self.opts = [scanner.Scanner(parms, op).all() for op in opts]
+            self.repl = parms.scanner.scan(repl)
+        self.opts = [parms.scanner.scan(op) for op in opts]
 
 class Macro(Expandable):
     def __init__(self, parms, name, args='', repl='', opts=[], scanned=False):

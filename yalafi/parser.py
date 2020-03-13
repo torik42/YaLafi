@@ -32,18 +32,17 @@ class Parser:
         self.mathparser = mathparser.MathParser(parms)
 
         # read macro definitions from LaTeX text
-        macs = scanner.Scanner(parms, parms.macro_defs_latex).all()
+        macs = parms.scanner.scan(parms.macro_defs_latex)
         self.expand_sequence(scanner.Buffer(macs))
         if add_macros:
-            macs = scanner.Scanner(parms, add_macros).all()
+            macs = parms.scanner.scan(add_macros)
             self.expand_sequence(scanner.Buffer(macs))
 
-    #   scann and parse (expand) LaTeX string to tokens
+    #   scan and parse (expand) LaTeX string to tokens
     #
     def parse(self, latex):
-        sc = scanner.Scanner(self.parms, latex)
-        buf = scanner.Buffer(sc.all())
-        return self.expand_sequence(buf)
+        toks = self.parms.scanner.scan(latex)
+        return self.expand_sequence(scanner.Buffer(toks))
 
     #   expand token sequence in text mode from current buffer
     #   - env_stop: stop reading on \end for this environment
@@ -231,7 +230,7 @@ class Parser:
         toks = self.expand_sequence(scanner.Buffer(toks))
         return self.get_text_direct(toks)
 
-    #   remove all blank text lines that contain at least one ActionToken
+    #   remove all blank text lines, which contain at least one ActionToken
     #
     def remove_pure_action_lines(self, tokens):
         def eval(t):
