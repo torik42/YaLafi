@@ -20,13 +20,13 @@
 #   default parameters for scanner and parser
 #
 
-from .defs import Macro
+from .defs import Environment, EquEnvironment, Macro
 from . import handlers
 
 
 class Parameters:
 
-    def __init__(self):
+    def define_macs_envs(self):
 
         self.macro_defs_latex = r"""
 
@@ -39,11 +39,29 @@ class Parameters:
         """
 
         self.macro_defs_python = [
-            Macro('\\newcommand', args='*AOOA',
-                                    repl=handlers.handle_newcommand),
-            Macro('\\renewcommand', args='*AOOA',
-                                    repl=handlers.handle_newcommand),
+
+        Macro(self, '\\newcommand', args='*AOOA',
+                                repl=handlers.handle_newcommand),
+        Macro(self, '\\renewcommand', args='*AOOA',
+                                repl=handlers.handle_newcommand),
+        Macro(self, '\\section', args='*OA', repl=handlers.handle_heading),
+
         ]
+
+        self.environment_defs = [
+
+        Environment(self, 'comment', repl='', remove=True, end_par=False),
+        Environment(self, 'proof', args='O',
+                            # Parser.expand_arguments() may skip space
+                            repl='\n\n#1.\n', opts=[self.proof_name]),
+        Environment(self, 'table', repl='\n\n[Tabelle]', remove=True),
+        Environment(self, 'theorem', args='O', repl=handlers.handle_theorem),
+
+        EquEnvironment(self, 'equation'),
+
+        ]
+
+    def __init__(self, language='de'):
 
         self.accent_macros = {
 
@@ -114,6 +132,15 @@ class Parameters:
             '"\'': '\N{LEFT DOUBLE QUOTATION MARK}',    # \grqq
 
         }
+
+        self.set_language(language)
+        self.define_macs_envs()
+
+    def set_language(self, language):
+
+        if language == 'de':
+            self.special_tokens.update(self.special_tokens_de)
+            self.proof_name = 'Beweis'
 
     def macro_character(self, c):
         return c >= 'a' and c <= 'z' or c >= 'A' and c <= 'Z'

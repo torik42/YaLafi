@@ -31,10 +31,18 @@ def handle_newcommand(parser, buf, mac, args):
         if nargs < 1:
             utils.latex_error('illegal default value in definition of macro '
                                     + name, args[0][0].pos)
-        parser.the_macros[name] = defs.Macro(name, args='O' + 'A' * (nargs-1),
+        parser.the_macros[name] = defs.Macro(parser.parms,
+                                name, args='O' + 'A' * (nargs - 1),
                                 repl=args[3], opts=[args[2]], scanned=True)
     else:
-        parser.the_macros[name] = defs.Macro(name, args='A' * nargs,
-                                        repl=args[3], scanned=True)
+        parser.the_macros[name] = defs.Macro(parser.parms,
+                                name, args='A' * nargs,
+                                repl=args[3], scanned=True)
     return []
+
+def handle_theorem(parser, buf, mac, args):
+    TBD
+
+def handle_heading(parser, buf, mac, args):
+    TBD
 

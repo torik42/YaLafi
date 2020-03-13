@@ -16,6 +16,8 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from . import scanner
+
 class Printable:
     def __repr__(self):
         vars = list(v for v in dir(self) if not v.startswith('_'))
@@ -30,18 +32,18 @@ class Printable:
         return cls + '(' + ', '.join(is_not_list + is_list) + ')'
 
 class TextToken(Printable):
-    def __init__(self, pos, txt):
+    def __init__(self, pos, txt, pos_fix=False):
         self.pos = pos
         self.txt = txt
-        self.pos_fix = False
+        self.pos_fix = pos_fix
 
 class SpaceToken(TextToken):
-    def __init__(self, pos, txt):
-        super().__init__(pos, txt)
+    def __init__(self, pos, txt, pos_fix=False):
+        super().__init__(pos, txt, pos_fix)
 
 class ParagraphToken(TextToken):
-    def __init__(self, pos, txt):
-        super().__init__(pos, txt)
+    def __init__(self, pos, txt, pos_fix=False):
+        super().__init__(pos, txt, pos_fix)
 
 class CommentToken(TextToken):
     def __init__(self, pos, txt):
@@ -76,8 +78,8 @@ class VoidToken(TextToken):
     def __init__(self, pos):
         super().__init__(pos, '')
 
-class Macro(Printable):
-    def __init__(self, name, args='', repl='', opts=[], scanned=False):
+class Expandable(Printable):
+    def __init__(self, parms, name, args='', repl='', opts=[], scanned=False):
         self.name = name
         self.args = args
         if scanned:
@@ -87,6 +89,21 @@ class Macro(Printable):
         if callable(repl):
             self.repl = repl
         else:
-            self.repl = scanner.Scanner(repl).all()
-        self.opts = [scanner.Scanner(op).all() for op in opts]
+            self.repl = scanner.Scanner(parms, repl).all()
+        self.opts = [scanner.Scanner(parms, op).all() for op in opts]
+
+class Macro(Expandable):
+    def __init__(self, parms, name, args='', repl='', opts=[], scanned=False):
+        super().__init__(parms, name, args, repl, opts, scanned)
+
+class Environment(Expandable):
+    def __init__(self, parms, name, args='', repl='', opts=[], scanned=False,
+                        end_par=True, remove=False):
+        super().__init__(parms, name, args, repl, opts, scanned)
+        self.end_par=end_par
+        self.remove=remove
+
+class EquEnvironment(Expandable):
+    def __init__(self, parms, name, args='', repl='', opts=[], scanned=False):
+        super().__init__(parms, name, args, repl, opts, scanned)
 

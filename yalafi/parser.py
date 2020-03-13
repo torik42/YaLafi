@@ -27,7 +27,8 @@ class Parser:
     def __init__(self, parms, add_macros=None):
         self.parms = parms
         self.the_macros = dict((m.name, m) for m in parms.macro_defs_python)
-        self.accent_macros = list(parms.accent_macros.keys())
+        self.the_environments = dict((e.name, e)
+                                            for e in parms.environment_defs)
         self.mathparser = mathparser.MathParser(parms)
 
         # read macro definitions from LaTeX text
@@ -55,7 +56,15 @@ class Parser:
             if not tok:
                 break
             if type(tok) is defs.MacroToken:
-                buf.back(self.expand_macro(buf, tok))
+                if tok.txt == '\\begin':
+                    out += self.begin_environment(buf, tok)
+                elif tok.txt == '\\end':
+                    t, stop = self.end_environment(buf, tok, env_stop)
+                    if stop:
+                        return t
+                    out += t
+                else:
+                    buf.back(self.expand_macro(buf, tok))
             elif tok.txt == '{':
                 out.append(defs.ActionToken(tok.pos))
                 out += self.expand_sequence(self.arg_buffer(buf))
@@ -66,7 +75,7 @@ class Parser:
             elif tok.txt == '$' or tok.txt == '\\(':
                 out += self.mathparser.expand_inline_math(buf, tok)
             elif tok.txt == '$$' or tok.txt == '\\[':
-                out += self.mathparser.expand_display_math(buf, tok)
+                out += self.mathparser.expand_display_math(buf, tok.txt)
             elif type(tok) is defs.SpecialToken:
                 out.append(defs.ActionToken(tok.pos))
                 txt = self.parms.special_tokens[tok.txt]
@@ -180,6 +189,36 @@ class Parser:
                 out.append(tok)
         return out
 
+    #   open an environment
+    #
+    def begin_environment(self, buf, tok):
+        out = [defs.ActionToken(tok.pos)]
+        name = self.get_environment_name(buf)
+        if name not in self.the_environments:
+            return out
+        env = self.the_environments[name]
+        out += self.expand_arguments(buf, env, tok.pos)
+        if type(env) is defs.EquEnvironment:
+            return out + self.mathparser.expand_display_math(buf, name)
+        if env.remove:
+            out += self.expand_sequence(buf, env_stop=name)
+        return out
+
+    #   close an environment
+    #
+    def end_environment(self, buf, tok, env_stop):
+        name = self.get_environment_name(buf)
+        if (name not in self.the_environments
+                or not self.the_environments[name].end_par):
+            out = [defs.ActionToken(tok.pos)]
+        else:
+            out = [defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True)]
+        return out, name == env_stop
+
+    def get_environment_name(self, buf):
+        buf.next()
+        return self.get_text_expanded(self.arg_buffer(buf).all())
+
     #   generate string from token sequence, without macro expansion
     #
     def get_text_direct(self, toks):
@@ -192,6 +231,8 @@ class Parser:
         toks = self.expand_sequence(scanner.Buffer(toks))
         return self.get_text_direct(toks)
 
+    #   remove all blank text lines that contain at least one ActionToken
+    #
     def remove_pure_action_lines(self, tokens):
         def eval(t):
             if type(t) is defs.ActionToken:

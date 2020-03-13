@@ -16,8 +16,6 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from . import defs
-
 
 class MathParser:
 
@@ -25,10 +23,8 @@ class MathParser:
         self.parms = parms
 
     def expand_inline_math(self, buf, tok):
-        buf.next()
-        return [defs.TextToken('TBD: $...$', 0)]
+        TBD
 
-    def expand_display_math(self, buf, tok):
-        buf.next()
-        return [defs.TextToken('TBD: $$...$$', 0)]
+    def expand_display_math(self, buf, name):
+        TBD
 
