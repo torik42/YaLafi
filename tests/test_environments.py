@@ -92,7 +92,7 @@ X
 Y
 Z
 """
-def test_comment():
+def test_unknown():
     toks = p.parse(latex_unknown)
     plain_unknown, pos = utils.get_txt_pos(toks)
 
