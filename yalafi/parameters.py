@@ -16,96 +16,105 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+#
+#   default parameters for scanner and parser
+#
+
 from .defs import Macro
 from . import handlers
 
-macro_defs_latex = r"""
 
-\newcommand{\newline}{ }
-\newcommand{\textbackslash}{\verb?\?}   % \\ is line break
-\newcommand{\textasciicircum}{\verb?^?} % \^ is accent
-\newcommand{\textcolor}[2]{#2}
-\newcommand{\textasciitilde}{\verb?~?}  % \~ is accent
+class Parameters:
 
-"""
+    def __init__(self):
 
-macro_defs_python = [
-    Macro('\\newcommand', args='*AOOA', repl=handlers.handle_newcommand),
-    Macro('\\renewcommand', args='*AOOA', repl=handlers.handle_newcommand),
-]
+        self.macro_defs_latex = r"""
 
-accent_macros = {
+        \newcommand{\newline}{ }
+        \newcommand{\textbackslash}{\verb?\?}   % \\ is line break
+        \newcommand{\textasciicircum}{\verb?^?} % \^ is accent
+        \newcommand{\textcolor}[2]{#2}
+        \newcommand{\textasciitilde}{\verb?~?}  % \~ is accent
 
-    "\\'": 'ACUTE',
-    '\\`': 'GRAVE',
-    '\\^': 'CIRCUMFLEX',
-    '\\v': 'CARON',
-    '\\~': 'TILDE',
-    '\\"': 'DIAERESIS',
-    '\\r': 'RING ABOVE',
-    '\\=': 'MACRON',
-    '\\b': 'LINE BELOW',
-    '\\u': 'BREVE',
-    '\\H': 'DOUBLE ACUTE',
-    '\\.': 'DOT ABOVE',
-    '\\d': 'DOT BELOW',
-    '\\c': 'CEDILLA',
-    '\\k': 'OGONEK',
+        """
 
-}
+        self.macro_defs_python = [
+            Macro('\\newcommand', args='*AOOA',
+                                    repl=handlers.handle_newcommand),
+            Macro('\\renewcommand', args='*AOOA',
+                                    repl=handlers.handle_newcommand),
+        ]
 
-special_tokens = {
+        self.accent_macros = {
 
-    '{': '{',
-    '}': '}',
+            "\\'": 'ACUTE',
+            '\\`': 'GRAVE',
+            '\\^': 'CIRCUMFLEX',
+            '\\v': 'CARON',
+            '\\~': 'TILDE',
+            '\\"': 'DIAERESIS',
+            '\\r': 'RING ABOVE',
+            '\\=': 'MACRON',
+            '\\b': 'LINE BELOW',
+            '\\u': 'BREVE',
+            '\\H': 'DOUBLE ACUTE',
+            '\\.': 'DOT ABOVE',
+            '\\d': 'DOT BELOW',
+            '\\c': 'CEDILLA',
+            '\\k': 'OGONEK',
 
-    '$$': '$$',
-    '$': '$',
-    '#': '#',
-    '&': ' ',       # expand to space
-    '_': '_',
-    '^': '^',
+        }
 
-    '\\(': '\\(',
-    '\\)': '\\)',
-    '\\[': '\\[',
-    '\\]': '\\]',
-    '\\\\': ' ',    # expand to space
+        self.special_tokens = {
 
-    '~': '\N{NO-BREAK SPACE}',
-    '``': '\N{LEFT DOUBLE QUOTATION MARK}',
-    "''": '\N{RIGHT DOUBLE QUOTATION MARK}',
-    '--': '\N{EN DASH}',
-    '---': '\N{EM DASH}',
+            '{': '{',
+            '}': '}',
 
-    '\\ ': ' ',
-    '\\\n': ' ',
-    '\\,': ' ',
-    '\\:': ' ',
-    '\\;': ' ',
-    '\\!': '',
+            '$$': '$$',
+            '$': '$',
+            '#': '#',
+            '&': ' ',       # expand to space
+            '_': '_',
+            '^': '^',
 
-    '\\{': '{',
-    '\\}': '}',
-    '\\$': '$',
-    '\\#': '#',
-    '\\&': '&',
-    '\\_': '_',
-    '\\%': '%',
+            '\\(': '\\(',
+            '\\)': '\\)',
+            '\\[': '\\[',
+            '\\]': '\\]',
+            '\\\\': ' ',    # expand to space
 
-}
+            '~': '\N{NO-BREAK SPACE}',
+            '``': '\N{LEFT DOUBLE QUOTATION MARK}',
+            "''": '\N{RIGHT DOUBLE QUOTATION MARK}',
+            '--': '\N{EN DASH}',
+            '---': '\N{EM DASH}',
 
-special_tokens_de = {
+            '\\ ': ' ',
+            '\\\n': ' ',
+            '\\,': ' ',
+            '\\:': ' ',
+            '\\;': ' ',
+            '\\!': '',
 
-    '"-': '',
-    '"=': '-',
-    '"`': '\N{DOUBLE LOW-9 QUOTATION MARK}',    # \glqq
-    '"\'': '\N{LEFT DOUBLE QUOTATION MARK}',    # \grqq
+            '\\{': '{',
+            '\\}': '}',
+            '\\$': '$',
+            '\\#': '#',
+            '\\&': '&',
+            '\\_': '_',
+            '\\%': '%',
 
-}
+        }
 
-def macro_character(c):
-    return c >= 'a' and c <= 'z' or c >= 'A' and c <= 'Z'
+        self.special_tokens_de = {
 
+            '"-': '',
+            '"=': '-',
+            '"`': '\N{DOUBLE LOW-9 QUOTATION MARK}',    # \glqq
+            '"\'': '\N{LEFT DOUBLE QUOTATION MARK}',    # \grqq
 
+        }
+
+    def macro_character(self, c):
+        return c >= 'a' and c <= 'z' or c >= 'A' and c <= 'Z'
 

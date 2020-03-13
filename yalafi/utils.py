@@ -25,17 +25,6 @@ def latex_error(err, pos):
                         + '\npos = ' + str(pos) + '\n')
     sys.exit(1)
 
-def get_default_parameters():
-    class Parms:
-        pass
-    parms = Parms()
-    parms.macro_defs_python = parameters.macro_defs_python.copy()
-    parms.macro_defs_latex = parameters.macro_defs_latex
-    parms.accent_macros = parameters.accent_macros.copy()
-    parms.special_tokens = parameters.special_tokens.copy()
-    parms.macro_character = parameters.macro_character
-    return parms
-
 def get_txt_pos(toks):
     txt = ''
     pos = []
