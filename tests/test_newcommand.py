@@ -3,10 +3,9 @@
 #   test  of \newcommand with default value for optional argument
 #
 
-from yalafi import parser, utils
+from yalafi import parameters, parser, utils
 
-parms = utils.get_default_parameters()
-p = parser.Parser(parms)
+p = parser.Parser(parameters.Parameters())
 
 latex1 = r"""
 \newcommand{\xxx}[1][X]{#1Z}

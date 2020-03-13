@@ -1,12 +1,11 @@
 
-from yalafi import parser, utils
+from yalafi import parameters, parser, utils
 
 add_macros = r"""
 \newcommand{\swap}[2]{#2#1}
 """
 
-parms = utils.get_default_parameters()
-p = parser.Parser(parms, add_macros=add_macros)
+p = parser.Parser(parameters.Parameters(), add_macros=add_macros)
 
 latex1 = r"""
 \swap
