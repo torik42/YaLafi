@@ -201,7 +201,9 @@ class Parser:
             return out + self.mathparser.expand_display_math(buf, name)
         if env.add_pars:
             out = [defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True)]
-        out += self.expand_arguments(buf, env, tok.pos)
+        args = self.expand_arguments(buf, env, tok.pos)
+        # args are not pushed back, but may contain further macros
+        out += self.expand_sequence(scanner.Buffer(args))
         if env.remove:
             out += self.expand_sequence(buf, env_stop=name)
         return out
