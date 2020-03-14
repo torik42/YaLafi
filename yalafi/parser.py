@@ -94,6 +94,7 @@ class Parser:
     #   read block (till } or ]) or single token from current buffer buf
     #   Return: new buffer for reading these tokens
     #   - buffer will contain at least one token for position tracking
+    #   - this also ensures that an empty option [] will be "something"
     #
     def arg_buffer(self, buf, end='}'):
         tok = buf.skip_space()
@@ -161,7 +162,7 @@ class Parser:
 
         out = [defs.ActionToken(start)]
         if callable(mac.repl):
-            return out + mac.repl(self, buf, mac, arguments)
+            return out + mac.repl(self, buf, mac, arguments, start)
 
         # preparation for position tracking
         #
@@ -196,9 +197,11 @@ class Parser:
         if name not in self.the_environments:
             return out
         env = self.the_environments[name]
-        out += self.expand_arguments(buf, env, tok.pos)
-        if type(env) is defs.EquEnvironment:
+        if type(env) is defs.EquEnv:
             return out + self.mathparser.expand_display_math(buf, name)
+        if env.add_pars:
+            out = [defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True)]
+        out += self.expand_arguments(buf, env, tok.pos)
         if env.remove:
             out += self.expand_sequence(buf, env_stop=name)
         return out
@@ -208,7 +211,7 @@ class Parser:
     def end_environment(self, buf, tok, env_stop):
         name = self.get_environment_name(buf)
         if (name not in self.the_environments
-                or not self.the_environments[name].end_par):
+                or not self.the_environments[name].add_pars):
             out = [defs.ActionToken(tok.pos)]
         else:
             out = [defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True)]

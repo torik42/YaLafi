@@ -20,8 +20,8 @@
 #   default parameters for scanner and parser
 #
 
-from .defs import Environment, EquEnvironment, Macro
-from . import handlers
+from .defs import Environ, EquEnv, Macro
+from . import handlers as hs
 from . import scanner
 
 
@@ -41,24 +41,28 @@ class Parameters:
 
         self.macro_defs_python = [
 
+        Macro(self, '\\cite', args='OA', repl=hs.h_cite),
+        # or simpler: \newcommand{\cite}[2][none]{[#2, #1]}
         Macro(self, '\\newcommand', args='*AOOA',
-                                repl=handlers.handle_newcommand),
+                                repl=hs.h_newcommand),
         Macro(self, '\\renewcommand', args='*AOOA',
-                                repl=handlers.handle_newcommand),
-        Macro(self, '\\section', args='*OA', repl=handlers.handle_heading),
+                                repl=hs.h_newcommand),
+        Macro(self, '\\section', args='*OA', repl=hs.h_heading),
 
         ]
 
         self.environment_defs = [
 
-        Environment(self, 'comment', repl='', remove=True, end_par=False),
-        Environment(self, 'proof', args='O',
+        Environ(self, 'comment', repl='', remove=True, add_pars=False),
+        Environ(self, 'proof', args='O',
                             # Parser.expand_arguments() may skip space
-                            repl='\n\n#1.\n', opts=[self.proof_name]),
-        Environment(self, 'table', repl='\n\n[Tabelle]', remove=True),
-        Environment(self, 'theorem', args='O', repl=handlers.handle_theorem),
+                            repl='#1.\n', opts=[self.proof_name]),
+        Environ(self, 'table', repl='[Tabelle]', remove=True),
+        Environ(self, 'theorem', args='O', repl=hs.h_theorem('Theorem')),
+        # or simpler: Environ(self, 'theorem', args='O',
+        #                           repl='Theorem (#1). ', opts=['none']),
 
-        EquEnvironment(self, 'equation'),
+        EquEnv(self, 'equation'),
 
         ]
 
@@ -142,6 +146,8 @@ class Parameters:
         if language == 'de':
             self.special_tokens.update(self.special_tokens_de)
             self.proof_name = 'Beweis'
+        else:
+            self.proof_name = 'Proof'
 
     def macro_character(self, c):
         return c >= 'a' and c <= 'z' or c >= 'A' and c <= 'Z'

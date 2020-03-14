@@ -95,14 +95,14 @@ class Macro(Expandable):
     def __init__(self, parms, name, args='', repl='', opts=[], scanned=False):
         super().__init__(parms, name, args, repl, opts, scanned)
 
-class Environment(Expandable):
+class Environ(Expandable):
     def __init__(self, parms, name, args='', repl='', opts=[], scanned=False,
-                        end_par=True, remove=False):
+                        add_pars=True, remove=False):
         super().__init__(parms, name, args, repl, opts, scanned)
-        self.end_par=end_par
+        self.add_pars=add_pars
         self.remove=remove
 
-class EquEnvironment(Expandable):
+class EquEnv(Expandable):
     def __init__(self, parms, name, args='', repl='', opts=[], scanned=False):
         super().__init__(parms, name, args, repl, opts, scanned)
 

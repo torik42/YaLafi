@@ -19,7 +19,7 @@
 from . import defs
 from . import utils
 
-def handle_newcommand(parser, buf, mac, args):
+def h_newcommand(parser, buf, mac, args, pos):
     name = parser.get_text_direct(args[0])
     nargs = parser.get_text_expanded(args[1])
     nargs = int(nargs) if nargs.isdecimal() else 0
@@ -40,9 +40,32 @@ def handle_newcommand(parser, buf, mac, args):
                                 repl=args[3], scanned=True)
     return []
 
-def handle_theorem(parser, buf, mac, args):
+#   \begin{theorem}[opt]
+#   - if present, add content of option opt in () parantheses
+#   - add '.'
+#
+def h_theorem(name):
+    def handler (parser, buf, mac, args, pos):
+        out = [defs.TextToken(pos, name, pos_fix=True)]
+        if args[0]:
+            # there is a [.] option
+            out.append(defs.SpaceToken(pos, ' ', pos_fix=True))
+            out.append(defs.TextToken(pos, '(', pos_fix=True))
+            out += args[0]
+            out.append(defs.TextToken(args[0][-1].pos,
+                                        ').', pos_fix=True))
+            out.append(defs.SpaceToken(args[0][-1].pos,
+                                        '\n', pos_fix=True))
+        else:
+            out.append(defs.TextToken(pos, '.', pos_fix=True))
+            out.append(defs.SpaceToken(pos, '\n', pos_fix=True))
+        return out
+            
+    # this creates a closure
+    return handler
+
+def h_heading(parser, buf, mac, args, pos):
     TBD
 
-def handle_heading(parser, buf, mac, args):
+def h_cite(parser, buf, mac, args, pos):
     TBD
-
