@@ -3,7 +3,7 @@
 #   test  of environments
 #
 
-from yalafi import parameters, parser, utils
+from yalafi import defs, parameters, parser, utils
 
 p = parser.Parser(parameters.Parameters())
 
@@ -97,4 +97,20 @@ def test_unknown():
     plain_unknown, pos = utils.get_txt_pos(toks)
 
     assert plain_unknown_should_be == plain_unknown
+
+latex_macro_in_arg = r"""
+X\begin{XXX}{\textcolor}
+{red}{blue}
+"""
+plain_macro_in_arg = r"""
+Xblue
+"""
+def test_macro_in_arg():
+    parms = parameters.Parameters()
+    parms.environment_defs.append(defs.Environ(parms, 'XXX',
+                        args='A', repl='#1', add_pars=False))
+    p = parser.Parser(parms)
+    toks = p.parse(latex_macro_in_arg)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_macro_in_arg == plain
 

@@ -54,3 +54,15 @@ def test_3():
 
     assert plain3_should_be == plain3
 
+latex_macro_in_arg = r"""
+\newcommand{\xxx}[2]{#1#2}
+A \xxx{\textcolor}{}{red}{blue} B
+"""
+plain_macro_in_arg = r"""
+A blue B
+"""
+def test_macro_in_arg():
+    toks = p.parse(latex_macro_in_arg)
+    plain, pos3 = utils.get_txt_pos(toks)
+    assert plain_macro_in_arg == plain
+
