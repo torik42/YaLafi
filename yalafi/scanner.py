@@ -168,7 +168,8 @@ class Buffer:
     #
     def skip_space(self):
         tok = self.cur()
-        while type(tok) in (defs.SpaceToken, defs.CommentToken):
+        while type(tok) in (defs.SpaceToken, defs.CommentToken,
+                                defs.ActionToken, defs.VoidToken):
             tok = self.next()
         return tok
 

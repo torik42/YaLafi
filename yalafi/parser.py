@@ -54,9 +54,13 @@ class Parser:
             tok = buf.cur()
             if not tok:
                 break
-            if type(tok) is defs.MacroToken:
+            elif type(tok) is defs.MacroToken:
                 if tok.txt == '\\begin':
-                    out += self.begin_environment(buf, tok)
+                    t, back = self.begin_environment(buf, tok)
+                    if back:
+                        buf.back(t)
+                    else:
+                        out += t
                 elif tok.txt == '\\end':
                     t, stop = self.end_environment(buf, tok, env_stop)
                     if stop:
@@ -64,31 +68,27 @@ class Parser:
                     out += t
                 else:
                     buf.back(self.expand_macro(buf, tok))
-            elif tok.txt == '{':
-                out.append(defs.ActionToken(tok.pos))
-                out += self.expand_sequence(self.arg_buffer(buf))
-                if buf.cur():
-                    out.append(defs.ActionToken(buf.cur().pos))
-            elif tok.txt == '}':
-                utils.latex_error('unexpected }', tok.pos)
+                continue
             elif tok.txt == '$' or tok.txt == '\\(':
                 out += self.mathparser.expand_inline_math(buf, tok)
+                continue
             elif tok.txt == '$$' or tok.txt == '\\[':
                 out += self.mathparser.expand_display_math(buf, tok.txt)
+                continue
+            elif tok.txt == '{' or tok.txt == '}':
+                out.append(defs.ActionToken(tok.pos))
             elif type(tok) is defs.SpecialToken:
                 out.append(defs.ActionToken(tok.pos))
                 txt = self.parms.special_tokens[tok.txt]
                 out.append(defs.TextToken(tok.pos, txt))
-                buf.next()
             elif type(tok) is defs.VerbatimToken:
                 out.append(defs.ActionToken(tok.pos))
                 out.append(defs.TextToken(tok.pos, tok.txt))
-                buf.next()
             elif type(tok) is defs.CommentToken:
-                buf.next()
+                pass
             else:
                 out.append(tok)
-                buf.next()
+            buf.next()
         return self.remove_pure_action_lines(out)
 
     #   read block (till } or ]) or single token from current buffer buf
@@ -190,25 +190,25 @@ class Parser:
         return out
 
     #   open an environment
+    #   - second element of returned 2-tuple: need to push back to buffer
     #
     def begin_environment(self, buf, tok):
         out = [defs.ActionToken(tok.pos)]
         name = self.get_environment_name(buf)
         if name not in self.the_environments:
-            return out
+            return out, False
         env = self.the_environments[name]
         if type(env) is defs.EquEnv:
-            return out + self.mathparser.expand_display_math(buf, name)
+            return out + self.mathparser.expand_display_math(buf, name), False
         if env.add_pars:
             out = [defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True)]
-        args = self.expand_arguments(buf, env, tok.pos)
-        # args are not pushed back, but may contain further macros
-        out += self.expand_sequence(scanner.Buffer(args))
+        out += self.expand_arguments(buf, env, tok.pos)
         if env.remove:
             out += self.expand_sequence(buf, env_stop=name)
-        return out
+        return out, True
 
     #   close an environment
+    #   - second element of returned 2-tuple: reached env_stop
     #
     def end_environment(self, buf, tok, env_stop):
         name = self.get_environment_name(buf)

@@ -42,7 +42,7 @@ class Parameters:
         self.macro_defs_python = [
 
         Macro(self, '\\cite', args='OA', repl=hs.h_cite),
-        # or simpler: \newcommand{\cite}[2][none]{[#2, #1]}
+        # or simpler: \newcommand{\cite}[2][none]{[0, #1]}
         Macro(self, '\\newcommand', args='*AOOA',
                                 repl=hs.h_newcommand),
         Macro(self, '\\renewcommand', args='*AOOA',
@@ -54,13 +54,24 @@ class Parameters:
         self.environment_defs = [
 
         Environ(self, 'comment', repl='', remove=True, add_pars=False),
+        Environ(self, 'minipage', args='A'),
+        Environ(self, 'table', repl='[Tabelle]', remove=True),
+
         Environ(self, 'proof', args='O',
                             # Parser.expand_arguments() may skip space
                             repl='#1.\n', opts=[self.proof_name]),
-        Environ(self, 'table', repl='[Tabelle]', remove=True),
-        Environ(self, 'theorem', args='O', repl=hs.h_theorem('Theorem')),
+
+        # theorem-style environments
         # or simpler: Environ(self, 'theorem', args='O',
         #                           repl='Theorem (#1). ', opts=['none']),
+        Environ(self, 'corollary', args='O', repl=hs.h_theorem('Corollary')),
+        Environ(self, 'definition', args='O', repl=hs.h_theorem('Definition')),
+        Environ(self, 'example', args='O', repl=hs.h_theorem('Example')),
+        Environ(self, 'lemma', args='O', repl=hs.h_theorem('Lemma')),
+        Environ(self, 'proposition', args='O',
+                                        repl=hs.h_theorem('Proposition')),
+        Environ(self, 'remark', args='O', repl=hs.h_theorem('Remark')),
+        Environ(self, 'theorem', args='O', repl=hs.h_theorem('Theorem')),
 
         EquEnv(self, 'equation'),
 
