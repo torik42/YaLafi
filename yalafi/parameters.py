@@ -27,27 +27,73 @@ from . import scanner
 
 class Parameters:
 
-    def define_macs_envs(self):
+    def init_macros_environments(self):
+
+        # XXX: caption, cite, footnote, footnotetext, framebox
+        # XXX: hspace, vspace
 
         self.macro_defs_latex = r"""
 
+        \newcommand{\AA}{Å}
+        \newcommand{\aa}{å}
+        \newcommand{\AE}{Æ}
+        \newcommand{\ae}{æ}
+        \newcommand{\color}[1]{}
+        \newcommand{\colorbox}[2]{#2}
+        \newcommand{\documentclass}[2][]{}
+        \newcommand{\eqref}[1]{(0)}
+        \newcommand{\fcolorbox}[3]{#3}
+        \newcommand{\footnotemark}[1][]{}
+        \newcommand{\hfill}{ }
+        \newcommand{\include}[1]{}
+        \newcommand{\includegraphics}[2][]{}
+        \newcommand{\input}[1]{}
+        \newcommand{\L}{Ł}
+        \newcommand{\l}{ł}
+        \newcommand{\label}[1]{}
+        \newcommand{\medspace}{ }
         \newcommand{\newline}{ }
-        \newcommand{\textbackslash}{\verb?\?}   % \\ is line break
+        \newcommand{\O}{Ø}
+        \newcommand{\o}{ø}
+        \newcommand{\OE}{Œ}
+        \newcommand{\oe}{œ}
+        \newcommand{\pageref}[1]{0}
+        \newcommand{\par}{
+
+}
+        \newcommand{\qquad}{ }
+        \newcommand{\quad}{ }
+        \newcommand{\ref}[1]{0}
+        \newcommand{\S}{§}
+        \newcommand{\ss}{ß}
+        \newcommand{\texorpdfstring}[2]{#1}
         \newcommand{\textasciicircum}{\verb?^?} % \^ is accent
-        \newcommand{\textcolor}[2]{#2}
         \newcommand{\textasciitilde}{\verb?~?}  % \~ is accent
+        \newcommand{\textbackslash}{\verb?\?}   % \\ is line break
+        \newcommand{\textcolor}[2]{#2}
+        \newcommand{\thickspace}{ }
+        \newcommand{\thinspace}{ }
+        \newcommand{\usepackage}[2][]{}
 
         """
 
         self.macro_defs_python = [
 
-        Macro(self, '\\cite', args='OA', repl=hs.h_cite),
         # or simpler: \newcommand{\cite}[2][none]{[0, #1]}
+        Macro(self, '\\cite', args='OA', repl=hs.h_cite),
+
+        # or simpler, without added dot: \newcommand{\chapter}[1]{#1}
+        Macro(self, '\\chapter', args='*OA', repl=hs.h_heading),
+        Macro(self, '\\part', args='*OA', repl=hs.h_heading),
+        Macro(self, '\\section', args='*OA', repl=hs.h_heading),
+        Macro(self, '\\subsection', args='*OA', repl=hs.h_heading),
+        Macro(self, '\\subsubsection', args='*OA', repl=hs.h_heading),
+        Macro(self, '\\title', args='*OA', repl=hs.h_heading),
+
         Macro(self, '\\newcommand', args='*AOOA',
                                 repl=hs.h_newcommand),
         Macro(self, '\\renewcommand', args='*AOOA',
                                 repl=hs.h_newcommand),
-        Macro(self, '\\section', args='*OA', repl=hs.h_heading),
 
         ]
 
@@ -77,7 +123,22 @@ class Parameters:
 
         ]
 
-    def __init__(self, language='de'):
+    def init_language(self, language):
+        if language == 'de':
+            self.special_tokens.update(self.special_tokens_de)
+            self.proof_name = 'Beweis'
+            self.math_repl_inline = ['B-B-B', 'C-C-C', 'D-D-D',
+                                        'E-E-E', 'F-F-F', 'G-G-G']
+            self.math_repl_display = ['U-U-U', 'V-V-V', 'W-W-W',
+                                        'X-X-X', 'Y-Y-Y', 'Z-Z-Z']
+        else:
+            self.proof_name = 'Proof'
+            self.math_repl_inline = ['B-B-B', 'C-C-C', 'D-D-D',
+                                        'E-E-E', 'F-F-F', 'G-G-G']
+            self.math_repl_display = ['U-U-U', 'V-V-V', 'W-W-W',
+                                        'X-X-X', 'Y-Y-Y', 'Z-Z-Z']
+
+    def init_collections(self):
 
         self.accent_macros = {
 
@@ -124,6 +185,7 @@ class Parameters:
             '---': '\N{EM DASH}',
 
             '\\ ': ' ',
+            '\\\t': ' ',
             '\\\n': ' ',
             '\\,': ' ',
             '\\:': ' ',
@@ -149,17 +211,61 @@ class Parameters:
 
         }
 
-        self.set_language(language)
-        self.scanner = scanner.Scanner(self)
-        self.define_macs_envs()
+        self.math_ignore = [
 
-    def set_language(self, language):
-        if language == 'de':
-            self.special_tokens.update(self.special_tokens_de)
-            self.proof_name = 'Beweis'
-        else:
-            self.proof_name = 'Proof'
+            '{',
+            '}',
+            '\\!',
+            '\\label',
+            '\\mathrlap',
+            '\\negthickspace',
+            '\\negthinspace',
+            '\\negmedspace',
+            '\\nonumber',
+            '\\notag',
+            '\\qedhere',
+
+        ]
+
+        self.math_operators = [
+
+            # XXX
+            '=',
+            '+',
+            '-',
+
+        ]
+
+        self.math_space = [
+
+            '~',
+            '\\ ',
+            '\\\t',
+            '\\\n',
+            '\\:',
+            '\\,',
+            '\\;',
+            '\\medspace',
+            '\\qquad',
+            '\\quad',
+            '\\thickspace',
+            '\\thinspace',
+
+        ]
+
+        self.math_text_macros = [
+            '\\mbox',
+            '\\text',
+        ]
+
+        self.math_punctuation = '.,;:'
 
     def macro_character(self, c):
         return c >= 'a' and c <= 'z' or c >= 'A' and c <= 'Z'
+
+    def __init__(self, language='de'):
+        self.init_collections()
+        self.init_language(language)
+        self.scanner = scanner.Scanner(self)
+        self.init_macros_environments()
 

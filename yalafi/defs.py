@@ -56,6 +56,14 @@ class MacroToken(TextToken):
     def __init__(self, pos, txt):
         super().__init__(pos, txt)
 
+class BeginToken(TextToken):
+    def __init__(self, pos, txt):
+        super().__init__(pos, txt)
+
+class EndToken(TextToken):
+    def __init__(self, pos, txt):
+        super().__init__(pos, txt)
+
 class AccentToken(TextToken):
     def __init__(self, pos, txt):
         super().__init__(pos, txt)
@@ -76,6 +84,18 @@ class ActionToken(TextToken):
 class VoidToken(TextToken):
     def __init__(self, pos):
         super().__init__(pos, '')
+
+class MathElemToken(TextToken):
+    def __init__(self, pos, text):
+        super().__init__(pos, text)
+
+class MathOperToken(TextToken):
+    def __init__(self, pos, text):
+        super().__init__(pos, text)
+
+class MathSpaceToken(TextToken):
+    def __init__(self, pos, text):
+        super().__init__(pos, text)
 
 class Expandable(Printable):
     def __init__(self, parms, name, args='', repl='', opts=[], scanned=False):

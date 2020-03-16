@@ -29,7 +29,7 @@ class Parser:
         self.the_macros = dict((m.name, m) for m in parms.macro_defs_python)
         self.the_environments = dict((e.name, e)
                                             for e in parms.environment_defs)
-        self.mathparser = mathparser.MathParser(parms)
+        self.mathparser = mathparser.MathParser(self)
 
         # read macro definitions from LaTeX text
         macs = parms.scanner.scan(parms.macro_defs_latex)
@@ -54,20 +54,21 @@ class Parser:
             tok = buf.cur()
             if not tok:
                 break
-            elif type(tok) is defs.MacroToken:
-                if tok.txt == '\\begin':
-                    t, back = self.begin_environment(buf, tok)
-                    if back:
-                        buf.back(t)
-                    else:
-                        out += t
-                elif tok.txt == '\\end':
-                    t, stop = self.end_environment(buf, tok, env_stop)
-                    if stop:
-                        return t
-                    out += t
+            elif type(tok) is defs.BeginToken:
+                t, back = self.begin_environment(buf, tok)
+                if back:
+                    buf.back(t)
                 else:
-                    buf.back(self.expand_macro(buf, tok))
+                    out += t
+                continue
+            elif type(tok) is defs.EndToken:
+                t, stop = self.end_environment(buf, tok, env_stop)
+                if stop:
+                    return t
+                out += t
+                continue
+            elif type(tok) is defs.MacroToken:
+                buf.back(self.expand_macro(buf, tok))
                 continue
             elif tok.txt == '$' or tok.txt == '\\(':
                 out += self.mathparser.expand_inline_math(buf, tok)

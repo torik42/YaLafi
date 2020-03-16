@@ -102,6 +102,10 @@ class Scanner:
             # an accent macro like \'
             self.pos += 1
         mac = latex[start:self.pos]
+        if mac == '\\begin':
+            return defs.BeginToken(start, mac)
+        if mac == '\\end':
+            return defs.EndToken(start, mac)
         if mac == '\\verb':
             return self.scan_verb(latex, start)
         if mac in self.parms.accent_macros:
