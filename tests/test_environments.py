@@ -5,7 +5,7 @@
 
 from yalafi import defs, parameters, parser, utils
 
-p = parser.Parser(parameters.Parameters())
+p = parser.Parser(parameters.Parameters('de'))
 
 latex_proof = r"""
 1\begin{proof}

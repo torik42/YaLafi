@@ -11,7 +11,7 @@ X $
 $ Y
 """
 plain_1 = r"""
-X B-B-B; Y
+X C-C-C; Y
 """
 def test_1():
     p = parser.Parser(parameters.Parameters())
@@ -23,7 +23,7 @@ latex_2 = r"""
 X$ \negmedspace\alpha\;$Y
 """
 plain_2 = r"""
-XB-B-B Y
+XC-C-C Y
 """
 def test_2():
     p = parser.Parser(parameters.Parameters())
@@ -35,7 +35,7 @@ latex_3 = r"""
 X \( f(n)=0 \text{ for all}\medspace n \) Y
 """
 plain_3 = r"""
-X B-B-B for all C-C-C Y
+X C-C-C for all D-D-D Y
 """
 def test_3():
     p = parser.Parser(parameters.Parameters())

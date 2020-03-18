@@ -1,6 +1,6 @@
 
 #
-#   test  of environments
+#   test  of theorem environment
 #
 
 from yalafi import parameters, parser, utils
