@@ -55,11 +55,7 @@ class Parser:
             if not tok:
                 break
             elif type(tok) is defs.BeginToken:
-                t, back = self.begin_environment(buf, tok)
-                if back:
-                    buf.back(t)
-                else:
-                    out += t
+                buf.back(self.begin_environment(buf, tok))
                 continue
             elif type(tok) is defs.EndToken:
                 t, stop = self.end_environment(buf, tok, env_stop)
@@ -73,8 +69,15 @@ class Parser:
             elif tok.txt == '$' or tok.txt == '\\(':
                 out += self.mathparser.expand_inline_math(buf, tok)
                 continue
+            elif type(tok) is defs.MathBeginToken:
+                out += self.mathparser.expand_display_math(buf, tok,
+                                                            tok.environ)
+                continue
             elif tok.txt == '$$' or tok.txt == '\\[':
-                out += self.mathparser.expand_display_math(buf, tok.txt)
+                assert self.parms.math_default_env in self.the_environments
+                env = self.the_environments[self.parms.math_default_env]
+                assert type(env) is defs.EquEnv
+                out += self.mathparser.expand_display_math(buf, tok, env)
                 continue
             elif tok.txt == '{' or tok.txt == '}':
                 out.append(defs.ActionToken(tok.pos))
@@ -191,22 +194,22 @@ class Parser:
         return out
 
     #   open an environment
-    #   - second element of returned 2-tuple: need to push back to buffer
     #
     def begin_environment(self, buf, tok):
         out = [defs.ActionToken(tok.pos)]
         name = self.get_environment_name(buf)
         if name not in self.the_environments:
-            return out, False
+            return out
         env = self.the_environments[name]
-        if type(env) is defs.EquEnv:
-            return out + self.mathparser.expand_display_math(buf, name), False
         if env.add_pars:
             out = [defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True)]
         out += self.expand_arguments(buf, env, tok.pos)
+        if type(env) is defs.EquEnv:
+            out.append(defs.MathBeginToken(tok.pos, name, env))
+            return out
         if env.remove:
             out += self.expand_sequence(buf, env_stop=name)
-        return out, True
+        return out
 
     #   close an environment
     #   - second element of returned 2-tuple: reached env_stop

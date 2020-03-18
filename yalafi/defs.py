@@ -85,6 +85,11 @@ class VoidToken(TextToken):
     def __init__(self, pos):
         super().__init__(pos, '')
 
+class MathBeginToken(TextToken):
+    def __init__(self, pos, text, env):
+        super().__init__(pos, text)
+        self.environ = env
+
 class MathElemToken(TextToken):
     def __init__(self, pos, text):
         super().__init__(pos, text)
@@ -116,13 +121,14 @@ class Macro(Expandable):
         super().__init__(parms, name, args, repl, opts, scanned)
 
 class Environ(Expandable):
-    def __init__(self, parms, name, args='', repl='', opts=[], scanned=False,
+    def __init__(self, parms, name, args='', repl='', opts=[],
                         add_pars=True, remove=False):
-        super().__init__(parms, name, args, repl, opts, scanned)
+        super().__init__(parms, name, args, repl, opts)
         self.add_pars=add_pars
         self.remove=remove
 
-class EquEnv(Expandable):
-    def __init__(self, parms, name, args='', repl='', opts=[], scanned=False):
-        super().__init__(parms, name, args, repl, opts, scanned)
+class EquEnv(Environ):
+    def __init__(self, parms, name, args='', repl='', opts=[], remove=False):
+        super().__init__(parms, name, args, repl, opts,
+                                    add_pars=False, remove=remove)
 

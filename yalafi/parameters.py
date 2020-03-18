@@ -48,6 +48,7 @@ class Parameters:
         \newcommand{\include}[1]{}
         \newcommand{\includegraphics}[2][]{}
         \newcommand{\input}[1]{}
+        \newcommand{\item}[1][]{ #1 }
         \newcommand{\L}{Ł}
         \newcommand{\l}{ł}
         \newcommand{\label}[1]{}
@@ -119,7 +120,16 @@ class Parameters:
         Environ(self, 'remark', args='O', repl=hs.h_theorem('Remark')),
         Environ(self, 'theorem', args='O', repl=hs.h_theorem('Theorem')),
 
+        EquEnv(self, 'align'),
+        EquEnv(self, 'align*'),
+        EquEnv(self, 'alignat', args='A'),
+        EquEnv(self, 'alignat*', args='A'),
+        EquEnv(self, 'displaymath'),
+        EquEnv(self, 'eqnarray'),
+        EquEnv(self, 'eqnarray*'),
         EquEnv(self, 'equation'),
+        EquEnv(self, 'equation*'),
+        EquEnv(self, 'flalign', repl='  relation', remove=True),
 
         ]
 
@@ -131,12 +141,18 @@ class Parameters:
                                         'E-E-E', 'F-F-F', 'G-G-G']
             self.math_repl_display = ['U-U-U', 'V-V-V', 'W-W-W',
                                         'X-X-X', 'Y-Y-Y', 'Z-Z-Z']
+            self.math_op_text = {'+': 'plus', '-': 'minus',
+                                    '*': 'mal', '/': 'durch',
+                                    None: 'gleich'}
         else:
             self.proof_name = 'Proof'
             self.math_repl_inline = ['B-B-B', 'C-C-C', 'D-D-D',
                                         'E-E-E', 'F-F-F', 'G-G-G']
             self.math_repl_display = ['U-U-U', 'V-V-V', 'W-W-W',
                                         'X-X-X', 'Y-Y-Y', 'Z-Z-Z']
+            self.math_op_text = {'+': 'plus', '-': 'minus',
+                                    '*': 'times', '/': 'over',
+                                    None: 'equal'}
 
     def init_collections(self):
 
@@ -227,15 +243,6 @@ class Parameters:
 
         ]
 
-        self.math_operators = [
-
-            # XXX
-            '=',
-            '+',
-            '-',
-
-        ]
-
         self.math_space = [
 
             '~',
@@ -253,17 +260,32 @@ class Parameters:
 
         ]
 
+        self.math_operators = [
+
+            '+', '-', '*', '/',
+            '=', '\\eq', '\\ne', '\\neq',
+            '<', '>', '\\le', '\\leq', '\\ge', '\\geq',
+            ':', ':=', '\\to', '\\cap', '\\cup',
+            '\\Leftrightarrow',
+            '\\subset', '\\subseteq', '\\supset', '\\supseteq',
+            '\\stackrel',
+
+        ]
+
         self.math_text_macros = [
             '\\mbox',
             '\\text',
         ]
+
+        # math environment for $$ and \[
+        self.math_default_env = 'displaymath'
 
         self.math_punctuation = '.,;:'
 
     def macro_character(self, c):
         return c >= 'a' and c <= 'z' or c >= 'A' and c <= 'Z'
 
-    def __init__(self, language='de'):
+    def __init__(self, language='en'):
         self.init_collections()
         self.init_language(language)
         self.scanner = scanner.Scanner(self)

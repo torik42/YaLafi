@@ -36,8 +36,9 @@ class MathPartToken(defs.TextToken):
         return type(self.toks[-1]) is defs.MathSpaceToken
     def only_space(self):
         return all(type(t) is defs.MathSpaceToken for t in self.toks)
-    def has_elem(self):
-        return any(type(t) is defs.MathElemToken for t in self.toks)
+    def has_elem(self, parms):
+        return any(type(t) is defs.MathElemToken and t.txt and
+                        t.txt not in parms.math_punctuation for t in self.toks)
     def leading_op(self):
         toks = self.toks
         pos = next((i for i in range(len(toks))
@@ -56,8 +57,39 @@ class MathParser:
     def __init__(self, parser):
         self.parser = parser
 
-    def expand_display_math(self, buf, name):
-        TBD
+    def expand_display_math(self, buf, tok, env):
+        buf.next()
+        start = tok.pos
+        first_section = True
+        next_repl = True
+        out = [defs.ActionToken(start),
+                        defs.SpaceToken(start, '  ', pos_fix=True)]
+        while True:
+            tokens, end = self.expand_math_section(buf, start,
+                                        ['&', '\\\\', '$$', '\\]'], env.name)
+            tokens = self.detect_math_parts(tokens)
+            sec, next_repl = self.replace_section(False, tokens,
+                                        first_section, next_repl,
+                                        self.parser.parms.math_repl_display)
+            out += sec
+            if end.txt == '&':
+                out.append(defs.SpaceToken(out[-1].pos, ' ', pos_fix=True))
+                first_section = False
+            elif end.txt == '\\\\':
+                out.append(defs.SpaceToken(out[-1].pos, '\n  ', pos_fix=True))
+                first_section = True
+            else:
+                break
+
+        if env.remove:
+            txt = self.parser.get_text_direct(out).strip()
+            if txt and txt[-1] in self.parser.parms.math_punctuation:
+                out = [defs.TextToken(out[-1].pos, txt[-1], pos_fix=True)]
+            else:
+                out = [defs.ActionToken(out[-1].pos)]
+        else:
+            out.append(defs.ActionToken(out[-1].pos))
+        return out
 
     #   "expand" inline maths
     #
@@ -65,27 +97,11 @@ class MathParser:
         buf.next()
         tokens, x = self.expand_math_section(buf, tok.pos, ['$', '\\)'], None)
         tokens = self.detect_math_parts(tokens)
-        out = []
-        parms = self.parser.parms
-        for tok in tokens:
-            if type(tok) is not MathPartToken:
-                out.append(tok)
-                continue
-            if tok.only_space():
-                out.append(defs.SpaceToken(tok.pos, ' ', pos_fix=True))
-                continue
-            if tok.start_space():
-                out.append(defs.SpaceToken(tok.pos, ' ', pos_fix=True))
-            out.append(defs.TextToken(tok.pos, parms.math_repl_inline[0],
-                                            pos_fix=True))
-            parms.math_repl_inline = (parms.math_repl_inline[1:]
-                                            + parms.math_repl_inline[:])
-            c = tok.last_char(self.parser)
-            if c and c in parms.math_punctuation:
-                out.append(defs.TextToken(tok.pos, c, pos_fix=True))
-            if tok.end_space():
-                out.append(defs.SpaceToken(tok.pos, ' ', pos_fix=True))
-
+        out = [defs.ActionToken(tok.pos)]
+        t, x = self.replace_section(True, tokens, True, True,
+                                    self.parser.parms.math_repl_inline)
+        out += t
+        out.append(defs.ActionToken(out[-1].pos))
         return out
 
     #   expand a piece of math material
@@ -115,11 +131,7 @@ class MathParser:
                 buf.next()
                 break
             elif type(tok) is defs.BeginToken:
-                t, back = parser.begin_environment(buf, tok)
-                if back:
-                    buf.back(t)
-                else:
-                    out += t
+                buf.back(parser.begin_environment(buf, tok))
                 continue
             elif type(tok) is defs.EndToken:
                 t, stop = parser.end_environment(buf, tok, env_stop)
@@ -181,4 +193,50 @@ class MathParser:
             out.append(MathPartToken(toks[:pos]))
             toks = toks[pos:]
         return out
+
+    #   replace math parts in a section by text placeholders
+    #   - add trailing punctuation if present in a math part
+    #   - insert placeholder for leading math operator if first in part
+    #     and not first in current equation
+    #
+    def replace_section(self, inline, tokens, first_section,
+                                next_repl, repls):
+        first_part = not first_section
+        parms = self.parser.parms
+        out = []
+        for tok in tokens:
+            if type(tok) is not MathPartToken:
+                out.append(tok)
+                if tok.txt.strip():
+                    first_part = False
+                    next_repl = True
+                continue
+            if tok.only_space():
+                out.append(defs.SpaceToken(tok.pos, ' ', pos_fix=True))
+                continue
+
+            if tok.start_space():
+                out.append(defs.SpaceToken(tok.pos, ' ', pos_fix=True))
+            op = tok.leading_op()
+            elem = tok.has_elem(parms)
+            if not inline and first_part and op:
+                s = parms.math_op_text.get(op.txt, parms.math_op_text[None])
+                out.append(defs.SpaceToken(tok.pos, ' ', pos_fix=True))
+                out.append(defs.TextToken(tok.pos, s, pos_fix=True))
+                out.append(defs.SpaceToken(tok.pos, ' ', pos_fix=True))
+            if inline or (next_repl or op and first_part) and elem:
+                repls[:] = repls[1:] + repls[:1]
+            if inline or elem:
+                out.append(defs.TextToken(tok.pos, repls[0], pos_fix=True))
+
+            next_repl = False
+            c = tok.last_char(self.parser)
+            if c and c in parms.math_punctuation:
+                out.append(defs.TextToken(tok.pos, c, pos_fix=True))
+                next_repl = True
+            if op and not elem:
+                next_repl = True
+            if tok.end_space():
+                out.append(defs.SpaceToken(tok.pos, ' ', pos_fix=True))
+        return out, next_repl
 
