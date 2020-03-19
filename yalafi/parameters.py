@@ -29,9 +29,6 @@ class Parameters:
 
     def init_macros_environments(self):
 
-        # XXX: caption, cite, footnote, footnotetext, framebox
-        # XXX: hspace, vspace
-
         self.macro_defs_latex = r"""
 
         \newcommand{\AA}{Å}
@@ -80,11 +77,17 @@ class Parameters:
 
         self.macro_defs_python = [
 
-        # or simpler: \newcommand{\cite}[2][none]{[0, #1]}
+        Macro(self, '\\caption', args='OA', extract='#2'),
         Macro(self, '\\cite', args='OA', repl=hs.h_cite),
+            # or simpler: \newcommand{\cite}[2][none]{[0, #1]}
+        Macro(self, '\\footnote', args='OA', extract='#2'),
+        Macro(self, '\\footnotetext', args='OA', extract='#2'),
+        Macro(self, '\\framebox', args='OOA', repl='#3'),
+        Macro(self, '\\hspace', args='*A', repl=' '),
+        Macro(self, '\\vspace', args='*A', repl=' '),
 
-        # or simpler, without added dot: \newcommand{\chapter}[1]{#1}
         Macro(self, '\\chapter', args='*OA', repl=hs.h_heading),
+            # or simpler, without added dot: \newcommand{\chapter}[1]{#1}
         Macro(self, '\\part', args='*OA', repl=hs.h_heading),
         Macro(self, '\\section', args='*OA', repl=hs.h_heading),
         Macro(self, '\\subsection', args='*OA', repl=hs.h_heading),

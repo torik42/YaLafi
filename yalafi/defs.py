@@ -103,9 +103,12 @@ class MathSpaceToken(TextToken):
         super().__init__(pos, text)
 
 class Expandable(Printable):
-    def __init__(self, parms, name, args='', repl='', opts=[], scanned=False):
+    def __init__(self, parms, name, args, repl, opts,
+                                    scanned=False, extract=''):
         self.name = name
         self.args = args
+        # XXX check of argument references?
+        self.extract = parms.scanner.scan(extract)
         if scanned:
             self.repl = repl
             self.opts = opts
@@ -113,12 +116,14 @@ class Expandable(Printable):
         if callable(repl):
             self.repl = repl
         else:
+            # XXX check of argument references?
             self.repl = parms.scanner.scan(repl)
         self.opts = [parms.scanner.scan(op) for op in opts]
 
 class Macro(Expandable):
-    def __init__(self, parms, name, args='', repl='', opts=[], scanned=False):
-        super().__init__(parms, name, args, repl, opts, scanned)
+    def __init__(self, parms, name, args='', repl='', opts=[],
+                                    scanned=False, extract=''):
+        super().__init__(parms, name, args, repl, opts, scanned, extract)
 
 class Environ(Expandable):
     def __init__(self, parms, name, args='', repl='', opts=[],

@@ -38,11 +38,21 @@ class Parser:
             macs = parms.scanner.scan(add_macros)
             self.expand_sequence(scanner.Buffer(macs))
 
+        self.extracted = []
+
     #   scan and parse (expand) LaTeX string to tokens
     #
     def parse(self, latex):
         toks = self.parms.scanner.scan(latex)
-        return self.expand_sequence(scanner.Buffer(toks))
+        main = self.expand_sequence(scanner.Buffer(toks))
+        for extr in self.extracted:
+            if not extr:
+                continue
+            main.append(defs.ParagraphToken(extr[0].pos, '\n\n\n',
+                                                pos_fix=True))
+            main += extr
+            main.append(defs.SpaceToken(extr[-1].pos, '\n', pos_fix=True))
+        return main
 
     #   expand token sequence in text mode from current buffer
     #   - env_stop: stop reading on \end for this environment
@@ -169,18 +179,24 @@ class Parser:
         out = [defs.ActionToken(start)]
         if callable(mac.repl):
             return out + mac.repl(self, buf, mac, arguments, start)
+        if mac.extract:
+            toks = self.generate_replacements(arguments, mac.extract, start)
+            self.extracted.append(self.expand_sequence(scanner.Buffer(toks)))
+        return out + self.generate_replacements(arguments, mac.repl, start)
 
+    def generate_replacements(self, arguments, repls, start):
+        out = []
         # preparation for position tracking
         #
         cur_pos = start
-        for tok in mac.repl:
+        for tok in repls:
             if type(tok) is defs.ArgumentToken and arguments[tok.arg-1]:
                 # NB: may be an absent optional argument
                 cur_pos = arguments[tok.arg-1][0].pos
 
         # macro expansion
         #
-        for tok in mac.repl:
+        for tok in repls:
             if type(tok) is defs.ArgumentToken:
                 arg = arguments[tok.arg - 1]
                 if arg:
