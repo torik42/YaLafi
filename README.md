@@ -9,6 +9,10 @@ The aim is to develop a solution with
 - a small machinery for macro expansion.
 
 First examples can be seen in directory tests/.
+
 File tex2txt.py provides an interface between Tex2txt and
 YaLafi, such that the application script Tex2txt/shell.py
 can be run unmodified.
+From [Tex2txt/README](https://github.com/matze-dd/Tex2txt),
+the introductory example and the replacements for displayed equations
+do work.
