@@ -105,6 +105,8 @@ class Parser:
         if not tok:
             # XXX: improve position estimation?
             return scanner.Buffer([defs.VoidToken(0)])
+        if type(tok) is defs.ParagraphToken:
+            return scanner.Buffer([defs.VoidToken(tok.pos)])
         if end == '}' and tok.txt != '{':
             # consume single token
             buf.next()

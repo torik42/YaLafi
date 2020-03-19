@@ -19,6 +19,8 @@
 from . import defs
 from . import utils
 
+#   macros \newcommand, \renewcommand
+#
 def h_newcommand(parser, buf, mac, args, pos):
     name = parser.get_text_direct(args[0])
     nargs = parser.get_text_expanded(args[1])
@@ -64,8 +66,27 @@ def h_theorem(name):
     # this creates a closure
     return handler
 
+#   heading macros: append '.', unless last char in parms.heading_punct
+#
 def h_heading(parser, buf, mac, args, pos):
-    TBD
+    arg = args[1].copy()
+    txt = parser.get_text_expanded(args[1]).strip()
+    if (txt and parser.parms.heading_punct
+                and txt[-1] not in parser.parms.heading_punct):
+        arg.append(defs.TextToken(arg[-1].pos, '.'))
+    return arg
 
+#   macro \cite[opt]
+#
 def h_cite(parser, buf, mac, args, pos):
-    TBD
+    if args[0]:
+        out = [defs.TextToken(pos, '[0,', pos_fix=True),
+                    defs.SpaceToken(pos, ' ', pos_fix=True)]
+        out += args[0]
+        out += [defs.TextToken(args[0][-1].pos, ']'),
+                    defs.ActionToken(args[0][-1].pos)]
+    else:
+        out = [defs.TextToken(pos, '[0]', pos_fix=True),
+                    defs.ActionToken(pos)]
+    return out
+

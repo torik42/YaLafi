@@ -156,6 +156,10 @@ class Parameters:
 
     def init_collections(self):
 
+        # add dot to heading unless last heading char in ...
+        # (turn off: set to '')
+        self.heading_punct = '!?'
+
         self.accent_macros = {
 
             "\\'": 'ACUTE',
