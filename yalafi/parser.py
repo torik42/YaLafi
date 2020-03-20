@@ -21,6 +21,7 @@ from . import mathparser
 from . import scanner
 from . import utils
 import copy
+import unicodedata
 
 
 class Parser:
@@ -89,6 +90,9 @@ class Parser:
                 assert type(env) is defs.EquEnv
                 out += self.mathparser.expand_display_math(buf, tok, env)
                 continue
+            elif type(tok) is defs.AccentToken:
+                out += self.expand_accent(buf, tok)
+                continue
             elif tok.txt == '{' or tok.txt == '}':
                 out.append(defs.ActionToken(tok.pos))
             elif type(tok) is defs.SpecialToken:
@@ -96,8 +100,15 @@ class Parser:
                 txt = self.parms.special_tokens[tok.txt]
                 out.append(defs.TextToken(tok.pos, txt))
             elif type(tok) is defs.VerbatimToken:
-                out.append(defs.ActionToken(tok.pos))
-                out.append(defs.TextToken(tok.pos, tok.txt))
+                if tok.environ:
+                    # add paragraphs around anvironments
+                    out += [
+                        defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True),
+                        defs.TextToken(tok.pos, tok.txt),
+                        defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True)]
+                else:
+                    out.append(defs.ActionToken(tok.pos))
+                    out.append(defs.TextToken(tok.pos, tok.txt))
             elif type(tok) is defs.CommentToken:
                 pass
             else:
@@ -210,6 +221,34 @@ class Parser:
                 tok.pos_fix = True
                 out.append(tok)
         return out
+
+    def expand_accent(self, buf, tok):
+        buf.next()
+        args = self.expand_sequence(self.arg_buffer(buf))
+        if not args or not args[0].txt:
+            c = ''
+        elif len(args[0].txt) == 1:
+            c = args[0].txt
+            args.pop(0)
+        else:
+            args[0] = copy.copy(args[0])
+            c = args[0].txt[0]
+            args[0].txt = args[0].txt[1:]
+
+        if not c.strip():
+            c = ' '.join(self.parms.accent_macros[tok.txt])
+        else:
+            if not ('a' <= c <= 'z' or 'A' <= c <= 'Z'):
+                utils.latex_error('text-mode accent for non-letter', tok.pos)
+            c = ('LATIN ' + ('SMALL' if c.islower() else 'CAPITAL')
+                        + ' LETTER ' + c.upper() + ' WITH ' 
+                        + self.parms.accent_macros[tok.txt][0])
+        try:
+            u = unicodedata.lookup(c)
+        except:
+            utils.latex_error('could not find UTF-8 character "'
+                                            + c + '"', tok.pos)
+        return [defs.TextToken(tok.pos, u)] + args
 
     #   open an environment
     #

@@ -103,7 +103,7 @@ class Scanner:
             self.pos += 1
         mac = latex[start:self.pos]
         if mac == '\\begin':
-            return defs.BeginToken(start, mac)
+            return self.scan_verbatim(latex, start, mac)
         if mac == '\\end':
             return defs.EndToken(start, mac)
         if mac == '\\verb':
@@ -139,7 +139,26 @@ class Scanner:
         self.pos += 1
         return defs.VerbatimToken(start_arg, latex[start_arg:self.pos-1])
 
+    #   scan \begin{verbatim} ... \end{verbatim}
+    #
+    def scan_verbatim(self, latex, start, mac):
+        pos = next((i for i in range(start + len('\\begin'), self.max_pos)
+                        if not latex[i].isspace()), self.max_pos)
+        if (pos >= self.max_pos or latex.count('\n', start, pos) > 1
+                or not latex.startswith('{verbatim}', pos)):
+            return defs.BeginToken(start, mac)
 
+        pos += len('{verbatim}')
+        end = next((i for i in range(pos, self.max_pos)
+                    if latex.startswith('\\end{verbatim}', i)), self.max_pos)
+        if end >= self.max_pos:
+            utils.latex_error('missing end of verbatim', start)
+        self.pos = end + len('\\end{verbatim}')
+        return defs.VerbatimToken(start, latex[pos:end], environ=True)
+
+
+#   token buffer that can push back tokens
+#
 class Buffer:
     def __init__(self, tokens):
         self.tokens = tokens

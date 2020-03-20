@@ -49,6 +49,9 @@ class Parameters:
         \newcommand{\L}{Ł}
         \newcommand{\l}{ł}
         \newcommand{\label}[1]{}
+        \newcommand{\LTadd}[1]{#1}
+        \newcommand{\LTalter}[2]{#2}
+        \newcommand{\LTskip}[1]{}
         \newcommand{\medspace}{ }
         \newcommand{\newline}{ }
         \newcommand{\O}{Ø}
@@ -165,21 +168,21 @@ class Parameters:
 
         self.accent_macros = {
 
-            "\\'": 'ACUTE',
-            '\\`': 'GRAVE',
-            '\\^': 'CIRCUMFLEX',
-            '\\v': 'CARON',
-            '\\~': 'TILDE',
-            '\\"': 'DIAERESIS',
-            '\\r': 'RING ABOVE',
-            '\\=': 'MACRON',
-            '\\b': 'LINE BELOW',
-            '\\u': 'BREVE',
-            '\\H': 'DOUBLE ACUTE',
-            '\\.': 'DOT ABOVE',
-            '\\d': 'DOT BELOW',
-            '\\c': 'CEDILLA',
-            '\\k': 'OGONEK',
+            "\\'": ['ACUTE', 'ACCENT'],
+            '\\`': ['GRAVE', 'ACCENT'],
+            '\\^': ['CIRCUMFLEX', 'ACCENT'],
+            '\\v': ['CARON'],
+            '\\~': ['TILDE'],
+            '\\"': ['DIAERESIS'],
+            '\\r': ['RING ABOVE'],
+            '\\=': ['MACRON'],
+            '\\b': ['LINE BELOW'],
+            '\\u': ['BREVE'],
+            '\\H': ['DOUBLE ACUTE', 'ACCENT'],
+            '\\.': ['DOT ABOVE'],
+            '\\d': ['DOT BELOW'],
+            '\\c': ['CEDILLA'],
+            '\\k': ['OGONEK'],
 
         }
 
@@ -287,7 +290,7 @@ class Parameters:
         # math environment for $$ and \[
         self.math_default_env = 'displaymath'
 
-        self.math_punctuation = '.,;:'
+        self.math_punctuation = ['.', ',', ';', ':']
 
     def macro_character(self, c):
         return c >= 'a' and c <= 'z' or c >= 'A' and c <= 'Z'

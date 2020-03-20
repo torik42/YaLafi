@@ -37,7 +37,7 @@ class MathPartToken(defs.TextToken):
     def only_space(self):
         return all(type(t) is defs.MathSpaceToken for t in self.toks)
     def has_elem(self, parms):
-        return any(type(t) is defs.MathElemToken and t.txt and
+        return any(type(t) is defs.MathElemToken and
                         t.txt not in parms.math_punctuation for t in self.toks)
     def leading_op(self):
         toks = self.toks
@@ -231,7 +231,7 @@ class MathParser:
 
             next_repl = False
             c = tok.last_char(self.parser)
-            if c and c in parms.math_punctuation:
+            if c in parms.math_punctuation:
                 out.append(defs.TextToken(tok.pos, c, pos_fix=True))
                 next_repl = True
             if op and not elem:

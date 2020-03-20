@@ -69,8 +69,9 @@ class AccentToken(TextToken):
         super().__init__(pos, txt)
 
 class VerbatimToken(TextToken):
-    def __init__(self, pos, txt):
+    def __init__(self, pos, txt, environ=False):
         super().__init__(pos, txt)
+        self.environ = environ
 
 class ArgumentToken(TextToken):
     def __init__(self, pos, txt, arg):
