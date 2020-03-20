@@ -1,14 +1,16 @@
 #
 #   YaLafi: emulation of Tex2txt interface,
 #   can be directly used by tex2txt/shell.py
-#   - simplified: only option lang is recognised
+#   simplified:
+#   - option --lang is recognised
+#   - option --defs reads macro definitions as LaTeX code
 #
 
 from yalafi import parameters, parser, utils
 
 def tex2txt(latex, opts):
     parms = parameters.Parameters(opts.lang)
-    toks = parser.Parser(parms).parse(latex)
+    toks = parser.Parser(parms, add_macros=opts.defs).parse(latex)
     txt, pos = utils.get_txt_pos(toks)
     pos = [n + 1 for n in pos]
     return txt, pos
@@ -25,6 +27,9 @@ import sys
 
 class Aux:
     pass
+parms = Aux()
+parms.warning_error_msg = 'ERROR_WARNING'
+
 def fatal(msg, detail=None):
     raise_error('internal error', msg, detail, xit=1)
 def warning(msg, detail=None):
@@ -126,37 +131,11 @@ def read_replacements(fn, encoding):
 #
 def read_definitions(fn, encoding):
     if not fn:
-        return Definitions(None, '?')
+        return ''
     f = myopen(fn, encoding=encoding)
     s = f.read()
     f.close()
-    return Definitions(s, fn)
-
-#   class for parsing of file from option --defs
-#
-class Definitions:
-    def __init__(self, code, name):
-        self.project_macros = ()
-        self.system_macros = ()
-        self.heading_macros = ()
-        self.environments = ()
-        self.equation_environments = ()
-        self.environments = ()
-        self.environment_begins = ()
-        self.theorem_environments = ()
-        self.misc_replace = ()
-        if code:
-            defs = self
-            try:
-                exec(code)
-            except BaseException as e:
-                import traceback
-                i = 0 if isinstance(e, SyntaxError) else -1
-                s = traceback.format_exc(limit=i)
-                s = re.sub(r'\ATraceback \(most recent call last\):\n'
-                                + r'  File "<string>"(, line \d+).*\n',
-                                r'File "' + name + r'"\1\n', s)
-                fatal('problem in file "' + name + '"\n' + s)
+    return s
 
 #   class for passing options to tex2txt()
 #   LAB:OPTIONS
