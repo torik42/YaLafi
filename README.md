@@ -10,9 +10,10 @@ The aim is to develop a solution with
 
 First examples can be seen in directory tests/.
 
-File tex2txt.py provides an interface between Tex2txt and
+File yalafi/tex2txt.py provides an interface between Tex2txt and
 YaLafi, such that the application script Tex2txt/shell.py
-can be run unmodified.
+can be run, if the code line `import tex2txt` is changed to
+`from yalafi import tex2txt`.
 From [Tex2txt/README](https://github.com/matze-dd/Tex2txt),
 the introductory example and the replacements for displayed equations
 do work.
