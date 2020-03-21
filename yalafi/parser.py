@@ -25,7 +25,7 @@ import unicodedata
 
 
 class Parser:
-    def __init__(self, parms, add_macros=None):
+    def __init__(self, parms):
         self.parms = parms
         self.the_macros = dict((m.name, m) for m in parms.macro_defs_python)
         self.the_environments = dict((e.name, e)
@@ -35,17 +35,17 @@ class Parser:
         # read macro definitions from LaTeX text
         macs = parms.scanner.scan(parms.macro_defs_latex)
         self.expand_sequence(scanner.Buffer(macs))
-        if add_macros:
-            macs = parms.scanner.scan(add_macros)
-            self.expand_sequence(scanner.Buffer(macs))
-
-        self.extracted = []
 
     #   scan and parse (expand) LaTeX string to tokens
     #
-    def parse(self, latex):
+    def parse(self, latex, extract=None):
         toks = self.parms.scanner.scan(latex)
+        if extract:
+            self.init_extractions(extract)
+        self.extracted = []
         main = self.expand_sequence(scanner.Buffer(toks))
+        if extract:
+            main = []
         for extr in self.extracted:
             if not extr:
                 continue
@@ -54,6 +54,27 @@ class Parser:
             main += extr
             main.append(defs.SpaceToken(extr[-1].pos, '\n', pos_fix=True))
         return main
+
+    #   modify macro definitions for argument extraction
+    #
+    def init_extractions(self, extracts):
+        for name in self.the_macros:
+            mac = self.the_macros[name]
+            if name in extracts:
+                pos = next((i for i in range(len(mac.args))
+                                if mac.args[i] == 'A'), len(mac.args))
+                if pos < len(mac.args):
+                    extr = '#' + str(pos - mac.args.count('*', 0, pos) + 1)
+                else:
+                    extr = ''
+            else:
+                extr = ''
+            mac.extract = self.parms.scanner.scan(extr)
+            mac.repl = []   # overwrite possible handlers
+        for name in extracts:
+            if name not in self.the_macros:
+                self.the_macros[name] = defs.Macro(self.parms,
+                            name, args='A', repl='', extract='#1')
 
     #   expand token sequence in text mode from current buffer
     #   - env_stop: stop reading on \end for this environment

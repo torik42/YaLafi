@@ -164,6 +164,7 @@ class Parameters:
 
         # add dot to heading unless last heading char in ...
         # (turn off: set to '')
+        #
         self.heading_punct = '!?'
 
         self.accent_macros = {
@@ -213,7 +214,7 @@ class Parameters:
             '\\ ': ' ',
             '\\\t': ' ',
             '\\\n': ' ',
-            '\\,': ' ',
+            '\\,': '\N{NARROW NO-BREAK SPACE}',
             '\\:': ' ',
             '\\;': ' ',
             '\\!': '',
@@ -288,9 +289,13 @@ class Parameters:
         ]
 
         # math environment for $$ and \[
+        #
         self.math_default_env = 'displaymath'
 
         self.math_punctuation = ['.', ',', ';', ':']
+
+    def add_latex_macros(self, latex):
+        self.macro_defs_latex += latex
 
     def macro_character(self, c):
         return c >= 'a' and c <= 'z' or c >= 'A' and c <= 'Z'

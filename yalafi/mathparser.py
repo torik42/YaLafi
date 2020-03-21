@@ -16,6 +16,11 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+#
+#   replacement of equations similar to Tex2txt, described in
+#   Tex2txt/README.md, section "Handling of displayed equations"
+#
+
 from . import defs
 from . import utils
 

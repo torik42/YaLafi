@@ -36,3 +36,5 @@ def get_txt_pos(toks):
             pos += list(range(t.pos, t.pos + len(t.txt)))
     return txt, pos
 
+def replace_phrases(i_txt, i_pos, repls):
+    TBD
