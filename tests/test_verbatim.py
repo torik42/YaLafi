@@ -4,7 +4,7 @@
 #   - test of \verb and \begin{verbatim}
 #
 
-import tex2txt
+from yalafi import tex2txt
 
 options = tex2txt.Options(lang='en', char=True)
 

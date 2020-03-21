@@ -4,7 +4,7 @@
 #   - test of some macros from parms.system_macros
 #
 
-import tex2txt
+from yalafi import tex2txt
 
 options = tex2txt.Options(lang='en', char=True)
 

@@ -3,7 +3,7 @@
 #   simple test of equation replacements, from Example.md
 #
 
-import tex2txt
+from yalafi import tex2txt
 
 latex = r"""
 We consider\footnote{Thix is a footnote.}

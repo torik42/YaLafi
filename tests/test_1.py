@@ -5,7 +5,9 @@ add_macros = r"""
 \newcommand{\swap}[2]{#2#1}
 """
 
-p = parser.Parser(parameters.Parameters(), add_macros=add_macros)
+parms = parameters.Parameters()
+parms.add_latex_macros(add_macros)
+p = parser.Parser(parms)
 
 latex1 = r"""
 \swap

@@ -3,7 +3,7 @@
 #   test of introductory example from README.md
 #
 
-import tex2txt
+from yalafi import tex2txt
 
 latex = r"""
 Only few people\footnote{We use

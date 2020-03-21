@@ -7,7 +7,7 @@
 #   - treatment of unknown macros
 #
 
-import tex2txt
+from yalafi import tex2txt
 
 options = tex2txt.Options(lang='en', char=True)
 

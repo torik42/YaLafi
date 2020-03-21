@@ -4,7 +4,7 @@
 #   test of removal of blank lines left by macros
 #
 
-import tex2txt
+from yalafi import tex2txt
 
 options = tex2txt.Options(lang='en', char=True)
 
