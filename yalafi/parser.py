@@ -92,7 +92,7 @@ class Parser:
             if not tok:
                 break
             elif type(tok) is defs.BeginToken:
-                buf.back(self.begin_environment(buf, tok))
+                buf.back(self.begin_environment(buf, tok, False))
                 continue
             elif type(tok) is defs.EndToken:
                 t, stop = self.end_environment(buf, tok, env_stop)
@@ -101,7 +101,7 @@ class Parser:
                 out += t
                 continue
             elif type(tok) is defs.MacroToken:
-                buf.back(self.expand_macro(buf, tok))
+                buf.back(self.expand_macro(buf, tok, False))
                 continue
             elif tok.txt == '$' or tok.txt == '\\(':
                 out += self.mathparser.expand_inline_math(buf, tok)
@@ -179,11 +179,11 @@ class Parser:
     #   expand a "normal" macro
     #   Return: tokens to be inserted
     #
-    def expand_macro(self, buf, tok):
+    def expand_macro(self, buf, tok, math):
         buf.next()
         buf.skip_space()    # for macros without arguments, even if known
         if tok.txt not in self.the_macros:
-            if tok.txt not in self.unknowns:
+            if not (math or tok.txt in self.unknowns):
                 self.unknowns.append(tok.txt)
             return [defs.ActionToken(tok.pos)]
         return self.expand_arguments(buf, self.the_macros[tok.txt], tok.pos)
@@ -280,11 +280,11 @@ class Parser:
 
     #   open an environment
     #
-    def begin_environment(self, buf, tok):
+    def begin_environment(self, buf, tok, math):
         out = [defs.ActionToken(tok.pos)]
         name = self.get_environment_name(buf)
         if name not in self.the_environments:
-            if name not in self.unknowns:
+            if not (math or name in self.unknowns):
                 self.unknowns.append(name)
             return out
         env = self.the_environments[name]

@@ -136,7 +136,7 @@ class MathParser:
                 buf.next()
                 break
             elif type(tok) is defs.BeginToken:
-                buf.back(parser.begin_environment(buf, tok))
+                buf.back(parser.begin_environment(buf, tok, True))
                 continue
             elif type(tok) is defs.EndToken:
                 t, stop = parser.end_environment(buf, tok, env_stop)
@@ -149,7 +149,7 @@ class MathParser:
                     buf.next()
                     out += parser.expand_sequence(parser.arg_buffer(buf))
                     continue
-                t = parser.expand_macro(buf, tok)
+                t = parser.expand_macro(buf, tok, True)
                 if tok.txt in parms.math_space:
                     t.insert(0, defs.MathSpaceToken(tok.pos, ' '))
                 elif tok.txt in parms.math_operators:
