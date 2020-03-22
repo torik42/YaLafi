@@ -1,0 +1,7 @@
+=== tests/test_shell/latex.tex ===
+1.) Line 3, column 6, Rule ID: None
+Message: Error
+Suggestion: is
+This isx a test. 
+     ^^^
+
