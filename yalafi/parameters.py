@@ -97,12 +97,13 @@ class Parameters:
         Macro(self, '\\subsubsection', args='*OA', repl=hs.h_heading),
         Macro(self, '\\title', args='*OA', repl=hs.h_heading),
 
-        Macro(self, '\\newcommand', args='*AOOA',
-                                repl=hs.h_newcommand),
-        Macro(self, '\\renewcommand', args='*AOOA',
-                                repl=hs.h_newcommand),
+        Macro(self, '\\newcommand', args='*AOOA', repl=hs.h_newcommand),
+        Macro(self, '\\renewcommand', args='*AOOA', repl=hs.h_newcommand),
 
         ]
+
+        def thm(s):
+            return hs.h_theorem(s)
 
         self.environment_defs = [
 
@@ -117,15 +118,24 @@ class Parameters:
         # theorem-style environments
         # or simpler: Environ(self, 'theorem', args='O',
         #                           repl='Theorem (#1). ', opts=['none']),
-        Environ(self, 'corollary', args='O', repl=hs.h_theorem('Corollary')),
-        Environ(self, 'definition', args='O', repl=hs.h_theorem('Definition')),
-        Environ(self, 'example', args='O', repl=hs.h_theorem('Example')),
-        Environ(self, 'lemma', args='O', repl=hs.h_theorem('Lemma')),
-        Environ(self, 'proposition', args='O',
-                                        repl=hs.h_theorem('Proposition')),
-        Environ(self, 'remark', args='O', repl=hs.h_theorem('Remark')),
-        Environ(self, 'theorem', args='O', repl=hs.h_theorem('Theorem')),
+        Environ(self, 'corollary', args='O', repl=thm('Corollary')),
+        Environ(self, 'definition', args='O', repl=thm('Definition')),
+        Environ(self, 'example', args='O', repl=thm('Example')),
+        Environ(self, 'lemma', args='O', repl=thm('Lemma')),
+        Environ(self, 'proposition', args='O', repl=thm('Proposition')),
+        Environ(self, 'remark', args='O', repl=thm('Remark')),
+        Environ(self, 'theorem', args='O', repl=thm('Theorem')),
 
+        Environ(self, 'Anmerkung', args='O', repl=thm('Anmerkung')),
+        Environ(self, 'Beispiel', args='O', repl=thm('Beispiel')),
+        Environ(self, 'Definition', args='O', repl=thm('Definition')),
+        Environ(self, 'Korollar', args='O', repl=thm('Korollar')),
+        Environ(self, 'Nachweis', args='O', repl=thm('Nachweis')),
+        Environ(self, 'Proposition', args='O', repl=thm('Proposition')),
+        Environ(self, 'Satz', args='O', repl=thm('Satz')),
+
+        # equation environments
+        #
         EquEnv(self, 'align'),
         EquEnv(self, 'align*'),
         EquEnv(self, 'alignat', args='A'),

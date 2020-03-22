@@ -31,6 +31,7 @@ class Parser:
         self.the_environments = dict((e.name, e)
                                             for e in parms.environment_defs)
         self.mathparser = mathparser.MathParser(self)
+        self.unknowns = []
 
         # read macro definitions from LaTeX text
         macs = parms.scanner.scan(parms.macro_defs_latex)
@@ -43,6 +44,7 @@ class Parser:
         if extract:
             self.init_extractions(extract)
         self.extracted = []
+        self.unknowns = []
         main = self.expand_sequence(scanner.Buffer(toks))
         if extract:
             main = []
@@ -75,6 +77,9 @@ class Parser:
             if name not in self.the_macros:
                 self.the_macros[name] = defs.Macro(self.parms,
                             name, args='A', repl='', extract='#1')
+
+    def get_unknowns(self):
+        return self.unknowns
 
     #   expand token sequence in text mode from current buffer
     #   - env_stop: stop reading on \end for this environment
@@ -178,6 +183,8 @@ class Parser:
         buf.next()
         buf.skip_space()    # for macros without arguments, even if known
         if tok.txt not in self.the_macros:
+            if tok.txt not in self.unknowns:
+                self.unknowns.append(tok.txt)
             return [defs.ActionToken(tok.pos)]
         return self.expand_arguments(buf, self.the_macros[tok.txt], tok.pos)
 
@@ -277,6 +284,8 @@ class Parser:
         out = [defs.ActionToken(tok.pos)]
         name = self.get_environment_name(buf)
         if name not in self.the_environments:
+            if name not in self.unknowns:
+                self.unknowns.append(name)
             return out
         env = self.the_environments[name]
         if env.add_pars:

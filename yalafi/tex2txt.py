@@ -25,9 +25,6 @@
 #   - option '--defs file' reads macro definitions as LaTeX code
 #   - option '--pyth module' calls function modify_parameters() from module
 #
-#   TBD:
-#   - option '--unkn'
-#
 
 from . import parameters, parser, utils
 
@@ -42,10 +39,14 @@ def tex2txt(latex, opts):
         extr = ['\\' + s for s in opts.extr.split(',')]
     else:
         extr = []
-    toks = parser.Parser(parms).parse(latex, extract=extr)
+    p = parser.Parser(parms)
+    toks = p.parse(latex, extract=extr)
     txt, pos = utils.get_txt_pos(toks)
     if opts.repl:
         txt, pos = utils.replace_phrases(txt, pos, opts.repl)
+    if opts.unkn:
+        txt = '\n'.join(p.get_unknowns()) + '\n'
+        pos = [0 for n in range(len(txt))]
     pos = [n + 1 for n in pos]
     return txt, pos
 
@@ -153,7 +154,7 @@ def read_replacements(fn, encoding):
     f = myopen(fn, encoding=encoding)
     lines = f.readlines()
     f.close()
-    return (lines, fn)
+    return lines
 
 #   function for reading definition file
 #
