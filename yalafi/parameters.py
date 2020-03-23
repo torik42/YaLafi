@@ -107,7 +107,6 @@ class Parameters:
 
         self.environment_defs = [
 
-        Environ(self, 'comment', repl='', remove=True, add_pars=False),
         Environ(self, 'minipage', args='A'),
         Environ(self, 'table', repl='[Tabelle]', remove=True),
 
@@ -125,14 +124,6 @@ class Parameters:
         Environ(self, 'proposition', args='O', repl=thm('Proposition')),
         Environ(self, 'remark', args='O', repl=thm('Remark')),
         Environ(self, 'theorem', args='O', repl=thm('Theorem')),
-
-        Environ(self, 'Anmerkung', args='O', repl=thm('Anmerkung')),
-        Environ(self, 'Beispiel', args='O', repl=thm('Beispiel')),
-        Environ(self, 'Definition', args='O', repl=thm('Definition')),
-        Environ(self, 'Korollar', args='O', repl=thm('Korollar')),
-        Environ(self, 'Nachweis', args='O', repl=thm('Nachweis')),
-        Environ(self, 'Proposition', args='O', repl=thm('Proposition')),
-        Environ(self, 'Satz', args='O', repl=thm('Satz')),
 
         # equation environments
         #
@@ -173,9 +164,9 @@ class Parameters:
     def init_collections(self):
 
         # add dot to heading unless last heading char in ...
-        # (turn off: set to '')
+        # (turn off: set to [])
         #
-        self.heading_punct = '!?'
+        self.heading_punct = ['!', '?']
 
         self.accent_macros = {
 
