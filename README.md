@@ -23,7 +23,7 @@ Only few people\footnote{We use
 is lazy.
 ```
 will lead to the subsequent output from example application script
-[shell.py](yalafi/shell/shell.py) described in section
+[yalafi/shell/shell.py](yalafi/shell/shell.py) described in section
 [Example application](#example-application) ahead.
 The script invokes [LanguageTool](https://www.languagetool.org)
 as proofreading software, using a local installation or the Web server
@@ -51,7 +51,7 @@ Instead of using recursive regular expressions, a simple tokeniser
 and a small machinery for macro expansion are implemented; see section
 [Remarks on implementation](#remarks-on-implementation).
 
-Application Python scripts like [shell.py](yalafi/shell/shell.py)
+Application Python scripts like [yalafi/shell/shell.py](yalafi/shell/shell.py)
 from section [Example application](#example-application)
 can access an interface emulating Tex2txt/tex2txt.py by
 ```
@@ -84,9 +84,10 @@ There are several possibilities.
 
 ## Example application
 
-Example Python script [shell.py](yalafi/shell/shell.py) will generate a
-proofreading report in text or HTML format from filtering the LaTeX input
-and application of [LanguageTool](https://www.languagetool.org) (LT).
+Example Python script [yalafi/shell/shell.py](yalafi/shell/shell.py)
+will generate a proofreading report in text or HTML format from filtering
+the LaTeX input and application of
+[LanguageTool](https://www.languagetool.org) (LT).
 It is best called as module as shown below.
 On option '--server lt', LT's Web server is contacted.
 Otherwise, [Java](https://java.com) has to be present, and
@@ -100,8 +101,8 @@ python -m yalafi.shell
                 [--html] [--link] [--context number]
                 [--include] [--skip regex] [--plain] [--list-unknown]
                 [--language lang] [--t2t-lang lang] [--encoding ienc]
-                [--replace file] [--define file] [--extract macros]
-                [--disable rules] [--lt-options opts]
+                [--replace file] [--define file] [--python-defs module]
+                [--extract macros] [--disable rules] [--lt-options opts]
                 [--single-letters accept] [--equation-punctuation mode]
                 [--server mode] [--lt-server-options opts]
                 [--textgears apikey]
@@ -141,6 +142,10 @@ Default option values are set at the Python script beginning.
   [Tex2Txt/README.md](https://github.com/matze-dd/Tex2txt#command-line).
 - option `--define file`:<br>
   read macro definitions as LaTeX code (using \\newcommand)
+- option `--python-defs module`:<br>
+  modify default definitions in file yalafi/parameters.py by function
+  'modify\_parameters()' in the given module;
+  compare example in [definitions.py](definitions.py)
 - option `--extract macros`:<br>
   only check arguments of the LaTeX macros whose names are given as
   comma-separated list; useful for check of foreign-language text,
@@ -245,7 +250,8 @@ Invocation of `python -m yalafi ...` differs as follows from
   [yalafi/parameters.py](yalafi/parameters.py).
   You can modify them at run-time with script option '--pyth module'.
   The given Python module has to provide a function
-  'modify\_parameters(parms)' receiving the parameter object 'parms'.
+  'modify\_parameters(parms)' receiving the parameter object 'parms',
+  compare the example in [definitions.py](definitions.py).
 - Handling of specified \\item\[...\] labels currently is less sophisticated:
   trailing interpunction from a preceding sentence is not repeated after the
   item label.
@@ -264,7 +270,8 @@ Invocation of `python -m yalafi ...` differs as follows from
 - Many character combinations like '{', '\\\[' or '---' are recognised
   as 'special tokens'.
 - Names of 'normal' macros formed by a backslash and subsequent letters
-  (method 'Parameters.macro\_character()') result in a token.
+  (method 'Parameters.macro\_character()') result in a token, macros
+  '\\begin', '\\end' and '\\verb' are treated separately.
 - For space, we distinguish between character sequences that do or do not
   represent a paragraph break.
   In both cases, a single token is generated.
