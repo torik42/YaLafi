@@ -137,6 +137,7 @@ parser.add_argument('--t2t-lang')
 parser.add_argument('--encoding')
 parser.add_argument('--replace')
 parser.add_argument('--define')
+parser.add_argument('--python-defs')
 parser.add_argument('--extract')
 parser.add_argument('--disable')
 parser.add_argument('--lt-options')
@@ -223,7 +224,8 @@ if cmdline.include:
     sys.stderr.write('=== checking for file inclusions ... ')
     sys.stderr.flush()
     opts = tex2txt.Options(extr=inclusion_macros, repl=cmdline.replace,
-                            defs=cmdline.define, lang=cmdline.t2t_lang)
+                            defs=cmdline.define, lang=cmdline.t2t_lang,
+                            pyth=cmdline.python_defs)
 
 def skip_file(fn):
     # does file name match regex from option --skip?
@@ -257,7 +259,8 @@ if cmdline.include:
 #
 options = tex2txt.Options(char=True, repl=cmdline.replace,
                             defs=cmdline.define, lang=cmdline.t2t_lang,
-                            extr=cmdline.extract, unkn=cmdline.list_unknown)
+                            extr=cmdline.extract, unkn=cmdline.list_unknown,
+                            pyth=cmdline.python_defs)
 
 # helpers for robust JSON evaluation
 #
