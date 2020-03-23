@@ -73,6 +73,10 @@ X
 Z
 """
 def test_comment():
+    import definitions
+    parms = parameters.Parameters()
+    definitions.modify_parameters(parms)
+    p = parser.Parser(parms)
     toks = p.parse(latex_comment)
     plain_comment, pos = utils.get_txt_pos(toks)
 
