@@ -16,6 +16,8 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from . import utils
+
 
 class Printable:
     def __repr__(self):
@@ -106,10 +108,17 @@ class MathSpaceToken(TextToken):
 class Expandable(Printable):
     def __init__(self, parms, name, args, repl, opts,
                                     scanned=False, extract=''):
+        def check(toks, args):
+            nargs = len(args) - args.count('*')
+            for t in toks:
+                if (type(t) is ArgumentToken and
+                        (t.arg < 1 or t.arg > nargs)):
+                    utils.latex_error('illegal argument reference for '
+                                            + repr(name), 0)
+            return toks
         self.name = name
         self.args = args
-        # XXX check of argument references?
-        self.extract = parms.scanner.scan(extract)
+        self.extract = check(parms.scanner.scan(extract), args)
         if scanned:
             self.repl = repl
             self.opts = opts
@@ -117,8 +126,7 @@ class Expandable(Printable):
         if callable(repl):
             self.repl = repl
         else:
-            # XXX check of argument references?
-            self.repl = parms.scanner.scan(repl)
+            self.repl = check(parms.scanner.scan(repl), args)
         self.opts = [parms.scanner.scan(op) for op in opts]
 
 class Macro(Expandable):
