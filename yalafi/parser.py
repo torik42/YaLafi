@@ -66,7 +66,7 @@ class Parser:
                 pos = next((i for i in range(len(mac.args))
                                 if mac.args[i] == 'A'), len(mac.args))
                 if pos < len(mac.args):
-                    extr = '#' + str(pos - mac.args.count('*', 0, pos) + 1)
+                    extr = '#' + str(pos + 1)
                 else:
                     extr = ''
             else:
@@ -193,19 +193,20 @@ class Parser:
     #
     def expand_arguments(self, buf, mac, start):
         arguments = []
-        opt = 0
-        for code in mac.args:
+        for n, code in enumerate(mac.args):
             tok = buf.skip_space()
             if code == '*':
                 if tok and tok.txt == '*':
+                    arg = [tok]
                     buf.next()
-                continue
-            if code == 'O':
+                else:
+                    arg = []
+            elif code == 'O':
                 if tok and tok.txt == '[':
                     arg = self.arg_buffer(buf, end=']').all()
                 else:
-                    if opt < len(mac.opts):
-                        arg = mac.opts[opt]
+                    if n < len(mac.opts):
+                        arg = mac.opts[n]
                     else:
                         arg = []
             elif code == 'A':
@@ -213,7 +214,6 @@ class Parser:
             else:
                 assert code in '*AO'
             arguments.append(arg)
-            opt += 1
 
         out = [defs.ActionToken(start)]
         if callable(mac.repl):
@@ -323,7 +323,7 @@ class Parser:
     #   generate string from token sequence, with macro expansion
     #
     def get_text_expanded(self, toks):
-        toks = self.expand_sequence(scanner.Buffer(toks))
+        toks = self.expand_sequence(scanner.Buffer(toks.copy()))
         return self.get_text_direct(toks)
 
     #   remove all blank text lines, which contain at least one ActionToken

@@ -22,24 +22,24 @@ from . import utils
 #   macros \newcommand, \renewcommand
 #
 def h_newcommand(parser, buf, mac, args, pos):
-    name = parser.get_text_direct(args[0])
-    nargs = parser.get_text_expanded(args[1])
+    name = parser.get_text_direct(args[1])
+    nargs = parser.get_text_expanded(args[2])
     nargs = int(nargs) if nargs.isdecimal() else 0
-    for a in [b for b in args[3] if type(b) is defs.ArgumentToken]:
+    for a in [b for b in args[4] if type(b) is defs.ArgumentToken]:
         if a.arg < 1 or a.arg > nargs:
             utils.latex_error('illegal argument #' + str(a.arg)
                                 + ' in definition of macro ' + name, a.pos)
-    if args[2]:
+    if args[3]:
         if nargs < 1:
             utils.latex_error('illegal default value in definition of macro '
-                                    + name, args[0][0].pos)
+                                    + name, args[1][0].pos)
         parser.the_macros[name] = defs.Macro(parser.parms,
                                 name, args='O' + 'A' * (nargs - 1),
-                                repl=args[3], opts=[args[2]], scanned=True)
+                                repl=args[4], opts=[args[3]], scanned=True)
     else:
         parser.the_macros[name] = defs.Macro(parser.parms,
                                 name, args='A' * nargs,
-                                repl=args[3], scanned=True)
+                                repl=args[4], scanned=True)
     return []
 
 #   \begin{theorem}[opt]
@@ -69,8 +69,8 @@ def h_theorem(name):
 #   heading macros: append '.', unless last char in parms.heading_punct
 #
 def h_heading(parser, buf, mac, args, pos):
-    arg = args[1].copy()
-    txt = parser.get_text_expanded(args[1]).strip()
+    arg = args[2]
+    txt = parser.get_text_expanded(arg).strip()
     if (txt and parser.parms.heading_punct
                 and txt[-1] not in parser.parms.heading_punct):
         arg.append(defs.TextToken(arg[-1].pos, '.'))

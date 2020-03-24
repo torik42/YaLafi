@@ -109,10 +109,9 @@ class Expandable(Printable):
     def __init__(self, parms, name, args, repl, opts,
                                     scanned=False, extract=''):
         def check(toks, args):
-            nargs = len(args) - args.count('*')
             for t in toks:
                 if (type(t) is ArgumentToken and
-                        (t.arg < 1 or t.arg > nargs)):
+                        (t.arg < 1 or t.arg > len(args))):
                     utils.latex_error('illegal argument reference for '
                                             + repr(name), 0)
             return toks
