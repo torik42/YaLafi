@@ -4,6 +4,7 @@
 [Installation](#installation)&nbsp;\|
 [Example application](#example-application)&nbsp;\|
 [Inclusion of own macros](#inclusion-of-own-macros)&nbsp;\|
+[Package interface](#package-interface)&nbsp;\|
 [Differences to Tex2txt](#differences-to-tex2txt)&nbsp;\|
 [Remarks on implementation](#remarks-on-implementation)
 
@@ -300,6 +301,63 @@ Replacements are still interpreted in text mode.
 - `remove`: if True, then a fixed replacement can be specified in `repl`,
 and trailing interpunction given by 'Parameters.math\_punctuation' in
 file yalafi/parameters.py is appended
+
+[Back to top](#yalafi-yet-another-latex-filter)
+
+
+## Package interface
+
+We comment the central function in file
+[yalafi/tex2txt.py](yalafi/tex2txt.py)
+that uses the package interface to emulate the behaviour of
+script tex2txt.py in repository Tex2txt.
+
+```
+ 1  from . import parameters, parser, utils
+ 2  def tex2txt(latex, opts):
+ 3      parms = parameters.Parameters(opts.lang)
+ 4      if opts.defs:
+ 5          parms.add_latex_macros(opts.defs)
+ 6      if opts.pyth:
+ 7          exec('import ' + opts.pyth)
+ 8          exec(opts.pyth + '.modify_parameters(parms)')
+ 9      if opts.extr:
+10          extr = ['\\' + s for s in opts.extr.split(',')]
+11      else:
+12          extr = []
+13      p = parser.Parser(parms)
+14      toks = p.parse(latex, extract=extr)
+15      txt, pos = utils.get_txt_pos(toks)
+16      if opts.repl:
+17          txt, pos = utils.replace_phrases(txt, pos, opts.repl)
+18      if opts.unkn:
+19          txt = '\n'.join(p.get_unknowns()) + '\n'
+20          pos = [0 for n in range(len(txt))]
+21      pos = [n + 1 for n in pos]
+22      return txt, pos
+```
+- The parameter object created in line 3 contains all default settings
+  and definitions from file yalafi/parameters.py.
+- If requested by script option --defs, additional macros are included from
+  the string opts.defs in line 5.
+- On option --pyth, line 8 calls a function to modify the parameter object,
+  see file [definitions.py](definitions.py) for an example.
+- If macro --extr requests only extraction of arguments of certain macros,
+  this is prepared in lines 9 to 12.
+- Line 13 creates a parser object, and line 14 calls its parsing method
+  that returns a list of tokens.
+- The token list is converted into a 2-tuple containing the plain-text string
+  and a list of numbers in line 15.
+  Each number in the list indicates the estimated position of the
+  corresponding character in the text string.
+- If phrase replacements are requested by option --repl, this is performed
+  on line 17.
+  String opts.repl contains the replacement specifications read from the file.
+- On option --unkn, a list of unknown macros and environments is
+  generated in line 19.
+- Line 21 is necessary, since position numbers are zero-based in yalafi,
+  but one-based in Tex2txt/tex2txt.py.
+  
 
 [Back to top](#yalafi-yet-another-latex-filter)
 

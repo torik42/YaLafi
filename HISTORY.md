@@ -9,6 +9,7 @@ Work in progress
 - README.md
     - section with remarks on implementation
     - section on definition of own macros
+    - section on the programming interface of the package
 - included file \_\_init\_\_.py in yalafi/ and yalafi/shell
 - yalafi/defs.py: added check of argument references in
   Expandable.\_\_init\_\_()
