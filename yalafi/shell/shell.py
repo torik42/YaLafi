@@ -181,7 +181,8 @@ if cmdline.replace:
     cmdline.replace = tex2txt.read_replacements(cmdline.replace,
                                                 encoding=cmdline.encoding)
 if cmdline.define:
-    cmdline.define = tex2txt.read_definitions(cmdline.define, encoding='utf-8')
+    cmdline.define = tex2txt.read_definitions(cmdline.define,
+                                                encoding=cmdline.encoding)
 
 # only stop local LT server?
 #
