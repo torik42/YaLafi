@@ -296,7 +296,7 @@ in `args` and `repl`.
 
 This is equivalent to `Environ()`, but maths material is replaced according to
 [Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#handling-of-displayed-equations).
-Replacements are still interpreted in text mode.
+Replacements in `repl` and `opts` are still interpreted in text mode.
 
 - `remove`: if True, then a fixed replacement can be specified in `repl`,
 and trailing interpunction given by 'Parameters.math\_punctuation' in
