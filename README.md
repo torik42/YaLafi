@@ -3,6 +3,7 @@
 
 [Installation](#installation)&nbsp;\|
 [Example application](#example-application)&nbsp;\|
+[Inclusion of own macros](#inclusion-of-own-macros)&nbsp;\|
 [Differences to Tex2txt](#differences-to-tex2txt)&nbsp;\|
 [Remarks on implementation](#remarks-on-implementation)
 
@@ -88,7 +89,8 @@ Example Python script [yalafi/shell/shell.py](yalafi/shell/shell.py)
 will generate a proofreading report in text or HTML format from filtering
 the LaTeX input and application of
 [LanguageTool](https://www.languagetool.org) (LT).
-It is best called as module as shown below.
+It is best called as module as shown below, but can also be placed elsewhere
+and invoked as script.
 On option '--server lt', LT's Web server is contacted.
 Otherwise, [Java](https://java.com) has to be present, and
 the path to LT has to be customised in script variable 'ltdirectory';
@@ -139,7 +141,7 @@ Default option values are set at the Python script beginning.
   overwrite option for yalafi.tex2txt() from --language
 - options `--encoding ienc`, `--replace file`:<br>
   like options --ienc, --repl of Tex2txt/tex2txt.py, compare
-  [Tex2Txt/README.md](https://github.com/matze-dd/Tex2txt#command-line).
+  [Tex2Txt/README.md](https://github.com/matze-dd/Tex2txt#command-line)
 - option `--define file`:<br>
   read macro definitions as LaTeX code (using \\newcommand)
 - option `--python-defs module`:<br>
@@ -168,7 +170,9 @@ Default option values are set at the Python script beginning.
   all characters except '\|' are taken verbatim, but '~' and '\\,' are
   interpreted as UTF-8 non-breaking space and narrow non-breaking space
 - option `--equation-punctuation mode`:<br>
-  experimental hack for check of punctuation after equations in English texts;
+  experimental hack for check of punctuation after equations in English texts,
+  compare
+  [Tex2Txt/README.md](https://github.com/matze-dd/Tex2txt#equation-replacements-in-english-documents);
   abbreviatable mode values, indicating checked equation type:
   'displayed', 'inline', 'all';
   generates a message, if an element of an equation is not terminated
@@ -231,6 +235,71 @@ instead of orange colour.
 For simplicity, marked text regions that intertwine with other ones
 are separately repeated at the end.
 In case of multiple input files, the HTML report starts with an index.
+
+[Back to top](#yalafi-yet-another-latex-filter)
+
+
+## Inclusion of own macros
+
+Unknown macros and environment frames are silently ignored.
+As all input files are processed independently, it may be necessary to
+provide project-specific definitions in advance.
+
+For macros, which may be declared with \\newcommand, you can use options
+--defs and --define for yalafi and shell, respectively.
+Alternatively, one can add the definitions to member
+'Parameters.macro\_defs\_latex' in file yalafi/parameters.py.
+
+More complicated macros as well as environments have to be registered
+with Python code.
+This may be done with options --pyth and --python-defs for yalafi and shell,
+respectively; see the example in [definitions.py](definitions.py).
+Alternatively, you can modify the collections
+'Parameters.macro\_defs\_python' and 'Parameters.environment\_defs'
+in yalafi/parameters.py.
+
+### Definition of macros
+
+`Macro(parms, name, args='', repl='', opts=[])`
+
+- `parms`: current object of type Parameters
+- `name`: macro name with '\\'
+- `args`: string that codes the argument sequence
+    - 'A': mandatory argument, may be a single token or a sequence
+      enclosed in {} braces
+    - 'O': optional argument in \[\] brackets
+    - '*' optional asterisk
+- `repl`: replacement string as for \\newcommand ('*' does count as argument),
+  or a function (see file [yalafi/handlers.py](yalafi/handlers.py)
+  for examples)
+- `opts`: an optional list of replacement strings for absent optional
+  arguments
+
+### Definition of environments
+
+`Environ(parms, name, args='', repl='', opts='', remove=False, add_pars=True)`
+
+Argument `parms` to `opts` are the same as for `Macro()`, where the arguments
+are those behind the opening '\\begin{xyz}'.
+This means that the environment name 'xyz' does not yet count as argument
+in `args` and `repl`.
+
+- `remove`: if True, then the complete environment body is skipped;
+  a fixed replacement can be given in `repl`
+- `add_pars`: if True, then paragraph breaks (blank lines) are generated
+  before and behind the environment body
+
+### Definition of equation environments
+
+`EquEnv(parms, name, args='', repl='', opts='', remove=False)`
+
+This is equivalent to `Environ()`, but maths material is replaced according to
+[Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#handling-of-displayed-equations).
+Replacements are still interpreted in text mode.
+
+- `remove`: if True, then a fixed replacement can be specified in `repl`,
+and trailing interpunction given by 'Parameters.math\_punctuation' in
+file yalafi/parameters.py is appended
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
