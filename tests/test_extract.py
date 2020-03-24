@@ -8,7 +8,7 @@ from yalafi import defs, parameters, parser, utils
 
 parms = parameters.Parameters()
 parms.macro_defs_python.append(defs.Macro(parms,
-                                        '\\xxx', args='*OA', repl='#2'))
+                                        '\\xxx', args='*OA', repl='#3'))
 p = parser.Parser(parms)
 
 latex_1 = r"""
