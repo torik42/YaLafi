@@ -7,6 +7,7 @@ Work in progress
   added tests/test\_asterisk.py
 - yalafi/parameters.py: shifted some environment definitions
   to ./definitions.py
+- fixed bug from Issue #1
 - README.md: added sections
   <br><br>
 - included file \_\_init\_\_.py in yalafi/ and yalafi/shell
