@@ -193,34 +193,34 @@ class Parser:
     #
     def expand_arguments(self, buf, mac, start):
         arguments = []
+        arguments_extr = []
         for n, code in enumerate(mac.args):
+            arg_extr = arg = []
             tok = buf.skip_space()
             if code == '*':
                 if tok and tok.txt == '*':
-                    arg = [tok]
+                    arg_extr = arg = [tok]
                     buf.next()
-                else:
-                    arg = []
             elif code == 'O':
                 if tok and tok.txt == '[':
-                    arg = self.arg_buffer(buf, end=']').all()
+                    arg_extr = arg = self.arg_buffer(buf, end=']').all()
                 else:
                     if n < len(mac.opts):
                         arg = mac.opts[n]
-                    else:
-                        arg = []
             elif code == 'A':
-                arg = self.arg_buffer(buf).all()
+                arg_extr = arg = self.arg_buffer(buf).all()
             else:
                 assert code in '*AO'
             arguments.append(arg)
+            arguments_extr.append(arg_extr)
 
+        if mac.extract:
+            toks = self.generate_replacements(arguments_extr,
+                                                        mac.extract, start)
+            self.extracted.append(self.expand_sequence(scanner.Buffer(toks)))
         out = [defs.ActionToken(start)]
         if callable(mac.repl):
             return out + mac.repl(self, buf, mac, arguments, start)
-        if mac.extract:
-            toks = self.generate_replacements(arguments, mac.extract, start)
-            self.extracted.append(self.expand_sequence(scanner.Buffer(toks)))
         return out + self.generate_replacements(arguments, mac.repl, start)
 
     def generate_replacements(self, arguments, repls, start):
