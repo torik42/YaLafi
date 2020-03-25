@@ -3,12 +3,14 @@
 
 [Installation](#installation)&nbsp;\|
 [Example application](#example-application)&nbsp;\|
+[Filter actions](#filter-actions)&nbsp;\|
 [Inclusion of own macros](#inclusion-of-own-macros)&nbsp;\|
 [Package interface](#package-interface)&nbsp;\|
+[Handling of displayed equations](#handling-of-displayed-equations)&nbsp;\|
 [Differences to Tex2txt](#differences-to-tex2txt)&nbsp;\|
 [Remarks on implementation](#remarks-on-implementation)
 
-This Python program extracts plain text from LaTeX documents.
+This Python package extracts plain text from LaTeX documents.
 Due to the following characteristics, it may be integrated with a
 proofreading software:
 - tracking of character positions during text manipulations,
@@ -55,7 +57,7 @@ and a small machinery for macro expansion are implemented; see section
 
 Application Python scripts like [yalafi/shell/shell.py](yalafi/shell/shell.py)
 from section [Example application](#example-application)
-can access an interface emulating Tex2txt/tex2txt.py by
+can access an interface emulating tex2txt.py from repository Tex2txt by
 ```
 from yalafi import tex2txt
 ```
@@ -86,8 +88,13 @@ There are several possibilities.
 
 ## Example application
 
+**Remark.**
+You can find examples for tool integration with Bash scripts in
+[Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#tool-integration).
+
 Example Python script [yalafi/shell/shell.py](yalafi/shell/shell.py)
-will generate a proofreading report in text or HTML format from filtering
+has been copied with minor changes from repository Tex2txt.
+It will generate a proofreading report in text or HTML format from filtering
 the LaTeX input and application of
 [LanguageTool](https://www.languagetool.org) (LT).
 It is best called as module as shown below, but can also be placed elsewhere
@@ -140,9 +147,14 @@ Default option values are set at the Python script beginning.
   first two letters are passed to yalafi.tex2txt()
 - option `--t2t-lang lang`:<br>
   overwrite option for yalafi.tex2txt() from --language
-- options `--encoding ienc`, `--replace file`:<br>
-  like options --ienc, --repl of Tex2txt/tex2txt.py, compare
-  [Tex2Txt/README.md](https://github.com/matze-dd/Tex2txt#command-line)
+- option `--encoding ienc`:<br>
+  encoding for LaTeX input and files from options --define and --replace;
+  default is UTF-8
+- option `--replace file`:<br>
+  file with phrase replacements to be performed after conversion to plain
+  text; per line, a '\&' sign separated by space splits two parts: first part
+  is replaced by second part; space in first part is interpreted as arbitrary
+  space not breaking the paragraph; a '#' sign marks rest of line as comment
 - option `--define file`:<br>
   read macro definitions as LaTeX code (using \\newcommand)
 - option `--python-defs module`:<br>
@@ -172,8 +184,8 @@ Default option values are set at the Python script beginning.
   interpreted as UTF-8 non-breaking space and narrow non-breaking space
 - option `--equation-punctuation mode`:<br>
   experimental hack for check of punctuation after equations in English texts,
-  compare
-  [Tex2Txt/README.md](https://github.com/matze-dd/Tex2txt#equation-replacements-in-english-documents);
+  compare section
+  [Equation replacements in English documents](#equation-replacements-in-english-documents);
   abbreviatable mode values, indicating checked equation type:
   'displayed', 'inline', 'all';
   generates a message, if an element of an equation is not terminated
@@ -240,6 +252,49 @@ In case of multiple input files, the HTML report starts with an index.
 [Back to top](#yalafi-yet-another-latex-filter)
 
 
+## Filter actions
+
+Here is a list of the most important filter operations.
+
+- macro definitions with \\(re)newcommand in input text are processed,
+  further flexible treatment of own macros with arbitrary arguments;
+  see section [Inclusion of own macros](#inclusion-of-own-macros)
+- “undeclared” macros are silently ignored, keeping their arguments
+  with enclosing \{\} braces removed
+- frames \\begin\{...\} and \\end\{...\} of environments are deleted;
+  tailored behaviour for environment types listed in
+  'Parameters.environment\_defs' in file yalafi/parameters.py;
+  see section [Inclusion of own macros](#inclusion-of-own-macros)
+- text in heading macros as \\section\{...\} is extracted with
+  added interpunction (suppresses false positives from LanguageTool)
+- suitable placeholders for \\ref, \\eqref, \\pageref, and \\cite
+- inline maths material $...$ and \\(...\\) is replaced with text from
+  rotating collection in 'Parameters.math\_repl\_inline' in
+  file yalafi/parameters.py,
+  appending trailing interpunction from 'Parameters.math\_punctuation'
+- equation environments are resolved in a way suitable for check of
+  interpunction and spacing, argument of \\text\{...\} is included into output
+  text; \\\[...\\\] and $$...$$ are same as environment displaymath;
+  see the section
+  [Handling of displayed equations](#handling-of-displayed-equations)
+- letters with text-mode accents as '\\\`' or '\\v' are translated to 
+  corresponding UTF-8 characters
+- replacement of things like double quotes '\`\`' and dashes '\-\-' with
+  corresponding UTF-8 characters;
+  replacement of '\~' and '\\,' by UTF-8 non-breaking space and
+  narrow non-breaking space
+- for language 'de': suitable replacements for macros like '"\`' and '"=',
+  see method 'Parameters.init\_language()' in file yalafi/parameters.py
+- treatment of \\verb macro and verbatim environment
+- rare warnings from proofreading program can be suppressed using \\LTadd{},
+  \\LTskip{}, \\LTalter{}{} in the LaTeX text with suitable macro definition
+  there; e.g., adding something that only the proofreader should see:
+  \\newcommand{\\LTadd}\[1\]{}
+
+
+[Back to top](#yalafi-yet-another-latex-filter)
+
+
 ## Inclusion of own macros
 
 Unknown macros and environment frames are silently ignored.
@@ -247,21 +302,22 @@ As all input files are processed independently, it may be necessary to
 provide project-specific definitions in advance.
 
 For macros, which may be declared with \\newcommand, you can use options
---defs and --define for yalafi and shell, respectively.
+--defs and --define for yalafi and yalafi.shell, respectively.
 Alternatively, one can add the definitions to member
 'Parameters.macro\_defs\_latex' in file yalafi/parameters.py.
 
 More complicated macros as well as environments have to be registered
 with Python code.
-This may be done with options --pyth and --python-defs for yalafi and shell,
-respectively; see the example in [definitions.py](definitions.py).
+This may be done with options --pyth and --python-defs for yalafi and
+yalafi.shell, respectively;
+see the example in [definitions.py](definitions.py).
 Alternatively, you can modify the collections
 'Parameters.macro\_defs\_python' and 'Parameters.environment\_defs'
 in yalafi/parameters.py.
 
 ### Definition of macros
 
-`Macro(parms, name, args='', repl='', opts=[])`
+`Macro(parms, name, args='', repl='', opts=[], extract='')`
 
 - `parms`: current object of type Parameters
 - `name`: macro name with '\\'
@@ -275,6 +331,9 @@ in yalafi/parameters.py.
   for examples)
 - `opts`: an optional list of replacement strings for absent optional
   arguments
+- `extract`: like `repl`, but the resulting text is appended to the main
+  text, separated by blank lines; for an example, see declaration of macro
+  \\footnote in 'Parameters.macro\_defs\_python' in yalafi/parameters.py
 
 ### Definition of environments
 
@@ -295,7 +354,8 @@ in `args` and `repl`.
 `EquEnv(parms, name, args='', repl='', opts='', remove=False)`
 
 This is equivalent to `Environ()`, but maths material is replaced according to
-[Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#handling-of-displayed-equations).
+section
+[Handling of displayed equations](#handling-of-displayed-equations).
 Replacements in `repl` and `opts` are still interpreted in text mode.
 
 - `remove`: if True, then a fixed replacement can be specified in `repl`,
@@ -342,7 +402,7 @@ script tex2txt.py in repository Tex2txt.
   the string opts.defs in line 5.
 - On option --pyth, line 8 calls a function to modify the parameter object,
   see file [definitions.py](definitions.py) for an example.
-- If macro --extr requests only extraction of arguments of certain macros,
+- If option --extr requests only extraction of arguments of certain macros,
   this is prepared in lines 9 to 12.
 - Line 13 creates a parser object, and line 14 calls its parsing method
   that returns a list of tokens.
@@ -357,7 +417,136 @@ script tex2txt.py in repository Tex2txt.
   generated in line 19.
 - Line 21 is necessary, since position numbers are zero-based in yalafi,
   but one-based in Tex2txt/tex2txt.py.
-  
+
+[Back to top](#yalafi-yet-another-latex-filter)
+
+
+## Handling of displayed equations
+
+Displayed equations should be part of the text flow and include the
+necessary interpunction.
+The German version of
+[LanguageTool](https://www.languagetool.org) (LT)
+will detect a missing dot in the following snippet.
+For English texts, see the comments in section
+[Equation replacements in English documents](#equation-replacements-in-english-documents)
+ahead.
+```
+Wir folgern
+\begin{align}
+    a   &= b \\
+    c   &= d
+\end{align}
+Daher ...
+```
+Here, 'a' to 'd' stand for arbitrary mathematical
+terms (meaning: “We conclude \<maths\> Therefore, ...”).
+In fact, LT complains about the capital “Daher” that should start a
+new sentence.
+
+### Trivial version
+
+With the entry
+```
+    Environ(self, 'align', remove=True, add_pars=False),
+```
+in 'Parameters.environment\_defs' of file yalafi/parameters.py,
+the equation environment is simply removed.
+We get the following filter output that will probably cause a problem,
+even if the equation itself ends with a correct interpunction sign.
+```
+Wir folgern
+Daher ...
+```
+
+### Simple version
+
+With the entry
+```
+    EquEnv(self, 'align', repl='  Relation', remove=True),
+```
+in 'Parameters.environment\_defs', one gets:
+```
+Wir folgern
+  Relation
+Daher ...
+```
+Adding a dot '= d.' in the equation will lead to 'Relation.' in the output.
+This will also hold true, if the interpunction sign
+('Parameters.math\_punctuation') is followed by maths space or by macros
+as \\label and \\nonumber.
+
+### Full version
+
+With the default entry
+```
+    EquEnv(self, 'align'),
+```
+we obtain (“gleich” means equal, and setting language to English will
+produce “equal”):
+```
+Wir folgern
+  V-V-V  gleich W-W-W
+  W-W-W  gleich X-X-X.
+Daher ...
+```
+The replacements like 'V-V-V' are taken from collection
+'Parameters.math\_repl\_display' that depends on language setting, too.
+Now, LT will additionally complain about repetition of 'W-W-W'.
+Finally, writing '= b,' and '= d.' in the equation leads to the output:
+```
+Wir folgern
+  V-V-V  gleich W-W-W,
+  X-X-X  gleich Y-Y-Y.
+Daher ...
+```
+The equation parsing ensures that variations like
+```
+    a   &= b \\
+        &= c.
+```
+and
+```
+    a   &= b \\
+        &\qquad -c.
+```
+also will work properly.
+In contrast, the text
+```
+    a   &= b \\
+    -c  &= d.
+```
+will again produce an LT warning due to the missing comma after 'b',
+since the filter replaces both 'b' and '-c' by 'W-W-W' without
+intermediate text.
+
+In rare cases, manipulation with \\LTadd{} or \\LTskip{} may be necessary
+to avoid false warnings from the proofreader.
+
+### Inclusion of “normal” text
+
+In variant “Full version”, the argument of \\text\{...\}
+(macro names: collection 'Parameters.math\_text\_macros') is directly copied.
+Outside of \\text, only maths space like \\; and \\quad
+(see 'Parameters.math\_space') is considered as space.
+Therefore, one will get warnings from the proofreading program, if subsequent
+\\text and maths parts are not properly separated.
+
+### Equation replacements in English documents
+
+The replacement collection of 'Parameters.math\_repl\_display' in file
+yalafi/parameters.py does not work well, if single letters are taken as
+replacements.
+We now have chosen replacements as 'U-U-U' for German and English texts.
+
+Furthermore, the English version of LanguageTool (like other proofreading
+tools) rarely detects mistakenly capital words inside of a sentence;
+they are probably considered as proper names.
+Therefore, a missing dot at the end of a displayed equation is hardly found.
+An experimental hack is provided by option --equation-punctuation of
+application script [yalafi/shell/shell.py](yalafi/shell/shell.py)
+described in section
+[Example application](#example-application).
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -385,6 +574,9 @@ Invocation of `python -m yalafi ...` differs as follows from
   (This worked well for German texts.)
 - Environments of type 'enumerate' do not yet generate numbered labels.
 - Default language is English. It is also used for an unknown language.
+
+Number of effective code lines (without blank and pure comment lines)
+is around 1000 for Tex2txt/tex2txt.py and 1200 for yalafi/\*.py in total.
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -422,8 +614,8 @@ or \[\] brackets).
 
 ### Parser for maths material
 
-We follow the ideas described in
-[Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#handling-of-displayed-equations),
+We follow the ideas described in section
+[Handling of displayed equations](#handling-of-displayed-equations),
 compare the tests in [tests/test\_display.py](tests/test_display.py).
 All unknown macros, which are not in the blacklist 'Parameters.math\_ignore',
 are assumed to generate some 'visible' output.
