@@ -1,5 +1,5 @@
-Work in progress
-----------------
+Version 0.2.0
+-------------
 - yalafi/shell/shell.py
     - added option --python-defs
     - option --encoding now also effective for file from --define
