@@ -27,8 +27,12 @@ from . import scanner
 
 class Parameters:
 
+    #   pre-defined macros and definitions
+    #
     def init_macros_environments(self):
 
+        #   definition of macros, LaTeX code
+        #
         self.macro_defs_latex = r"""
 
         \newcommand{\AA}{Å}
@@ -78,6 +82,8 @@ class Parameters:
 
         """
 
+        #   definition of macros, Python code
+        #
         self.macro_defs_python = [
 
         Macro(self, '\\caption', args='OA', extract='#2'),
@@ -105,6 +111,8 @@ class Parameters:
         def thm(s):
             return hs.h_theorem(s)
 
+        #   definition of environments
+        #
         self.environment_defs = [
 
         Environ(self, 'minipage', args='A'),
@@ -140,6 +148,8 @@ class Parameters:
 
         ]
 
+    #   set language-dependent parameters
+    #
     def init_language(self, language):
         if language == 'de':
             self.special_tokens.update(self.special_tokens_de)
@@ -161,13 +171,17 @@ class Parameters:
                                     '*': 'times', '/': 'over',
                                     None: 'equal'}
 
+    #   set misc collections
+    #
     def init_collections(self):
 
-        # add dot to heading unless last heading char in ...
-        # (turn off: set to [])
+        #   add dot to heading unless last heading char in ...
+        #   (turn off: set to [])
         #
         self.heading_punct = ['!', '?']
 
+        #   accent macros
+        #
         self.accent_macros = {
 
             "\\'": ['ACUTE', 'ACCENT'],
@@ -188,6 +202,8 @@ class Parameters:
 
         }
 
+        #   "special" tokens: expanded to key value
+        #
         self.special_tokens = {
 
             '{': '{',
@@ -230,6 +246,8 @@ class Parameters:
 
         }
 
+        #   "special" tokens for German
+        #
         self.special_tokens_de = {
 
             '"-': '',
@@ -239,6 +257,10 @@ class Parameters:
 
         }
 
+        #   things to be ignored in math mode
+        #   - some entries are redundant, if macros are known from text mode
+        #     and expand to 'nothing'
+        #
         self.math_ignore = [
 
             '{',
@@ -255,6 +277,8 @@ class Parameters:
 
         ]
 
+        #   things that generate space even in math mode
+        #
         self.math_space = [
 
             '~',
@@ -272,6 +296,9 @@ class Parameters:
 
         ]
 
+        #   if these operators appear first in a section (delimited by '&'),
+        #   then one of the replacements in self.math_op_text is inserted
+        #
         self.math_operators = [
 
             '+', '-', '*', '/',
@@ -284,20 +311,27 @@ class Parameters:
 
         ]
 
+        #   macros whose argument is treated in text mode
+        #
         self.math_text_macros = [
             '\\mbox',
             '\\text',
         ]
 
-        # math environment for $$ and \[
+        #   math environment for $$ and \[
         #
         self.math_default_env = 'displaymath'
 
+        #   if a math section ends with a character from here, it is
+        #   appended to the replacement from self_repl_xxx
+        #
         self.math_punctuation = ['.', ',', ';', ':']
 
     def add_latex_macros(self, latex):
         self.macro_defs_latex += latex
 
+    #   determine whether a character may be part of macro name
+    #
     def macro_character(self, c):
         return c >= 'a' and c <= 'z' or c >= 'A' and c <= 'Z'
 
