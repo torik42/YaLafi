@@ -11,8 +11,8 @@
 [Remarks on implementation](#remarks-on-implementation)
 
 This Python package extracts plain text from LaTeX documents.
-Due to the following characteristics, it may be integrated with a
-proofreading software:
+Due to the following characteristics, the software may be integrated with a
+proofreading tool:
 - tracking of character positions during text manipulations,
 - simple inclusion of own LaTeX macros and environments with tailored
   treatment,
@@ -72,8 +72,9 @@ Invocation: `python -m yalafi [options] [files]`
 ## Installation
 
 There are several possibilities.
-- Use `pip install [--user] yalafi`.
+- Use `python -m pip install [--user] yalafi`.
   This installs the last version uploaded to [PyPI](https://www.pypi.org).
+  Module pip itself can be installed with `python -m ensurepip`.
 - Place yalafi/ or a link to it in the current directory.
 - Place yalafi/ in a standard directory like `/usr/lib/python3.?/`
   or `~/.local/lib/python3.?/site-packages/`.
@@ -302,6 +303,16 @@ For macros, which may be declared with \\newcommand, you can use options
 --defs and --define for yalafi and yalafi.shell, respectively.
 Alternatively, one can add the definitions to member
 'Parameters.macro\_defs\_latex' in file yalafi/parameters.py.
+Here is a short excerpt from this file:
+```
+        self.macro_defs_latex = r"""
+        ...
+        \newcommand{\color}[1]{}
+        \newcommand{\colorbox}[2]{#2}
+        \newcommand{\documentclass}[2][]{}
+        \newcommand{\eqref}[1]{(0)}
+        \newcommand{\fcolorbox}[3]{#3}
+```
 
 More complicated macros as well as environments have to be registered
 with Python code.
@@ -393,26 +404,25 @@ script tex2txt.py in repository Tex2txt.
 21      pos = [n + 1 for n in pos]
 22      return txt, pos
 ```
-- The parameter object created in line 3 contains all default settings
+- 3: The created parameter object contains all default settings
   and definitions from file yalafi/parameters.py.
-- If requested by script option --defs, additional macros are included from
-  the string opts.defs in line 5.
-- On option --pyth, line 8 calls a function to modify the parameter object,
+- 5: If requested by script option --defs, additional macros are included
+  from the string opts.defs.
+- 8: On option --pyth, we call a function to modify the parameter object,
   see file [definitions.py](definitions.py) for an example.
-- If option --extr requests only extraction of arguments of certain macros,
-  this is prepared in lines 9 to 12.
-- Line 13 creates a parser object, and line 14 calls its parsing method
+- 9-12: If option --extr requests only extraction of arguments of certain
+  macros, this is prepared.
+- 13-14: We create a parser object and call its parsing method
   that returns a list of tokens.
-- The token list is converted into a 2-tuple containing the plain-text string
-  and a list of numbers in line 15.
+- 15: The token list is converted into a 2-tuple containing the plain-text
+  string and a list of numbers.
   Each number in the list indicates the estimated position of the
   corresponding character in the text string.
-- If phrase replacements are requested by option --repl, this is performed
-  on line 17.
+- 17: If phrase replacements are requested by option --repl, this is done.
   String opts.repl contains the replacement specifications read from the file.
-- On option --unkn, a list of unknown macros and environments is
-  generated in line 19.
-- Line 21 is necessary, since position numbers are zero-based in yalafi,
+- 19: On option --unkn, a list of unknown macros and environments is
+  generated.
+- 21: This is necessary, since position numbers are zero-based in yalafi,
   but one-based in Tex2txt/tex2txt.py.
 
 [Back to top](#yalafi-yet-another-latex-filter)
@@ -534,6 +544,7 @@ Therefore, one will get warnings from the proofreading program, if subsequent
 The replacement collection of 'Parameters.math\_repl\_display' in file
 yalafi/parameters.py does not work well, if single letters are taken as
 replacements.
+For instance, 'V.' cannot be safely considered as end of a sentence.
 We now have chosen replacements as 'U-U-U' for German and English texts.
 
 Furthermore, the English version of LanguageTool (like other proofreading
@@ -581,6 +592,8 @@ is around 1000 for Tex2txt/tex2txt.py and 1200 for yalafi/\*.py in total.
 ## Remarks on implementation
 
 ### Scanner / tokeniser
+
+The scanner identifies token types defined in yalafi/defs.py.
 
 - All “normal” characters yield an own token.
 - Many character combinations like '{', '\\\[' or '---' are recognised
