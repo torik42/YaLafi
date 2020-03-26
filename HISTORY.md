@@ -1,3 +1,8 @@
+Work in progress
+----------------
+- yalafi/scanner.py: tested use of regular expression; only a bit faster for
+  short texts, but much slower for large texts
+
 Version 0.2.0
 -------------
 - yalafi/shell/shell.py
