@@ -58,8 +58,10 @@ class Scanner:
             return self.scan_comment(latex, start)
         if c == '#':
             return self.scan_arg_token(latex, start)
-        # XXX: better with re.match()?
-        # (but would need to create latex[start:] for each token)
+        # - better with re.match()?
+        #   (but would need to create latex[start:] for each token)
+        # --> re.match() with one precompiled large RE a bit faster
+        #     for short texts, but much slower for large texts!
         for t in self.special_tokens_sorted:
             if latex.startswith(t, start):
                 self.pos += len(t)
