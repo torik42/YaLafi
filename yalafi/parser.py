@@ -40,6 +40,14 @@ class Parser:
         # used by expand_item():
         self.item_macro = defs.Macro(parms, '\\item', args='O', repl='#1')
 
+        self.verbatim_begin = [
+                    defs.BeginToken(0, '\\begin'),
+                    defs.SpecialToken(0, '{'),
+                    defs.TextToken(0, 'verbatim'),
+                    defs.SpecialToken(0, '}'),
+        ]
+        self.verbatim_end = parms.scanner.scan('\\end{verbatim}')
+
     #   scan and parse (expand) LaTeX string to tokens
     #
     def parse(self, latex, extract=None):
@@ -133,11 +141,12 @@ class Parser:
                 out.append(defs.TextToken(tok.pos, txt))
             elif type(tok) is defs.VerbatimToken:
                 if tok.environ:
-                    # add paragraphs around anvironments
-                    out += [
-                        defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True),
-                        defs.TextToken(tok.pos, tok.txt),
-                        defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True)]
+                    # for Environ() entry in Parameters.environment_defs
+                    t = copy.copy(tok)
+                    t.environ = False
+                    buf.next()
+                    buf.back(self.verbatim_begin + [t] + self.verbatim_end)
+                    continue
                 else:
                     out.append(defs.ActionToken(tok.pos))
                     out.append(defs.TextToken(tok.pos, tok.txt))
