@@ -17,8 +17,8 @@
 #
 
 #
-#   replacement of equations similar to Tex2txt, described in
-#   Tex2txt/README.md, section "Handling of displayed equations"
+#   replacement of equations: described in README.md, section
+#   "Handling of displayed equations"
 #
 
 from . import defs

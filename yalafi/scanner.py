@@ -108,6 +108,8 @@ class Scanner:
             return self.scan_verbatim(latex, start, mac)
         if mac == '\\end':
             return defs.EndToken(start, mac)
+        if mac == '\\item':
+            return defs.ItemToken(start, mac)
         if mac == '\\verb':
             return self.scan_verb(latex, start)
         if mac in self.parms.accent_macros:

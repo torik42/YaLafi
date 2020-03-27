@@ -37,6 +37,9 @@ class Parser:
         macs = parms.scanner.scan(parms.macro_defs_latex)
         self.expand_sequence(scanner.Buffer(macs))
 
+        # used by expand_item():
+        self.item_macro = defs.Macro(parms, '\\item', args='O', repl='#1')
+
     #   scan and parse (expand) LaTeX string to tokens
     #
     def parse(self, latex, extract=None):
@@ -99,6 +102,9 @@ class Parser:
                 if stop:
                     return t
                 out += t
+                continue
+            elif type(tok) is defs.ItemToken:
+                buf.back(self.expand_item(buf, tok, out))
                 continue
             elif type(tok) is defs.MacroToken:
                 buf.back(self.expand_macro(buf, tok, False))
@@ -391,4 +397,29 @@ class Parser:
             out += buf
 
         return [t for t in out if t.txt]
+
+    #   \item: if [...] label is specified, look back in text and append
+    #   a possible previous punctuation mark
+    #
+    def expand_item(self, buf, tok, out_so_far):
+        def Space(pos):
+            return defs.SpaceToken(pos, ' ', pos_fix=True)
+        start = tok.pos
+        buf.next()
+        out = self.expand_arguments(buf, self.item_macro, start)
+        if len(out) == 1:
+            # only ActionToken: no [...]
+            return out + [Space(start), defs.TextToken(start,
+                                            self.parms.item_default_label,
+                                            pos_fix=True), Space(start)]
+
+        pos = next((i for i in range(len(out_so_far) - 1, -1, -1)
+                                if out_so_far[i].txt.strip()), -1)
+        if (pos >= 0 and out_so_far[pos].txt[-1]
+                    in self.parms.item_punctuation):
+            out.append(defs.TextToken(out[-1].pos,
+                                out_so_far[pos].txt[-1], pos_fix=True))
+        out.append(Space(out[-1].pos))
+        out.insert(0, Space(start))
+        return out
 

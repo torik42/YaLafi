@@ -66,6 +66,10 @@ class EndToken(TextToken):
     def __init__(self, pos, txt):
         super().__init__(pos, txt)
 
+class ItemToken(TextToken):
+    def __init__(self, pos, txt):
+        super().__init__(pos, txt)
+
 class AccentToken(TextToken):
     def __init__(self, pos, txt):
         super().__init__(pos, txt)

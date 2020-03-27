@@ -49,7 +49,6 @@ class Parameters:
         \newcommand{\include}[1]{}
         \newcommand{\includegraphics}[2][]{}
         \newcommand{\input}[1]{}
-        \newcommand{\item}[1][]{ #1 }
         \newcommand{\L}{Ł}
         \newcommand{\l}{ł}
         \newcommand{\label}[1]{}
@@ -122,8 +121,8 @@ class Parameters:
                             # Parser.expand_arguments() may skip space
                             repl='#1.\n', opts=[self.proof_name]),
 
-        # theorem-style environments
-        # or simpler: Environ(self, 'theorem', args='O',
+        #   theorem-style environments
+        #   or simpler: Environ(self, 'theorem', args='O',
         #                           repl='Theorem (#1). ', opts=['none']),
         Environ(self, 'corollary', args='O', repl=thm('Corollary')),
         Environ(self, 'definition', args='O', repl=thm('Definition')),
@@ -133,7 +132,7 @@ class Parameters:
         Environ(self, 'remark', args='O', repl=thm('Remark')),
         Environ(self, 'theorem', args='O', repl=thm('Theorem')),
 
-        # equation environments
+        #   equation environments
         #
         EquEnv(self, 'align'),
         EquEnv(self, 'align*'),
@@ -179,6 +178,15 @@ class Parameters:
         #   (turn off: set to [])
         #
         self.heading_punct = ['!', '?']
+
+        #   label for \item without [...]
+        #
+        self.item_default_label = ''
+
+        #   \item with [...] label: if text before ends with something
+        #   from here, then append it to label
+        #
+        self.item_punctuation = ['.', ':', ',', ';', '!', '?']
 
         #   accent macros
         #
