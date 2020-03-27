@@ -1,5 +1,8 @@
 Work in progress
 ----------------
+- added replication of punctuation marks at specified \\item labels
+- README.md: updated
+  <br><br>
 - yalafi/scanner.py: tested use of regular expression; only a bit faster for
   short texts, but much slower for large texts
 

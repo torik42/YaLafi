@@ -275,6 +275,11 @@ Here is a list of the most important filter operations.
   text; \\\[...\\\] and $$...$$ are same as environment displaymath;
   see the section
   [Handling of displayed equations](#handling-of-displayed-equations)
+- some treatment for \\item with specified \[...\] label;
+  if the text before ends with a punctuation mark from collection
+  'Parameters.item\_punctuation' in file yalafi/parameters.py, then this mark
+  is appended to the label;
+  works well for German texts, turned off with 'item\_punctuation = []'
 - letters with text-mode accents as '\\\`' or '\\v' are translated to 
   corresponding UTF-8 characters
 - replacement of things like double quotes '\`\`' and dashes '\-\-' with
@@ -576,10 +581,6 @@ Invocation of `python -m yalafi ...` differs as follows from
   The given Python module has to provide a function
   'modify\_parameters(parms)' receiving the parameter object 'parms',
   compare the example in [definitions.py](definitions.py).
-- Handling of specified \\item\[...\] labels currently is less sophisticated:
-  trailing interpunction from a preceding sentence is not repeated after the
-  item label.
-  (This worked well for German texts.)
 - Environments of type 'enumerate' do not yet generate numbered labels.
 - Default language is English. It is also used for an unknown language.
 
@@ -600,7 +601,7 @@ The scanner identifies token types defined in yalafi/defs.py.
   as “special tokens”.
 - Names of “normal” macros formed by a backslash and subsequent letters
   (method 'Parameters.macro\_character()') result in a token, macros
-  '\\begin', '\\end' and '\\verb' are treated separately.
+  '\\begin', '\\end', '\\item', and '\\verb' are treated separately.
 - For space, we distinguish between character sequences that do or do not
   represent a paragraph break.
   In both cases, a single token is generated.
