@@ -288,7 +288,9 @@ Here is a list of the most important filter operations.
   narrow non-breaking space
 - for language 'de': suitable replacements for macros like '"\`' and '"=',
   see method 'Parameters.init\_language()' in file yalafi/parameters.py
-- treatment of \\verb macro and verbatim environment
+- treatment of \\verb macro and verbatim environment;
+  verbatim can be replaced or removed like other environments with
+  appropriate entry in 'Parameters.environment\_defs' in yalafi/parameters.py
 - rare warnings from proofreading program can be suppressed using \\LTadd{},
   \\LTskip{}, \\LTalter{}{} in the LaTeX text with suitable macro definition
   there; e.g., adding something that only the proofreader should see:

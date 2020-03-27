@@ -1,6 +1,8 @@
 Work in progress
 ----------------
 - added replication of punctuation marks at specified \\item labels
+- verbatim environment now can removed or replaced like other environments
+  with approriate entry in Parser.environment\_defs
 - README.md: updated
   <br><br>
 - yalafi/scanner.py: tested use of regular expression; only a bit faster for
