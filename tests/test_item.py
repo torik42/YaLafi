@@ -1,6 +1,7 @@
 
 #
 #   test of punctuation marks at \item
+#   test of enumerate
 #
 
 from yalafi import defs, parameters, parser, utils
@@ -46,4 +47,34 @@ def test_2():
     toks = p.parse(latex_2)
     plain, pos = utils.get_txt_pos(toks)
     assert plain_2 == plain
+
+latex_3 = r"""
+\item A
+\begin{enumerate}
+\item B.
+\item[x)] C
+\item D
+\begin{enumerate}
+\item E
+\item F
+\end{enumerate}
+\item G
+\end{enumerate}
+"""
+plain_3 = r"""
+ * A
+ 1. B.
+ x).  C
+ 2. D
+ a. E
+ b. F
+ 3. G
+"""
+def test_3():
+    parms = parameters.Parameters()
+    parms.item_default_label = '*'
+    p = parser.Parser(parms)
+    toks = p.parse(latex_3)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_3 == plain
 
