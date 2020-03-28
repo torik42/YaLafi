@@ -273,8 +273,11 @@ Here is a list of the most important filter operations.
 - equation environments are resolved in a way suitable for check of
   interpunction and spacing, argument of \\text\{...\} is included into output
   text; \\\[...\\\] and $$...$$ are same as environment displaymath;
-  see the section
+  see sections
   [Handling of displayed equations](#handling-of-displayed-equations)
+  and
+  [Parser for maths material](#parser-for-maths-material)
+- generation of numbered default \\item labels for environment enumerate
 - some treatment for \\item with specified \[...\] label;
   if the text before ends with a punctuation mark from collection
   'Parameters.item\_punctuation' in file yalafi/parameters.py, then this mark
@@ -352,7 +355,7 @@ in yalafi/parameters.py.
 
 ### Definition of environments
 
-`Environ(parms, name, args='', repl='', opts='', remove=False, add_pars=True)`
+`Environ(parms, name, args='', repl='', opts='', remove=False, add_pars=True, items=None)`
 
 Argument `parms` to `opts` are the same as for `Macro()`, where the arguments
 are those behind the opening '\\begin{xyz}'.
@@ -363,6 +366,9 @@ in `args` and `repl`.
   a fixed replacement can be given in `repl`
 - `add_pars`: if True, then paragraph breaks (blank lines) are generated
   before and behind the environment body
+- `items`: for inclusion of specific \\item labels;
+  a generator function taking a nesting level argument has to be specified;
+  compare declaration of environment enumerate in yalafi/paramters.py
 
 ### Definition of equation environments
 
@@ -514,7 +520,9 @@ Wir folgern
   X-X-X  gleich Y-Y-Y.
 Daher ...
 ```
-The equation parsing ensures that variations like
+The rules for equation parsing are described in section
+[Parser for maths material](#parser-for-maths-material).
+They ensure that variations like
 ```
     a   &= b \\
         &= c.
@@ -583,11 +591,10 @@ Invocation of `python -m yalafi ...` differs as follows from
   The given Python module has to provide a function
   'modify\_parameters(parms)' receiving the parameter object 'parms',
   compare the example in [definitions.py](definitions.py).
-- Environments of type 'enumerate' do not yet generate numbered labels.
 - Default language is English. It is also used for an unknown language.
 
 Number of effective code lines (without blank and pure comment lines)
-is around 1000 for Tex2txt/tex2txt.py and 1200 for yalafi/\*.py in total.
+is around 1050 for Tex2txt/tex2txt.py and 1300 for yalafi/\*.py in total.
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -634,6 +641,9 @@ All unknown macros, which are not in the blacklist 'Parameters.math\_ignore',
 are assumed to generate some “visible” output.
 Thus, it is not necessary to declare all the maths macros like \\alpha
 and \\sum.
+
+These are the rules for parsing of displayed equations:
+- TBD
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
