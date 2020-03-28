@@ -40,6 +40,13 @@ class Parser:
         # used by expand_item():
         self.item_macro = defs.Macro(parms, '\\item', args='O', repl='#1')
 
+        # for savety: \item labels outside of any environment
+        def labs_default(level):
+            while True:
+                yield parms.item_default_label
+        self.item_lab_stack = [(labs_default(1), '')]
+
+        # for expansion of verbatim environment
         self.verbatim_begin = [
                     defs.BeginToken(0, '\\begin'),
                     defs.SpecialToken(0, '{'),
@@ -303,6 +310,9 @@ class Parser:
                 self.unknowns.append(name)
             return out
         env = self.the_environments[name]
+        if env.items:
+            level = len([v for v in self.item_lab_stack if v[1] == name]) + 1
+            self.item_lab_stack.append((env.items(level), name))
         if env.add_pars:
             out = [defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True)]
         out += self.expand_arguments(buf, env, tok.pos)
@@ -318,11 +328,13 @@ class Parser:
     #
     def end_environment(self, buf, tok, env_stop):
         name = self.get_environment_name(buf)
-        if (name not in self.the_environments
-                or not self.the_environments[name].add_pars):
-            out = [defs.ActionToken(tok.pos)]
-        else:
-            out = [defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True)]
+        out = [defs.ActionToken(tok.pos)]
+        if name in self.the_environments:
+            env = self.the_environments[name]
+            if env.items and len(self.item_lab_stack) > 1:
+                self.item_lab_stack.pop()
+            if env.add_pars:
+                out = [defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True)]
         return out, name == env_stop
 
     def get_environment_name(self, buf):
@@ -418,8 +430,8 @@ class Parser:
         out = self.expand_arguments(buf, self.item_macro, start)
         if len(out) == 1:
             # only ActionToken: no [...]
-            return out + [Space(start), defs.TextToken(start,
-                                            self.parms.item_default_label,
+            lab = next(self.item_lab_stack[-1][0])
+            return out + [Space(start), defs.TextToken(start, lab,
                                             pos_fix=True), Space(start)]
 
         pos = next((i for i in range(len(out_so_far) - 1, -1, -1)

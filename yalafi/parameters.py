@@ -27,9 +27,9 @@ from . import scanner
 
 class Parameters:
 
-    #   pre-defined macros and definitions
+    #   pre-defined macros
     #
-    def init_macros_environments(self):
+    def init_macros(self):
 
         #   definition of macros, LaTeX code
         #
@@ -107,11 +107,15 @@ class Parameters:
 
         ]
 
+    #   pre-defined environments
+    #
+    def init_environments(self):
+
+        #   little helper for theorem environments
+        #
         def thm(s):
             return hs.h_theorem(s)
 
-        #   definition of environments
-        #
         self.environment_defs = [
 
         Environ(self, 'minipage', args='A'),
@@ -145,6 +149,33 @@ class Parameters:
         EquEnv(self, 'equation'),
         EquEnv(self, 'equation*'),
         EquEnv(self, 'flalign', repl='  relation', remove=True),
+
+        ]
+
+        #   enumerate: generate 1., 2., 3., ...
+        #
+        def labs_enumerate(level):
+            if level == 1:
+                n = 1
+                while True:
+                    yield str(n) + '.'
+                    n += 1
+            else:
+                c = 'a'
+                while True:
+                    yield c + '.'
+                    c = chr(ord(c) + 1) if c != 'z' else 'a'
+
+        #   itemize: use default label
+        #
+        def labs_itemize(level):
+            while True:
+                yield self.item_default_label
+
+        self.environment_defs += [
+
+        Environ(self, 'enumerate', add_pars=False, items=labs_enumerate),
+        Environ(self, 'itemize', add_pars=False, items=labs_itemize),
 
         ]
 
@@ -266,6 +297,10 @@ class Parameters:
 
         }
 
+    #   set math collections
+    #
+    def init_math_collections(self):
+
         #   things to be ignored in math mode
         #   - some entries are redundant, if macros are known from text mode
         #     and expand to 'nothing'
@@ -305,7 +340,7 @@ class Parameters:
 
         ]
 
-        #   if these operators appear first in a section (delimited by '&'),
+        #   if these operators appear first in a part (delimited by '&'),
         #   then one of the replacements in self.math_op_text is inserted
         #
         self.math_operators = [
@@ -346,7 +381,9 @@ class Parameters:
 
     def __init__(self, language='en'):
         self.init_collections()
+        self.init_math_collections()
         self.init_language(language)
         self.scanner = scanner.Scanner(self)
-        self.init_macros_environments()
+        self.init_macros()
+        self.init_environments()
 
