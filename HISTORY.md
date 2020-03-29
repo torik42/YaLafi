@@ -4,6 +4,7 @@ Work in progress
 - verbatim environment now can be removed or replaced like other environments
   with appropriate entry in Parser.environment\_defs
 - added default labels for environment enumerate
+- yalafi/tex2txt.py: option --ienc is effective for file from --defs, too
 - README.md: updated
   <br><br>
 - yalafi/scanner.py: tested use of regular expression; only a bit faster for
