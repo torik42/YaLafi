@@ -4,6 +4,7 @@
 [Installation](#installation)&nbsp;\|
 [Example application](#example-application)&nbsp;\|
 [Filter actions](#filter-actions)&nbsp;\|
+[Usage under Windows](#usage-under-windows)&nbsp;\|
 [Inclusion of own macros](#inclusion-of-own-macros)&nbsp;\|
 [Package interface](#package-interface)&nbsp;\|
 [Handling of displayed equations](#handling-of-displayed-equations)&nbsp;\|
@@ -52,7 +53,8 @@ Run with option --html, the script produces an HTML report:
 YaLafi is similar to [Tex2txt](https://github.com/matze-dd/Tex2txt),
 but differs in the internal processing method.
 Instead of using recursive regular expressions, a simple tokeniser
-and a small machinery for macro expansion are implemented; see section
+and a small machinery for macro expansion are implemented; see sections
+[Differences to Tex2txt](#differences-to-tex2txt) and
 [Remarks on implementation](#remarks-on-implementation).
 
 Application Python scripts like [yalafi/shell/shell.py](yalafi/shell/shell.py)
@@ -183,9 +185,10 @@ Default option values are set at the Python script beginning.
 - option `--equation-punctuation mode`:<br>
   experimental hack for check of punctuation after equations in English texts,
   compare section
-  [Equation replacements in English documents](#equation-replacements-in-english-documents);
+  [Equation replacements in English documents](#equation-replacements-in-english-documents)
+  and example in section [Differences to Tex2txt](#differences-to-tex2txt);
   abbreviatable mode values, indicating checked equation type:
-  'displayed', 'inline', 'all';
+  'displayed', 'inline', 'all';<br>
   generates a message, if an element of an equation is not terminated
   by a dot '.' and at the same time is not followed by a lower-case word or
   another equation element, both possibly separated by a mark from ',;:';
@@ -303,6 +306,26 @@ Here is a list of the most important filter operations.
 [Back to top](#yalafi-yet-another-latex-filter)
 
 
+## Usage under Windows
+
+Both yalafi.shell and yalafi can be used directly in a Windows command
+script or console.
+For example, this could look like
+```
+py -3 -m yalafi.shell --html t.tex > t.html
+```
+or
+```
+"c:\Program Files\Python\Python37\python.exe" -m yalafi.shell --html t.tex > t.html
+```
+if the Python launcher has not been installed.
+
+Possible encoding issues related to Windows are addressed in
+[Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#encoding-problems)).
+
+[Back to top](#yalafi-yet-another-latex-filter)
+
+
 ## Inclusion of own macros
 
 Unknown macros and environment frames are silently ignored.
@@ -367,7 +390,7 @@ in `args` and `repl`.
 - `add_pars`: if True, then paragraph breaks (blank lines) are generated
   before and behind the environment body
 - `items`: for inclusion of specific \\item labels;
-  a generator function taking a nesting level argument has to be specified;
+  a generator taking a nesting level argument has to be specified;
   compare declaration of environment enumerate in yalafi/paramters.py
 
 ### Definition of equation environments
@@ -577,7 +600,9 @@ described in section
 ## Differences to Tex2txt
 
 Invocation of `python -m yalafi ...` differs as follows from
-`python tex2txt.py ...` (the script in repository Tex2txt).
+`python tex2txt.py ...` (the script described in
+[Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#command-line)).
+
 
 - Option --defs expects a file containing macro definitions as LaTeX code.
 - Option --ienc is also effective for file from --defs.
@@ -586,7 +611,8 @@ Invocation of `python -m yalafi ...` differs as follows from
 - Macro definitions with \\(re)newcommand in the LaTeX input are processed.
 - Macro arguments need not be delimited by {} braces or \[\] brackets.
 - Macros are expanded in the order they appear in the text.
-- Position tracking for displayed equations is improved, see example below.
+- Character position tracking for displayed equations is improved,
+  see the example below.
 - Parameters like predefined LaTeX macros and environments are set in file
   [yalafi/parameters.py](yalafi/parameters.py).
   You can modify them at run-time with script option '--pyth module'.
@@ -606,10 +632,11 @@ python -m yalafi.shell --equation-punct all --html test.tex > test.html
 ```
 and input 
 ```
-For each $\varepsilon > 0$, there is a $\delta > 0$ so that
+For each $\epsilon > 0$, there is a $\delta > 0$ so that
 %
 \begin{equation}
-\norm{y-x} < \delta \text{\quad implies\quad} \norm{A(y) - A(x)} < \epsilon,
+\norm{y-x} < \delta \text{\quad implies\quad}
+    \norm{A(y) - A(x)} < \epsilon, \label{lab}
 \end{equation}
 %
 Therefore, operator $A$ is continuous at point $x$.
