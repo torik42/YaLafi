@@ -578,23 +578,46 @@ described in section
 
 Invocation of `python -m yalafi ...` differs as follows from
 `python tex2txt.py ...` (the script in repository Tex2txt).
-- Script option --defs expects a file containing macro definitions as
-  LaTeX code.
+
+- Option --defs expects a file containing macro definitions as LaTeX code.
+- Option --ienc is also effective for file from --defs.
+- Option --char (position tracking for single characters) is always activated.
+- Default language is English. It is also used for an unknown language.
 - Macro definitions with \\(re)newcommand in the LaTeX input are processed.
 - Macro arguments need not be delimited by {} braces or \[\] brackets.
 - Macros are expanded in the order they appear in the text.
-- Position tracking for text parts inside of displayed equations is improved.
-- Option --char (position tracking for single characters) is always activated.
+- Position tracking for displayed equations is improved, see example below.
 - Parameters like predefined LaTeX macros and environments are set in file
   [yalafi/parameters.py](yalafi/parameters.py).
   You can modify them at run-time with script option '--pyth module'.
   The given Python module has to provide a function
   'modify\_parameters(parms)' receiving the parameter object 'parms',
   compare the example in [definitions.py](definitions.py).
-- Default language is English. It is also used for an unknown language.
+
+YaLafi/yalafi/tex2txt.py is faster for input texts till about 20 Kilobytes,
+for larger files it may be much slower than Tex2txt/tex2txt.py.
 
 Number of effective code lines (without blank and pure comment lines)
 is around 1050 for Tex2txt/tex2txt.py and 1300 for yalafi/\*.py in total.
+
+With
+```
+python -m yalafi.shell --equation-punct all --html test.tex > test.html
+```
+and input 
+```
+For each $\varepsilon > 0$, there is a $\delta > 0$ so that
+%
+\begin{equation}
+\norm{y-x} < \delta \text{\quad implies\quad} \norm{A(y) - A(x)} < \epsilon,
+\end{equation}
+%
+Therefore, operator $A$ is continuous at point $x$.
+```
+we get
+
+![HTML report](equation.png)
+
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -642,8 +665,29 @@ are assumed to generate some “visible” output.
 Thus, it is not necessary to declare all the maths macros like \\alpha
 and \\sum.
 
-These are the rules for parsing of displayed equations:
-- TBD
+Displayed equations are parsed as follows.
+
+- Equation environments are split into “lines” separated by '\\\\'.
+- Each “line” is split into “sections” delimited by '\&'.
+- Each “section” is split into “maths parts” only consisting of maths
+  material separated by intermediate \\text{...} or \\mbox{...}
+  ('Parameters.math\_text\_macros').
+- Arguments of \\text and \\mbox are directly copied.
+- A “maths part” is substituted with a placeholder from rotating collection
+  'Parameters.math\_repl\_display', if it does not consist only of punctuation
+  marks from 'Parameters.math\_punctuation' or of operators from
+  'Parameters.math\_operators'.
+- A leading maths operator is displayed using 'Parameters.math\_op\_text'
+  (language-dependent), if the “maths part” is first in “section” and
+  the “section” is not first on “line”.
+- Trailing interpunction of a “maths part” is appended to the placeholder.
+- If the “maths part” includes leading or trailing maths space from
+  'Parameters.math\_space', then white space is prepended or appended to the
+  replacement.
+- Replacements from 'Parameters.math\_repl\_display' are rotated
+    - if a non-blank \\text part is detected,
+    - if a “maths part” only consists of an operator,
+    - if a “maths part” includes trailing interpunction.
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
