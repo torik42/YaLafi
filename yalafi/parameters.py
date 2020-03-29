@@ -191,7 +191,7 @@ class Parameters:
                                         'X-X-X', 'Y-Y-Y', 'Z-Z-Z']
             self.math_op_text = {'+': 'plus', '-': 'minus',
                                     '*': 'mal', '/': 'durch',
-                                    None: 'gleich'}
+                                    None: 'gleich'}     # default value
         else:
             self.proof_name = 'Proof'
             self.math_repl_inline = ['B-B-B', 'C-C-C', 'D-D-D',
@@ -200,7 +200,7 @@ class Parameters:
                                         'X-X-X', 'Y-Y-Y', 'Z-Z-Z']
             self.math_op_text = {'+': 'plus', '-': 'minus',
                                     '*': 'times', '/': 'over',
-                                    None: 'equal'}
+                                    None: 'equal'}      # default value
 
     #   set misc collections
     #
@@ -340,7 +340,7 @@ class Parameters:
 
         ]
 
-        #   if these operators appear first in a part (delimited by '&'),
+        #   if these operators appear first in a part (only math tokens)
         #   then one of the replacements in self.math_op_text is inserted
         #
         self.math_operators = [

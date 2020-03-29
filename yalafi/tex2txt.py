@@ -211,8 +211,7 @@ def main():
     options = Options(
                 repl=read_replacements(cmdline.repl, encoding=cmdline.ienc),
                 char=cmdline.char,
-                defs=read_definitions(cmdline.defs, encoding='utf-8'),
-                                    # the Python code should be UTF-8
+                defs=read_definitions(cmdline.defs, encoding=cmdline.ienc),
                 pyth=cmdline.pyth,
                 extr=cmdline.extr,
                 lang=cmdline.lang,
