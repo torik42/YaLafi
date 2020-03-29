@@ -1,5 +1,5 @@
-Work in progress
-----------------
+Version 0.3.0
+-------------
 - added replication of punctuation marks at specified \\item labels
 - verbatim environment now can be removed or replaced like other environments
   with appropriate entry in Parser.environment\_defs
