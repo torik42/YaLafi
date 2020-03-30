@@ -3,6 +3,7 @@
 
 [Installation](#installation)&nbsp;\|
 [Example application](#example-application)&nbsp;\|
+[Interface to a Vim plug-in](#interface-to-a-vim-plug-in)&nbsp;\|
 [Filter actions](#filter-actions)&nbsp;\|
 [Usage under Windows](#usage-under-windows)&nbsp;\|
 [Inclusion of own macros](#inclusion-of-own-macros)&nbsp;\|
@@ -253,6 +254,19 @@ In case of multiple input files, the HTML report starts with an index.
 [Back to top](#yalafi-yet-another-latex-filter)
 
 
+## Interface to a Vim plug-in
+
+For the Vim plug-in [vim-grammarous](https://github.com/rhysd/vim-grammarous),
+it should be possible to provide an interface for checking LaTeX texts.
+With an entry in \~/.vimrc, one can simply replace the command that
+invokes LanguageTool.
+In the best case, it is enough to add in yalafi.shell an option for XML output
+that is expected by vim-grammarous (emulation of LT's option --api).
+We will try that out.
+
+[Back to top](#yalafi-yet-another-latex-filter)
+
+
 ## Filter actions
 
 Here is a list of the most important filter operations.
@@ -321,7 +335,7 @@ or
 if the Python launcher has not been installed.
 
 Possible encoding issues related to Windows are addressed in
-[Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#encoding-problems)).
+[Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#encoding-problems).
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -602,7 +616,6 @@ described in section
 Invocation of `python -m yalafi ...` differs as follows from
 `python tex2txt.py ...` (the script described in
 [Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#command-line)).
-
 
 - Option --defs expects a file containing macro definitions as LaTeX code.
 - Option --ienc is also effective for file from --defs.
