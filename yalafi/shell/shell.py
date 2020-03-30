@@ -121,16 +121,18 @@ import urllib.parse
 import urllib.request
 import time
 import signal
+import xml.etree.ElementTree as ET
 
 # parse command line
 #
 parser = argparse.ArgumentParser()
-parser.add_argument('--html', action='store_true')
+parser.add_argument('--output', choices=['plain', 'html', 'xml'],
+                                                    default='plain')
 parser.add_argument('--link', action='store_true')
 parser.add_argument('--context', type=int)
 parser.add_argument('--include', action='store_true')
 parser.add_argument('--skip')
-parser.add_argument('--plain', action='store_true')
+parser.add_argument('--plain-input', action='store_true')
 parser.add_argument('--list-unknown', action='store_true')
 parser.add_argument('--language')
 parser.add_argument('--t2t-lang')
@@ -173,8 +175,9 @@ if cmdline.context < 0:
     cmdline.context = int(1e8)
 if cmdline.server is not None and cmdline.server not in ('lt', 'my', 'stop'):
     tex2txt.fatal('mode for --server has to be one of lt, my, stop')
-if cmdline.plain and (cmdline.include or cmdline.replace):
-    tex2txt.fatal('cannot handle --plain together with --include or --replace')
+if cmdline.plain_input and (cmdline.include or cmdline.replace):
+    tex2txt.fatal('cannot handle --plain-input together with'
+                                        + ' --include or --replace')
 if cmdline.single_letters and cmdline.single_letters.endswith('||'):
     cmdline.single_letters += equation_replacements
 if cmdline.replace:
@@ -294,7 +297,7 @@ def run_proofreader(file):
     if not tex.endswith('\n'):
         tex += '\n'
 
-    if cmdline.plain:
+    if cmdline.plain_input:
         (plain, charmap) = (tex, list(range(1, len(tex) + 1)))
     else:
         (plain, charmap) = tex2txt.tex2txt(tex, options)
@@ -574,7 +577,7 @@ def create_message(m, rule, msg, repl):
         'offset': offset,
         'length': length,
         'context': create_context(m.string, offset, length),
-        'rule': {'id': rule},
+        'rule': {'id': rule, 'category': {'name': 'Problem'}},
         'message': msg,
         'replacements': [{'value': repl}],
     }
@@ -642,7 +645,7 @@ def output_list_unknown(unkn, file):
     print(unkn)
 
 
-if not cmdline.html or cmdline.list_unknown:
+if cmdline.output == 'plain' or cmdline.list_unknown:
     if cmdline.server == 'lt':
         sys.stderr.write(msg_LT_server_txt)
     for file in cmdline.file:
@@ -651,6 +654,71 @@ if not cmdline.html or cmdline.list_unknown:
             output_list_unknown(plain, file)
         else:
             output_text_report(tex, plain, charmap, matches, file)
+    sys.exit()
+
+
+#####################################################################
+#
+#   XML report for vim-grammarous
+#
+#####################################################################
+
+#   - XXX: some code duplication with begin_match()
+#
+def output_xml_report(tex, plain, charmap, matches, file, out):
+    starts = tex2txt.get_line_starts(plain)
+    out.write('<matches>\n')
+    for m in matches:
+        offset = json_get(m, 'offset', int)
+        lin = plain.count('\n', 0, offset) + 1
+        nl = plain.rfind('\n', 0, offset) + 1
+        col = offset - nl + 1
+        lc = tex2txt.translate_numbers(tex, plain, charmap, starts, lin, col)
+        fromy = lc.lin - 1
+        fromx = lc.col - 1
+
+        length = json_get(m, 'length', int)
+        end = offset + length - 1
+        lin = plain.count('\n', 0, end) + 1
+        nl = plain.rfind('\n', 0, end) + 1
+        col = end - nl + 1
+        lc = tex2txt.translate_numbers(tex, plain, charmap, starts, lin, col)
+        toy = lc.lin - 1
+        tox = lc.col
+
+        rule = json_get(m, 'rule', dict)
+        category = json_get(rule, 'category', dict)
+        category = json_get(category, 'name', str)
+        message = json_get(m, 'message', str)
+        repls = '#'.join(json_get(r, 'value', str)
+                                for r in json_get(m, 'replacements', list))
+        cont = json_get(m, 'context', dict)
+        cont_text = json_get(cont, 'text', str)
+        cont_offset = json_get(cont, 'offset', int)
+        cont_length = json_get(cont, 'length', int)
+
+        xml = {
+            'fromy': str(fromy), 'fromx': str(fromx),
+            'toy': str(toy), 'tox': str(tox),
+            'category': category,
+            'msg': message,
+            'replacements': repls,
+            'context': cont_text,
+            'contextoffset': str(cont_offset),
+            'errorlength': str(cont_length),
+        }
+        s = ET.tostring(ET.Element('error', xml), encoding='unicode') + '\n'
+        out.write(s)
+    out.write('</matches>\n')
+
+
+if cmdline.output == 'xml':
+    if cmdline.server == 'lt':
+        sys.stderr.write(msg_LT_server_txt)
+    out = open(sys.stdout.fileno(), mode='w', encoding='utf-8')
+    for file in cmdline.file:
+        (tex, plain, charmap, matches) = run_proofreader(file)
+        output_xml_report(tex, plain, charmap, matches, file, out)
     sys.exit()
 
 
