@@ -12,7 +12,7 @@ file = directory + 'latex'
 
 server_cmd = 'python ' + directory + 'lt-server.py'
 shell_cmd = 'python -m yalafi.shell --server my ' + file + '.tex'
-shell_cmd_html = shell_cmd + ' --html'
+shell_cmd_html = shell_cmd + ' --output html'
 server_stop = 'http://localhost:8081/stop'
 
 
