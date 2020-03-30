@@ -3,7 +3,7 @@
 
 [Installation](#installation)&nbsp;\|
 [Example application](#example-application)&nbsp;\|
-[Interface to a Vim plug-in](#interface-to-a-vim-plug-in)&nbsp;\|
+[Interface to Vim](#interface-to-vim)&nbsp;\|
 [Filter actions](#filter-actions)&nbsp;\|
 [Usage under Windows](#usage-under-windows)&nbsp;\|
 [Inclusion of own macros](#inclusion-of-own-macros)&nbsp;\|
@@ -47,7 +47,7 @@ Only few people is lazy.    We use redx colour.
                 ^^
 ```
 <a name="example-html-report"></a>
-Run with option --html, the script produces an HTML report:
+Run with option '--output html', the script produces an HTML report:
 
 ![HTML report](shell.png)
 
@@ -109,8 +109,8 @@ Both LT and the script will print some progress messages to stderr.
 They can be suppressed with `python ... 2>/dev/null`.
 ```
 python -m yalafi.shell
-                [--html] [--link] [--context number]
-                [--include] [--skip regex] [--plain] [--list-unknown]
+                [--output mode] [--link] [--context number]
+                [--include] [--skip regex] [--plain-input] [--list-unknown]
                 [--language lang] [--t2t-lang lang] [--encoding ienc]
                 [--replace file] [--define file] [--python-defs module]
                 [--extract macros] [--disable rules] [--lt-options opts]
@@ -123,8 +123,10 @@ Option names may be abbreviated.
 If present, options are also read from a configuration file designated
 by script variable config\_file (one option per line, possibly with argument).
 Default option values are set at the Python script beginning.
-- option `--html`:<br>
-  generate HTML report; see below for further details
+- option `--output mode`:<br>
+  mode is one of plain, html, xml; default: plain; html: generate HTML report,
+  see below for further details; xml: for Vim plug-in, compare section
+  [Interface to Vim](#interface-to-vim)
 - option `--link`:<br>
   if HTML report : left-click on a highlighted text part opens Web link
   provided by LT
@@ -137,7 +139,7 @@ Default option values are set at the Python script beginning.
 - option `--skip regex`:<br>
   skip files matching the given regular expression;
   useful, e.g., for exclusion of figures on option --include
-- option `--plain`:<br>
+- option `--plain-input`:<br>
   assume plain-text input: no evaluation of LaTeX syntax;
   cannot be used together with option --include or --replace
 - option `--list-unknown`:<br>
@@ -254,15 +256,28 @@ In case of multiple input files, the HTML report starts with an index.
 [Back to top](#yalafi-yet-another-latex-filter)
 
 
-## Interface to a Vim plug-in
+## Interface to Vim
 
 For the Vim plug-in [vim-grammarous](https://github.com/rhysd/vim-grammarous),
-it should be possible to provide an interface for checking LaTeX texts.
+it is possible to provide an interface for checking LaTeX texts.
 With an entry in \~/.vimrc, one can simply replace the command that
 invokes LanguageTool.
-In the best case, it is enough to add in yalafi.shell an option for XML output
-that is expected by vim-grammarous (emulation of LT's option --api).
-We will try that out.
+
+For instance, you can add to your \~/.vimrc
+```
+let g:grammarous#languagetool_cmd = '/home/myself/bin/yalafi-vim-grammarous'
+map <F9> :GrammarousCheck<CR>
+```
+The file /home/myself/bin/yalafi-vim-grammarous has to be made executable
+with `chmod +x ...` and could look like ('\{\!\#\}' is the last positional
+parameter)
+```
+#!/bin/bash
+python -m yalafi.shell --server my --output xml ${!#} 2>/dev/null
+```
+Here is the [introductory example](#example-html-report) from above:
+
+![Vim plug-in](vim-plug-in.png)
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -326,11 +341,11 @@ Both yalafi.shell and yalafi can be used directly in a Windows command
 script or console.
 For example, this could look like
 ```
-py -3 -m yalafi.shell --html t.tex > t.html
+py -3 -m yalafi.shell --output html t.tex > t.html
 ```
 or
 ```
-"c:\Program Files\Python\Python37\python.exe" -m yalafi.shell --html t.tex > t.html
+"c:\Program Files\Python\Python37\python.exe" -m yalafi.shell --output html t.tex > t.html
 ```
 if the Python launcher has not been installed.
 
@@ -641,7 +656,7 @@ is around 1050 for Tex2txt/tex2txt.py and 1300 for yalafi/\*.py in total.
 
 With
 ```
-python -m yalafi.shell --equation-punct all --html test.tex > test.html
+python -m yalafi.shell --equation-punct all --output html test.tex > test.html
 ```
 and input 
 ```

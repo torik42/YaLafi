@@ -1,3 +1,12 @@
+Work in progress
+----------------
+- yalafi.shell
+    - added output in XML format for vim-grammarous
+    - removed option --html
+    - added option '--output mode', mode value in plain, html, xml
+    - changed option name --plain to --plain-input
+- README.md: updated
+
 Version 0.3.0
 -------------
 - added replication of punctuation marks at specified \\item labels
