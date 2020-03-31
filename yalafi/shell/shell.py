@@ -34,7 +34,8 @@
 #   under Cygwin the Windows version is used
 #
 ltdirectory = '../LT/LanguageTool-4.7/'
-ltcommand = 'java -jar ' +  ltdirectory + 'languagetool-commandline.jar'
+ltcommand = lambda: ('java -jar ' +  cmdline.lt_directory
+                                + 'languagetool-commandline.jar')
 
 # on option --server lt: address of server hosted by LT
 #
@@ -53,6 +54,7 @@ config_file = '.t2t-shell'
 
 # default option values
 #
+default_option_lt_directory = ltdirectory
 default_option_language = 'en-GB'
 default_option_encoding = 'utf-8'
 default_option_disable = 'WHITESPACE_RULE'
@@ -126,6 +128,7 @@ import xml.etree.ElementTree as ET
 # parse command line
 #
 parser = argparse.ArgumentParser()
+parser.add_argument('--lt-directory', default=default_option_lt_directory)
 parser.add_argument('--output', choices=['plain', 'html', 'xml'],
                                                     default='plain')
 parser.add_argument('--link', action='store_true')
@@ -160,6 +163,8 @@ except:
     config = []
 cmdline = parser.parse_args(config + sys.argv[1:])
 
+if not cmdline.lt_directory.endswith('/'):
+    cmdline.lt_directory += '/'
 if cmdline.language is None:
     cmdline.language = default_option_language
 if cmdline.t2t_lang is None:
@@ -211,7 +216,7 @@ if cmdline.server == 'stop':
 
 # complement LT options
 #
-ltcommand = ltcommand.split() + ['--json', '--encoding', 'utf-8',
+ltcommand = ltcommand().split() + ['--json', '--encoding', 'utf-8',
                             '--language', cmdline.language]
 if cmdline.disable:
     ltcommand += ['--disable', cmdline.disable]
@@ -415,14 +420,14 @@ def start_local_lt_server():
     if check_server():
         return
     try:
-        subprocess.Popen(ltserver_local_cmd.split(), cwd=ltdirectory,
+        subprocess.Popen(ltserver_local_cmd.split(), cwd=cmdline.lt_directory,
                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except:
         tex2txt.fatal('error running "' + ltserver_local_cmd + '"')
 
     # wait for server to be available
     #
-    sys.stderr.write('=== starting local LT server at "' + ltdirectory
+    sys.stderr.write('=== starting local LT server at "' + cmdline.lt_directory
                         + '":\n=== ' + ltserver_local_cmd + ' ')
     sys.stderr.flush()
     for x in range(20):
