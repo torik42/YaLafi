@@ -102,13 +102,13 @@ It is best called as module as shown below, but can also be placed elsewhere
 and invoked as script.
 On option '--server lt', LT's Web server is contacted.
 Otherwise, [Java](https://java.com) has to be present, and
-the path to LT has to be customised in script variable 'ltdirectory';
-compare the corresponding comment in script.
+the path to LT has to be specified with --lt-directory.
 Note that from version 4.8, LT does not fully support 32-bit systems any more.
 Both LT and the script will print some progress messages to stderr.
 They can be suppressed with `python ... 2>/dev/null`.
 ```
 python -m yalafi.shell
+                [--lt-directory dir]
                 [--output mode] [--link] [--context number]
                 [--include] [--skip regex] [--plain-input] [--list-unknown]
                 [--language lang] [--t2t-lang lang] [--encoding ienc]
@@ -123,6 +123,10 @@ Option names may be abbreviated.
 If present, options are also read from a configuration file designated
 by script variable config\_file (one option per line, possibly with argument).
 Default option values are set at the Python script beginning.
+- option `--lt-directory dir`:<br>
+  directory of the local LT installation; for instance, it has to contain
+  'languagetool-server.jar';
+  compare the comment at script variable 'ltdirectory' (the default value)
 - option `--output mode`:<br>
   mode is one of plain, html, xml; default: plain; html: generate HTML report,
   see below for further details; xml: for Vim plug-in, compare section
@@ -269,11 +273,13 @@ let g:grammarous#languagetool_cmd = '/home/myself/bin/yalafi-vim-grammarous'
 map <F9> :GrammarousCheck --lang=en-GB<CR>
 ```
 The file /home/myself/bin/yalafi-vim-grammarous has to be made executable
-with `chmod +x ...` and could look like
-(vim-grammarous passes $2: disabled rules, $6: language, $8: temporary file)
+with `chmod +x ...` and could look as follows.
+In this snippet, `[ltdir]` is something like
+`/home/myself/lib/LanguageTool-4.9/`, and
+vim-grammarous passes $2: disabled rules, $6: language, $8: temporary file.
 ```
 #!/bin/bash
-python -m yalafi.shell --serv my --out xml --disa $2 --lang $6 $8 2>/dev/null
+python -m yalafi.shell --serv my --out xml --lt-dir [ltdir] --disa $2 --lang $6 $8 2>/dev/null
 ```
 Here is the [introductory example](#example-html-report) from above:
 
