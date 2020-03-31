@@ -266,14 +266,14 @@ invokes LanguageTool.
 For instance, you can add to your \~/.vimrc
 ```
 let g:grammarous#languagetool_cmd = '/home/myself/bin/yalafi-vim-grammarous'
-map <F9> :GrammarousCheck<CR>
+map <F9> :GrammarousCheck --lang=en-GB<CR>
 ```
 The file /home/myself/bin/yalafi-vim-grammarous has to be made executable
-with `chmod +x ...` and could look like ('\{\!\#\}' is the last positional
-parameter)
+with `chmod +x ...` and could look like
+(vim-grammarous passes $2: disabled rules, $6: language, $8: temporary file)
 ```
 #!/bin/bash
-python -m yalafi.shell --server my --output xml ${!#} 2>/dev/null
+python -m yalafi.shell --serv my --out xml --disa $2 --lang $6 $8 2>/dev/null
 ```
 Here is the [introductory example](#example-html-report) from above:
 
