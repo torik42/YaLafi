@@ -1,10 +1,11 @@
-Work in progress
-----------------
+Version 0.3.1
+-------------
 - yalafi.shell
     - added output in XML format for vim-grammarous
     - removed option --html
     - added option '--output mode', mode value in plain, html, xml
     - changed option name --plain to --plain-input
+    - added option --lt-directory
 - README.md: updated
 
 Version 0.3.0
