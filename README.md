@@ -62,12 +62,18 @@ Application Python scripts like [yalafi/shell/shell.py](yalafi/shell/shell.py)
 from section [Example application](#example-application)
 can access an interface emulating tex2txt.py from repository Tex2txt by
 `from yalafi import tex2txt`.
-
 Direct usage as script is almost the same as for Tex2txt/tex2txt.py, compare
 [Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#command-line).
 Please note the difference for option --defs described in section
 [Differences to Tex2txt](#differences-to-tex2txt).
 Invocation: `python -m yalafi [options] [files]`
+
+If you use this tool and encounter a bug or have other suggestions
+for improvement, please leave a note under category [Issues](../../issues),
+or initiate a pull request.
+Many thanks in advance.
+
+Happy TeXing!
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -126,7 +132,9 @@ Default option values are set at the Python script beginning.
 - option `--lt-directory dir`:<br>
   directory of the local LT installation; for instance, it has to contain
   'languagetool-server.jar';
-  compare the comment at script variable 'ltdirectory' (the default value)
+  the LT zip archive, for example LanguageTool-4.9.zip, can be obtained
+  from the [LT download page](https://www.languagetool.org/download);
+  see also the comment at script variable 'ltdirectory' (the default value)
 - option `--output mode`:<br>
   mode is one of plain, html, xml; default: plain; html: generate HTML report,
   see below for further details; xml: for Vim plug-in, compare section
@@ -262,11 +270,11 @@ In case of multiple input files, the HTML report starts with an index.
 
 ## Interface to Vim
 
-For the Vim plug-in [vim-grammarous](https://github.com/rhysd/vim-grammarous),
+For the Vim plug-in
+[\[vim-grammarous\]](https://github.com/rhysd/vim-grammarous),
 it is possible to provide an interface for checking LaTeX texts.
-With an entry in \~/.vimrc, one can simply replace the command that
+With an entry in \~/.vimrc, one may simply replace the command that
 invokes LanguageTool.
-
 For instance, you can add to your \~/.vimrc
 ```
 let g:grammarous#languagetool_cmd = '/home/myself/bin/yalafi-vim-grammarous'
@@ -275,7 +283,8 @@ map <F9> :GrammarousCheck --lang=en-GB<CR>
 The file /home/myself/bin/yalafi-vim-grammarous has to be made executable
 with `chmod +x ...` and could look as follows.
 In this snippet, `[ltdir]` is something like
-`/home/myself/lib/LanguageTool-4.9/`, and
+`/home/myself/lib/LanguageTool-4.9/`
+(compare section [Example application](#example-application)), and
 vim-grammarous passes $2: disabled rules, $6: language, $8: temporary file.
 ```
 #!/bin/bash
@@ -654,8 +663,11 @@ Invocation of `python -m yalafi ...` differs as follows from
   'modify\_parameters(parms)' receiving the parameter object 'parms',
   compare the example in [definitions.py](definitions.py).
 
-YaLafi/yalafi/tex2txt.py is faster for input texts till about 20 Kilobytes,
-for larger files it may be much slower than Tex2txt/tex2txt.py.
+YaLafi/yalafi/tex2txt.py is faster for input texts till about 30 Kilobytes,
+for larger files it can be slower than 'Tex2txt/tex2txt.py --char'.
+Run-time increases quasi linearly with file size.
+Due to token generation for each single “normal” character, memory usage
+of YaLafi may be substantial for long input texts.
 
 Number of effective code lines (without blank and pure comment lines)
 is around 1050 for Tex2txt/tex2txt.py and 1300 for yalafi/\*.py in total.

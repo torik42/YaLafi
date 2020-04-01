@@ -1,3 +1,13 @@
+Work in progress
+----------------
+- speed optimisation
+    - for large input files, modifications at the start of the token list are
+      expensive, producing roughly quadratic run-time of the complete filter
+    - we now operate on reversed lists in class scanner.Buffer and in method
+      parser.Parser.remove\_pure\_action\_lines()
+    - result: faster, and run-time increases quasi linearly with file size
+- README.md: updated
+
 Version 0.3.1
 -------------
 - yalafi.shell
