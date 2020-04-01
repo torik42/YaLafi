@@ -146,6 +146,7 @@ class Scanner:
     #   scan \begin{verbatim} ... \end{verbatim}
     #
     def scan_verbatim(self, latex, start, mac):
+        # XXX: we do not account for % comments
         pos = next((i for i in range(start + len('\\begin'), self.max_pos)
                         if not latex[i].isspace()), self.max_pos)
         if (pos >= self.max_pos or latex.count('\n', start, pos) > 1
@@ -153,43 +154,43 @@ class Scanner:
             return defs.BeginToken(start, mac)
 
         pos += len('{verbatim}')
-        end = next((i for i in range(pos, self.max_pos)
-                    if latex.startswith('\\end{verbatim}', i)), self.max_pos)
-        if end >= self.max_pos:
+        end = latex.find('\\end{verbatim}', pos)
+        if end < 0:
             utils.latex_error('missing end of verbatim', start)
         self.pos = end + len('\\end{verbatim}')
         return defs.VerbatimToken(start, latex[pos:end], environ=True)
 
 
 #   token buffer that can push back tokens
+#   - use reversed token list to avoid pop / insert at list start
 #
 class Buffer:
     def __init__(self, tokens):
-        self.tokens = tokens
+        self.tokens = list(reversed(tokens))
 
     #   return list of all remaining tokens
     #
     def all(self):
-        return self.tokens
+        return list(reversed(self.tokens))
 
     #   return current token or None
     #
     def cur(self):
-        if len(self.tokens):
-            return self.tokens[0]
+        if self.tokens:
+            return self.tokens[-1]
         return None
 
     #   advance to next token, return it or None
     #
     def next(self):
-        if len(self.tokens):
-            self.tokens.pop(0)
+        if self.tokens:
+            self.tokens.pop()
         return self.cur()
 
     #   push back a list of tokens
     #
     def back(self, toks):
-        self.tokens[:0] = toks
+        self.tokens.extend(reversed(toks))
 
     #   skip space and comments (but not paragraphs)
     #

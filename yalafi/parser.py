@@ -377,16 +377,18 @@ class Parser:
         tok.can_end = True
         tokens.append(tok)
 
+        # avoid modifications at list begin (expensive for long lists)
+        tokens = list(reversed(tokens))
         out = []
         while tokens:
-            tok = tokens.pop(0)
+            tok = tokens.pop()
             if not tok.can_start:
                 out.append(tok)
                 continue
             buf = [tok]
             can_remove = True
             while tokens:
-                tok = tokens.pop(0)
+                tok = tokens.pop()
                 buf.append(tok)
                 if tok.can_end:
                     break
@@ -414,7 +416,7 @@ class Parser:
                     t2.pos += len(txt)
                 buf = [t1, t2]
             if len(buf) > 1:
-                tokens.insert(0, eval(buf.pop()))
+                tokens.append(eval(buf.pop()))
             out += buf
 
         return [t for t in out if t.txt]
