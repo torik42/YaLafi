@@ -1,5 +1,10 @@
 Work in progress
 ----------------
+- yalafi.shell
+    - option --lt-options: added passing of -l / --language to HTML request
+    - fixed problem with Java under Cygwin: always first go to LT's
+      directory, then start Java
+- fixed Issue #3, added Bash script yalafi-grammarous
 - speed optimisation
     - for large input files, modifications at the start of the token list are
       expensive, producing roughly quadratic run-time of the complete filter

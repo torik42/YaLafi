@@ -277,19 +277,15 @@ With an entry in \~/.vimrc, one may simply replace the command that
 invokes LanguageTool.
 For instance, you can add to your \~/.vimrc
 ```
-let g:grammarous#languagetool_cmd = '/home/myself/bin/yalafi-vim-grammarous'
+let g:grammarous#languagetool_cmd = '/home/myself/bin/yalafi-grammarous'
 map <F9> :GrammarousCheck --lang=en-GB<CR>
 ```
-The file /home/myself/bin/yalafi-vim-grammarous has to be made executable
-with `chmod +x ...` and could look as follows.
-In this snippet, `[ltdir]` is something like
-`/home/myself/lib/LanguageTool-4.9/`
-(compare section [Example application](#example-application)), and
-vim-grammarous passes $2: disabled rules, $6: language, $8: temporary file.
-```
-#!/bin/bash
-python -m yalafi.shell --serv my --out xml --lt-dir [ltdir] --disa $2 --lang $6 $8 2>/dev/null
-```
+A proposal for Bash script /home/myself/bin/yalafi-grammarous is given in
+[yalafi-grammarous](yalafi-grammarous).
+It has to be made executable with `chmod +x ...`.
+Please customise script variable `ltdir`, compare option --lt-directory
+in section [Example application](#example-application).
+
 Here is the [introductory example](#example-html-report) from above:
 
 ![Vim plug-in](vim-plug-in.png)
@@ -313,6 +309,8 @@ Here is a list of the most important filter operations.
 - text in heading macros as \\section\{...\} is extracted with
   added interpunction (suppresses false positives from LanguageTool)
 - suitable placeholders for \\ref, \\eqref, \\pageref, and \\cite
+- arguments of macros like \\footnote are appended to the main text,
+  separated by blank lines
 - inline maths material $...$ and \\(...\\) is replaced with text from
   rotating collection in 'Parameters.math\_repl\_inline' in
   file yalafi/parameters.py,
