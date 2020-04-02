@@ -34,8 +34,7 @@
 #   under Cygwin the Windows version is used
 #
 ltdirectory = '../LT/LanguageTool-4.7/'
-ltcommand = lambda: ('java -jar ' +  cmdline.lt_directory
-                                + 'languagetool-commandline.jar')
+ltcommand = 'java -jar languagetool-commandline.jar'
 
 # on option --server lt: address of server hosted by LT
 #
@@ -163,8 +162,6 @@ except:
     config = []
 cmdline = parser.parse_args(config + sys.argv[1:])
 
-if not cmdline.lt_directory.endswith('/'):
-    cmdline.lt_directory += '/'
 if cmdline.language is None:
     cmdline.language = default_option_language
 if cmdline.t2t_lang is None:
@@ -216,7 +213,7 @@ if cmdline.server == 'stop':
 
 # complement LT options
 #
-ltcommand = ltcommand().split() + ['--json', '--encoding', 'utf-8',
+ltcommand = ltcommand.split() + ['--json', '--encoding', 'utf-8',
                             '--language', cmdline.language]
 if cmdline.disable:
     ltcommand += ['--disable', cmdline.disable]
@@ -384,8 +381,9 @@ def run_languagetool(plain):
     else:
         # use local installation
         try:
-            out = subprocess.run(ltcommand, input=plain.encode('utf-8'),
-                                        stdout=subprocess.PIPE).stdout
+            out = subprocess.run(ltcommand, cwd=cmdline.lt_directory,
+                        input=plain.encode('utf-8'), stdout=subprocess.PIPE)
+            out = out.stdout
         except:
             tex2txt.fatal('error running "' + ltcommand[0] + '"')
 
