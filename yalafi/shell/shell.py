@@ -339,6 +339,7 @@ def run_proofreader(file):
 #
 lt_option_map = {
     # (HTML request field): ([list of CLI option names], # of arguments)
+    'language': (['--language', '-l'], 1),
     'disabledRules': (['--disable', '-d'], 1),
     'enabledRules': (['--enable', '-e'], 1),
     'enabledOnly': (['--enabledonly', '-eo'], 0),
