@@ -296,6 +296,12 @@ Here is the [introductory example](#example-html-report) from above:
 ## Filter actions
 
 Here is a list of the most important filter operations.
+When the filter encounters a LaTeX problem like a missing end of equation,
+a message is printed to stderr.
+Additionally, the message is included into the filter output together
+with the mark from 'Paramaters.mark\_latex\_error' in yalafi/parameters.py.
+This mark should raise a spelling error from the proofreader at the place
+where the problem was detected.
 
 - macro definitions with \\(re)newcommand in input text are processed,
   further flexible treatment of own macros with arbitrary arguments;

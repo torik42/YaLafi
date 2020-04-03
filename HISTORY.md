@@ -11,6 +11,8 @@ Work in progress
     - we now operate on reversed lists in class scanner.Buffer and in method
       parser.Parser.remove\_pure\_action\_lines()
     - result: faster, and run-time increases quasi linearly with file size
+- closed Issue #2, except: cannot gracefully recover from wrong parameters
+  of Python definitions in Macro() etc. in yalafi/paramters.py
 - README.md: updated
 
 Version 0.3.1
