@@ -220,6 +220,10 @@ class Parameters:
         #
         self.item_punctuation = ['.', ':', ',', ';', '!', '?']
 
+        #   mark for parsing problem, should raise message from proofreader
+        #
+        self.mark_latex_error = 'LATEXXXERROR'
+
         #   accent macros
         #
         self.accent_macros = {

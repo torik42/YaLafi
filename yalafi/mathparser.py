@@ -77,14 +77,16 @@ class MathParser:
                                         first_section, next_repl,
                                         self.parser.parms.math_repl_display)
             out += sec
-            if end.txt == '&':
+            if end and end.txt == '&':
                 out.append(defs.SpaceToken(out[-1].pos, ' ', pos_fix=True))
                 first_section = False
-            elif end.txt == '\\\\':
+            elif end and end.txt == '\\\\':
                 out.append(defs.SpaceToken(out[-1].pos, '\n  ', pos_fix=True))
                 first_section = True
             else:
                 break
+            if buf.cur():
+                start = buf.cur().pos
 
         if env.remove:
             txt = self.parser.get_text_direct(out).strip()
@@ -130,8 +132,11 @@ class MathParser:
         out = []
         while True:
             tok = buf.skip_space()
-            if not tok:
-                utils.latex_error('missing end of math', start)
+            if not tok or type(tok) is defs.ParagraphToken:
+                buf.next()
+                out = (utils.latex_error('missing end of maths', start,
+                                self.parser.latex, self.parser.parms) + out)
+                break
             elif tok.txt in toks_stop:
                 buf.next()
                 break

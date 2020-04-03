@@ -58,6 +58,7 @@ class Parser:
     #   scan and parse (expand) LaTeX string to tokens
     #
     def parse(self, latex, extract=None):
+        self.latex = latex
         toks = self.parms.scanner.scan(latex)
         if extract:
             self.init_extractions(extract)
@@ -196,7 +197,8 @@ class Parser:
                 return scanner.Buffer(out)
             out.append(tok)
             tok = buf.next()
-        utils.latex_error('cannot find closing ' + end, pos)
+        return scanner.Buffer(utils.latex_error('cannot find closing ' + end,
+                                            pos, self.latex, self.parms) + out)
 
     #   expand a "normal" macro
     #   Return: tokens to be inserted
@@ -289,15 +291,16 @@ class Parser:
             c = ' '.join(self.parms.accent_macros[tok.txt])
         else:
             if not ('a' <= c <= 'z' or 'A' <= c <= 'Z'):
-                utils.latex_error('text-mode accent for non-letter', tok.pos)
+                return utils.latex_error('text-mode accent for non-letter',
+                                            tok.pos, self.latex, self.parms)
             c = ('LATIN ' + ('SMALL' if c.islower() else 'CAPITAL')
                         + ' LETTER ' + c.upper() + ' WITH ' 
                         + self.parms.accent_macros[tok.txt][0])
         try:
             u = unicodedata.lookup(c)
         except:
-            utils.latex_error('could not find UTF-8 character "'
-                                            + c + '"', tok.pos)
+            return utils.latex_error('could not find UTF-8 character "' + c
+                                    + '"', tok.pos, self.latex, self.parms)
         return [defs.TextToken(tok.pos, u)] + args
 
     #   open an environment

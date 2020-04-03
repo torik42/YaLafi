@@ -130,16 +130,17 @@ class Scanner:
     #
     def scan_verb(self, latex, start):
         def verb_err():
-            utils.latex_error('bad \\verb argument', start)
+            return utils.latex_error('bad \\verb argument',
+                                        start, latex, self.parms)[0]
         start_arg = start + len('\\verb')
         if start_arg >= self.max_pos:
-            verb_err()
+            return verb_err()
         end_arg = latex[start_arg] + '\n'
         start_arg += 1
         self.pos = next((i for i in range(start_arg, self.max_pos)
                                 if latex[i] in end_arg), self.max_pos)
         if self.pos == self.max_pos or latex[self.pos] == '\n':
-            verb_err()
+            return verb_err()
         self.pos += 1
         return defs.VerbatimToken(start_arg, latex[start_arg:self.pos-1])
 
@@ -156,7 +157,8 @@ class Scanner:
         pos += len('{verbatim}')
         end = latex.find('\\end{verbatim}', pos)
         if end < 0:
-            utils.latex_error('missing end of verbatim', start)
+            return utils.latex_error('missing end of verbatim',
+                                            start, latex, self.parms)[0]
         self.pos = end + len('\\end{verbatim}')
         return defs.VerbatimToken(start, latex[pos:end], environ=True)
 

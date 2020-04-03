@@ -114,11 +114,11 @@ class Expandable(Printable):
                                     scanned=False, extract=''):
         def check(toks, args):
             for t in toks:
-                if (type(t) is ArgumentToken and
-                        (t.arg < 1 or t.arg > len(args))):
-                    utils.latex_error('illegal argument reference for '
-                                            + repr(name), 0)
+                assert type(t) is not ArgumentToken or 1<=t.arg<=len(args), \
+                    'illegal argument reference '+t.txt+' for '+repr(name)
             return toks
+        assert all(c in '*AO' for c in args), \
+                    'illegal argument code '+repr(args)+' for '+repr(name)
         self.name = name
         self.args = args
         self.extract = check(parms.scanner.scan(extract), args)

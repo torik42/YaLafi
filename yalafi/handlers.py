@@ -27,12 +27,14 @@ def h_newcommand(parser, buf, mac, args, pos):
     nargs = int(nargs) if nargs.isdecimal() else 0
     for a in [b for b in args[4] if type(b) is defs.ArgumentToken]:
         if a.arg < 1 or a.arg > nargs:
-            utils.latex_error('illegal argument #' + str(a.arg)
-                                + ' in definition of macro ' + name, a.pos)
+            return utils.latex_error('illegal argument #' + str(a.arg)
+                                + ' in definition of macro ' + name,
+                                        a.pos, parser.latex, parser.parms)
     if args[3]:
         if nargs < 1:
-            utils.latex_error('illegal default value in definition of macro '
-                                    + name, args[1][0].pos)
+            return utils.latex_error(
+                    'illegal default value in definition of macro ' + name,
+                            args[1][0].pos, parser.latex, parser.parms)
         parser.the_macros[name] = defs.Macro(parser.parms,
                                 name, args='O' + 'A' * (nargs - 1),
                                 repl=args[4], opts=[args[3]], scanned=True)

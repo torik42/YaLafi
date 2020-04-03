@@ -16,15 +16,26 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from . import parameters
+from . import defs, parameters
 import re
 import sys
 
 
-def latex_error(err, pos):
-    sys.stderr.write('\n*** LaTeX error:\n' + err
-                        + '\npos = ' + str(pos) + '\n')
-    sys.exit(1)
+#   print error message to stderr,
+#   return token sequence suitable to be inserted into filter output
+#
+def latex_error(err, pos, latex, parms):
+    lin = latex.count('\n', 0, pos) + 1
+    nl = latex.rfind('\n', 0, pos) + 1
+    col = pos - nl + 1
+    sys.stderr.write('*** LaTeX error: line ' + str(lin)
+                        + ', column ' + str(col) + ':\n*** ' + err + '\n')
+    mark = parms.mark_latex_error + ' (' + err + ')'
+    mx = min(len(mark), len(latex) - pos)
+    out = [defs.TextToken(pos, mark[:mx])]
+    if mx < len(mark):
+        out.append(defs.TextToken(pos + mx -1, mark[mx:], pos_fix=True))
+    return out
 
 def get_txt_pos(toks):
     txt = ''
