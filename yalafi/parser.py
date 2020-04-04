@@ -32,10 +32,7 @@ class Parser:
                                             for e in parms.environment_defs)
         self.mathparser = mathparser.MathParser(self)
         self.unknowns = []
-
-        # read macro definitions from LaTeX text
-        macs = parms.scanner.scan(parms.macro_defs_latex)
-        self.expand_sequence(scanner.Buffer(macs))
+        self.latex = ''
 
         # used by expand_item():
         self.item_macro = defs.Macro(parms, '\\item', args='O', repl='#1')
@@ -55,16 +52,30 @@ class Parser:
         ]
         self.verbatim_end = parms.scanner.scan('\\end{verbatim}')
 
+        # read macro definitions from LaTeX text
+        self.parser_work(parms.macro_defs_latex)
+
     #   scan and parse (expand) LaTeX string to tokens
     #
-    def parse(self, latex, extract=None):
+    def parser_work(self, latex):
+        # save self.latex for nested calls, e.g. \LTmacros{}
+        latex_sav = self.latex
         self.latex = latex
         toks = self.parms.scanner.scan(latex)
+        toks = self.expand_sequence(scanner.Buffer(toks))
+        self.latex = latex_sav
+        return toks
+
+    #   main entry point
+    #
+    def parse(self, latex, extract=None):
         if extract:
             self.init_extractions(extract)
         self.extracted = []
         self.unknowns = []
-        main = self.expand_sequence(scanner.Buffer(toks))
+
+        main = self.parser_work(latex)
+
         if extract:
             main = []
         for extr in self.extracted:
