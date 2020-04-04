@@ -152,7 +152,8 @@ class MathParser:
             elif type(tok) is defs.MacroToken:
                 if tok.txt in parms.math_text_macros:
                     buf.next()
-                    out += parser.expand_sequence(parser.arg_buffer(buf))
+                    out += parser.expand_sequence(
+                                        parser.arg_buffer(buf, tok.pos))
                     continue
                 t = parser.expand_macro(buf, tok, True)
                 if tok.txt in parms.math_space:

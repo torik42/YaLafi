@@ -181,11 +181,10 @@ class Parser:
     #   - buffer will contain at least one token for position tracking
     #   - this also ensures that an empty option [] will be "something"
     #
-    def arg_buffer(self, buf, end='}'):
+    def arg_buffer(self, buf, start, end='}'):
         tok = buf.skip_space()
         if not tok:
-            # XXX: improve position estimation?
-            return scanner.Buffer([defs.VoidToken(0)])
+            return scanner.Buffer([defs.VoidToken(start)])
         if type(tok) is defs.ParagraphToken:
             return scanner.Buffer([defs.VoidToken(tok.pos)])
         if end == '}' and tok.txt != '{':
@@ -229,21 +228,28 @@ class Parser:
     def expand_arguments(self, buf, mac, start):
         arguments = []
         arguments_extr = []
+        pos = start
         for n, code in enumerate(mac.args):
             arg_extr = arg = []
             tok = buf.skip_space()
+            if tok:
+                pos = tok.pos
             if code == '*':
                 if tok and tok.txt == '*':
                     arg_extr = arg = [tok]
                     buf.next()
             elif code == 'O':
                 if tok and tok.txt == '[':
-                    arg_extr = arg = self.arg_buffer(buf, end=']').all()
+                    arg_extr = arg = self.arg_buffer(buf, pos, end=']').all()
                 else:
                     if n < len(mac.opts):
-                        arg = mac.opts[n]
+                        # NB: do not use positions from macro definition
+                        arg = [copy.copy(t) for t in mac.opts[n]]
+                        for t in arg:
+                            t.pos = pos
+                            t.pos_fix = True
             elif code == 'A':
-                arg_extr = arg = self.arg_buffer(buf).all()
+                arg_extr = arg = self.arg_buffer(buf, pos).all()
             else:
                 assert code in '*AO'
             arguments.append(arg)
@@ -287,7 +293,7 @@ class Parser:
 
     def expand_accent(self, buf, tok):
         buf.next()
-        args = self.expand_sequence(self.arg_buffer(buf))
+        args = self.expand_sequence(self.arg_buffer(buf, tok.pos))
         if not args or not args[0].txt:
             c = ''
         elif len(args[0].txt) == 1:
@@ -318,7 +324,7 @@ class Parser:
     #
     def begin_environment(self, buf, tok, math):
         out = [defs.ActionToken(tok.pos)]
-        name = self.get_environment_name(buf)
+        name = self.get_environment_name(buf, tok)
         if name not in self.the_environments:
             if not (math or name in self.unknowns):
                 self.unknowns.append(name)
@@ -341,7 +347,7 @@ class Parser:
     #   - second element of returned 2-tuple: reached env_stop
     #
     def end_environment(self, buf, tok, env_stop):
-        name = self.get_environment_name(buf)
+        name = self.get_environment_name(buf, tok)
         out = [defs.ActionToken(tok.pos)]
         if name in self.the_environments:
             env = self.the_environments[name]
@@ -351,9 +357,9 @@ class Parser:
                 out = [defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True)]
         return out, name == env_stop
 
-    def get_environment_name(self, buf):
+    def get_environment_name(self, buf, tok):
         buf.next()
-        return self.get_text_expanded(self.arg_buffer(buf).all())
+        return self.get_text_expanded(self.arg_buffer(buf, tok.pos).all())
 
     #   generate string from token sequence, without macro expansion
     #
