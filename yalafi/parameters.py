@@ -155,7 +155,7 @@ class Parameters:
         #   enumerate: generate 1., 2., 3., ...
         #
         def labs_enumerate(level):
-            if level == 1:
+            if level == 0:
                 n = 1
                 while True:
                     yield str(n) + '.'
@@ -166,11 +166,12 @@ class Parameters:
                     yield c + '.'
                     c = chr(ord(c) + 1) if c != 'z' else 'a'
 
-        #   itemize: use default label
+        #   itemize: use default labels
         #
         def labs_itemize(level):
             while True:
-                yield self.item_default_label
+                yield self.item_default_label[
+                            min(level, len(self.item_default_label) - 1)]
 
         self.environment_defs += [
 
@@ -211,9 +212,9 @@ class Parameters:
         #
         self.heading_punct = ['!', '?']
 
-        #   label for \item without [...]
+        #   labels for \item without [...] (may depend on nesting level)
         #
-        self.item_default_label = ''
+        self.item_default_label = ['']
 
         #   \item with [...] label: if text before ends with something
         #   from here, then append it to label

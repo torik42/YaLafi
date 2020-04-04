@@ -40,8 +40,8 @@ class Parser:
         # for savety: \item labels outside of any environment
         def labs_default(level):
             while True:
-                yield parms.item_default_label
-        self.item_lab_stack = [(labs_default(1), '')]
+                yield parms.item_default_label[0]
+        self.item_lab_stack = [(labs_default(0), '')]
 
         # for expansion of verbatim environment
         self.verbatim_begin = [
@@ -325,7 +325,7 @@ class Parser:
             return out
         env = self.the_environments[name]
         if env.items:
-            level = len([v for v in self.item_lab_stack if v[1] == name]) + 1
+            level = len([v for v in self.item_lab_stack if v[1] == name])
             self.item_lab_stack.append((env.items(level), name))
         if env.add_pars:
             out = [defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True)]
