@@ -41,7 +41,7 @@ Y
 """
 def test_2():
     parms = parameters.Parameters()
-    parms.item_default_label = '*'
+    parms.item_default_label = ['*']
     parms.item_punctuation = []
     p = parser.Parser(parms)
     toks = p.parse(latex_2)
@@ -72,9 +72,36 @@ plain_3 = r"""
 """
 def test_3():
     parms = parameters.Parameters()
-    parms.item_default_label = '*'
+    parms.item_default_label = ['*']
     p = parser.Parser(parms)
     toks = p.parse(latex_3)
     plain, pos = utils.get_txt_pos(toks)
     assert plain_3 == plain
+
+latex_4 = r"""
+\item A
+\begin{itemize}
+\item B
+\begin{itemize}
+\item C
+\end{itemize}
+\item D
+\end{itemize}
+E
+"""
+plain_4 = r"""
+ * A
+ * B
+ - C
+ * D
+E
+"""
+def test_4():
+    parms = parameters.Parameters()
+    parms.item_default_label = ['*', '-']
+    p = parser.Parser(parms)
+    toks = p.parse(latex_4)
+    plain, pos = utils.get_txt_pos(toks)
+    print(repr(plain))
+    assert plain_4 == plain
 
