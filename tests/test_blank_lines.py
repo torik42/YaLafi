@@ -34,3 +34,27 @@ def test_remove_blank_lines_left_by_macros():
     assert plain == 'a\nb\nc\n'
     assert nums == [1, 2, 12, 13, 21, 22]
 
+#   yalafi issue #5
+#
+latex_2 = r"""
+A
+\newcommand{\x}{}
+B
+\begin{xxx}
+\label{x}
+C
+\newcommand{\x}{}
+\newcommand{\y}{}
+\LTskip{X}
+D
+"""
+plain_2 = r"""
+A
+B
+C
+D
+"""
+def test_2():
+    plain, nums = tex2txt.tex2txt(latex_2, options)
+    assert plain_2 == plain
+
