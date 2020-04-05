@@ -5,14 +5,15 @@ Work in progress
     - fixed problem with Java under Cygwin: always first go to LT's
       directory, then start Java
 - fixed Issue #3, added Bash script yalafi-grammarous
+- closed Issue #2, except: cannot gracefully recover from wrong parameters
+  of Python definitions in Macro() etc. in yalafi/paramters.py
+- closed Issue #5
 - speed optimisation
     - for large input files, modifications at the start of the token list are
       expensive, producing roughly quadratic run-time of the complete filter
     - we now operate on reversed lists in class scanner.Buffer and in method
       parser.Parser.remove\_pure\_action\_lines()
     - result: faster, and run-time increases quasi linearly with file size
-- closed Issue #2, except: cannot gracefully recover from wrong parameters
-  of Python definitions in Macro() etc. in yalafi/paramters.py
 - renamed 'opts' parameter of Macro() etc. to 'defaults'
 - README.md: updated
 
