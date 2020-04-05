@@ -52,7 +52,7 @@ def test_2():
     parms = parameters.Parameters()
     parms.macro_defs_python.append(defs.Macro(parms,
                                     '\\xxx', args='OA', repl='a#1b',
-                                    opts=['X'], extract='a#1b#2'))
+                                    defaults=['X'], extract='a#1b#2'))
     p = parser.Parser(parms)
     toks = p.parse(latex_2)
     plain, pos = utils.get_txt_pos(toks)
