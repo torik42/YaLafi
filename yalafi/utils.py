@@ -37,6 +37,11 @@ def latex_error(err, pos, latex, parms):
         out.append(defs.TextToken(pos + mx -1, mark[mx:], pos_fix=True))
     return out
 
+def fatal(err):
+    sys.stderr.write('*** ' + sys.argv[0] + ': internal error:\n*** '
+                        + err + '\n')
+    sys.exit(1)
+
 def get_txt_pos(toks):
     txt = ''
     pos = []

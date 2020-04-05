@@ -37,7 +37,7 @@ def h_newcommand(parser, buf, mac, args, pos):
                             args[1][0].pos, parser.latex, parser.parms)
         parser.the_macros[name] = defs.Macro(parser.parms,
                                 name, args='O' + 'A' * (nargs - 1),
-                                repl=args[4], opts=[args[3]], scanned=True)
+                                repl=args[4], defaults=[args[3]], scanned=True)
     else:
         parser.the_macros[name] = defs.Macro(parser.parms,
                                 name, args='A' * nargs,

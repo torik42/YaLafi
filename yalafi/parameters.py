@@ -124,11 +124,11 @@ class Parameters:
 
         Environ(self, 'proof', args='O',
                             # Parser.expand_arguments() may skip space
-                            repl='#1.\n', opts=[self.proof_name]),
+                            repl='#1.\n', defaults=[self.proof_name]),
 
         #   theorem-style environments
         #   or simpler: Environ(self, 'theorem', args='O',
-        #                           repl='Theorem (#1). ', opts=['none']),
+        #                           repl='Theorem (#1). ', defaults=['none']),
         Environ(self, 'corollary', args='O', repl=thm('Corollary')),
         Environ(self, 'definition', args='O', repl=thm('Definition')),
         Environ(self, 'example', args='O', repl=thm('Example')),

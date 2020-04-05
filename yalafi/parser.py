@@ -144,9 +144,11 @@ class Parser:
                                                             tok.environ)
                 continue
             elif tok.txt == '$$' or tok.txt == '\\[':
-                assert self.parms.math_default_env in self.the_environments
+                if self.parms.math_default_env not in self.the_environments:
+                    utils.fatal('no environment for \'$$\' or \'\\[\'')
                 env = self.the_environments[self.parms.math_default_env]
-                assert type(env) is defs.EquEnv
+                if type(env) is not defs.EquEnv:
+                    utils.fatal(repr(env.name) + ' is not an EquEnv')
                 out += self.mathparser.expand_display_math(buf, tok, env)
                 continue
             elif type(tok) is defs.AccentToken:
@@ -242,16 +244,17 @@ class Parser:
                 if tok and tok.txt == '[':
                     arg_extr = arg = self.arg_buffer(buf, pos, end=']').all()
                 else:
-                    if n < len(mac.opts):
+                    if n < len(mac.defaults):
                         # NB: do not use positions from macro definition
-                        arg = [copy.copy(t) for t in mac.opts[n]]
+                        arg = [copy.copy(t) for t in mac.defaults[n]]
                         for t in arg:
                             t.pos = pos
                             t.pos_fix = True
             elif code == 'A':
                 arg_extr = arg = self.arg_buffer(buf, pos).all()
             else:
-                assert code in '*AO'
+                utils.fatal('illegal arg code ' + repr(code)
+                                + ' of ' + repr(mac.name))
             arguments.append(arg)
             arguments_extr.append(arg_extr)
 
