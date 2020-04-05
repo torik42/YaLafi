@@ -437,8 +437,13 @@ class Parser:
                 else:
                     t2.txt = ''
                     t2.pos += len(txt)
-                buf = [t1, t2]
-            if len(buf) > 1:
+                buf = [t1]
+                tokens.append(eval(t2))
+                # NB: we deleted a line break
+                tok = eval(defs.TextToken(t2.pos, ''))
+                tok.can_start = True
+                tokens.append(tok)
+            elif len(buf) > 1:
                 tokens.append(eval(buf.pop()))
             out += buf
 
