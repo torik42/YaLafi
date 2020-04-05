@@ -13,6 +13,7 @@ Work in progress
     - result: faster, and run-time increases quasi linearly with file size
 - closed Issue #2, except: cannot gracefully recover from wrong parameters
   of Python definitions in Macro() etc. in yalafi/paramters.py
+- renamed 'opts' parameter of Macro() etc. to 'defaults'
 - README.md: updated
 
 Version 0.3.1

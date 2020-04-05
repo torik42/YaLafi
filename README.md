@@ -406,7 +406,7 @@ in yalafi/parameters.py.
 
 ### Definition of macros
 
-`Macro(parms, name, args='', repl='', opts=[], extract='')`
+`Macro(parms, name, args='', repl='', defaults=[], extract='')`
 
 - `parms`: current object of type Parameters
 - `name`: macro name with '\\'
@@ -418,7 +418,7 @@ in yalafi/parameters.py.
 - `repl`: replacement string as for \\newcommand ('*' does count as argument),
   or a function (see file [yalafi/handlers.py](yalafi/handlers.py)
   for examples)
-- `opts`: an optional list of replacement strings for absent optional
+- `defaults`: an optional list of replacement strings for absent optional
   arguments
 - `extract`: like `repl`, but the resulting text is appended to the main
   text, separated by blank lines; for an example, see declaration of macro
@@ -426,10 +426,10 @@ in yalafi/parameters.py.
 
 ### Definition of environments
 
-`Environ(parms, name, args='', repl='', opts='', remove=False, add_pars=True, items=None)`
+`Environ(parms, name, args='', repl='', defaults='', remove=False, add_pars=True, items=None)`
 
-Argument `parms` to `opts` are the same as for `Macro()`, where the arguments
-are those behind the opening '\\begin{xyz}'.
+Argument `parms` to `defaults` are the same as for `Macro()`, where the
+arguments are those behind the opening '\\begin{xyz}'.
 This means that the environment name 'xyz' does not yet count as argument
 in `args` and `repl`.
 
@@ -443,12 +443,12 @@ in `args` and `repl`.
 
 ### Definition of equation environments
 
-`EquEnv(parms, name, args='', repl='', opts='', remove=False)`
+`EquEnv(parms, name, args='', repl='', defaults='', remove=False)`
 
 This is equivalent to `Environ()`, but maths material is replaced according to
 section
 [Handling of displayed equations](#handling-of-displayed-equations).
-Replacements in `repl` and `opts` are still interpreted in text mode.
+Replacements in `repl` and `defaults` are still interpreted in text mode.
 
 - `remove`: if True, then a fixed replacement can be specified in `repl`,
 and trailing interpunction given by 'Parameters.math\_punctuation' in
@@ -674,7 +674,7 @@ Due to token generation for each single “normal” character, memory usage
 of YaLafi may be substantial for long input texts.
 
 Number of effective code lines (without blank and pure comment lines)
-is around 1050 for Tex2txt/tex2txt.py and 1300 for yalafi/\*.py in total.
+is around 1050 for Tex2txt/tex2txt.py and 1350 for yalafi/\*.py in total.
 
 With
 ```
