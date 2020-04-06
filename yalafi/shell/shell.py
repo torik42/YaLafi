@@ -307,6 +307,12 @@ def run_proofreader(file):
             # only look for unknown macros and environemnts
             return (tex, plain, charmap, [])
 
+    # see yalafi Issue #6
+    #
+    if not plain.endswith('\n'):
+        plain += '\n'
+        charmap.append(charmap[-1] if charmap else 1)
+
     # here, we could dispatch to other tools, see for instance
     #   - https://textgears.com/api
     #   - Python package prowritingaid.python
