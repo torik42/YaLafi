@@ -29,6 +29,12 @@
 from . import parameters, parser, utils
 
 def tex2txt(latex, opts):
+    def read(file):
+        try:
+            with open(file, encoding=opts.ienc) as f:
+                return True, f.read()
+        except:
+            return False, ''
     parms = parameters.Parameters(opts.lang)
     if opts.defs:
         parms.add_latex_macros(opts.defs)
@@ -39,7 +45,7 @@ def tex2txt(latex, opts):
         extr = ['\\' + s for s in opts.extr.split(',')]
     else:
         extr = []
-    p = parser.Parser(parms)
+    p = parser.Parser(parms, read_macros=read)
     toks = p.parse(latex, extract=extr)
     txt, pos = utils.get_txt_pos(toks)
     if opts.repl:
@@ -171,6 +177,7 @@ def read_definitions(fn, encoding):
 #
 class Options:
     def __init__(self,
+            ienc='utf-8',
             repl=None,      # or set by read_replacements()
             char=False,     # True: character position tracking
             defs=None,      # or set by read_definitions()
@@ -178,6 +185,7 @@ class Options:
             extr=None,      # or string: comma-separated macro list
             lang=None,      # or set to language code
             unkn=False):    # True: print unknowns
+        self.ienc = ienc
         self.repl = repl
         self.char = char
         self.defs = defs
@@ -209,6 +217,7 @@ def main():
         cmdline.ienc = 'utf-8'
 
     options = Options(
+                ienc=cmdline.ienc,
                 repl=read_replacements(cmdline.repl, encoding=cmdline.ienc),
                 char=cmdline.char,
                 defs=read_definitions(cmdline.defs, encoding=cmdline.ienc),

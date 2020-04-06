@@ -25,8 +25,9 @@ import unicodedata
 
 
 class Parser:
-    def __init__(self, parms):
+    def __init__(self, parms, read_macros=None):
         self.parms = parms
+        self.read_macros = read_macros
         self.the_macros = dict((m.name, m) for m in parms.macro_defs_python)
         self.the_environments = dict((e.name, e)
                                             for e in parms.environment_defs)

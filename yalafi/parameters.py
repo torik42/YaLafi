@@ -52,9 +52,6 @@ class Parameters:
         \newcommand{\L}{Ł}
         \newcommand{\l}{ł}
         \newcommand{\label}[1]{}
-        \newcommand{\LTadd}[1]{#1}
-        \newcommand{\LTalter}[2]{#2}
-        \newcommand{\LTskip}[1]{}
         \newcommand{\medspace}{ }
         \newcommand{\newline}{ }
         \newcommand{\O}{Ø}
@@ -101,6 +98,13 @@ class Parameters:
         Macro(self, '\\subsection', args='*OA', repl=hs.h_heading),
         Macro(self, '\\subsubsection', args='*OA', repl=hs.h_heading),
         Macro(self, '\\title', args='*OA', repl=hs.h_heading),
+
+        #   \LTadd etc.
+        #
+        Macro(self, self.macro_filter_add, args='A', repl='#1'),
+        Macro(self, self.macro_filter_alter, args='AA', repl='#2'),
+        Macro(self, self.macro_filter_skip, args='A', repl=''),
+        Macro(self, self.macro_read_macros, args='A', repl=hs.h_read_macros),
 
         Macro(self, '\\newcommand', args='*AOOA', repl=hs.h_newcommand),
         Macro(self, '\\renewcommand', args='*AOOA', repl=hs.h_newcommand),
@@ -224,6 +228,20 @@ class Parameters:
         #   mark for parsing problem, should raise message from proofreader
         #
         self.mark_latex_error = 'LATEXXXERROR'
+
+        self.macro_filter_add = '\\LTadd'
+        self.macro_filter_alter = '\\LTalter'
+        self.macro_filter_skip = '\\LTskip'
+        self.macro_read_macros = '\\LTmacros'
+
+        #   ignore re-definitions in LaTeX text for these macros:
+        #
+        self.newcommand_ignore = [
+            self.macro_filter_add,
+            self.macro_filter_alter,
+            self.macro_filter_skip,
+            self.macro_read_macros,
+        ]
 
         #   accent macros
         #

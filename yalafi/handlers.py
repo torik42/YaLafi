@@ -23,6 +23,8 @@ from . import utils
 #
 def h_newcommand(parser, buf, mac, args, pos):
     name = parser.get_text_direct(args[1])
+    if name in parser.parms.newcommand_ignore:
+        return []
     nargs = parser.get_text_expanded(args[2])
     nargs = int(nargs) if nargs.isdecimal() else 0
     for a in [b for b in args[4] if type(b) is defs.ArgumentToken]:
@@ -91,4 +93,17 @@ def h_cite(parser, buf, mac, args, pos):
         out = [defs.TextToken(pos, '[0]', pos_fix=True),
                     defs.ActionToken(pos)]
     return out
+
+#   macro \LTmacros: read macro definitions from file
+#
+def h_read_macros(parser, buf, mac, args, pos):
+    if not parser.read_macros:
+        return []
+    file = parser.get_text_expanded(args[0])
+    ok, latex = parser.read_macros(file)
+    if not ok:
+        return utils.latex_error('could not read file ' + repr(file),
+                                        pos, parser.latex, parser.parms)
+    parser.parser_work(latex)
+    return []
 
