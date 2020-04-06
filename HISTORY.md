@@ -9,6 +9,7 @@ Work in progress
 - fixed Issue #3, added Bash script yalafi-grammarous
 - closed Issue #4
 - fixed Issue #5
+- fixed Issue #6
 - speed optimisation
     - for large input files, modifications at the start of the token list are
       expensive, producing roughly quadratic run-time of the complete filter
