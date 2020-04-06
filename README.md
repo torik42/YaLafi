@@ -5,6 +5,7 @@
 [Example application](#example-application)&nbsp;\|
 [Interface to Vim](#interface-to-vim)&nbsp;\|
 [Filter actions](#filter-actions)&nbsp;\|
+[Principal limitations](#principal-limitations)&nbsp;\|
 [Usage under Windows](#usage-under-windows)&nbsp;\|
 [Inclusion of own macros](#inclusion-of-own-macros)&nbsp;\|
 [Package interface](#package-interface)&nbsp;\|
@@ -305,7 +306,8 @@ where the problem was detected.
 
 - macro definitions with \\(re)newcommand in input text are processed,
   further flexible treatment of own macros with arbitrary arguments;
-  see section [Inclusion of own macros](#inclusion-of-own-macros)
+  statement \\LTmacros{file.tex} reads macro definitions from given file;
+  see also section [Inclusion of own macros](#inclusion-of-own-macros)
 - “undeclared” macros are silently ignored, keeping their arguments
   with enclosing \{\} braces removed
 - frames \\begin\{...\} and \\end\{...\} of environments are deleted;
@@ -350,6 +352,27 @@ where the problem was detected.
   there; e.g., adding something that only the proofreader should see:
   \\newcommand{\\LTadd}\[1\]{}
 
+[Back to top](#yalafi-yet-another-latex-filter)
+
+
+## Principal limitations
+
+The implemented parsing mechanism can only roughly approximate the behaviour
+of a real LaTeX system.
+We assumed that only “reasonable” macros are used, lower-level TeX operations
+are not supported.
+If necessary, they should be placed in a LaTeX file “hidden” for the filter
+(compare option --skip of yalafi.shell in section
+[Example application](#example-application)).
+A list of remaining incompatibilities must contain at least the following
+points.
+
+- Mathematical material is represented by simple replacements.
+  As the main goal is application of proofreading software, we have
+  deliberately taken this approach.
+- Parsing does not cross file boundaries.
+  Tracking of file inclusions is possible though.
+- Macros depending on (spacing) lengths may be treated incorrectly.
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -380,7 +403,13 @@ Unknown macros and environment frames are silently ignored.
 As all input files are processed independently, it may be necessary to
 provide project-specific definitions in advance.
 
-For macros, which may be declared with \\newcommand, you can use options
+For macros, which may be declared with \\newcommand, application of
+`\\LTmacros{file.tex}` is a simple solution.
+This adds the macros defined in the given file.
+For the “real” LaTeX, it has to be defined as `\\newcommand{\\LTmacros}[1]{}`
+(this statement is ignored by the filter).
+
+If LaTeX files have to stay untouched, you can use options
 --defs and --define for yalafi and yalafi.shell, respectively.
 Alternatively, one can add the definitions to member
 'Parameters.macro\_defs\_latex' in file yalafi/parameters.py.
@@ -467,46 +496,53 @@ script tex2txt.py in repository Tex2txt.
 ```
  1  from . import parameters, parser, utils
  2  def tex2txt(latex, opts):
- 3      parms = parameters.Parameters(opts.lang)
- 4      if opts.defs:
- 5          parms.add_latex_macros(opts.defs)
- 6      if opts.pyth:
- 7          exec('import ' + opts.pyth)
- 8          exec(opts.pyth + '.modify_parameters(parms)')
- 9      if opts.extr:
-10          extr = ['\\' + s for s in opts.extr.split(',')]
-11      else:
-12          extr = []
-13      p = parser.Parser(parms)
-14      toks = p.parse(latex, extract=extr)
-15      txt, pos = utils.get_txt_pos(toks)
-16      if opts.repl:
-17          txt, pos = utils.replace_phrases(txt, pos, opts.repl)
-18      if opts.unkn:
-19          txt = '\n'.join(p.get_unknowns()) + '\n'
-20          pos = [0 for n in range(len(txt))]
-21      pos = [n + 1 for n in pos]
-22      return txt, pos
+ 3      def read(file):
+ 4          try:
+ 5              with open(file, encoding=opts.ienc) as f:
+ 6                  return True, f.read()
+ 7          except:
+ 8              return False, ''
+ 9      parms = parameters.Parameters(opts.lang)
+10      if opts.defs:
+11          parms.add_latex_macros(opts.defs)
+12      if opts.pyth:
+13          exec('import ' + opts.pyth)
+14          exec(opts.pyth + '.modify_parameters(parms)')
+15      if opts.extr:
+16          extr = ['\\' + s for s in opts.extr.split(',')]
+17      else:
+18          extr = []
+19      p = parser.Parser(parms, read_macros=read)
+20      toks = p.parse(latex, extract=extr)
+21      txt, pos = utils.get_txt_pos(toks)
+22      if opts.repl:
+23          txt, pos = utils.replace_phrases(txt, pos, opts.repl)
+24      if opts.unkn:
+25          txt = '\n'.join(p.get_unknowns()) + '\n'
+26          pos = [0 for n in range(len(txt))]
+27      pos = [n + 1 for n in pos]
+28      return txt, pos
 ```
-- 3: The created parameter object contains all default settings
+- 3-8: This is an auxiliary function for the parser.
+- 9: The created parameter object contains all default settings
   and definitions from file yalafi/parameters.py.
-- 5: If requested by script option --defs, additional macros are included
+- 11: If requested by script option --defs, additional macros are included
   from the string opts.defs.
-- 8: On option --pyth, we call a function to modify the parameter object,
+- 14: On option --pyth, we call a function to modify the parameter object,
   see file [definitions.py](definitions.py) for an example.
-- 9-12: If option --extr requests only extraction of arguments of certain
+- 15-18: If option --extr requests only extraction of arguments of certain
   macros, this is prepared.
-- 13-14: We create a parser object and call its parsing method
-  that returns a list of tokens.
-- 15: The token list is converted into a 2-tuple containing the plain-text
+- 19: We create a parser object, the passed function is called on \\LTmacros.
+- 20: The parsing method returns a list of tokens.
+- 21: The token list is converted into a 2-tuple containing the plain-text
   string and a list of numbers.
   Each number in the list indicates the estimated position of the
   corresponding character in the text string.
-- 17: If phrase replacements are requested by option --repl, this is done.
+- 23: If phrase replacements are requested by option --repl, this is done.
   String opts.repl contains the replacement specifications read from the file.
-- 19: On option --unkn, a list of unknown macros and environments is
+- 25: On option --unkn, a list of unknown macros and environments is
   generated.
-- 21: This is necessary, since position numbers are zero-based in yalafi,
+- 27: This is necessary, since position numbers are zero-based in yalafi,
   but one-based in Tex2txt/tex2txt.py.
 
 [Back to top](#yalafi-yet-another-latex-filter)
@@ -725,7 +761,7 @@ the scanner, but from an intermediate buffer that can take back tokens.
 On macro expansion, the parser simply pushes back all tokens generated by
 argument substitution.
 The result is close to the “real” TeX behaviour, compare the tests in
-[tests/test\_1.py](tests/test_1.py).
+directory tests/.
 
 A method important for simple implementation is 'Parser.arg\_buffer()'.
 It creates a new buffer that subsequently returns tokens forming a macro
