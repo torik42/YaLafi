@@ -1,15 +1,17 @@
-Work in progress
-----------------
+Version 0.4.0
+-------------
 - yalafi.shell
     - option --lt-options: added passing of -l / --language to HTML request
     - fixed problem with Java under Cygwin: always first go to LT's
       directory, then start Java
+    - fixed Issue #6
 - closed Issue #2, except: cannot gracefully recover from wrong parameters
   of Python definitions in Macro() etc. in yalafi/paramters.py
 - fixed Issue #3, added Bash script yalafi-grammarous
 - closed Issue #4
 - fixed Issue #5
-- fixed Issue #6
+- yalafi/mathparser.py: slightly improved character position tracking
+  in displayed equations
 - speed optimisation
     - for large input files, modifications at the start of the token list are
       expensive, producing roughly quadratic run-time of the complete filter
