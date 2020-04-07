@@ -67,7 +67,8 @@ and a small machinery for macro expansion are implemented; see sections
 [Differences to Tex2txt](#differences-to-tex2txt) and
 [Remarks on implementation](#remarks-on-implementation).
 
-Application Python scripts like [yalafi/shell/shell.py](yalafi/shell/shell.py)
+Beside the interface from section [Package interface](#package-interface),
+application Python scripts like [yalafi/shell/shell.py](yalafi/shell/shell.py)
 from section [Example application](#example-application)
 can access an interface emulating tex2txt.py from repository Tex2txt by
 `from yalafi import tex2txt`.
@@ -75,7 +76,7 @@ Direct usage as script is almost the same as for Tex2txt/tex2txt.py, compare
 [Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#command-line).
 Please note the difference for option --defs described in section
 [Differences to Tex2txt](#differences-to-tex2txt).
-Invocation: `python -m yalafi [options] [files]`
+Invocation as filter: `python -m yalafi [options] [files]`
 
 If you use this tool and encounter a bug or have other suggestions
 for improvement, please leave a note under category [Issues](../../issues),
@@ -308,7 +309,7 @@ Here is a list of the most important filter operations.
 When the filter encounters a LaTeX problem like a missing end of equation,
 a message is printed to stderr.
 Additionally, the message is included into the filter output together
-with the mark from 'Paramaters.mark\_latex\_error' in yalafi/parameters.py.
+with the mark from 'Parameters.mark\_latex\_error' in yalafi/parameters.py.
 This mark should raise a spelling error from the proofreader at the place
 where the problem was detected.
 
@@ -451,8 +452,8 @@ in yalafi/parameters.py.
     - 'A': mandatory argument, may be a single token or a sequence
       enclosed in {} braces
     - 'O': optional argument in \[\] brackets
-    - '*' optional asterisk
-- `repl`: replacement string as for \\newcommand ('*' does count as argument),
+    - '\*' optional asterisk
+- `repl`: replacement string as for \\newcommand ('\*' does count as argument),
   or a function (see file [yalafi/handlers.py](yalafi/handlers.py)
   for examples)
 - `defaults`: an optional list of replacement strings for absent optional
@@ -715,7 +716,7 @@ YaLafi/yalafi/tex2txt.py is faster for input texts till about 30 Kilobytes,
 for larger files it can be slower than 'Tex2txt/tex2txt.py --char'.
 Run-time increases quasi linearly with file size.
 Due to token generation for each single “normal” character, memory usage
-of YaLafi may be substantial for long input texts.
+may be substantial for long input texts.
 
 Number of effective code lines (without blank and pure comment lines)
 is around 1050 for Tex2txt/tex2txt.py and 1350 for yalafi/\*.py in total.
@@ -807,6 +808,8 @@ Displayed equations are parsed as follows.
   replacement.
 - Replacements from 'Parameters.math\_repl\_display' are rotated
     - if a non-blank \\text part is detected,
+    - if a “maths part” starts with an operator and is first in “section”,
+      but not on “line”
     - if a “maths part” only consists of an operator,
     - if a “maths part” includes trailing interpunction.
 
@@ -815,7 +818,7 @@ Displayed equations are parsed as follows.
 ### Removal of unnecessary blank lines
 
 In order to avoid creation of new blank lines by macros expanding to space or
-“nothing”, we include a special token of type 'ActionToken' whenever
+“nothing”, we include a token of type 'ActionToken' whenever
 expanding a macro.
 Method 'Parser.remove\_pure\_action\_lines()' removes all lines only
 containing space and at least one such token.
