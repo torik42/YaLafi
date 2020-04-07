@@ -42,15 +42,12 @@ class MathPartToken(defs.TextToken):
     def only_space(self):
         return all(type(t) is defs.MathSpaceToken for t in self.toks)
     def has_elem(self, parms):
-        return any(type(t) is defs.MathElemToken and
-                        t.txt not in parms.math_punctuation for t in self.toks)
+        return next((t for t in self.toks if type(t) is defs.MathElemToken
+                        and t.txt not in parms.math_punctuation), None)
     def leading_op(self):
-        toks = self.toks
-        pos = next((i for i in range(len(toks))
-                    if type(toks[i]) is not defs.MathSpaceToken), len(toks))
-        if pos < len(toks) and type(toks[pos]) is defs.MathOperToken:
-            return toks[pos]
-        return None
+        tok = next((t for t in self.toks
+                        if type(t) is not defs.MathSpaceToken), None)
+        return tok if type(tok) is defs.MathOperToken else None
     def last_char(self, parser):
         txt = parser.get_text_direct(self.toks)
         txt = txt.strip()
@@ -233,12 +230,13 @@ class MathParser:
             if not inline and first_part and op:
                 s = parms.math_op_text.get(op.txt, parms.math_op_text[None])
                 out.append(defs.SpaceToken(tok.pos, ' ', pos_fix=True))
-                out.append(defs.TextToken(tok.pos, s, pos_fix=True))
-                out.append(defs.SpaceToken(tok.pos, ' ', pos_fix=True))
+                out.append(defs.TextToken(op.pos, s, pos_fix=True))
+                out.append(defs.SpaceToken(op.pos, ' ', pos_fix=True))
             if inline or (next_repl or op and first_part) and elem:
                 repls[:] = repls[1:] + repls[:1]
             if inline or elem:
-                out.append(defs.TextToken(tok.pos, repls[0], pos_fix=True))
+                out.append(defs.TextToken(tok.pos if inline else elem.pos,
+                                                repls[0], pos_fix=True))
 
             next_repl = False
             c = tok.last_char(self.parser)
