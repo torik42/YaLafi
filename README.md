@@ -52,7 +52,15 @@ Run with option '--output html', the script produces an HTML report:
 
 ![HTML report](shell.png)
 
-YaLafi is similar to [Tex2txt](https://github.com/matze-dd/Tex2txt),
+In some sense, this project relates to software like
+[OpenDetex](https://github.com/pkubowicz/opendetex),
+[pandoc](https://github.com/jgm/pandoc),
+[plasTeX](https://github.com/tiarno/plastex),
+[pylatexenc](https://github.com/phfaist/pylatexenc),
+[TeXtidote](https://github.com/sylvainhalle/textidote), and
+[tex2txt](http://hackage.haskell.org/package/tex2txt).
+
+The tool builds on results from [Tex2txt](https://github.com/matze-dd/Tex2txt),
 but differs in the internal processing method.
 Instead of using recursive regular expressions, a simple tokeniser
 and a small machinery for macro expansion are implemented; see sections
@@ -368,7 +376,7 @@ A list of remaining incompatibilities must contain at least the following
 points.
 
 - Mathematical material is represented by simple replacements.
-  As the main goal is application of proofreading software, we have
+  As the main goal is application of a proofreading software, we have
   deliberately taken this approach.
 - Parsing does not cross file boundaries.
   Tracking of file inclusions is possible though.
@@ -403,11 +411,11 @@ Unknown macros and environment frames are silently ignored.
 As all input files are processed independently, it may be necessary to
 provide project-specific definitions in advance.
 
-For macros, which may be declared with \\newcommand, application of
-`\\LTmacros{file.tex}` is a simple solution.
-This adds the macros defined in the given file.
-For the “real” LaTeX, it has to be defined as `\\newcommand{\\LTmacros}[1]{}`
-(this statement is ignored by the filter).
+For macros, which may be declared with \\newcommand, you can apply
+`\LTmacros{file.tex}` as a simple solution.
+This adds the macros defined in the given file, skipping all other content.
+For the “real” LaTeX, the macro \\LTmacros has to be defined as
+`\newcommand{\LTmacros}[1]{}` that is in turn ignored by the filter.
 
 If LaTeX files have to stay untouched, you can use options
 --defs and --define for yalafi and yalafi.shell, respectively.
