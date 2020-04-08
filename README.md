@@ -14,8 +14,9 @@
 [Remarks on implementation](#remarks-on-implementation)
 
 This Python package extracts plain text from LaTeX documents.
-Due to the following characteristics, the software may be integrated with a
-proofreading tool:
+The software may be integrated with a proofreading tool and an editor.
+It provides
+
 - tracking of character positions during text manipulations,
 - simple inclusion of own LaTeX macros and environments with tailored
   treatment,
@@ -464,7 +465,7 @@ in yalafi/parameters.py.
 
 ### Definition of environments
 
-`Environ(parms, name, args='', repl='', defaults='', remove=False, add_pars=True, items=None)`
+`Environ(parms, name, args='', repl='', defaults=[], remove=False, add_pars=True, items=None)`
 
 Argument `parms` to `defaults` are the same as for `Macro()`, where the
 arguments are those behind the opening '\\begin{xyz}'.
@@ -481,7 +482,7 @@ in `args` and `repl`.
 
 ### Definition of equation environments
 
-`EquEnv(parms, name, args='', repl='', defaults='', remove=False)`
+`EquEnv(parms, name, args='', repl='', defaults=[], remove=False)`
 
 This is equivalent to `Environ()`, but maths material is replaced according to
 section
