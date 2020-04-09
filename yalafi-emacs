@@ -2,7 +2,7 @@
 
 #
 #   interface between Emacs-langtool and yalafi.shell
-#   - collect all options passed by vim-grammarous, except --api
+#   - collect all options passed by Emacs-langtool
 #   - languagetool-commandline.jar is a bit picky with repeated options
 #   - under Cygwin: correct name of temp file
 #
@@ -29,8 +29,7 @@ do
         # languagetool-commandline does not like multiple encoding specs
         # (yalafi.shell already includes --encoding utf-8)
         shift
-    elif [ X$1 != X--api ]
-    then
+    else
         opts+="$1 "
     fi
     shift
