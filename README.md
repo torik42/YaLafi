@@ -4,6 +4,7 @@
 [Installation](#installation)&nbsp;\|
 [Example application](#example-application)&nbsp;\|
 [Interface to Vim](#interface-to-vim)&nbsp;\|
+[Interface to Emacs](#interface-to-emacs)&nbsp;\|
 [Filter actions](#filter-actions)&nbsp;\|
 [Principal limitations](#principal-limitations)&nbsp;\|
 [Usage under Windows](#usage-under-windows)&nbsp;\|
@@ -288,18 +289,60 @@ With an entry in \~/.vimrc, one may simply replace the command that
 invokes LanguageTool.
 For instance, you can add to your \~/.vimrc
 ```
-let g:grammarous#languagetool_cmd = '/home/myself/bin/yalafi-grammarous'
+let g:grammarous#languagetool_cmd = '/home/foo/bin/yalafi-grammarous'
 map <F9> :GrammarousCheck --lang=en-GB<CR>
 ```
-A proposal for Bash script /home/myself/bin/yalafi-grammarous is given in
+A proposal for Bash script /home/foo/bin/yalafi-grammarous is given in
 [yalafi-grammarous](yalafi-grammarous).
 It has to be made executable with `chmod +x ...`.
-Please customise script variable `ltdir`, compare option --lt-directory
+Please adapt script variable `ltdir`, compare option --lt-directory
 in section [Example application](#example-application).
+If you do not want to start a local LT server, comment out the line
+defining variable `use_server`.
 
 Here is the [introductory example](#example-html-report) from above:
 
 ![Vim plug-in](vim-plug-in.png)
+
+[Back to top](#yalafi-yet-another-latex-filter)
+
+
+## Interface to Emacs
+
+(This is experimental.
+The application of LanguageTool's text interface can result in poor
+character position mapping.
+See [Issue #7](../../issues/7).)
+
+The Emacs plug-in
+[\[Emacs-langtool\]](https://github.com/mhayashi1120/Emacs-langtool)
+is used.
+For instance, you can add to your \~/.emacs
+```
+(setq langtool-bin "/home/foo/bin/yalafi-emacs")
+(setq langtool-default-language "en-GB")
+(setq langtool-disabled-rules "WHITESPACE_RULE")
+(require 'langtool)
+```
+A proposal for Bash script /home/foo/bin/yalafi-emacs is given in
+[yalafi-emacs](yalafi-emacs).
+It has to be made executable with `chmod +x ...`.
+Please adapt script variable `ltdir`, compare option --lt-directory
+in section [Example application](#example-application).
+If you do not want to start a local LT server, comment out the line
+defining variable `use_server`.
+
+**Installation of Emacs-langtool.**
+Download Emacs-langtool and place file langtool.el in directory
+\~/.emacs.d/lisp/.
+Set in your \~/.bash\_profile
+```
+export EMACSLOADPATH=~/.emacs.d/lisp:
+```
+
+Here is the [introductory example](#example-html-report) from above:
+
+![Emacs plug-in](emacs-plug-in.png)
 
 [Back to top](#yalafi-yet-another-latex-filter)
 

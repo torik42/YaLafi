@@ -1,3 +1,7 @@
+Work in progress
+----------------
+- added interface for Emacs-langtool
+
 Version 0.4.0
 -------------
 - yalafi.shell
