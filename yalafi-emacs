@@ -1,0 +1,57 @@
+#!/bin/bash
+
+#
+#   interface between Emacs-langtool and yalafi.shell
+#   - collect all options passed by vim-grammarous, except --api
+#   - languagetool-commandline.jar is a bit picky with repeated options
+#   - under Cygwin: correct name of temp file
+#
+
+#   LT's base directory
+#
+ltdir=~/lib/LanguageTool-4.7
+
+#   comment out to use languagetool-commandline
+#
+use_server="--server my"
+
+opts=x
+lang=en-GB
+while [ $# -gt 1 ]
+do
+    if [ X$1 == X-l ]
+    then
+        # languagetool-commandline does not like multiple language specs
+        shift
+        lang=$1
+    elif [ X$1 == X-c ]
+    then
+        # languagetool-commandline does not like multiple encoding specs
+        # (yalafi.shell already includes --encoding utf-8)
+        shift
+    elif [ X$1 != X--api ]
+    then
+        opts+="$1 "
+    fi
+    shift
+done
+
+repl_file='
+import re
+import sys
+file = sys.argv[1]
+file = re.sub(r"\\", r"/", file)
+file = re.sub(r"^(.):/", r"/cygdrive/\1/", file)
+sys.stdout.write(file)
+'
+if [[ "$OS" =~ Windows ]]
+then
+    # under Cygwin: correct name of temp file
+    file=$(python -c "$repl_file" $1)
+else
+    file=$1
+fi
+
+python -m yalafi.shell $use_server --output plain --language $lang \
+            --lt-directory $ltdir --lt-options "$opts" $file 2>/dev/null
+
