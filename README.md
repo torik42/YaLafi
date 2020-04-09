@@ -298,7 +298,12 @@ It has to be made executable with `chmod +x ...`.
 Please adapt script variable `ltdir`, compare option --lt-directory
 in section [Example application](#example-application).
 If you do not want to start a local LT server, comment out the line
-defining variable `use_server`.
+defining script variable `use_server`.
+
+**Installation of vim-grammarous.**
+Download and unzip vim-grammarous.
+Create a directory \~/.vim/pack/bundle/start/.
+Place vim-grammarous/ under this directory.
 
 Here is the [introductory example](#example-html-report) from above:
 
@@ -330,11 +335,11 @@ It has to be made executable with `chmod +x ...`.
 Please adapt script variable `ltdir`, compare option --lt-directory
 in section [Example application](#example-application).
 If you do not want to start a local LT server, comment out the line
-defining variable `use_server`.
+defining script variable `use_server`.
 
 **Installation of Emacs-langtool.**
-Download Emacs-langtool and place file langtool.el in directory
-\~/.emacs.d/lisp/.
+Download and unzip Emacs-langtool.
+Place file langtool.el in directory \~/.emacs.d/lisp/.
 Set in your \~/.bash\_profile
 ```
 export EMACSLOADPATH=~/.emacs.d/lisp:
