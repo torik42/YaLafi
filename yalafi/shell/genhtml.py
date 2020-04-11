@@ -257,6 +257,8 @@ def generate_html_report(run_proofreader):
         sys.stdout.write(r[2])
     sys.stdout.write(page_postfix)
 
+#   XXX: these should be passed
+#
 def init(vars):
     global json_get
     json_get = vars.json_get

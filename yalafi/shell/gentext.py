@@ -91,6 +91,8 @@ def generate_text_report(run_proofreader):
         else:
             output_text_report(tex, plain, charmap, matches, file)
 
+#   XXX: these should be passed
+#
 def init(vars):
     global cmdline
     cmdline = vars.cmdline

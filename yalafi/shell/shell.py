@@ -35,7 +35,7 @@
 #   under Cygwin the Windows version is used
 #
 ltdirectory = '../LT/LanguageTool-4.7/'
-ltcommand = 'java -jar languagetool-commandline.jar'
+ltcommand = 'java -jar languagetool-commandline.jar --json --encoding utf-8'
 
 # on option --server lt: address of server hosted by LT
 #
@@ -123,8 +123,8 @@ from yalafi import tex2txt
 #
 parser = argparse.ArgumentParser()
 parser.add_argument('--lt-directory', default=default_option_lt_directory)
-parser.add_argument('--as-server')
-parser.add_argument('--output', choices=['plain', 'html', 'xml'],
+parser.add_argument('--as-server', type=int)
+parser.add_argument('--output', choices=['plain', 'html', 'xml', 'json'],
                                                     default='plain')
 parser.add_argument('--link', action='store_true')
 parser.add_argument('--context', default=default_option_context, type=int)
@@ -139,11 +139,11 @@ parser.add_argument('--define')
 parser.add_argument('--python-defs')
 parser.add_argument('--extract')
 parser.add_argument('--disable', default=default_option_disable)
-parser.add_argument('--lt-options')
+parser.add_argument('--lt-options', default='')
 parser.add_argument('--single-letters')
 parser.add_argument('--equation-punctuation')
 parser.add_argument('--server', choices=['my', 'lt', 'stop'], default='')
-parser.add_argument('--lt-server-options')
+parser.add_argument('--lt-server-options', default='')
 parser.add_argument('--textgears')
 parser.add_argument('--no-config', action='store_true')
 parser.add_argument('file', nargs='*')
@@ -200,17 +200,6 @@ if cmdline.server == 'stop':
         sys.exit()
     tex2txt.fatal('could not kill LT server "' + ltserver_local_cmd + '"')
 
-# complement LT options
-#
-ltcommand = ltcommand.split() + ['--json', '--encoding', 'utf-8',
-                            '--language', cmdline.language]
-if cmdline.disable:
-    ltcommand += ['--disable', cmdline.disable]
-if cmdline.lt_options:
-    ltcommand += cmdline.lt_options[1:].split()
-ltcommand += ['-']
-if cmdline.lt_server_options:
-    ltserver_local_cmd += ' ' + cmdline.lt_server_options[1:]
 
 # on option --include: add included files to work list
 # otherwise: remove duplicates
@@ -304,6 +293,14 @@ vars.lt_option_map = lt_option_map
 from yalafi.shell import proofreader
 proofreader.init(vars)
 
+# run as server
+#
+if cmdline.as_server is not None:
+    from yalafi.shell import server
+    server.run_server('localhost', cmdline.as_server,
+                        proofreader.run_proofreader_options, lt_option_map)
+    sys.exit()
+
 # generate reports
 #
 if cmdline.output == 'plain' or cmdline.list_unknown:
@@ -318,4 +315,7 @@ elif cmdline.output == 'html':
     from yalafi.shell import genhtml
     genhtml.init(vars)
     genhtml.generate_html_report(proofreader.run_proofreader)
+elif cmdline.output == 'json':
+    from yalafi.shell import genjson
+    genjson.generate_json_report(cmdline, proofreader.run_proofreader)
 

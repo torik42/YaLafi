@@ -47,9 +47,16 @@ def run_proofreader(file):
     f.close()
     if not tex.endswith('\n'):
         tex += '\n'
+    return run_proofreader_options(tex, cmdline.language, cmdline.disable,
+                                cmdline.lt_options[1:].split())
+
+#   this can be used by a server
+#   - overwrite CLI options from from fields of HTML request
+#
+def run_proofreader_options(tex, language, disable, lt_options):
 
     t2t_options = tex2txt.Options(char=True, repl=cmdline.replace,
-                            defs=cmdline.define, lang=cmdline.language[:2],
+                            defs=cmdline.define, lang=language[:2],
                             extr=cmdline.extract, unkn=cmdline.list_unknown,
                             pyth=cmdline.python_defs)
 
@@ -74,7 +81,7 @@ def run_proofreader(file):
     if cmdline.textgears:
         matches = run_textgears(plain)
     else:
-        matches = run_languagetool(plain)
+        matches = run_languagetool(plain, language, disable, lt_options)
 
     matches += checks.create_single_letter_matches(plain, cmdline)
     matches += checks.create_equation_punct_messages(plain, cmdline,
@@ -96,7 +103,7 @@ def run_proofreader(file):
 
 #   run LT and return element 'matches' from JSON output
 #
-def run_languagetool(plain):
+def run_languagetool(plain, language, disable, lt_options):
     if cmdline.server:
         # use Web server hosted by LT or local server
         if cmdline.server == 'lt':
@@ -104,12 +111,12 @@ def run_languagetool(plain):
         else:
             start_local_lt_server()
             server = ltserver_local
-        data = {'text': plain, 'language': cmdline.language}
-        if cmdline.disable:
-            data['disabledRules'] = cmdline.disable
-        if cmdline.lt_options:
+        data = {'text': plain, 'language': language}
+        if disable:
+            data['disabledRules'] = disable
+        if lt_options:
             # translate options to entries in HTML request
-            ltopts = cmdline.lt_options[1:].split()
+            ltopts = lt_options
             for opt in lt_option_map:
                 entry = lt_option_map[opt]
                 if not any(s in ltopts for s in entry[0]):
@@ -130,12 +137,17 @@ def run_languagetool(plain):
             tex2txt.fatal('error connecting to "' + server + '"')
     else:
         # use local installation
+        lt_cmd = ltcommand.split() + ['--language', language]
+        if disable:
+            lt_cmd += ['--disable', disable]
+        lt_cmd += lt_options
+        lt_cmd.append('-')      # read from stdin
         try:
-            out = subprocess.run(ltcommand, cwd=cmdline.lt_directory,
+            out = subprocess.run(lt_cmd, cwd=cmdline.lt_directory,
                         input=plain.encode('utf-8'), stdout=subprocess.PIPE)
             out = out.stdout
         except:
-            tex2txt.fatal('error running "' + ltcommand[0] + '"')
+            tex2txt.fatal('error running "' + lt_cmd[0] + '"')
 
     out = out.decode(encoding='utf-8')
     try:
@@ -166,18 +178,21 @@ def start_local_lt_server():
         except:
             return False
 
+    server_cmd = ltserver_local_cmd
+    if cmdline.lt_server_options[1:]:
+        server_cmd += ' ' + cmdline.lt_server_options[1:]
     if check_server():
         return
     try:
-        subprocess.Popen(ltserver_local_cmd.split(), cwd=cmdline.lt_directory,
+        subprocess.Popen(server_cmd.split(), cwd=cmdline.lt_directory,
                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except:
-        tex2txt.fatal('error running "' + ltserver_local_cmd + '"')
+        tex2txt.fatal('error running "' + server_cmd + '"')
 
     # wait for server to be available
     #
     sys.stderr.write('=== starting local LT server at "' + cmdline.lt_directory
-                        + '":\n=== ' + ltserver_local_cmd + ' ')
+                        + '":\n=== ' + server_cmd + ' ')
     sys.stderr.flush()
     for x in range(20):
         time.sleep(0.5)
@@ -186,7 +201,7 @@ def start_local_lt_server():
             sys.stderr.write('\n') and sys.stderr.flush()
             return
     sys.stderr.write('\n')
-    tex2txt.fatal('error starting server "' + ltserver_local_cmd + '"')
+    tex2txt.fatal('error starting server "' + server_cmd + '"')
 
 
 #   contact TextGears server, translate JSON output to our format
@@ -226,6 +241,8 @@ def run_textgears(plain):
     return list(f(err) for err in json_get(dic, 'errors', list))
 
 
+#   XXX: these should be passed
+#
 def init(vars):
     global cmdline
     cmdline = vars.cmdline
