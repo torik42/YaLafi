@@ -1,6 +1,14 @@
 Work in progress
 ----------------
-- added interface for Emacs-langtool
+- yalafi.shell
+    - closed issue #7, option --as-server: emulate an LT server with
+      LaTeX filter
+    - added interface for Emacs-langtool
+    - added output mode --output json
+    - added option --no-config
+    - removed option --t2t-lang (just use 'en' on unknown language)
+    - subdivided yalafi/shell/shell.py into several files
+- README.md: updated
 
 Version 0.4.0
 -------------

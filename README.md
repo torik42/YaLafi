@@ -50,7 +50,9 @@ Only few people is lazy.    We use redx colour.
                 ^^
 ```
 <a name="example-html-report"></a>
-Run with option '--output html', the script produces an HTML report:
+The script can also emulate a LanguageTool server with integrated LaTeX filter
+(compare section [Interface to Emacs](#interface-to-emacs)),
+and it produces an HTML report when run with option '--output html':
 
 ![HTML report](shell.png)
 
@@ -112,7 +114,9 @@ You can find examples for tool integration with Bash scripts in
 [Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#tool-integration).
 
 Example Python script [yalafi/shell/shell.py](yalafi/shell/shell.py)
-has been copied with minor changes from repository Tex2txt.
+has been copied with minor changes from repository
+[Tex2txt](https://github.com/matze-dd/Tex2txt)
+and subdivided into several files.
 It will generate a proofreading report in text or HTML format from filtering
 the LaTeX input and application of
 [LanguageTool](https://www.languagetool.org) (LT).
@@ -126,20 +130,21 @@ Both LT and the script will print some progress messages to stderr.
 They can be suppressed with `python ... 2>/dev/null`.
 ```
 python -m yalafi.shell
-                [--lt-directory dir]
+                [--lt-directory dir] [--as-server port]
                 [--output mode] [--link] [--context number]
-                [--include] [--skip regex] [--plain-input] [--list-unknown]
-                [--language lang] [--t2t-lang lang] [--encoding ienc]
+                [--include] [--skip regex] [--plain-input]
+                [--list-unknown] [--language lang] [--encoding ienc]
                 [--replace file] [--define file] [--python-defs module]
                 [--extract macros] [--disable rules] [--lt-options opts]
                 [--single-letters accept] [--equation-punctuation mode]
                 [--server mode] [--lt-server-options opts]
-                [--textgears apikey]
+                [--textgears apikey] [--no-config]
                 latex_file [latex_file ...] [> text_or_html_file]
 ```
 Option names may be abbreviated.
-If present, options are also read from a configuration file designated
-by script variable config\_file (one option per line, possibly with argument).
+If option --no-config is not given and if present, options are also read
+from a configuration file designated by script variable config\_file
+(one option per line, possibly with argument).
 Default option values are set at the Python script beginning.
 - option `--lt-directory dir`:<br>
   directory of the local LT installation; for instance, it has to contain
@@ -147,10 +152,16 @@ Default option values are set at the Python script beginning.
   the LT zip archive, for example LanguageTool-4.9.zip, can be obtained
   from the [LT download page](https://www.languagetool.org/download);
   see also the comment at script variable 'ltdirectory' (the default value)
+- option `--as-server port`:<br>
+  emulate an LT server listening on the given port,
+  see section [Interface to Emacs](#interface-to-emacs) for an example;
+  fields of HTML requests (settings for language, rules, categories)
+  overwrite values given in command line;
+  the internally used proofreader is influenced by options like --server
 - option `--output mode`:<br>
-  mode is one of plain, html, xml; default: plain; html: generate HTML report,
-  see below for further details; xml: for Vim plug-in, compare section
-  [Interface to Vim](#interface-to-vim)
+  mode is one of plain, html, xml, json; default: plain;
+  html: generate HTML report, see below for further details;
+  xml: for Vim plug-in, compare section [Interface to Vim](#interface-to-vim)
 - option `--link`:<br>
   if HTML report : left-click on a highlighted text part opens Web link
   provided by LT
@@ -171,9 +182,8 @@ Default option values are set at the Python script beginning.
   maths parts
 - option `--language lang`:<br>
   language code as expected by LT, default: 'en-GB';
-  first two letters are passed to yalafi.tex2txt()
-- option `--t2t-lang lang`:<br>
-  overwrite option for yalafi.tex2txt() from --language
+  first two letters are passed to yalafi.tex2txt(), which uses 'en' in case
+  of unknown language
 - option `--encoding ienc`:<br>
   encoding for LaTeX input and files from options --define and --replace;
   default is UTF-8
@@ -248,6 +258,8 @@ Default option values are set at the Python script beginning.
   [https://textgears.com/signup.php?givemethatgoddamnkey=please](https://textgears.com/signup.php?givemethatgoddamnkey=please),
   but key 'DEMO\_KEY' seems to work for short input;
   server address is given by script variable textgears\_server
+- option `--no-config`:<br>
+  do not read config file
 
 **Dictionary adaptation.**
 LT evaluates the two files 'spelling.txt' and 'prohibit.txt' in directory
@@ -297,7 +309,7 @@ A proposal for Bash script /home/foo/bin/yalafi-grammarous is given in
 It has to be made executable with `chmod +x ...`.
 Please adapt script variable `ltdir`, compare option --lt-directory
 in section [Example application](#example-application).
-If you do not want to start a local LT server, comment out the line
+If you do not want to have started a local LT server, comment out the line
 defining script variable `use_server`.
 
 **Installation of vim-grammarous.**
@@ -314,15 +326,10 @@ Here is the [introductory example](#example-html-report) from above:
 
 ## Interface to Emacs
 
-(This is experimental.
-The application of LanguageTool's text interface can result in poor
-character position mapping.
-See [Issue #7](../../issues/7).)
-
 The Emacs plug-in
 [\[Emacs-langtool\]](https://github.com/mhayashi1120/Emacs-langtool)
-is used.
-For instance, you can add to your \~/.emacs
+may be used in two variants.
+First, you can add to your \~/.emacs
 ```
 (setq langtool-bin "/home/foo/bin/yalafi-emacs")
 (setq langtool-default-language "en-GB")
@@ -334,8 +341,30 @@ A proposal for Bash script /home/foo/bin/yalafi-emacs is given in
 It has to be made executable with `chmod +x ...`.
 Please adapt script variable `ltdir`, compare option --lt-directory
 in section [Example application](#example-application).
-If you do not want to start a local LT server, comment out the line
+If you do not want to have started a local LT server, comment out the line
 defining script variable `use_server`.
+
+**Server interface.**
+This variant may result in better tracking of character positions.
+In order to use it, you can write in \~/.emacs
+```
+(setq langtool-http-server-host "localhost"
+      langtool-http-server-port 8082)
+(setq langtool-default-language "en-GB")
+(setq langtool-disabled-rules "WHITESPACE_RULE")
+(require 'langtool)
+```
+and start yalafi.shell as server in another terminal with
+```
+$ python -m yalafi.shell --as-server 8082 [--lt-directory /path/to/LT]
+```
+The server will print some progress messages and can be stopped with CTRL-C.
+Further script arguments from section
+[Example application](#example-application)
+may be given.
+If you add, for instance, '--server my', then a local LT server will be used.
+It is started on the first HTML request received from Emacs-langtool,
+if it is not yet running.
 
 **Installation of Emacs-langtool.**
 Download and unzip Emacs-langtool.
@@ -417,7 +446,7 @@ where the problem was detected.
 
 The implemented parsing mechanism can only roughly approximate the behaviour
 of a real LaTeX system.
-We assumed that only “reasonable” macros are used, lower-level TeX operations
+We assume that only “reasonable” macros are used, lower-level TeX operations
 are not supported.
 If necessary, they should be placed in a LaTeX file “hidden” for the filter
 (compare option --skip of yalafi.shell in section
