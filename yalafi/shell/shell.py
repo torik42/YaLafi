@@ -302,20 +302,25 @@ if cmdline.as_server is not None:
     sys.exit()
 
 # generate reports
+# - ensure UTF-8 encoding for output (not standard with Windows Python)
 #
+out_utf8 = open(sys.stdout.fileno(), mode='w', encoding='utf-8')
+
 if cmdline.output == 'plain' or cmdline.list_unknown:
     from yalafi.shell import gentext
     gentext.init(vars)
-    gentext.generate_text_report(proofreader.run_proofreader)
+    # do not enforce UTF-8: we might be working in a Windows command console
+    gentext.generate_text_report(proofreader.run_proofreader, sys.stdout)
 elif cmdline.output == 'xml':
     from yalafi.shell import genxml
     genxml.init(vars)
-    genxml.generate_xml_report(proofreader.run_proofreader)
+    genxml.generate_xml_report(proofreader.run_proofreader, out_utf8)
 elif cmdline.output == 'html':
     from yalafi.shell import genhtml
     genhtml.init(vars)
-    genhtml.generate_html_report(proofreader.run_proofreader)
+    genhtml.generate_html_report(proofreader.run_proofreader, out_utf8)
 elif cmdline.output == 'json':
     from yalafi.shell import genjson
-    genjson.generate_json_report(cmdline, proofreader.run_proofreader)
+    genjson.generate_json_report(cmdline, proofreader.run_proofreader,
+                                                out_utf8)
 

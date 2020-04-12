@@ -78,10 +78,9 @@ def output_xml_report(tex, plain, charmap, matches, file, out):
     out.write('</matches>\n')
 
 
-def generate_xml_report(run_proofreader):
+def generate_xml_report(run_proofreader, out):
     if cmdline.server == 'lt':
         sys.stderr.write(msg_LT_server_txt)
-    out = open(sys.stdout.fileno(), mode='w', encoding='utf-8')
     for file in cmdline.file:
         (tex, plain, charmap, matches) = run_proofreader(file)
         output_xml_report(tex, plain, charmap, matches, file, out)

@@ -24,11 +24,10 @@
 ##################################################################
 
 import json
-import sys
 
 #   correct offset and length in each match
 #
-def output_json(latex, plain, charmap, matches, file):
+def output_json(latex, plain, charmap, matches, file, out):
     def f(m):
         beg = min(max(0, m['offset']), len(charmap) - 1)
         end = min(max(0, beg + m['length'] - 1), len(charmap) - 1)
@@ -36,10 +35,10 @@ def output_json(latex, plain, charmap, matches, file):
         m['length'] = abs(charmap[end]) - abs(charmap[beg]) + 1
         return m
     message = {'matches': [f(m) for m in matches]}
-    sys.stdout.write(json.dumps(message))
+    out.write(json.dumps(message))
 
-def generate_json_report(cmdline, proofreader):
+def generate_json_report(cmdline, proofreader, out):
     for file in cmdline.file:
         (latex, plain, charmap, matches) = proofreader(file)
-        output_json(latex, plain, charmap, matches, file)
+        output_json(latex, plain, charmap, matches, file, out)
 
