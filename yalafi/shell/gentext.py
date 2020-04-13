@@ -32,7 +32,7 @@ import sys
 #     languagetool-commandline/src/main/java/org/languagetool/commandline/
 #   - XXX: some code duplication with genhtml.begin_match()
 #
-def output_text_report(tex, plain, charmap, matches, file):
+def output_text_report(tex, plain, charmap, matches, file, out):
     starts = tex2txt.get_line_starts(plain)
 
     for (nr, m) in enumerate(matches, 1):
@@ -43,53 +43,54 @@ def output_text_report(tex, plain, charmap, matches, file):
         lc = tex2txt.translate_numbers(tex, plain, charmap, starts, lin, col)
 
         rule = json_get(m, 'rule', dict)
-        print('=== ' + file + ' ===')
+        out.write('=== ' + file + ' ===\n')
 
         s = (str(nr) + '.) Line ' + str(lc.lin) + ', column ' + str(lc.col)
                 + ', Rule ID: ' + json_get(rule, 'id', str))
         if 'subId' in rule:
                 s += '[' + json_get(rule, 'subId', str) + ']'
-        print(s)
-        print('Message: ' + json_get(m, 'message', str))
+        out.write(s + '\n')
+        out.write('Message: ' + json_get(m, 'message', str) + '\n')
 
         repls = '; '.join(json_get(r, 'value', str)
                                 for r in json_get(m, 'replacements', list))
-        print('Suggestion: ' + repls)
+        out.write('Suggestion: ' + repls + '\n')
 
         cont = json_get(m, 'context', dict)
         txt = json_get(cont, 'text', str)
         beg = json_get(cont, 'offset', int)
         length = json_get(cont, 'length', int)
-        print(txt.replace('\t', ' '))
-        print(' ' * beg + '^' * length)
+        out.write(txt.replace('\t', ' ') + '\n')
+        out.write(' ' * beg + '^' * length + '\n')
 
         if 'urls' in rule:
             urls = json_get(rule, 'urls', list)
             if urls:
-                print('More info: ' + json_get(urls[0], 'value', str))
+                out.write('More info: ' + json_get(urls[0], 'value', str)
+                                + '\n')
 
-        print('')
+        out.write('\n')
 
-    sys.stdout.flush()  # in case redirected to file
+    out.flush()     # in case redirected to file
 
 
 #   on option --list-unknown
 #
-def output_list_unknown(unkn, file):
+def output_list_unknown(unkn, file, out):
     if not unkn.split():
         return
-    print('=== ' + file + ' ===')
-    print(unkn)
+    out.write('=== ' + file + ' ===\n')
+    out.write(unkn)
 
-def generate_text_report(run_proofreader):
+def generate_text_report(run_proofreader, out):
     if cmdline.server == 'lt':
         sys.stderr.write(msg_LT_server_txt)
     for file in cmdline.file:
         (tex, plain, charmap, matches) = run_proofreader(file)
         if cmdline.list_unknown:
-            output_list_unknown(plain, file)
+            output_list_unknown(plain, file, out)
         else:
-            output_text_report(tex, plain, charmap, matches, file)
+            output_text_report(tex, plain, charmap, matches, file, out)
 
 #   XXX: these should be passed
 #

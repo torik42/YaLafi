@@ -19,7 +19,6 @@
 
 from yalafi import tex2txt
 import re
-import sys
 
 #####################################################################
 #
@@ -223,7 +222,7 @@ def add_line_numbers(s, line_numbers):
     return '<table cellspacing="0">\n' + s + '</table>\n'
 
 
-def generate_html_report(run_proofreader):
+def generate_html_report(run_proofreader, out):
 
     #   generate HTML report: a part for each file
     #
@@ -232,30 +231,25 @@ def generate_html_report(run_proofreader):
         (tex, plain, charmap, matches) = run_proofreader(file)
         html_report_parts.append(generate_html(tex, charmap, matches, file))
 
-    #   ensure UTF-8 encoding for stdout
-    #   (not standard with Windows Python)
-    #
-    sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf-8')
-
     page_prefix = '<html>\n<head>\n<meta charset="UTF-8">\n</head>\n<body>\n'
     page_postfix = '\n</body>\n</html>\n'
 
-    sys.stdout.write(page_prefix)
+    out.write(page_prefix)
     if cmdline.server == 'lt':
-        sys.stdout.write(msg_LT_server_html)
+        out.write(msg_LT_server_html)
     if len(html_report_parts) > 1:
         # start page with file index
-        sys.stdout.write('<H3>Index</H3>\n<ul>\n')
+        out.write('<H3>Index</H3>\n<ul>\n')
         for r in html_report_parts:
             colour = '" style="color: red' if r[3] else ''
             s = '<li><a href="#' + r[1] + colour + '">' + r[0] + '</a></li>\n'
-            sys.stdout.write(s)
-        sys.stdout.write('</ul>\n<hr><hr>\n')
+            out.write(s)
+        out.write('</ul>\n<hr><hr>\n')
     for (i, r) in enumerate(html_report_parts):
         if i:
-            sys.stdout.write('<hr><hr>\n')
-        sys.stdout.write(r[2])
-    sys.stdout.write(page_postfix)
+            out.write('<hr><hr>\n')
+        out.write(r[2])
+    out.write(page_postfix)
 
 #   XXX: these should be passed
 #
