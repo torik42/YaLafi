@@ -39,21 +39,36 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps(message).encode('ascii'))
 
-    #   correct offset and length in each match
+    #   - include options given in HTML request fileds
+    #   - run proofreader
+    #   - correct offset and length in each match
     #
     def create_message(self, requ):
         language = requ['language'][0]
         latex = requ['text'][0]
         disable = requ.get('disabledRules', [''])[0]
-        options = []
+        old_opts = self.server.my_lt_options[1:].split()
+        new_opts = []
         option_map = self.server.my_option_map
         for f in option_map:
-            if f in requ:
-                options.append(option_map[f][0][0])
-                if option_map[f][1] == 1:
-                    options.append(requ[f][0])
+            if f not in requ or f == 'language':
+                # NB: languagetool-commandline.jar does not like repeated
+                # option --language
+                continue
+            new_opts.append(option_map[f][0][0])
+            if option_map[f][1] == 1:
+                new_opts.append(requ[f][0])
+            while True:
+                pos = next((i for i in range(len(old_opts))
+                                if old_opts[i] in option_map[f][0]), -1)
+                if pos < 0:
+                    break
+                # entry in --lt-options corresponds to HTML request field
+                # --> remove
+                old_opts[pos:pos+1+option_map[f][1]] = []
         latex, plain, charmap, matches = self.server.my_proofreader(
-                                        latex, language, disable, options)
+                                        latex, language, disable,
+                                        old_opts + new_opts)
         def f(m):
             beg = min(max(0, m['offset']), len(charmap) - 1)
             end = min(max(0, beg + m['length'] - 1), len(charmap) - 1)
@@ -63,12 +78,14 @@ class Handler(BaseHTTPRequestHandler):
         return {'matches': [f(m) for m in matches]}
 
 class Server(HTTPServer):
-    def __init__(self, addr_port, handler, my_proofreader, my_option_map):
+    def __init__(self, addr_port, handler, my_proofreader,
+                                my_option_map, my_lt_options):
         super().__init__(addr_port, handler)
         self.my_proofreader = my_proofreader 
         self.my_option_map = my_option_map 
+        self.my_lt_options = my_lt_options 
         
-def run_server(addr, port, proofreader, option_map):
-    httpd = Server((addr, port), Handler, proofreader, option_map)
+def run_server(addr, port, proofreader, option_map, lt_options):
+    httpd = Server((addr, port), Handler, proofreader, option_map, lt_options)
     httpd.serve_forever()
 
