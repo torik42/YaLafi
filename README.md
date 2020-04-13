@@ -94,7 +94,8 @@ Happy TeXing!
 
 ## Installation
 
-There are several possibilities.
+Choose one of the following possibilities.
+
 - Use `python -m pip install [--user] yalafi`.
   This installs the last version uploaded to [PyPI](https://www.pypi.org).
   Module pip itself can be installed with `python -m ensurepip`.
@@ -259,7 +260,7 @@ Default option values are set at the Python script beginning.
   but key 'DEMO\_KEY' seems to work for short input;
   server address is given by script variable textgears\_server
 - option `--no-config`:<br>
-  do not read config file
+  do not read config file (its name: script variable 'config\_file')
 
 **Dictionary adaptation.**
 LT evaluates the two files 'spelling.txt' and 'prohibit.txt' in directory
@@ -578,7 +579,8 @@ file yalafi/parameters.py is appended
 We comment the central function in file
 [yalafi/tex2txt.py](yalafi/tex2txt.py)
 that uses the package interface to emulate the behaviour of
-script tex2txt.py in repository Tex2txt.
+script tex2txt.py in repository
+[Tex2txt](https://github.com/matze-dd/Tex2txt).
 
 ```
  1  from . import parameters, parser, utils
