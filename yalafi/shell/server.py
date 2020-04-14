@@ -23,6 +23,7 @@
 #
 ##################################################################
 
+from . import utils
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 from urllib.parse import parse_qs
@@ -41,13 +42,13 @@ class Handler(BaseHTTPRequestHandler):
 
     #   - include options given in HTML request fileds
     #   - run proofreader
-    #   - correct offset and length in each match
+    #   - map offset and length in each match to position in LaTeX text
     #
     def create_message(self, requ):
         language = requ['language'][0]
         latex = requ['text'][0]
         disable = requ.get('disabledRules', [''])[0]
-        old_opts = self.server.my_lt_options[1:].split()
+        old_opts = self.server.my_lt_options.copy()
         new_opts = []
         option_map = self.server.my_option_map
         for f in option_map:
@@ -69,13 +70,8 @@ class Handler(BaseHTTPRequestHandler):
         latex, plain, charmap, matches = self.server.my_proofreader(
                                         latex, language, disable,
                                         old_opts + new_opts)
-        def f(m):
-            beg = min(max(0, m['offset']), len(charmap) - 1)
-            end = min(max(0, beg + m['length'] - 1), len(charmap) - 1)
-            m['offset'] = abs(charmap[beg]) - 1
-            m['length'] = abs(charmap[end]) - abs(charmap[beg]) + 1
-            return m
-        return {'matches': [f(m) for m in matches]}
+        return {'matches': [utils.map_match_position(m, latex, charmap)
+                                                        for m in matches]}
 
 class Server(HTTPServer):
     def __init__(self, addr_port, handler, my_proofreader,

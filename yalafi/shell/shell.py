@@ -299,7 +299,7 @@ if cmdline.as_server is not None:
     from yalafi.shell import server
     server.run_server('localhost', cmdline.as_server,
                         proofreader.run_proofreader_options,
-                        lt_option_map, cmdline.lt_options)
+                        lt_option_map, cmdline.lt_options[1:].split())
     sys.exit()
 
 # generate reports
