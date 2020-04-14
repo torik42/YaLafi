@@ -17,7 +17,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from yalafi import tex2txt
+from . import utils
 import sys
 import xml.etree.ElementTree as ET
 
@@ -32,25 +32,17 @@ import xml.etree.ElementTree as ET
 #   - XXX: some code duplication with genhtml.begin_match()
 #
 def output_xml_report(tex, plain, charmap, matches, file, out):
-    starts = tex2txt.get_line_starts(plain)
     out.write('<matches>\n')
     for m in matches:
-        offset = json_get(m, 'offset', int)
-        lin = plain.count('\n', 0, offset) + 1
-        nl = plain.rfind('\n', 0, offset) + 1
-        col = offset - nl + 1
-        lc = tex2txt.translate_numbers(tex, plain, charmap, starts, lin, col)
-        fromy = lc.lin - 1
-        fromx = lc.col - 1
-
-        length = json_get(m, 'length', int)
-        end = offset + length - 1
-        lin = plain.count('\n', 0, end) + 1
-        nl = plain.rfind('\n', 0, end) + 1
-        col = end - nl + 1
-        lc = tex2txt.translate_numbers(tex, plain, charmap, starts, lin, col)
-        toy = lc.lin - 1
-        tox = lc.col
+        m = utils.map_match_position(m, tex, charmap)
+        beg = json_get(m, 'offset', int)
+        fromy = tex.count('\n', 0, beg)
+        nl = tex.rfind('\n', 0, beg) + 1
+        fromx = beg - nl
+        end = beg + json_get(m, 'length', int) - 1
+        toy = tex.count('\n', 0, end)
+        nl = tex.rfind('\n', 0, end) + 1
+        tox = end - nl + 1
 
         rule = json_get(m, 'rule', dict)
         category = json_get(rule, 'category', dict)

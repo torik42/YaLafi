@@ -24,17 +24,13 @@
 ##################################################################
 
 import json
+from . import utils
 
 #   correct offset and length in each match
 #
 def output_json(latex, plain, charmap, matches, file, out):
-    def f(m):
-        beg = min(max(0, m['offset']), len(charmap) - 1)
-        end = min(max(0, beg + m['length'] - 1), len(charmap) - 1)
-        m['offset'] = abs(charmap[beg]) - 1
-        m['length'] = abs(charmap[end]) - abs(charmap[beg]) + 1
-        return m
-    message = {'matches': [f(m) for m in matches]}
+    message = {'matches': [utils.map_match_position(m, latex, charmap)
+                                                    for m in matches]}
     out.write(json.dumps(message))
 
 def generate_json_report(cmdline, proofreader, out):

@@ -18,7 +18,7 @@ This Python package extracts plain text from LaTeX documents.
 The software may be integrated with a proofreading tool and an editor.
 It provides
 
-- tracking of character positions during text manipulations,
+- mapping of character positions between LaTeX and plain text,
 - simple inclusion of own LaTeX macros and environments with tailored
   treatment,
 - careful conservation of text flows,

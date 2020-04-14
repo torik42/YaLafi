@@ -2,10 +2,12 @@ Work in progress
 ----------------
 - yalafi.shell
     - closed issue #7, option --as-server: emulate an LT server with
-      LaTeX filter
+      integrated LaTeX filter
     - added interface for Emacs-langtool
     - added output mode --output json
     - added option --no-config
+    - closed issue #9 (a hack): better highlighting, if a single backslash
+      is tagged that actually starts a macro name
     - removed option --t2t-lang (just use 'en' on unknown language)
     - subdivided yalafi/shell/shell.py into several files
 - README.md: updated

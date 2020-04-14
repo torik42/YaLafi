@@ -18,6 +18,7 @@
 #
 
 from yalafi import tex2txt
+from . import utils
 import re
 
 #####################################################################
@@ -116,14 +117,11 @@ def generate_html(tex, charmap, matches, file):
         if h.unsure or h.end <= h.beg:
             h.end = h.beg + 1
 
-        if (h.end == h.beg + 1 and tex[h.beg] == '\\'
-                and re.search(r'(?<!\\)(\\\\)*\Z', tex[:h.beg])):
+        if h.end == h.beg + 1 and tex[h.beg] == '\\':
             # HACK:
             # if matched a single \ that is actually followed by macro name:
             # also highlight the macro name
-            s = re.search(r'\A\\[a-zA-Z]+', tex[h.beg:])
-            if s:
-                h.end = h.beg + len(s.group(0))
+            h.end = h.beg + utils.correct_mark_macroname(h.beg, 1, tex)
         elif h.unsure and tex[h.beg].isalpha():
             # HACK:
             # if unsure: mark till end of word (only letters)
