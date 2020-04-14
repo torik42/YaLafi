@@ -1,5 +1,6 @@
-Work in progress
-----------------
+Version 0.9.0
+-------------
+- now hopefully close to 1.0.0 ;-)
 - yalafi.shell
     - closed issue #7, option --as-server: emulate an LT server with
       integrated LaTeX filter
@@ -8,6 +9,7 @@ Work in progress
     - added option --no-config
     - closed issue #9 (a hack): better highlighting, if a single backslash
       is tagged that actually starts a macro name
+      (as before for HTML output only)
     - removed option --t2t-lang (just use 'en' on unknown language)
     - subdivided yalafi/shell/shell.py into several files
 - README.md: updated
