@@ -1,3 +1,7 @@
+Work in progress
+----------------
+- README.md: updated
+
 Version 0.9.0
 -------------
 - now hopefully close to 1.0.0 ;-)
