@@ -18,7 +18,6 @@
 This Python package extracts plain text from LaTeX documents.
 The software may be integrated with a proofreading tool and an editor.
 It provides
-
 - mapping of character positions between LaTeX and plain text,
 - simple inclusion of own LaTeX macros and environments with tailored
   treatment,
@@ -30,14 +29,18 @@ The sample Python application script
 [Example application](#example-application) integrates the filter
 with [LanguageTool](https://www.languagetool.org).
 It
+- sends the extracted plain text to the proofreader,
+- maps position information in returned messages back to the LaTeX text,
+- generates results in a number of formats.
 
-- can generate a proofreading report in text or HTML format for a complete
+You may
+- create a proofreading report in text or HTML format for a complete
   document tree,
-- allows checking of LaTeX texts directly in the editors Emacs and Vim
-  via plug-ins
+- check LaTeX texts directly in the editors Emacs and Vim via plug-ins
   [Emacs-langtool](https://github.com/mhayashi1120/Emacs-langtool)
   and [vim-grammarous](https://github.com/rhysd/vim-grammarous),
-- may emulate a LanguageTool server with integrated LaTeX filtering.
+- run the script as emulation of a LanguageTool server with integrated
+  LaTeX filtering.
 
 For instance, the LaTeX input
 ```
@@ -59,7 +62,7 @@ Only few people is lazy.    We use redx colour.
                 ^^
 ```
 <a name="example-html-report"></a>
-Run with option '--output html', the application produces an HTML report:
+This is the corresponding HTML report:
 
 ![HTML report](shell.png)
 
@@ -88,7 +91,7 @@ The pure LaTeX filter can be directly used in scripts via a command-line
 interface, it is described in section
 [Command-line of pure filter](#command-line-of-pure-filter).
 
-If you use this tool and encounter a bug or have other suggestions
+If you use this software and encounter a bug or have other suggestions
 for improvement, please leave a note under category [Issues](../../issues),
 or initiate a pull request.
 Many thanks in advance.
@@ -336,7 +339,7 @@ Here is the [introductory example](#example-html-report) from above:
 The Emacs plug-in
 [\[Emacs-langtool\]](https://github.com/mhayashi1120/Emacs-langtool)
 may be used in two variants.
-First, you can add to your \~/.emacs
+First, you can add to \~/.emacs
 ```
 (setq langtool-bin "/home/foo/bin/yalafi-emacs")
 (setq langtool-default-language "en-GB")
@@ -376,7 +379,7 @@ if it is not yet running.
 **Installation of Emacs-langtool.**
 Download and unzip Emacs-langtool.
 Place file langtool.el in directory \~/.emacs.d/lisp/.
-Set in your \~/.bash\_profile
+Set in your \~/.profile or \~/.bash\_profile (and log in again)
 ```
 export EMACSLOADPATH=~/.emacs.d/lisp:
 ```
@@ -477,11 +480,11 @@ Both yalafi.shell and yalafi can be directly used in a Windows command
 script or console.
 For example, this could look like
 ```
-py -3 -m yalafi.shell --server my --output html t.tex > t.html
+py -3 -m yalafi.shell --server lt --output html t.tex > t.html
 ```
 or
 ```
-"c:\Program Files\Python\Python37\python.exe" -m yalafi.shell --server my --output html t.tex > t.html
+"c:\Program Files\Python\Python37\python.exe" -m yalafi.shell --server lt --output html t.tex > t.html
 ```
 if the Python launcher has not been installed.
 
