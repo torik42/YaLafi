@@ -11,6 +11,7 @@
 [Inclusion of own macros](#inclusion-of-own-macros)&nbsp;\|
 [Package interface](#package-interface)&nbsp;\|
 [Handling of displayed equations](#handling-of-displayed-equations)&nbsp;\|
+[Command-line of pure filter](#command-line-of-pure-filter)&nbsp;\|
 [Differences to Tex2txt](#differences-to-tex2txt)&nbsp;\|
 [Remarks on implementation](#remarks-on-implementation)
 
@@ -22,8 +23,21 @@ It provides
 - simple inclusion of own LaTeX macros and environments with tailored
   treatment,
 - careful conservation of text flows,
-- detection of trailing interpunction in equations,
-- proper handling of nestable LaTeX elements like {} braces.
+- replacement of equations with detection of trailing interpunction.
+
+The sample Python application script
+[yalafi/shell/shell.py](yalafi/shell/shell.py) from section
+[Example application](#example-application) integrates the filter
+with [LanguageTool](https://www.languagetool.org).
+It
+
+- can generate a proofreading report in text or HTML format for a complete
+  document tree,
+- allows checking of LaTeX texts directly in the editors Emacs and Vim
+  via plug-ins
+  [Emacs-langtool](https://github.com/mhayashi1120/Emacs-langtool)
+  and [vim-grammarous](https://github.com/rhysd/vim-grammarous),
+- may emulate a LanguageTool server with integrated LaTeX filtering.
 
 For instance, the LaTeX input
 ```
@@ -31,12 +45,7 @@ Only few people\footnote{We use
 \textcolor{red}{redx colour.}}
 is lazy.
 ```
-will lead to the subsequent output from example application script
-[yalafi/shell/shell.py](yalafi/shell/shell.py) described in section
-[Example application](#example-application) ahead.
-The script invokes [LanguageTool](https://www.languagetool.org)
-as proofreading software, using a local installation or the Web server
-hosted by LanguageTool.
+will lead to the text report
 ```
 1.) Line 2, column 17, Rule ID: MORFOLOGIK_RULE_EN_GB
 Message: Possible spelling mistake found
@@ -50,9 +59,7 @@ Only few people is lazy.    We use redx colour.
                 ^^
 ```
 <a name="example-html-report"></a>
-The script can also emulate a LanguageTool server with integrated LaTeX filter
-(compare section [Interface to Emacs](#interface-to-emacs)),
-and it produces an HTML report when run with option '--output html':
+Run with option '--output html', the application produces an HTML report:
 
 ![HTML report](shell.png)
 
@@ -76,11 +83,10 @@ application Python scripts like [yalafi/shell/shell.py](yalafi/shell/shell.py)
 from section [Example application](#example-application)
 can access an interface emulating tex2txt.py from repository Tex2txt by
 `from yalafi import tex2txt`.
-Direct usage as script is almost the same as for Tex2txt/tex2txt.py, compare
-[Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#command-line).
-Please note the difference for option --defs described in section
-[Differences to Tex2txt](#differences-to-tex2txt).
-Invocation as filter: `python -m yalafi [options] [files]`
+
+The pure LaTeX filter can be directly used in scripts via a command-line
+interface, it is described in section
+[Command-line of pure filter](#command-line-of-pure-filter).
 
 If you use this tool and encounter a bug or have other suggestions
 for improvement, please leave a note under category [Issues](../../issues),
@@ -467,20 +473,27 @@ points.
 
 ## Usage under Windows
 
-Both yalafi.shell and yalafi can be used directly in a Windows command
+Both yalafi.shell and yalafi can be directly used in a Windows command
 script or console.
 For example, this could look like
 ```
-py -3 -m yalafi.shell --output html t.tex > t.html
+py -3 -m yalafi.shell --server my --output html t.tex > t.html
 ```
 or
 ```
-"c:\Program Files\Python\Python37\python.exe" -m yalafi.shell --output html t.tex > t.html
+"c:\Program Files\Python\Python37\python.exe" -m yalafi.shell --server my --output html t.tex > t.html
 ```
 if the Python launcher has not been installed.
 
-Possible encoding issues related to Windows are addressed in
-[Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#encoding-problems).
+Files with Windows-style line endings (CRLF) are accepted, but the text
+output of the pure LaTeX filter will be Unix style (LF only), unless a
+Windows Python interpreter is used.
+
+Python's version for Windows by default prints Latin-1 encoded text to
+standard output.
+As this ensures proper work in a Windows command console, we do not change it
+for yalafi.shell when generating a text report.
+All other output is fixed to UTF-8 encoding.
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -770,16 +783,51 @@ described in section
 [Back to top](#yalafi-yet-another-latex-filter)
 
 
+## Command-line of pure filter
+
+The LaTeX filter can be integrated in scripts, compare the examples in
+[Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#tool-integration).
+
+```
+python -m yalafi [--nums file] [--repl file] [--defs file] [--pyth module]
+                 [--extr macros] [--lang xy] [--ienc enc] [--unkn]
+                 [latexfile]
+```
+- without positional argument `latexfile`:<br>
+  read standard input
+- option `--nums file`:<br>
+  file for storing estimated original position numbers for each character
+  of plain text;
+  can be used later to correct position figures in proofreader messages
+- option `--repl file`:<br>
+  as option --replace in section [Example application](#example-application)
+- option `--defs file`:<br>
+  as option --define in section [Example application](#example-application)
+- option `--pyth module`:<br>
+  as option --python-defs in section
+  [Example application](#example-application)
+- option `--extr ma[,mb,...]` (comma-separated list of macro names):<br>
+  as option --extract in section [Example application](#example-application)
+- option `--lang xy`:<br>
+  language de or en, default: en (also taken in case of unknown language);
+  used for adaptation of equation replacements, maths operator names,
+  proof titles, and for handling of macros like \"\=
+- option `--ienc enc`:<br>
+  as option --encoding in section [Example application](#example-application)
+- option `--unkn`:<br>
+  as option --list-unknown in section
+  [Example application](#example-application)
+
+
+[Back to top](#yalafi-yet-another-latex-filter)
+
+
 ## Differences to Tex2txt
 
 Invocation of `python -m yalafi ...` differs as follows from
 `python tex2txt.py ...` (the script described in
 [Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#command-line)).
 
-- Option --defs expects a file containing macro definitions as LaTeX code.
-- Option --ienc is also effective for file from --defs.
-- Option --char (position tracking for single characters) is always activated.
-- Default language is English. It is also used for an unknown language.
 - Macro definitions with \\(re)newcommand in the LaTeX input are processed.
 - Macro arguments need not be delimited by {} braces or \[\] brackets.
 - Macros are expanded in the order they appear in the text.
@@ -791,6 +839,10 @@ Invocation of `python -m yalafi ...` differs as follows from
   The given Python module has to provide a function
   'modify\_parameters(parms)' receiving the parameter object 'parms',
   compare the example in [definitions.py](definitions.py).
+- Option --defs expects a file containing macro definitions as LaTeX code.
+- Option --ienc is also effective for file from --defs.
+- Option --char (position tracking for single characters) is always activated.
+- Default language is English. It is also used for an unknown language.
 
 YaLafi/yalafi/tex2txt.py is faster for input texts till about 30 Kilobytes,
 for larger files it can be slower than 'Tex2txt/tex2txt.py --char'.
@@ -849,6 +901,9 @@ The central method 'Parser.expand\_sequence()' does not directly read from
 the scanner, but from an intermediate buffer that can take back tokens.
 On macro expansion, the parser simply pushes back all tokens generated by
 argument substitution.
+(Method 'Parser.expand\_arguments()' collects tokens forming macro arguments
+and returns a list of replacement tokens that is eventually pushed back
+in the main loop.)
 The result is close to the “real” TeX behaviour, compare the tests in
 directory tests/.
 
