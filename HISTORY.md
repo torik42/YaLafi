@@ -1,6 +1,10 @@
 Work in progress
 ----------------
-- README.md: updated
+- yalafi/shell/proofreader.py
+    - fixed issue #12
+    - more verbose error messages, if start of LT fails
+- replaced screenshots for Vim and Emacs application
+- updated README.md
 
 Version 0.9.0
 -------------
