@@ -147,7 +147,8 @@ def run_languagetool(plain, language, disable, lt_options):
                         input=plain.encode('utf-8'), stdout=subprocess.PIPE)
             out = out.stdout
         except:
-            tex2txt.fatal('error running "' + lt_cmd[0] + '"')
+            tex2txt.fatal('error running ' + repr(' '.join(lt_cmd))
+                            + ' in directory ' + repr(cmdline.lt_directory))
 
     out = out.decode(encoding='utf-8')
     try:
@@ -183,11 +184,16 @@ def start_local_lt_server():
         server_cmd += ' ' + cmdline.lt_server_options[1:]
     if check_server():
         return
+
+    # compare issue #12
+    start_new_session = sys.platform != 'win32'
     try:
         subprocess.Popen(server_cmd.split(), cwd=cmdline.lt_directory,
+                        start_new_session=start_new_session,
                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except:
-        tex2txt.fatal('error running "' + server_cmd + '"')
+        tex2txt.fatal('error running ' + repr(server_cmd)
+                            + ' in directory ' + repr(cmdline.lt_directory))
 
     # wait for server to be available
     #
