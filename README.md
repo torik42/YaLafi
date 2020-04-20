@@ -31,7 +31,7 @@ with [LanguageTool](https://www.languagetool.org).
 It
 - sends the extracted plain text to the proofreader,
 - maps position information in returned messages back to the LaTeX text,
-- generates results in a number of formats.
+- generates results in several formats.
 
 You may
 - create a proofreading report in text or HTML format for a complete
@@ -152,124 +152,138 @@ python -m yalafi.shell
                 latex_file [latex_file ...] [> text_or_html_file]
 ```
 Option names may be abbreviated.
-If option --no-config is not given and if present, options are also read
-from a configuration file designated by script variable config\_file
-(one option per line, possibly with argument).
+If present, options are also read from a configuration file designated by
+script variable 'config\_file' (one option per line, possibly with argument),
+unless --no-config is given.
 Default option values are set at the Python script beginning.
-- option `--lt-directory dir`:<br>
-  directory of the local LT installation; for instance, it has to contain
-  'languagetool-server.jar';
-  the LT zip archive, for example LanguageTool-4.9.zip, can be obtained
-  from the [LT download page](https://www.languagetool.org/download);
-  see also the comment at script variable 'ltdirectory' (the default value)
-- option `--as-server port`:<br>
-  emulate an LT server listening on the given port,
-  see section [Interface to Emacs](#interface-to-emacs) for an example;
-  fields of HTML requests (settings for language, rules, categories)
-  overwrite values given in command line;
-  the internally used proofreader is influenced by options like --server
-- option `--output mode`:<br>
-  mode is one of plain, html, xml, json; default: plain;
-  html: generate HTML report, see below for further details;
-  xml: for Vim plug-in, compare section [Interface to Vim](#interface-to-vim)
-- option `--link`:<br>
-  if HTML report : left-click on a highlighted text part opens Web link
-  provided by LT
-- option `--context number`:<br>
-  number of context lines displayed around each marked text region
-  in HTML report; default: 2; negative number: display whole text
-- option `--include`:<br>
-  track file inclusions like \\input\{...\}; script variable
-  'inclusion\_macros' contains list of the corresponding LaTeX macro names
-- option `--skip regex`:<br>
-  skip files matching the given regular expression;
-  useful, e.g., for exclusion of figures on option --include
-- option `--plain-input`:<br>
-  assume plain-text input: no evaluation of LaTeX syntax;
-  cannot be used together with option --include or --replace
-- option `--list-unknown`:<br>
-  only print list of unknown macros and environments seen outside of
-  maths parts
-- option `--language lang`:<br>
-  language code as expected by LT, default: 'en-GB';
-  first two letters are passed to yalafi.tex2txt(), which uses 'en' in case
-  of unknown language
-- option `--encoding ienc`:<br>
-  encoding for LaTeX input and files from options --define and --replace;
-  default is UTF-8
-- option `--replace file`:<br>
-  file with phrase replacements to be performed after conversion to plain
-  text; per line, a '\&' sign separated by space splits two parts: first part
-  is replaced by second part; space in first part is interpreted as arbitrary
-  space not breaking the paragraph; a '#' sign marks rest of line as comment
-- option `--define file`:<br>
-  read macro definitions as LaTeX code (using \\newcommand)
-- option `--python-defs module`:<br>
-  modify default definitions in file yalafi/parameters.py by function
-  'modify\_parameters()' in the given module;
-  compare example in [definitions.py](definitions.py)
-- option `--extract macros`:<br>
-  only check arguments of the LaTeX macros whose names are given as
-  comma-separated list; useful for check of foreign-language text,
-  if marked accordingly
-- option `--disable rules`:<br>
-  comma-separated list of ignored LT rules, passed as --disable to LT;
-  default: 'WHITESPACE\_RULE'
-- option `--lt-options opts`:<br>
-  pass additional options to LT as single string in argument 'opts';
-  first character of 'opts' will be skipped and must not be '-';
-  for instance: `--lt-options '~--languagemodel ../LT/Ngrams --mothertongue de-DE'`;
-  some options are included into HTML requests to an LT server, see script
-  variable lt\_option\_map
-- option `--single-letters accept`:<br>
-  check for single letters, accepting those in the patterns given as list
-  separated by '\|';
-  for instance `--singe-letters 'A|a|I|e.g.|i.e.||'` for an English text,
-  where the trailing '\|\|' causes addition of equation replacements
-  from script variable equation\_replacements;
-  all characters except '\|' are taken verbatim, but '~' and '\\,' are
-  interpreted as UTF-8 non-breaking space and narrow non-breaking space
-- option `--equation-punctuation mode`:<br>
-  experimental hack for check of punctuation after equations in English texts,
-  compare section
-  [Equation replacements in English documents](#equation-replacements-in-english-documents)
-  and example in section [Differences to Tex2txt](#differences-to-tex2txt);
-  abbreviatable mode values, indicating checked equation type:
-  'displayed', 'inline', 'all';<br>
-  generates a message, if an element of an equation is not terminated
-  by a dot '.' and at the same time is not followed by a lower-case word or
-  another equation element, both possibly separated by a mark from ',;:';
-  patterns for equations are given by script variables
-  equation\_replacements\_display and equation\_replacements\_inline
-  corresponding to member variables Parameters.math\_repl\_display and
-  Parameters.math\_repl\_inline in file yalafi/parameters.py
-- option `--server mode`:<br>
-  use LT's Web server (mode is 'lt') or a local LT server (mode is 'my');
-  stop the local server (mode is 'stop', currently only works under Linux
-  and Cygwin)
-  - LT's server: address set in script variable 'ltserver';
-    for conditions and restrictions, please refer to
-    [http://wiki.languagetool.org/public-http-api](http://wiki.languagetool.org/public-http-api)
-  - local server: if not yet running, then start it according to script
-    variable 'ltserver\_local\_cmd';
-    additional server options can be passed with --lt-server-options;
-    see also
-    [http://wiki.languagetool.org/http-server](http://wiki.languagetool.org/http-server);
-    may be faster than command-line tool used otherwise, especially for large
-    number of LaTeX files;
-    server will not be stopped at the end (use '--server stop')
-- option `--lt-server-options opts`:<br>
-  pass additional options when starting a local LT server;
-  syntax as for --lt-options
-- option `--textgears apikey`:<br>
-  use the TextGears server, see [https://textgears.com](https://textgears.com);
-  language is fixed to American English;
-  access key 'apikey' can be obtained on page
+
+- `--lt-directory dir`<br>
+  The directory of the local LT installation, may be omitted with option
+  '--server lt' or if script variable 'ltdirectory' is set appropriately.
+  For instance, the directory has to contain file 'languagetool-server.jar'.
+  The LT zip archive, for example LanguageTool-4.9.zip, can be obtained
+  from the [LT download page](https://www.languagetool.org/download).
+  See also the script comment at variable 'ltdirectory'.
+- `--as-server port`<br>
+  Emulate an LT server listening on the given port, for an example
+  see section [Interface to Emacs](#interface-to-emacs).
+  The fields of received HTML requests (settings for language, rules,
+  categories) overwrite option values given in the command line.
+  The internally used proofreader is influenced by options like --server.
+  Other options like --single-letters remain effective.
+- `--output mode`<br>
+  Mode is one of 'plain', 'html', 'xml', 'json' (default: 'plain' for text
+  report).
+  Variant 'html' generates an HTML report, see below for further details.
+  Mode 'xml' is intended for a Vim plug-in, compare section
+  [Interface to Vim](#interface-to-vim).
+- `--link`<br>
+  In an HTML report, left-click on a highlighted text part opens a
+  Web link related to the problem, if provided by LT.
+- `--context number`<br>
+  Number of context lines displayed around each marked text region
+  in HTML report (default: 2).
+  A negative number shows the whole text.
+- `--include`<br>
+  Track file inclusions like \\input{...}.
+  Script variable 'inclusion\_macros' contains a list of the corresponding
+  LaTeX macro names.
+- `--skip regex`<br>
+  Skip files matching the given regular expression.
+  This is useful, e.g., for the exclusion of figures on option --include.
+- `--plain-input`<br>
+  Assume plain-text input, do not evaluate LaTeX syntax.
+  This cannot be used together with options --include or --replace.
+- `--list-unknown`<br>
+  Only print list of unknown macros and environments seen outside of
+  maths parts.
+- `--language lang`<br>
+  Language code as expected by LT (default: 'en-GB').
+  The first two letters are passed to function 'tex2txt()' from module
+  yalafi.tex2txt that uses 'en' in case of an unknown language.
+- `--encoding ienc`<br>
+  Encoding for LaTeX input and files from options --define and --replace
+  (default: UTF-8).
+- `--replace file`<br>
+  File with phrase replacements to be performed after the conversion to
+  plain text.
+  Per line, a '\&' sign separated by space splits two parts: the first part
+  is replaced by the second part.
+  Space in the first part is interpreted as arbitrary space not breaking
+  the paragraph.
+  A '\#' sign marks the rest of line as comment.
+- `--define file`<br>
+  Read macro definitions as LaTeX code (using \\newcommand).
+- `--python-defs module`<br>
+  Modify default definitions in file yalafi/parameters.py by function
+  'modify\_parameters()' in the given module.
+  For an example, compare file [definitions.py](definitions.py).
+- `--extract macros`<br>
+  Only check arguments of the LaTeX macros whose names are given as
+  comma-separated list.
+  This is useful for check of foreign-language text, if marked accordingly.
+- `--disable rules`<br>
+  Comma-separated list of ignored LT rules, is passed as --disable to LT
+  (default: 'WHITESPACE\_RULE').
+- `--lt-options opts`<br>
+  Pass additional options to LT, given as single string in argument 'opts'.
+  The first character of 'opts' will be skipped and must not be '-'.
+  Example:
+  `--lt-options '~--languagemodel ../Ngrams --disablecategories PUNCTUATION'`.
+  Some options are included into HTML requests to an LT server, see script
+  variable 'lt\_option\_map'.
+- `--single-letters accept`<br>
+  Check for single letters, accepting those in the patterns given as list
+  separated by '\|'.
+  Example: `--single-letters 'A|a|I|e.g.|i.e.||'` for an English text,
+  where the trailing '\|\|' causes the addition of equation replacements
+  from script variable 'equation\_replacements'.
+  All characters except '\|' are taken verbatim, but '~' and '\\,' are
+  interpreted as UTF-8 non-breaking space and narrow non-breaking space.
+- `--equation-punctuation mode`<br>
+  This is an experimental hack for the check of punctuation after equations
+  in English texts, compare section
+  [Equation replacements in English documents](#equation-replacements-in-english-documents).
+  An example is given in section
+  [Differences to Tex2txt](#differences-to-tex2txt).
+  The abbreviatable mode values indicate the checked equation type:
+  'displayed', 'inline', 'all'.<br>
+  The check generates a message, if an element of an equation is not
+  terminated by a dot '.', and at the same time is not followed by a
+  lower-case word or another equation element, both possibly separated by
+  a punctuation mark from ',;:'.
+  Patterns for equation elements are given by script variables
+  'equation\_replacements\_display' and 'equation\_replacements\_inline',
+  corresponding to member variables 'Parameters.math\_repl\_display' and
+  'Parameters.math\_repl\_inline' in file yalafi/parameters.py.
+- `--server mode`<br>
+  Use LT's Web server (mode is 'lt') or a local LT server (mode is 'my')
+  instead of LT's command-line tool.
+  Stop the local server (mode is 'stop', currently only works under Linux
+  and Cygwin).
+  - LT's server: Server address is set in script variable 'ltserver'.
+    For conditions and restrictions, please refer to
+    [http://wiki.languagetool.org/public-http-api](http://wiki.languagetool.org/public-http-api).
+  - Local server: If not yet running, then start it according to script
+    variable 'ltserver\_local\_cmd'.
+    Additional server options can be passed with --lt-server-options.
+    See also
+    [http://wiki.languagetool.org/http-server](http://wiki.languagetool.org/http-server).
+    This may be faster than the command-line tool used otherwise, especially
+    for a large number of LaTeX files.
+    The server will not be stopped at the end (use '--server stop').
+- `--lt-server-options opts`<br>
+  Pass additional options when starting a local LT server.
+  Syntax is as for --lt-options.
+- `--textgears apikey`<br>
+  Use the TextGears server, see [https://textgears.com](https://textgears.com).
+  Language is fixed to American English.
+  The access key 'apikey' can be obtained on page
   [https://textgears.com/signup.php?givemethatgoddamnkey=please](https://textgears.com/signup.php?givemethatgoddamnkey=please),
-  but key 'DEMO\_KEY' seems to work for short input;
-  server address is given by script variable textgears\_server
-- option `--no-config`:<br>
-  do not read config file (its name: script variable 'config\_file')
+  but the key 'DEMO\_KEY' seems to work for short input.
+  The server address is given by script variable 'textgears\_server'.
+- `--no-config`<br>
+  Do not read config file, whose name is set in script variable 'config\_file'.
 
 **Dictionary adaptation.**
 LT evaluates the two files 'spelling.txt' and 'prohibit.txt' in directory
@@ -314,13 +328,25 @@ For instance, you can add to your \~/.vimrc
 let g:grammarous#languagetool_cmd = '/home/foo/bin/yalafi-grammarous'
 map <F9> :GrammarousCheck --lang=en-GB<CR>
 ```
-A proposal for Bash script /home/foo/bin/yalafi-grammarous is given in
-[yalafi-grammarous](yalafi-grammarous).
+A proposal for Bash script /home/foo/bin/yalafi-grammarous (replace foo
+with user name ;-) is given in [yalafi-grammarous](yalafi-grammarous).
 It has to be made executable with `chmod +x ...`.
 Please adapt script variable `ltdir`, compare option --lt-directory
 in section [Example application](#example-application).
 If you do not want to have started a local LT server, comment out the line
 defining script variable `use_server`.
+
+<a name="troubleshooting-for-vim"></a>
+**Troubleshooting for Vim.**
+If Vim reports a problem with running LT, you can do the following.
+In `~/bin/yalafi-grammarous`, comment out the final `... 2>/dev/null`.
+For instance, you can just place a '\#' in front: `... # 2>/dev/null`.
+Then start, with a test file t.tex,
+```
+$ ~/bin/yalafi-grammarous t.tex
+```
+This should display some error message, if the problem goes back to
+running the script, Python, yalafi.shell or LanguageTool.
 
 **Installation of vim-grammarous.**
 Download and unzip vim-grammarous.
@@ -346,8 +372,8 @@ First, you can add to \~/.emacs
 (setq langtool-disabled-rules "WHITESPACE_RULE")
 (require 'langtool)
 ```
-A proposal for Bash script /home/foo/bin/yalafi-emacs is given in
-[yalafi-emacs](yalafi-emacs).
+A proposal for Bash script /home/foo/bin/yalafi-emacs (replace foo
+with user name ;-) is given in [yalafi-emacs](yalafi-emacs).
 It has to be made executable with `chmod +x ...`.
 Please adapt script variable `ltdir`, compare option --lt-directory
 in section [Example application](#example-application).
@@ -376,6 +402,11 @@ If you add, for instance, '--server my', then a local LT server will be used.
 It is started on the first HTML request received from Emacs-langtool,
 if it is not yet running.
 
+**Troubleshooting for Emacs.**
+If Emacs reports a problem with running LT, you can apply the steps
+from [\[Troubleshooting for Vim\]](#troubleshooting-for-vim)
+to `~/bin/yalafi-emacs`.
+
 **Installation of Emacs-langtool.**
 Download and unzip Emacs-langtool.
 Place file langtool.el in directory \~/.emacs.d/lisp/.
@@ -401,53 +432,64 @@ with the mark from 'Parameters.mark\_latex\_error' in yalafi/parameters.py.
 This mark should raise a spelling error from the proofreader at the place
 where the problem was detected.
 
-- macro definitions with \\(re)newcommand in input text are processed,
-  further flexible treatment of own macros with arbitrary arguments;
-  statement \\LTmacros{file.tex} reads macro definitions from given file;
-  see also section [Inclusion of own macros](#inclusion-of-own-macros)
-- “undeclared” macros are silently ignored, keeping their arguments
-  with enclosing \{\} braces removed
-- frames \\begin\{...\} and \\end\{...\} of environments are deleted;
-  tailored behaviour for environment types listed in
-  'Parameters.environment\_defs' in file yalafi/parameters.py;
-  see section [Inclusion of own macros](#inclusion-of-own-macros)
-- text in heading macros as \\section\{...\} is extracted with
-  added interpunction (suppresses false positives from LanguageTool)
-- suitable placeholders for \\ref, \\eqref, \\pageref, and \\cite
-- arguments of macros like \\footnote are appended to the main text,
-  separated by blank lines
-- inline maths material $...$ and \\(...\\) is replaced with text from
-  rotating collection in 'Parameters.math\_repl\_inline' in
-  file yalafi/parameters.py,
-  appending trailing interpunction from 'Parameters.math\_punctuation'
-- equation environments are resolved in a way suitable for check of
-  interpunction and spacing, argument of \\text\{...\} is included into output
-  text; \\\[...\\\] and $$...$$ are same as environment displaymath;
-  see sections
+- A collection of standard LaTeX macros and environments is already included,
+  but very probably it has to be complemented.
+- Macro definitions with \\(re)newcommand in the input text are processed.
+  Statement \\LTmacros{file.tex} reads macro definitions from the given file.
+  Further own macros with arbitrary arguments can be defined on Python level,
+  see section [Inclusion of own macros](#inclusion-of-own-macros).
+- “Undeclared” macros are silently ignored, keeping their arguments
+  with enclosing \{\} braces removed.
+- Environment frames \\begin\{...\} and \\end\{...\} are deleted.
+  We implement tailored behaviour for environment types listed in
+  'Parameters.environment\_defs' in file yalafi/parameters.py,
+  see section [Inclusion of own macros](#inclusion-of-own-macros).
+  For instance, environment bodies can be removed or replaced by fixed text.
+- Text in heading macros as \\section\{...\} is extracted with
+  added interpunction, see variable 'Parameters.heading\_punct' in 
+  file yalafi/parameters.py.
+  This suppresses false positives from LanguageTool.
+- For macros as \\ref, \\eqref, \\pageref, and \\cite, suitable placeholders
+  are inserted.
+- Arguments of macros like \\footnote are appended to the main text,
+  separated by blank lines.
+  This preserves text flows.
+- Inline maths material $...$ and \\(...\\) is replaced with text from
+  the rotating collection in 'Parameters.math\_repl\_inline' in
+  file yalafi/parameters.py.
+  Trailing interpunction from 'Parameters.math\_punctuation' is appended.
+- Equation environments are resolved in a way suitable for check of
+  interpunction and spacing.
+  The argument of \\text{...} is included into the output text.
+  Versions \\\[...\\\] and $$...$$ are same as environment displaymath.
+  See also sections
   [Handling of displayed equations](#handling-of-displayed-equations)
   and
-  [Parser for maths material](#parser-for-maths-material)
-- generation of numbered default \\item labels for environment enumerate
-- some treatment for \\item with specified \[...\] label;
-  if the text before ends with a punctuation mark from collection
+  [Parser for maths material](#parser-for-maths-material).
+- We generate numbered default \\item labels for environment enumerate.
+- For \\item with specified \[...\] label, some treatment is provided.
+  If the text before ends with a punctuation mark from collection
   'Parameters.item\_punctuation' in file yalafi/parameters.py, then this mark
-  is appended to the label;
-  works well for German texts, turned off with 'item\_punctuation = []'
-- letters with text-mode accents as '\\\`' or '\\v' are translated to 
-  corresponding UTF-8 characters
-- replacement of things like double quotes '\`\`' and dashes '\-\-' with
-  corresponding UTF-8 characters;
-  replacement of '\~' and '\\,' by UTF-8 non-breaking space and
-  narrow non-breaking space
-- for language 'de': suitable replacements for macros like '"\`' and '"=',
-  see method 'Parameters.init\_language()' in file yalafi/parameters.py
-- treatment of \\verb macro and verbatim environment;
-  verbatim can be replaced or removed like other environments with
-  appropriate entry in 'Parameters.environment\_defs' in yalafi/parameters.py
-- rare warnings from proofreading program can be suppressed using \\LTadd{},
-  \\LTskip{}, \\LTalter{}{} in the LaTeX text with suitable macro definition
-  there; e.g., adding something that only the proofreader should see:
-  \\newcommand{\\LTadd}\[1\]{}
+  is appended to the label.
+  This works well for German texts, it is turned off with the setting
+  'item\_punctuation = []'.
+- Letters with text-mode accents as '\\\`' or '\\v' are translated to the
+  corresponding UTF-8 characters.
+- Things like double quotes '\`\`' and dashes '\-\-' are replaced with
+  the corresponding UTF-8 characters.
+  Additionally, we replace '\~' and '\\,' by UTF-8 non-breaking space and
+  narrow non-breaking space.
+- For language 'de', suitable replacements for macros like '"\`' and '"='
+  are inserted, see method 'Parameters.init\_language()' in
+  file yalafi/parameters.py.
+- Macro \\verb and environment verbatim are processed.
+  Environment verbatim can be replaced or removed like other environments
+  with an appropriate entry in 'Parameters.environment\_defs' in
+  yalafi/parameters.py.
+- Rare warnings from the proofreading program can be suppressed using
+  \\LTadd{}, \\LTskip{}, \\LTalter{}{} in the LaTeX text.
+  Suitable macro definition there, e.g., for adding something that only the
+  proofreader should see: `\newcommand{\LTadd}[1]{}`
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -796,30 +838,31 @@ python -m yalafi [--nums file] [--repl file] [--defs file] [--pyth module]
                  [--extr macros] [--lang xy] [--ienc enc] [--unkn]
                  [latexfile]
 ```
-- without positional argument `latexfile`:<br>
-  read standard input
-- option `--nums file`:<br>
-  file for storing estimated original position numbers for each character
-  of plain text;
-  can be used later to correct position figures in proofreader messages
-- option `--repl file`:<br>
-  as option --replace in section [Example application](#example-application)
-- option `--defs file`:<br>
-  as option --define in section [Example application](#example-application)
-- option `--pyth module`:<br>
-  as option --python-defs in section
+Without positional argument `latexfile`, standard input is read.
+
+- `--nums file`<br>
+  File for storing estimated original position numbers for each character
+  of plain text.
+  This can be used later to correct position figures in proofreader messages.
+- `--repl file`<br>
+  As option --replace in section [Example application](#example-application).
+- `--defs file`<br>
+  As option --define in section [Example application](#example-application).
+- `--pyth module`<br>
+  As option --python-defs in section
   [Example application](#example-application)
-- option `--extr ma[,mb,...]` (comma-separated list of macro names):<br>
-  as option --extract in section [Example application](#example-application)
-- option `--lang xy`:<br>
-  language de or en, default: en (also taken in case of unknown language);
-  used for adaptation of equation replacements, maths operator names,
-  proof titles, and for handling of macros like \"\=
-- option `--ienc enc`:<br>
-  as option --encoding in section [Example application](#example-application)
-- option `--unkn`:<br>
-  as option --list-unknown in section
-  [Example application](#example-application)
+- `--extr ma[,mb,...]`<br>
+  As option --extract in section [Example application](#example-application).
+- `--lang xy`<br>
+  Language 'de' or 'en' (default: 'en', also taken in case of unknown
+  language).
+  Is used for adaptation of equation replacements, maths operator names,
+  proof titles, and for handling of macros like '\"\='.
+- `--ienc enc`<br>
+  As option --encoding in section [Example application](#example-application).
+- `--unkn`<br>
+  As option --list-unknown in section
+  [Example application](#example-application).
 
 
 [Back to top](#yalafi-yet-another-latex-filter)
