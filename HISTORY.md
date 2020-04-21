@@ -1,5 +1,5 @@
-Work in progress
-----------------
+Version 1.0.0
+-------------
 - yalafi/shell/proofreader.py
     - fixed issue #12
     - more verbose error messages, if start of LT fails

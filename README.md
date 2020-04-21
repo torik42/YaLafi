@@ -158,7 +158,7 @@ unless --no-config is given.
 Default option values are set at the Python script beginning.
 
 - `--lt-directory dir`<br>
-  The directory of the local LT installation, may be omitted with option
+  The directory of the local LT installation, may be omitted on option
   '--server lt' or if script variable 'ltdirectory' is set appropriately.
   For instance, the directory has to contain file 'languagetool-server.jar'.
   The LT zip archive, for example LanguageTool-4.9.zip, can be obtained
@@ -222,6 +222,7 @@ Default option values are set at the Python script beginning.
   Only check arguments of the LaTeX macros whose names are given as
   comma-separated list.
   This is useful for check of foreign-language text, if marked accordingly.
+  Internally used for detection of file inclusions on --include.
 - `--disable rules`<br>
   Comma-separated list of ignored LT rules, is passed as --disable to LT
   (default: 'WHITESPACE\_RULE').
@@ -336,8 +337,8 @@ in section [Example application](#example-application).
 If you do not want to have started a local LT server, comment out the line
 defining script variable `use_server`.
 
-<a name="troubleshooting-for-vim"></a>
-**Troubleshooting for Vim.**
+<a name="troubleshooting-for-vim-interface"></a>
+**Troubleshooting for Vim interface.**
 If Vim reports a problem with running LT, you can do the following.
 In `~/bin/yalafi-grammarous`, comment out the final `... 2>/dev/null`.
 For instance, you can just place a '\#' in front: `... # 2>/dev/null`.
@@ -402,9 +403,9 @@ If you add, for instance, '--server my', then a local LT server will be used.
 It is started on the first HTML request received from Emacs-langtool,
 if it is not yet running.
 
-**Troubleshooting for Emacs.**
-If Emacs reports a problem with running LT, you can apply the steps
-from [\[Troubleshooting for Vim\]](#troubleshooting-for-vim)
+**Troubleshooting for Emacs interface.**
+If Emacs reports a problem with running LT, you can apply the steps from
+[\[Troubleshooting for Vim interface\]](#troubleshooting-for-vim-interface)
 to `~/bin/yalafi-emacs`.
 
 **Installation of Emacs-langtool.**
@@ -438,8 +439,10 @@ where the problem was detected.
   Statement \\LTmacros{file.tex} reads macro definitions from the given file.
   Further own macros with arbitrary arguments can be defined on Python level,
   see section [Inclusion of own macros](#inclusion-of-own-macros).
-- “Undeclared” macros are silently ignored, keeping their arguments
+- Unknown macros are silently ignored, keeping their arguments
   with enclosing \{\} braces removed.
+  They can be listed with options --unkn and --list-unknown for yalafi
+  and yalafi.shell, respectively.
 - Environment frames \\begin\{...\} and \\end\{...\} are deleted.
   We implement tailored behaviour for environment types listed in
   'Parameters.environment\_defs' in file yalafi/parameters.py,
@@ -461,7 +464,7 @@ where the problem was detected.
 - Equation environments are resolved in a way suitable for check of
   interpunction and spacing.
   The argument of \\text{...} is included into the output text.
-  Versions \\\[...\\\] and $$...$$ are same as environment displaymath.
+  Versions \\\[...\\\] and $$...$$ are handled like environment displaymath.
   See also sections
   [Handling of displayed equations](#handling-of-displayed-equations)
   and
