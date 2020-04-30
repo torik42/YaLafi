@@ -1,3 +1,7 @@
+Work in progress
+----------------
+- README.md: added reference to vscode-ltex
+
 Version 1.0.0
 -------------
 - yalafi/shell/proofreader.py

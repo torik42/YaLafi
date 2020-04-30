@@ -1,6 +1,7 @@
 
 # YaLafi: Yet another LaTeX filter
 
+[Related projects](#related-projects)&nbsp;\|
 [Installation](#installation)&nbsp;\|
 [Example application](#example-application)&nbsp;\|
 [Interface to Vim](#interface-to-vim)&nbsp;\|
@@ -66,14 +67,6 @@ This is the corresponding HTML report:
 
 ![HTML report](shell.png)
 
-In some sense, this project relates to software like
-[OpenDetex](https://github.com/pkubowicz/opendetex),
-[pandoc](https://github.com/jgm/pandoc),
-[plasTeX](https://github.com/tiarno/plastex),
-[pylatexenc](https://github.com/phfaist/pylatexenc),
-[TeXtidote](https://github.com/sylvainhalle/textidote), and
-[tex2txt](http://hackage.haskell.org/package/tex2txt).
-
 The tool builds on results from [Tex2txt](https://github.com/matze-dd/Tex2txt),
 but differs in the internal processing method.
 Instead of using recursive regular expressions, a simple tokeniser
@@ -85,7 +78,7 @@ Beside the interface from section [Package interface](#package-interface),
 application Python scripts like [yalafi/shell/shell.py](yalafi/shell/shell.py)
 from section [Example application](#example-application)
 can access an interface emulating tex2txt.py from repository Tex2txt by
-`from yalafi import tex2txt`.
+'from yalafi import tex2txt'.
 
 The pure LaTeX filter can be directly used in scripts via a command-line
 interface, it is described in section
@@ -97,6 +90,29 @@ or initiate a pull request.
 Many thanks in advance.
 
 Happy TeXing!
+
+[Back to top](#yalafi-yet-another-latex-filter)
+
+
+## Related projects
+
+This project relates to software like
+
+- [OpenDetex](https://github.com/pkubowicz/opendetex),
+- [pandoc](https://github.com/jgm/pandoc),
+- [plasTeX](https://github.com/tiarno/plastex),
+- [pylatexenc](https://github.com/phfaist/pylatexenc),
+- [TeXtidote](https://github.com/sylvainhalle/textidote),
+- [tex2txt](http://hackage.haskell.org/package/tex2txt), and
+- [vscode-ltex](https://github.com/valentjn/vscode-ltex).
+
+From these examples, currently only TeXtidote and vscode-ltex provide
+position mapping between the LaTeX input text and the plain text that
+is sent to the proofreading software.
+Both use (simple) regular expressions for plain-text extraction and are
+easy to install.
+YaLafi, on the other hand, aims to achieve good flexibility and a
+high quality of the filtering process.
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -993,7 +1009,7 @@ Displayed equations are parsed as follows.
 - Replacements from 'Parameters.math\_repl\_display' are rotated
     - if a non-blank \\text part is detected,
     - if a “maths part” starts with an operator and is first in “section”,
-      but not on “line”
+      but not on “line”,
     - if a “maths part” only consists of an operator,
     - if a “maths part” includes trailing interpunction.
 
