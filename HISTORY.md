@@ -1,17 +1,20 @@
 Work in progress
 ----------------
-- README.md: added reference to vscode-ltex
+- README.md
+    - added section on related projects
+    - added reference to vscode-ltex
+- this file: added dates to versions
 
-Version 1.0.0
--------------
+Version 1.0.0 (2020/04/21)
+--------------------------
 - yalafi/shell/proofreader.py
     - fixed issue #12
     - more verbose error messages, if start of LT fails
 - replaced screenshots for Vim and Emacs application
 - updated README.md
 
-Version 0.9.0
--------------
+Version 0.9.0 (2020/04/14)
+--------------------------
 - now hopefully close to 1.0.0 ;-)
 - yalafi.shell
     - closed issue #7, option --as-server: emulate an LT server with
@@ -26,8 +29,8 @@ Version 0.9.0
     - subdivided yalafi/shell/shell.py into several files
 - README.md: updated
 
-Version 0.4.0
--------------
+Version 0.4.0 (2020/04/07)
+--------------------------
 - yalafi.shell
     - option --lt-options: added passing of -l / --language to HTML request
     - fixed problem with Java under Cygwin: always first go to LT's
@@ -49,8 +52,8 @@ Version 0.4.0
 - renamed 'opts' parameter of Macro() etc. to 'defaults'
 - README.md: updated
 
-Version 0.3.1
--------------
+Version 0.3.1 (2020/03/31)
+--------------------------
 - yalafi.shell
     - added output in XML format for vim-grammarous
     - removed option --html
@@ -59,8 +62,8 @@ Version 0.3.1
     - added option --lt-directory
 - README.md: updated
 
-Version 0.3.0
--------------
+Version 0.3.0 (2020/03/29)
+--------------------------
 - added replication of punctuation marks at specified \\item labels
 - verbatim environment now can be removed or replaced like other environments
   with appropriate entry in Parser.environment\_defs
@@ -71,8 +74,8 @@ Version 0.3.0
 - yalafi/scanner.py: tested use of regular expression; only a bit faster for
   short texts, but much slower for large texts
 
-Version 0.2.0
--------------
+Version 0.2.0 (2020/03/25)
+--------------------------
 - yalafi/shell/shell.py
     - added option --python-defs
     - option --encoding now also effective for file from --define
@@ -88,7 +91,7 @@ Version 0.2.0
   Expandable.\_\_init\_\_()
 - added this file
 
-Version 0.1.0
--------------
+Version 0.1.0 (2020/03/22)
+--------------------------
 - initial version
 

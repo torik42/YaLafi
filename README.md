@@ -27,17 +27,17 @@ It provides
 
 The sample Python application script
 [yalafi/shell/shell.py](yalafi/shell/shell.py) from section
-[Example application](#example-application) integrates the filter
-with [LanguageTool](https://www.languagetool.org).
+[Example application](#example-application) integrates the LaTeX filter
+with the proofreading software [LanguageTool](https://www.languagetool.org).
 It
 - sends the extracted plain text to the proofreader,
 - maps position information in returned messages back to the LaTeX text,
 - generates results in several formats.
 
-You may
+You may easily
 - create a proofreading report in text or HTML format for a complete
   document tree,
-- check LaTeX texts directly in the editors Emacs and Vim via plug-ins
+- check LaTeX texts in the editors Emacs and Vim via plug-ins
   [Emacs-langtool](https://github.com/mhayashi1120/Emacs-langtool)
   and [vim-grammarous](https://github.com/rhysd/vim-grammarous),
 - run the script as emulation of a LanguageTool server with integrated
@@ -63,7 +63,8 @@ Only few people is lazy.    We use redx colour.
                 ^^
 ```
 <a name="example-html-report"></a>
-This is the corresponding HTML report:
+This is the corresponding HTML report
+(for another example, [see here](#equation-html-report)):
 
 ![HTML report](shell.png)
 
@@ -97,7 +98,6 @@ Happy TeXing!
 ## Related projects
 
 This project relates to software like
-
 - [OpenDetex](https://github.com/pkubowicz/opendetex),
 - [pandoc](https://github.com/jgm/pandoc),
 - [plasTeX](https://github.com/tiarno/plastex),
@@ -111,8 +111,9 @@ position mapping between the LaTeX input text and the plain text that
 is sent to the proofreading software.
 Both use (simple) regular expressions for plain-text extraction and are
 easy to install.
-YaLafi, on the other hand, aims to achieve good flexibility and a
-high quality of the filtering process.
+YaLafi, on the other hand, aims to achieve high flexibility and a
+good filtering quality with minimal number of false positives from the
+proofreading software.
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -287,7 +288,7 @@ Default option values are set at the Python script beginning.
     See also
     [http://wiki.languagetool.org/http-server](http://wiki.languagetool.org/http-server).
     This may be faster than the command-line tool used otherwise, especially
-    for a large number of LaTeX files.
+    for a large number of LaTeX files or together with an editor plug-in.
     The server will not be stopped at the end (use '--server stop').
 - `--lt-server-options opts`<br>
   Pass additional options when starting a local LT server.
@@ -397,6 +398,11 @@ in section [Example application](#example-application).
 If you do not want to have started a local LT server, comment out the line
 defining script variable `use_server`.
 
+**Troubleshooting for Emacs interface.**
+If Emacs reports a problem with running LT, you can apply the steps from
+[\[Troubleshooting for Vim interface\]](#troubleshooting-for-vim-interface)
+to `~/bin/yalafi-emacs`.
+
 **Server interface.**
 This variant may result in better tracking of character positions.
 In order to use it, you can write in \~/.emacs
@@ -418,11 +424,6 @@ may be given.
 If you add, for instance, '--server my', then a local LT server will be used.
 It is started on the first HTML request received from Emacs-langtool,
 if it is not yet running.
-
-**Troubleshooting for Emacs interface.**
-If Emacs reports a problem with running LT, you can apply the steps from
-[\[Troubleshooting for Vim interface\]](#troubleshooting-for-vim-interface)
-to `~/bin/yalafi-emacs`.
 
 **Installation of Emacs-langtool.**
 Download and unzip Emacs-langtool.
@@ -451,6 +452,9 @@ where the problem was detected.
 
 - A collection of standard LaTeX macros and environments is already included,
   but very probably it has to be complemented.
+  Compare variables 'Parameters.macro\_defs\_latex', 
+  'Parameters.macro\_defs\_python', and
+  'Parameters.environment\_defs' in file yalafi/parameters.py.
 - Macro definitions with \\(re)newcommand in the input text are processed.
   Statement \\LTmacros{file.tex} reads macro definitions from the given file.
   Further own macros with arbitrary arguments can be defined on Python level,
@@ -506,9 +510,10 @@ where the problem was detected.
   with an appropriate entry in 'Parameters.environment\_defs' in
   yalafi/parameters.py.
 - Rare warnings from the proofreading program can be suppressed using
-  \\LTadd{}, \\LTskip{}, \\LTalter{}{} in the LaTeX text.
-  Suitable macro definition there, e.g., for adding something that only the
-  proofreader should see: `\newcommand{\LTadd}[1]{}`
+  \\LTadd{...}, \\LTskip{...}, \\LTalter{...}{...} in the LaTeX text.
+  Suitable macro definitions there would be (ignored by the filter):
+  `\newcommand{\LTadd}[1]{}` `\newcommand{\LTskip}[1]{#1}`
+  `\newcommand{\LTalter}[2]{#1}`
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -519,7 +524,8 @@ The implemented parsing mechanism can only roughly approximate the behaviour
 of a real LaTeX system.
 We assume that only “reasonable” macros are used, lower-level TeX operations
 are not supported.
-If necessary, they should be placed in a LaTeX file “hidden” for the filter
+If necessary, they should be enclosed in \\LTskip{...}
+or be placed in a LaTeX file “hidden” for the filter
 (compare option --skip of yalafi.shell in section
 [Example application](#example-application)).
 A list of remaining incompatibilities must contain at least the following
@@ -815,8 +821,8 @@ will again produce an LT warning due to the missing comma after 'b',
 since the filter replaces both 'b' and '-c' by 'W-W-W' without
 intermediate text.
 
-In rare cases, manipulation with \\LTadd{} or \\LTskip{} may be necessary
-to avoid false warnings from the proofreader.
+In rare cases, manipulation with \\LTadd{...} or \\LTskip{...} may be
+necessary to avoid false warnings from the proofreader.
 
 ### Inclusion of “normal” text
 
@@ -897,13 +903,9 @@ Invocation of `python -m yalafi ...` differs as follows from
 - Macro arguments need not be delimited by {} braces or \[\] brackets.
 - Macros are expanded in the order they appear in the text.
 - Character position tracking for displayed equations is improved,
-  see the example below.
-- Parameters like predefined LaTeX macros and environments are set in file
-  [yalafi/parameters.py](yalafi/parameters.py).
-  You can modify them at run-time with script option '--pyth module'.
-  The given Python module has to provide a function
-  'modify\_parameters(parms)' receiving the parameter object 'parms',
-  compare the example in [definitions.py](definitions.py).
+  see [the example below](#equation-html-report).
+- Added option --pyth allows to modify predefined LaTeX macros and
+  environments at Python level.
 - Option --defs expects a file containing macro definitions as LaTeX code.
 - Option --ienc is also effective for file from --defs.
 - Option --char (position tracking for single characters) is always activated.
@@ -918,6 +920,7 @@ may be substantial for long input texts.
 Number of effective code lines (without blank and pure comment lines)
 is around 1050 for Tex2txt/tex2txt.py and 1350 for yalafi/\*.py in total.
 
+<a name="equation-html-report"></a>
 With
 ```
 python -m yalafi.shell --equation-punct all --output html test.tex > test.html
@@ -1023,6 +1026,9 @@ expanding a macro.
 Method 'Parser.remove\_pure\_action\_lines()' removes all lines only
 containing space and at least one such token.
 Initially empty lines are retained.
+Together with the extraction of special text flows, for instance from
+footnotes, this preserves sentences and paragraphs, thus improving checks
+and reducing false positives from the proofreading software.
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
