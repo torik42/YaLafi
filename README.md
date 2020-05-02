@@ -38,8 +38,9 @@ You may easily
 - create a proofreading report in text or HTML format for a complete
   document tree,
 - check LaTeX texts in the editors Emacs and Vim via plug-ins
-  [Emacs-langtool](https://github.com/mhayashi1120/Emacs-langtool)
-  and [vim-grammarous](https://github.com/rhysd/vim-grammarous),
+  [Emacs-langtool](https://github.com/mhayashi1120/Emacs-langtool),
+  [vim-grammarous](https://github.com/rhysd/vim-grammarous), or
+  [vim-LanguageTool](https://github.com/dpelle/vim-LanguageTool),
 - run the script as emulation of a LanguageTool server with integrated
   LaTeX filtering.
 
@@ -68,7 +69,8 @@ This is the corresponding HTML report
 
 ![HTML report](shell.png)
 
-The tool builds on results from [Tex2txt](https://github.com/matze-dd/Tex2txt),
+The tool builds on results from project
+[Tex2txt](https://github.com/matze-dd/Tex2txt),
 but differs in the internal processing method.
 Instead of using recursive regular expressions, a simple tokeniser
 and a small machinery for macro expansion are implemented; see sections
@@ -175,8 +177,9 @@ unless --no-config is given.
 Default option values are set at the Python script beginning.
 
 - `--lt-directory dir`<br>
-  The directory of the local LT installation, may be omitted on option
-  '--server lt' or if script variable 'ltdirectory' is set appropriately.
+  Directory of the local LT installation.
+  May be omitted on options '--server lt' and '--textgears apikey',
+  or if script variable 'ltdirectory' has been set appropriately.
   For instance, the directory has to contain file 'languagetool-server.jar'.
   The LT zip archive, for example LanguageTool-4.9.zip, can be obtained
   from the [LT download page](https://www.languagetool.org/download).
@@ -336,12 +339,16 @@ In case of multiple input files, the HTML report starts with an index.
 
 ## Interface to Vim
 
+There are at least two possibilities.
+
+### Application of plug-in vim-grammarous
+
 For the Vim plug-in
 [\[vim-grammarous\]](https://github.com/rhysd/vim-grammarous),
 it is possible to provide an interface for checking LaTeX texts.
 With an entry in \~/.vimrc, one may simply replace the command that
 invokes LanguageTool.
-For instance, you can add to your \~/.vimrc
+For instance, you can add to \~/.vimrc
 ```
 let g:grammarous#languagetool_cmd = '/home/foo/bin/yalafi-grammarous'
 map <F9> :GrammarousCheck --lang=en-GB<CR>
@@ -373,7 +380,28 @@ Place vim-grammarous/ under this directory.
 
 Here is the [introductory example](#example-html-report) from above:
 
-![Vim plug-in](vim-plug-in.png)
+![Vim plug-in vim-grammarous](vim-plug-in.png)
+
+### Application of plug-in vim-LanguageTool
+
+**Remark.**
+This is experimental and not yet fully tested.
+Bug reports are welcome.
+
+The Vim plug-in
+[\[vim-LanguageTool\]](https://github.com/dpelle/vim-LanguageTool)
+is based on the same XML interface to LanguageTool as the previous variant.
+Therefore, one can reuse the Bash script
+[yalafi-grammarous](yalafi-grammarous).
+You can add to \~/.vimrc
+```
+let g:languagetool_cmd = '$HOME/bin/yalafi-grammarous'
+let g:languagetool_lang = 'en-GB'
+map <F9> :LanguageToolCheck<CR>
+```
+Here is the [introductory example](#example-html-report) from above:
+
+![Vim plug-in vim-LanguageTool](vim-LanguageTool.png)
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -614,7 +642,7 @@ in yalafi/parameters.py.
     - 'A': mandatory argument, may be a single token or a sequence
       enclosed in {} braces
     - 'O': optional argument in \[\] brackets
-    - '\*' optional asterisk
+    - '\*': optional asterisk
 - `repl`: replacement string as for \\newcommand ('\*' does count as argument),
   or a function (see file [yalafi/handlers.py](yalafi/handlers.py)
   for examples)

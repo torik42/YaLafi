@@ -3,6 +3,7 @@ Work in progress
 - README.md
     - added section on related projects
     - added reference to vscode-ltex
+    - added Vim plug-in vim-LanguageTool
 - this file: added dates to versions
 
 Version 1.0.0 (2020/04/21)
