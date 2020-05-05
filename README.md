@@ -67,7 +67,7 @@ Only few people is lazy.    We use redx colour.
 This is the corresponding HTML report
 (for another example, [see here](#equation-html-report)):
 
-![HTML report](shell.png)
+![HTML report](figs/shell.png)
 
 The tool builds on results from project
 [Tex2txt](https://github.com/matze-dd/Tex2txt),
@@ -339,7 +339,9 @@ In case of multiple input files, the HTML report starts with an index.
 
 ## Interface to Vim
 
-There are at least two possibilities.
+As [\[Vim\]](https://www.vim.org)
+is a great editor, there are several possibilities that build
+on existing Vim plug-ins.
 
 ### Application of plug-in vim-grammarous
 
@@ -380,17 +382,17 @@ Place vim-grammarous/ under this directory.
 
 Here is the [introductory example](#example-html-report) from above:
 
-![Vim plug-in vim-grammarous](vim-plug-in.png)
+![Vim plug-in vim-grammarous](figs/vim-grammarous.png)
 
 ### Application of plug-in vim-LanguageTool
 
 **Remark.**
 This is experimental and not yet fully tested.
-Bug reports are welcome.
+Any input is appreciated.
 
 The Vim plug-in
 [\[vim-LanguageTool\]](https://github.com/dpelle/vim-LanguageTool)
-is based on the same XML interface to LanguageTool as the previous variant.
+relies on the same XML interface to LanguageTool as the previous variant.
 Therefore, one can reuse the Bash script
 [yalafi-grammarous](yalafi-grammarous).
 You can add to \~/.vimrc
@@ -399,9 +401,56 @@ let g:languagetool_cmd = '$HOME/bin/yalafi-grammarous'
 let g:languagetool_lang = 'en-GB'
 map <F9> :LanguageToolCheck<CR>
 ```
-Here is the [introductory example](#example-html-report) from above:
 
-![Vim plug-in vim-LanguageTool](vim-LanguageTool.png)
+Vim-Languagetool does not exhibit the problem of vim-grammarous described in
+[Issue \#89 \@ vim-grammarous](https://github.com/rhysd/vim-grammarous/issues/89),
+when the LaTeX input contains non-ASCII characters like 'ä'.
+On the other hand, one cannot continue editing while the proofreader is
+running.
+Here is again the [introductory example](#example-html-report) from above:
+
+![Vim plug-in vim-LanguageTool](figs/vim-languagetool.png)
+
+### Application of plug-in ALE
+
+**Remark.**
+This is experimental and not yet fully tested.
+Any input is appreciated.
+
+With [\[ALE\]](https://github.com/dense-analysis/ale),
+the proofreader ('linter') by default is invoked as background task,
+whenever one leaves insert mode.
+You might add to \~/.vimrc
+```
+" this turns off all other tex linters
+let g:ale_linters = { 'plaintex': ['lty'], 'tex': ['lty'] }
+" default value: '~/lib/LanguageTool'
+let g:ale_tex_lty_ltdirectory = '~/lib/LanguageTool-4.7'
+" set to '' to disable server usage or to 'lt' for LT's Web server
+let g:ale_tex_lty_server = 'my'
+" default value: 'en-GB'
+let g:ale_tex_lty_language = 'en-GB'
+" default value: 'WHITESPACE_RULE'
+let g:ale_tex_lty_disable = 'WHITESPACE_RULE'
+" other options to be passed to yalafi.shell
+let g:ale_tex_lty_shelloptions = '--single-letters "A|a|I|e.g.|i.e.||"'
+```
+Additionally, one only has to copy or link file [lty.vim](lty.vim)
+to directory `~/.vim/bundle/ale/ale_linters/tex/`, or similar.
+
+**TODO**
+- Test thoroughly the behaviour on LaTeX syntax errors that temporarily
+  may be present, while one is editing the source.
+  Compare the remark at beginning of section
+  [Filter actions](#filter-actions).
+  Perhaps, another scheme is more appropriate here.
+- The display of LT messages in the editor status line omits some useful
+  information.
+- Improve implementation details as listed in file lty.vim.
+
+Here is again the [introductory example](#example-html-report) from above:
+
+![Vim plug-in ALE](figs/vim-ale.png)
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -463,7 +512,7 @@ export EMACSLOADPATH=~/.emacs.d/lisp:
 
 Here is the [introductory example](#example-html-report) from above:
 
-![Emacs plug-in](emacs-plug-in.png)
+![Emacs plug-in Emacs-langtool](figs/emacs-langtool.png)
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -539,9 +588,9 @@ where the problem was detected.
   yalafi/parameters.py.
 - Rare warnings from the proofreading program can be suppressed using
   \\LTadd{...}, \\LTskip{...}, \\LTalter{...}{...} in the LaTeX text.
-  Suitable macro definitions there would be (ignored by the filter):
-  `\newcommand{\LTadd}[1]{}` `\newcommand{\LTskip}[1]{#1}`
-  `\newcommand{\LTalter}[2]{#1}`
+  Suitable macro definitions there would be (ignored by the filter)
+  `\newcommand{\LTadd}[1]{}` and `\newcommand{\LTskip}[1]{#1}` and
+  `\newcommand{\LTalter}[2]{#1}`.
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -556,6 +605,8 @@ If necessary, they should be enclosed in \\LTskip{...}
 or be placed in a LaTeX file “hidden” for the filter
 (compare option --skip of yalafi.shell in section
 [Example application](#example-application)).
+With little additional work, it might be possible to include some plain-TeX
+features like processing of \\def or parsing of elastic length specifications.
 A list of remaining incompatibilities must contain at least the following
 points.
 
@@ -966,7 +1017,7 @@ Therefore, operator $A$ is continuous at point $x$.
 ```
 we get
 
-![HTML report](equation.png)
+![HTML report](figs/example-equation.png)
 
 
 [Back to top](#yalafi-yet-another-latex-filter)
