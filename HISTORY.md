@@ -5,6 +5,7 @@ Work in progress
     - experimental: added application of Vim plug-in vim-LanguageTool
     - experimental: added application of Vim plug-in ALE
 - added ALE linter component lty.vim
+- yalafi/shell/proofreader.py: fixed issue #14
 - shifted screenshots to directory figs/
 - this file: added dates to versions
 
