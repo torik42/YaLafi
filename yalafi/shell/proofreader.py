@@ -106,11 +106,7 @@ def run_proofreader_options(tex, language, disable, lt_options):
 def run_languagetool(plain, language, disable, lt_options):
     if cmdline.server:
         # use Web server hosted by LT or local server
-        if cmdline.server == 'lt':
-            server = ltserver
-        else:
-            start_local_lt_server()
-            server = ltserver_local
+        server = ltserver if cmdline.server == 'lt' else ltserver_local
         data = {'text': plain, 'language': language}
         if disable:
             data['disabledRules'] = disable
@@ -129,12 +125,16 @@ def run_languagetool(plain, language, disable, lt_options):
 
         data = urllib.parse.urlencode(data).encode(encoding='ascii')
         request = urllib.request.Request(server, data=data)
-        try:
-            reply = urllib.request.urlopen(request)
-            out = reply.read()
-            reply.close()
-        except:
-            tex2txt.fatal('error connecting to "' + server + '"')
+        for _ in range(2):
+            try:
+                reply = urllib.request.urlopen(request)
+                out = reply.read()
+                reply.close()
+                break
+            except:
+                if cmdline.server != 'my':
+                    tex2txt.fatal('error connecting to "' + server + '"')
+                start_local_lt_server()
     else:
         # use local installation
         lt_cmd = ltcommand.split() + ['--language', language]
@@ -168,7 +168,7 @@ def start_local_lt_server():
         if ltserver_local_running:
             return True
 
-        data = {'text': '', 'language': 'en'}
+        data = {'text': '', 'language': cmdline.language}
         data = urllib.parse.urlencode(data).encode(encoding='ascii')
         request = urllib.request.Request(ltserver_local, data=data)
         try:
