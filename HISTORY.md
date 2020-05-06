@@ -2,7 +2,7 @@ Work in progress
 ----------------
 - README.md
     - new section on related projects, added reference to vscode-ltex
-    - experimental: added application of Vim plug-in vim-LanguageTool
+    - added application of Vim plug-in vim-LanguageTool
     - experimental: added application of Vim plug-in ALE
 - added ALE linter component lty.vim
 - yalafi/shell/proofreader.py: fixed issue #14

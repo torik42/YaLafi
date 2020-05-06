@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #
-#   interface between vim-grammarous and yalafi.shell
-#   - collect all options passed by vim-grammarous, except --api
+#   interface between vim-grammarous or vim-LanguageTool and yalafi.shell
+#   - collect all options passed by editor, except --api
 #   - languagetool-commandline.jar is a bit picky with repeated options
 #
 

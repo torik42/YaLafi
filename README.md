@@ -386,10 +386,6 @@ Here is the [introductory example](#example-html-report) from above:
 
 ### Application of plug-in vim-LanguageTool
 
-**Remark.**
-This is experimental and not yet fully tested.
-Any input is appreciated.
-
 The Vim plug-in
 [\[vim-LanguageTool\]](https://github.com/dpelle/vim-LanguageTool)
 relies on the same XML interface to LanguageTool as the previous variant.
@@ -399,11 +395,12 @@ You can add to \~/.vimrc
 ```
 let g:languagetool_cmd = '$HOME/bin/yalafi-grammarous'
 let g:languagetool_lang = 'en-GB'
+let g:languagetool_disable_rules = 'WHITESPACE_RULE'
 map <F9> :LanguageToolCheck<CR>
 ```
 
 Vim-Languagetool does not exhibit the problem of vim-grammarous described in
-[Issue \#89 \@ vim-grammarous](https://github.com/rhysd/vim-grammarous/issues/89),
+[Issue \#89\@vim-grammarous](https://github.com/rhysd/vim-grammarous/issues/89),
 when the LaTeX input contains non-ASCII characters like 'ä'.
 On the other hand, one cannot continue editing while the proofreader is
 running.
@@ -414,8 +411,8 @@ Here is again the [introductory example](#example-html-report) from above:
 ### Application of plug-in ALE
 
 **Remark.**
-This is experimental and not yet fully tested.
-Any input is appreciated.
+This interface is work in progress.
+Any suggestions are appreciated.
 
 With [\[ALE\]](https://github.com/dense-analysis/ale),
 the proofreader ('linter') by default is invoked as background task,
