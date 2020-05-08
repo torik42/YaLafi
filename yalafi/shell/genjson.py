@@ -26,15 +26,37 @@
 import json
 from . import utils
 
-#   correct offset and length in each match
+#   - correct offset and length in each match
+#   - add fields for ALE interface
 #
-def output_json(latex, plain, charmap, matches, file, out):
-    message = {'matches': [utils.map_match_position(m, latex, charmap)
-                                                    for m in matches]}
+def output_json(tex, plain, charmap, matches, json_get, file, out):
+    def f(m):
+        m = utils.map_match_position(m, tex, charmap)
+
+        beg = json_get(m, 'offset', int)
+        m['fromy'] = tex.count('\n', 0, beg)
+        nl = tex.rfind('\n', 0, beg) + 1
+        m['fromx'] = beg - nl
+        m['fromx_b'] = len(tex[nl:beg].encode())
+        end = beg + json_get(m, 'length', int) - 1
+        m['toy'] = tex.count('\n', 0, end)
+        nl = tex.rfind('\n', 0, end) + 1
+        m['tox'] = end - nl + 1
+        m['tox_b'] = len(tex[nl:end+1].encode())
+
+        cont = json_get(m, 'context', dict)
+        cont_text = json_get(cont, 'text', str)
+        cont_offset = json_get(cont, 'offset', int)
+        cont_length = json_get(cont, 'length', int)
+        m['context']['length_b'] = len(cont_text
+                        [cont_offset:cont_offset+cont_length].encode())
+        m['context']['offset_b'] = len(cont_text[:cont_offset].encode())
+        return m
+    message = {'matches': [f(m) for m in matches]}
     out.write(json.dumps(message))
 
-def generate_json_report(cmdline, proofreader, out):
+def generate_json_report(cmdline, proofreader, json_get, out):
     for file in cmdline.file:
         (latex, plain, charmap, matches) = proofreader(file)
-        output_json(latex, plain, charmap, matches, file, out)
+        output_json(latex, plain, charmap, matches, json_get, file, out)
 
