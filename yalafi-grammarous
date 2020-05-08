@@ -14,6 +14,12 @@ ltdir=~/.vim/pack/bundle/start/vim-grammarous/misc/LanguageTool-4.7
 #
 use_server="--server my"
 
+#   vim-grammarous needs byte offsets in XML report
+#   --> set to xml-b
+#
+output=xml-b
+output=xml
+
 opts=x
 lang=en-GB
 while [ $# -gt 1 ]
@@ -35,6 +41,6 @@ do
     shift
 done
 
-python -m yalafi.shell $use_server --output xml --language $lang \
+python -m yalafi.shell $use_server --output $output --language $lang \
             --lt-directory $ltdir --lt-options "$opts" $1 2>/dev/null
 

@@ -192,10 +192,10 @@ Default option values are set at the Python script beginning.
   The internally used proofreader is influenced by options like --server.
   Other options like --single-letters remain effective.
 - `--output mode`<br>
-  Mode is one of 'plain', 'html', 'xml', 'json' (default: 'plain' for text
-  report).
+  Mode is one of 'plain', 'html', 'xml', 'xml-b', 'json'
+  (default: 'plain' for text report).
   Variant 'html' generates an HTML report, see below for further details.
-  Mode 'xml' is intended for a Vim plug-in, compare section
+  Modes 'xml' and 'xml-b' are intended for Vim plug-ins, compare section
   [Interface to Vim](#interface-to-vim).
 - `--link`<br>
   In an HTML report, left-click on a highlighted text part opens a
@@ -363,6 +363,11 @@ in section [Example application](#example-application).
 If you do not want to have started a local LT server, comment out the line
 defining script variable `use_server`.
 
+In order to avoid the problem described in
+[Issue \#89\@vim-grammarous](https://github.com/rhysd/vim-grammarous/issues/89)
+(shifted error highlighting, if after non-ASCII character on same line),
+you can set `output=xml-b` in yalafi-grammarous.
+
 <a name="troubleshooting-for-vim-interface"></a>
 **Troubleshooting for Vim interface.**
 If Vim reports a problem with running LT, you can do the following.
@@ -398,12 +403,8 @@ let g:languagetool_lang = 'en-GB'
 let g:languagetool_disable_rules = 'WHITESPACE_RULE'
 map <F9> :LanguageToolCheck<CR>
 ```
-
-Vim-Languagetool does not exhibit the problem of vim-grammarous described in
-[Issue \#89\@vim-grammarous](https://github.com/rhysd/vim-grammarous/issues/89),
-when the LaTeX input contains non-ASCII characters like 'ä'.
-On the other hand, one cannot continue editing while the proofreader is
-running.
+Please note the general problem indicated in
+[Issue #17](../../issues/17).
 Here is again the [introductory example](#example-html-report) from above:
 
 ![Vim plug-in vim-LanguageTool](figs/vim-languagetool.png)
