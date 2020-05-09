@@ -35,7 +35,7 @@
 #   under Cygwin the Windows version is used
 #
 ltdirectory = '../LT/LanguageTool-4.7/'
-ltcommand = 'java -jar languagetool-commandline.jar --json --encoding utf-8'
+ltcommand = 'java -jar languagetool-commandline.jar'
 
 # on option --server lt: address of server hosted by LT
 #
@@ -55,6 +55,7 @@ config_file = '.yalafi.shell'
 # default option values
 #
 default_option_lt_directory = ltdirectory
+default_option_lt_command = ltcommand
 default_option_language = 'en-GB'
 default_option_encoding = 'utf-8'
 default_option_disable = 'WHITESPACE_RULE'
@@ -123,6 +124,7 @@ from yalafi import tex2txt
 #
 parser = argparse.ArgumentParser()
 parser.add_argument('--lt-directory', default=default_option_lt_directory)
+parser.add_argument('--lt-command', default=default_option_lt_command)
 parser.add_argument('--as-server', type=int)
 parser.add_argument('--output', default='plain',
                         choices=['plain', 'html', 'xml', 'xml-b', 'json'])
@@ -161,6 +163,7 @@ if not cmdline.no_config:
         config = []
     cmdline = parser.parse_args(config + sys.argv[1:])
 
+ltcommand = cmdline.lt_command + ' --json --encoding utf-8'
 if cmdline.context < 0:
     # huge context: display whole text
     cmdline.context = int(1e8)
