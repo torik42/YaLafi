@@ -124,8 +124,8 @@ from yalafi import tex2txt
 parser = argparse.ArgumentParser()
 parser.add_argument('--lt-directory', default=default_option_lt_directory)
 parser.add_argument('--as-server', type=int)
-parser.add_argument('--output', choices=['plain', 'html', 'xml', 'json'],
-                                                    default='plain')
+parser.add_argument('--output', default='plain',
+                        choices=['plain', 'html', 'xml', 'xml-b', 'json'])
 parser.add_argument('--link', action='store_true')
 parser.add_argument('--context', default=default_option_context, type=int)
 parser.add_argument('--include', action='store_true')
@@ -312,10 +312,11 @@ if cmdline.output == 'plain' or cmdline.list_unknown:
     gentext.init(vars)
     # do not enforce UTF-8: we might be working in a Windows command console
     gentext.generate_text_report(proofreader.run_proofreader, sys.stdout)
-elif cmdline.output == 'xml':
+elif cmdline.output in ('xml', 'xml-b'):
     from yalafi.shell import genxml
     genxml.init(vars)
-    genxml.generate_xml_report(proofreader.run_proofreader, out_utf8)
+    genxml.generate_xml_report(proofreader.run_proofreader, out_utf8,
+                                            cmdline.output == 'xml-b')
 elif cmdline.output == 'html':
     from yalafi.shell import genhtml
     genhtml.init(vars)
@@ -323,5 +324,5 @@ elif cmdline.output == 'html':
 elif cmdline.output == 'json':
     from yalafi.shell import genjson
     genjson.generate_json_report(cmdline, proofreader.run_proofreader,
-                                                out_utf8)
+                                            json_get, out_utf8)
 

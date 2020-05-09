@@ -26,15 +26,27 @@
 import json
 from . import utils
 
-#   correct offset and length in each match
+#   - correct offset and length in each match
+#   - add field priv with sub-fields fromx, fromy, tox, toy
 #
-def output_json(latex, plain, charmap, matches, file, out):
-    message = {'matches': [utils.map_match_position(m, latex, charmap)
-                                                    for m in matches]}
+def output_json(tex, plain, charmap, matches, json_get, file, out):
+    def f(m):
+        m = utils.map_match_position(m, tex, charmap)
+        priv = m['priv'] = {}
+        beg = json_get(m, 'offset', int)
+        priv['fromy'] = tex.count('\n', 0, beg)
+        nl = tex.rfind('\n', 0, beg) + 1
+        priv['fromx'] = beg - nl
+        end = beg + json_get(m, 'length', int) - 1
+        priv['toy'] = tex.count('\n', 0, end)
+        nl = tex.rfind('\n', 0, end) + 1
+        priv['tox'] = end - nl + 1
+        return m
+    message = {'matches': [f(m) for m in matches]}
     out.write(json.dumps(message))
 
-def generate_json_report(cmdline, proofreader, out):
+def generate_json_report(cmdline, proofreader, json_get, out):
     for file in cmdline.file:
         (latex, plain, charmap, matches) = proofreader(file)
-        output_json(latex, plain, charmap, matches, file, out)
+        output_json(latex, plain, charmap, matches, json_get, file, out)
 
