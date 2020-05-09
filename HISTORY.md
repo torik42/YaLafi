@@ -5,8 +5,11 @@ Work in progress
     - added application of Vim plug-in vim-LanguageTool
     - experimental: added application of Vim plug-in ALE
 - added ALE linter component lty.vim
-- yalafi/shell/proofreader.py: fixed issue #14
-- added output mode 'xml-b' for XML report, addresses issue #16
+- yalafi.shell
+    - yalafi/shell/proofreader.py: fixed issue #14
+    - added output mode 'xml-b' for XML report, addresses issue #16
+    - added some fields to JSON output
+    - added option --lt-command, issue #19
 - shifted screenshots to directory figs/
 - this file: added dates to versions
 

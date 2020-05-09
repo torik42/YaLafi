@@ -159,7 +159,7 @@ Both LT and the script will print some progress messages to stderr.
 They can be suppressed with `python ... 2>/dev/null`.
 ```
 python -m yalafi.shell
-                [--lt-directory dir] [--as-server port]
+                [--lt-directory dir] [--lt-command cmd] [--as-server port]
                 [--output mode] [--link] [--context number]
                 [--include] [--skip regex] [--plain-input]
                 [--list-unknown] [--language lang] [--encoding ienc]
@@ -183,7 +183,9 @@ Default option values are set at the Python script beginning.
   For instance, the directory has to contain file 'languagetool-server.jar'.
   The LT zip archive, for example LanguageTool-4.9.zip, can be obtained
   from the [LT download page](https://www.languagetool.org/download).
-  See also the script comment at variable 'ltdirectory'.
+  See also the script comment at variable 'ltdirectory' (default value).
+- `--lt-command cmd`<br>
+  Set base command to call LT (default value in script variable 'ltcommand').
 - `--as-server port`<br>
   Emulate an LT server listening on the given port, for an example
   see section [Interface to Emacs](#interface-to-emacs).
