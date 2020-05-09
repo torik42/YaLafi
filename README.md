@@ -422,19 +422,22 @@ You might add to \~/.vimrc
 ```
 " this turns off all other tex linters
 let g:ale_linters = { 'plaintex': ['lty'], 'tex': ['lty'] }
-" default value: '~/lib/LanguageTool'
+" default place of LT installation: '~/lib/LanguageTool'
 let g:ale_tex_lty_ltdirectory = '~/lib/LanguageTool-4.7'
 " set to '' to disable server usage or to 'lt' for LT's Web server
 let g:ale_tex_lty_server = 'my'
-" default value: 'en-GB'
+" default language: 'en-GB'
 let g:ale_tex_lty_language = 'en-GB'
-" default value: 'WHITESPACE_RULE'
+" default disabled LT rules: 'WHITESPACE_RULE'
 let g:ale_tex_lty_disable = 'WHITESPACE_RULE'
-" other options to be passed to yalafi.shell
-let g:ale_tex_lty_shelloptions = '--single-letters "A|a|I|e.g.|i.e.||"'
 ```
-Additionally, one only has to copy or link file [lty.vim](lty.vim)
-to directory `~/.vim/bundle/ale/ale_linters/tex/`, or similar.
+Further options may be passed to yalafi.shell, for instance,
+```
+let g:ale_tex_lty_shelloptions = '--single-letters "A|a|I|e.g.|i.e.||"'
+                \ . ' --lt-options "~--disablecategories PUNCTUATION"'
+```
+Additionally, one has to install ALE and copy or link file [lty.vim](lty.vim)
+to directory `~/.vim/bundle/ale/ale_linters/tex/`, or a similar location.
 
 **TODO**
 - Test thoroughly the behaviour on LaTeX syntax errors that temporarily
