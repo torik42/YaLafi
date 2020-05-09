@@ -422,6 +422,8 @@ the proofreader ('linter') by default is invoked as background task,
 whenever one leaves insert mode.
 You might add to \~/.vimrc
 ```
+" F9: show detailed LT message for error under cursor
+map <F9> :ALEDetail<CR>
 " this turns off all other tex linters
 let g:ale_linters = { 'plaintex': ['lty'], 'tex': ['lty'] }
 " default place of LT installation: '~/lib/LanguageTool'
@@ -447,9 +449,6 @@ to directory `~/.vim/bundle/ale/ale_linters/tex/`, or a similar location.
   Compare the remark at beginning of section
   [Filter actions](#filter-actions).
   Perhaps, another scheme is more appropriate here.
-- The display of LT messages in the editor status line omits some useful
-  information.
-- Improve implementation details as listed in file lty.vim.
 
 Here is again the [introductory example](#example-html-report) from above:
 
