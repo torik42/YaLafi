@@ -450,7 +450,9 @@ to directory `~/.vim/bundle/ale/ale_linters/tex/`, or a similar location.
   [Filter actions](#filter-actions).
   Perhaps, another scheme is more appropriate here.
 
-Here is again the [introductory example](#example-html-report) from above:
+Here is again the [introductory example](#example-html-report) from above.
+On pressing F9, LT's rule ID, replacement suggestions, and the problem
+context are displayed.
 
 ![Vim plug-in ALE](figs/vim-ale.png)
 
