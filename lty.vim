@@ -1,6 +1,6 @@
 "
 " Author: Matthias Baumann
-" Description: LanguageTool with YaLafi as LaTeX filter
+" Description: ALE linter, LanguageTool with YaLafi as LaTeX filter
 "
 " possible improvements:
 " - pipe buffer content to stdin (currently: temp file)
@@ -8,21 +8,27 @@
 "
 
 call ale#Set('tex_lty_ltdirectory', '~/lib/LanguageTool')
+call ale#Set('tex_lty_server', 'my')
 call ale#Set('tex_lty_language', 'en-GB')
 call ale#Set('tex_lty_disable', 'WHITESPACE_RULE')
+call ale#Set('tex_lty_enable', '')
+call ale#Set('tex_lty_disablecategories', '')
+call ale#Set('tex_lty_enablecategories', '')
 call ale#Set('tex_lty_shelloptions', '')
-call ale#Set('tex_lty_server', 'my')
 call ale#Set('tex_lty_code', 'LT')      " displayed in status line
- 
+
 call ale#Set('tex_lty_executable', 'python')
 call ale#Set('tex_lty_options',
     \   ' -m yalafi.shell'
     \ . ' --output json'
     \ . ' --lt-directory ' . g:ale_tex_lty_ltdirectory
-    \ . (empty(g:ale_tex_lty_server) ?
+    \ . (g:ale_tex_lty_server == '' ?
                 \ '' : ' --server ' . g:ale_tex_lty_server)
     \ . ' --language ' . g:ale_tex_lty_language
-    \ . ' --disable ' . g:ale_tex_lty_disable
+    \ . ' --disable "' . g:ale_tex_lty_disable . '"'
+    \ . ' --enable "' . g:ale_tex_lty_enable . '"'
+    \ . ' --disablecategories "' . g:ale_tex_lty_disablecategories . '"'
+    \ . ' --enablecategories "' . g:ale_tex_lty_enablecategories . '"'
     \ . ' ' . g:ale_tex_lty_shelloptions
 \)
 
@@ -37,8 +43,44 @@ function! ale_linters#tex#lty#GetCommand(buffer) abort
             \ . (empty(l:options) ? '' : ' ' . l:options) . ' %t'
 endfunction
 
+function! s:check_installation(buffer) abort
+    let l:pref = 'In order to use the tex/lty linter, please '
+    if !executable('python')
+        return l:pref . 'install Python.'
+    endif
+    call system('python -c "import yalafi"')
+    if v:shell_error != 0
+        return l:pref . 'install the Python module YaLafi.'
+    endif
+    if ale#Var(a:buffer, 'tex_lty_server') != 'lt'
+        if !executable('java')
+            return l:pref . 'install Java.'
+        endif
+        if !filereadable(fnamemodify(ale#Var(a:buffer, 'tex_lty_ltdirectory')
+                                \ . '/languagetool-commandline.jar', ':p'))
+            return l:pref . 'set g:ale_tex_lty_ltdirectory (or similar)'
+                        \ . ' to the path of LanguageTool.'
+        endif
+    endif
+    return ''
+endfunction
+
 function! ale_linters#tex#lty#Handle(buffer, lines) abort
-    let l:report = json_decode(a:lines[0])
+    try
+        let l:report = json_decode(a:lines[0])
+    catch
+        let l:err = s:check_installation(a:buffer)
+        if l:err == ''
+            let l:err = 'Unknown error with linter tex/lty.'
+        endif
+        return [{
+            \ 'lnum': 1,
+            \ 'col': 1,
+            \ 'code': 'ERROR',
+            \ 'text': l:err,
+            \ 'detail': l:err
+        \}]
+    endtry
     let l:output = []
     for l:match in l:report['matches']
         let l:lin = l:match['priv']['fromy'] + 1
