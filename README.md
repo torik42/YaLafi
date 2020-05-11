@@ -32,15 +32,12 @@ with the proofreading software [LanguageTool](https://www.languagetool.org).
 It
 - sends the extracted plain text to the proofreader,
 - maps position information in returned messages back to the LaTeX text,
-- generates results in several formats.
+- generates results in different formats.
 
 You may easily
 - create a proofreading report in text or HTML format for a complete
   document tree,
-- check LaTeX texts in the editors Emacs and Vim via plug-ins
-  [Emacs-langtool](https://github.com/mhayashi1120/Emacs-langtool),
-  [vim-grammarous](https://github.com/rhysd/vim-grammarous), or
-  [vim-LanguageTool](https://github.com/dpelle/vim-LanguageTool),
+- check LaTeX texts in the editors Emacs and Vim via several plug-ins,
 - run the script as emulation of a LanguageTool server with integrated
   LaTeX filtering.
 
@@ -158,16 +155,7 @@ Note that from version 4.8, LT does not fully support 32-bit systems any more.
 Both LT and the script will print some progress messages to stderr.
 They can be suppressed with `python ... 2>/dev/null`.
 ```
-python -m yalafi.shell
-                [--lt-directory dir] [--lt-command cmd] [--as-server port]
-                [--output mode] [--link] [--context number]
-                [--include] [--skip regex] [--plain-input]
-                [--list-unknown] [--language lang] [--encoding ienc]
-                [--replace file] [--define file] [--python-defs module]
-                [--extract macros] [--disable rules] [--lt-options opts]
-                [--single-letters accept] [--equation-punctuation mode]
-                [--server mode] [--lt-server-options opts]
-                [--textgears apikey] [--no-config]
+python -m yalafi.shell [OPTIONS]
                 latex_file [latex_file ...] [> text_or_html_file]
 ```
 Option names may be abbreviated.
@@ -248,6 +236,13 @@ Default option values are set at the Python script beginning.
 - `--disable rules`<br>
   Comma-separated list of ignored LT rules, is passed as --disable to LT
   (default: 'WHITESPACE\_RULE').
+- `--enable rules`<br>
+  Comma-separated list of added LT rules, is passed as --enable to LT
+  (default: '').
+- `--disablecategories cats`<br>
+  `--enablecategories cats`<br>
+  Disable / enable LT rule categories, directly passed to LT
+  (default for both: '').
 - `--lt-options opts`<br>
   Pass additional options to LT, given as single string in argument 'opts'.
   The first character of 'opts' will be skipped and must not be '-'.
@@ -435,10 +430,12 @@ let g:ale_tex_lty_language = 'en-GB'
 " default disabled LT rules: 'WHITESPACE_RULE'
 let g:ale_tex_lty_disable = 'WHITESPACE_RULE'
 ```
-Further options may be passed to yalafi.shell, for instance,
+Similarly to setting 'g:ale\_tex\_lty_disable', one can specify LT's options
+--enable, --disablecategories, and --enablecategories.
+Further options for yalafi.shell may be passed like
 ```
 let g:ale_tex_lty_shelloptions = '--single-letters "A|a|I|e.g.|i.e.||"'
-                \ . ' --lt-options "~--disablecategories PUNCTUATION"'
+                \ . ' --equation-punctuation display'
 ```
 Additionally, one has to install ALE and copy or link file [lty.vim](lty.vim)
 to directory `~/.vim/bundle/ale/ale_linters/tex/`, or a similar location.
