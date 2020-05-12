@@ -59,6 +59,9 @@ default_option_lt_command = ltcommand
 default_option_language = 'en-GB'
 default_option_encoding = 'utf-8'
 default_option_disable = 'WHITESPACE_RULE'
+default_option_enable = ''
+default_option_disablecategories = ''
+default_option_enablecategories = ''
 default_option_context = 2
 
 # option --include: inclusion macros
@@ -141,6 +144,11 @@ parser.add_argument('--define')
 parser.add_argument('--python-defs')
 parser.add_argument('--extract')
 parser.add_argument('--disable', default=default_option_disable)
+parser.add_argument('--enable', default=default_option_enable)
+parser.add_argument('--disablecategories',
+                        default=default_option_disablecategories)
+parser.add_argument('--enablecategories',
+                        default=default_option_enablecategories)
 parser.add_argument('--lt-options', default='')
 parser.add_argument('--single-letters')
 parser.add_argument('--equation-punctuation')

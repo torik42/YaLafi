@@ -47,13 +47,16 @@ def run_proofreader(file):
     f.close()
     if not tex.endswith('\n'):
         tex += '\n'
-    return run_proofreader_options(tex, cmdline.language, cmdline.disable,
-                                cmdline.lt_options[1:].split())
+    return run_proofreader_options(tex,
+                        cmdline.language, cmdline.disable, cmdline.enable,
+                        cmdline.disablecategories, cmdline.enablecategories,
+                        cmdline.lt_options[1:].split())
 
 #   this can be used by a server
 #   - overwrite CLI options from from fields of HTML request
 #
-def run_proofreader_options(tex, language, disable, lt_options):
+def run_proofreader_options(tex, language, disable, enable,
+                            disablecategories, enablecategories, lt_options):
 
     t2t_options = tex2txt.Options(char=True, repl=cmdline.replace,
                             defs=cmdline.define, lang=language[:2],
@@ -81,7 +84,8 @@ def run_proofreader_options(tex, language, disable, lt_options):
     if cmdline.textgears:
         matches = run_textgears(plain)
     else:
-        matches = run_languagetool(plain, language, disable, lt_options)
+        matches = run_languagetool(plain, language, disable, enable,
+                            disablecategories, enablecategories, lt_options)
 
     matches += checks.create_single_letter_matches(plain, cmdline)
     matches += checks.create_equation_punct_messages(plain, cmdline,
@@ -103,13 +107,20 @@ def run_proofreader_options(tex, language, disable, lt_options):
 
 #   run LT and return element 'matches' from JSON output
 #
-def run_languagetool(plain, language, disable, lt_options):
+def run_languagetool(plain, language, disable, enable,
+                            disablecategories, enablecategories, lt_options):
     if cmdline.server:
         # use Web server hosted by LT or local server
         server = ltserver if cmdline.server == 'lt' else ltserver_local
         data = {'text': plain, 'language': language}
         if disable:
             data['disabledRules'] = disable
+        if enable:
+            data['enabledRules'] = enable
+        if disablecategories:
+            data['disabledCategories'] = disablecategories
+        if enablecategories:
+            data['enabledCategories'] = enablecategories
         if lt_options:
             # translate options to entries in HTML request
             ltopts = lt_options
@@ -140,6 +151,12 @@ def run_languagetool(plain, language, disable, lt_options):
         lt_cmd = ltcommand.split() + ['--language', language]
         if disable:
             lt_cmd += ['--disable', disable]
+        if enable:
+            lt_cmd += ['--enable', enable]
+        if disablecategories:
+            lt_cmd += ['--disablecategories', disablecategories]
+        if enablecategories:
+            lt_cmd += ['--enablecategories', enablecategories]
         lt_cmd += lt_options
         lt_cmd.append('-')      # read from stdin
         try:

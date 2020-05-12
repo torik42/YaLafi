@@ -48,6 +48,9 @@ class Handler(BaseHTTPRequestHandler):
         language = requ['language'][0]
         latex = requ['text'][0]
         disable = requ.get('disabledRules', [''])[0]
+        enable = requ.get('enabledRules', [''])[0]
+        disablecategories = requ.get('disabledCategories', [''])[0]
+        enablecategories = requ.get('enabledCategories', [''])[0]
         old_opts = self.server.my_lt_options.copy()
         new_opts = []
         option_map = self.server.my_option_map
@@ -68,7 +71,8 @@ class Handler(BaseHTTPRequestHandler):
                 # --> remove
                 old_opts[pos:pos+1+option_map[f][1]] = []
         latex, plain, charmap, matches = self.server.my_proofreader(
-                                        latex, language, disable,
+                                        latex, language, disable, enable,
+                                        disablecategories, enablecategories,
                                         old_opts + new_opts)
         return {'matches': [utils.map_match_position(m, latex, charmap)
                                                         for m in matches]}

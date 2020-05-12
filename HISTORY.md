@@ -10,6 +10,8 @@ Work in progress
     - added output mode 'xml-b' for XML report, addresses issue #16
     - added some fields to JSON output
     - added option --lt-command, issue #19
+    - added options --enable, --disablecategories, --enablecategories
+      (issue #21)
 - shifted screenshots to directory figs/
 - this file: added dates to versions
 
