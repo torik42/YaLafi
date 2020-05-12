@@ -13,7 +13,7 @@ $
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 """
 plain_1 = r"""
-LATEXXXERROR (missing end of maths)C-C-C"""
+ LATEXXXERROR (missing end of maths) C-C-C"""
 def test_1():
     p = parser.Parser(parms)
     toks = p.parse(latex_1)
@@ -26,7 +26,7 @@ latex_2 = r"""
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 """
 plain_2 = r"""
-LATEXXXERROR (bad \verb argument)
+ LATEXXXERROR (bad \verb argument) 
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 """
@@ -41,7 +41,7 @@ latex_3 = r"""
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 """
 plain_3 = r"""
-LATEXXXERROR (missing end of verbatim)verbatim
+ LATEXXXERROR (missing end of verbatim) verbatim
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 """
 def test_3():
@@ -55,7 +55,7 @@ latex_4 = r"""
 XXX
 """
 plain_4 = r"""
-LATEXXXERROR (cannot find closing })
+ LATEXXXERROR  LATEXXXERROR (cannot find closing }) 
 XXX
 """
 def test_4():
@@ -69,7 +69,7 @@ latex_5 = r"""
 {1}
 """
 plain_5 = r"""
-LATEXXXERROR (text-mode accent for non-letter)
+ LATEXXXERROR (text-mode accent for non-letter) 
 """
 def test_5():
     p = parser.Parser(parms)
@@ -81,7 +81,7 @@ latex_6 = r"""
 \b y
 """
 plain_6 = r"""
-LATEXXXERROR (could not find UTF-8 character "LATIN SMALL LETTER Y WITH LINE BELOW")
+ LATEXXXERROR (could not find UTF-8 character "LATIN SMALL LETTER Y WITH LINE BELOW") 
 """
 def test_6():
     p = parser.Parser(parms)
@@ -96,7 +96,7 @@ B
 """
 plain_7 = r"""
 A
-LATEXXXERROR (illegal argument #2 in definition of macro \xxx)
+ LATEXXXERROR (illegal argument #2 in definition of macro \xxx) 
 B
 """
 def test_7():
@@ -112,7 +112,7 @@ B
 """
 plain_8 = r"""
 A
-LATEXXXERROR (illegal default value in definition of macro \xxx)
+ LATEXXXERROR (illegal default value in definition of macro \xxx) 
 B
 """
 def test_8():
