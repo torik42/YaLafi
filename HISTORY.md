@@ -1,10 +1,6 @@
 Work in progress
 ----------------
-- README.md
-    - new section on related projects, added reference to vscode-ltex
-    - added application of Vim plug-in vim-LanguageTool
-    - experimental: added application of Vim plug-in ALE
-- added ALE linter component lty.vim
+- yalafi: fixed issue #23, error recovery for missing \] / \}
 - yalafi.shell
     - yalafi/shell/proofreader.py: fixed issue #14
     - added output mode 'xml-b' for XML report, addresses issue #16
@@ -12,6 +8,11 @@ Work in progress
     - added option --lt-command, issue #19
     - added options --enable, --disablecategories, --enablecategories
       (issue #21)
+- added ALE linter component lty.vim
+- README.md
+    - new section on related projects, added reference to vscode-ltex
+    - added application of Vim plug-in vim-LanguageTool
+    - added application of Vim plug-in ALE
 - shifted screenshots to directory figs/
 - this file: added dates to versions
 
