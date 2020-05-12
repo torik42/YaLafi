@@ -121,3 +121,19 @@ def test_8():
     plain, pos = utils.get_txt_pos(toks)
     assert plain_8 == plain
 
+#   see Issue #23
+#
+latex_9 = r"""
+\section[1{Title}
+This is a text.
+"""
+plain_9 = r"""
+[. LATEXXXERROR (cannot find closing "]") 1Title
+This is a text.
+"""
+def test_9():
+    p = parser.Parser(parms)
+    toks = p.parse(latex_9)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_9 == plain
+
