@@ -55,7 +55,7 @@ latex_4 = r"""
 XXX
 """
 plain_4 = r"""
- LATEXXXERROR  LATEXXXERROR (cannot find closing }) 
+ LATEXXXERROR  LATEXXXERROR (cannot find closing "}") 
 XXX
 """
 def test_4():
