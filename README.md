@@ -408,10 +408,6 @@ Here is again the [introductory example](#example-html-report) from above:
 
 ### Application of plug-in ALE
 
-**Remark.**
-This interface is work in progress.
-Any suggestions are appreciated.
-
 With [\[ALE\]](https://github.com/dense-analysis/ale),
 the proofreader ('linter') by default is invoked as background task,
 whenever one leaves insert mode.
@@ -441,13 +437,6 @@ let g:ale_tex_lty_shelloptions = '--single-letters "A|a|I|e.g.|i.e.||"'
 ```
 Additionally, one has to install ALE and copy or link file [lty.vim](lty.vim)
 to directory `~/.vim/bundle/ale/ale_linters/tex/`, or a similar location.
-
-**TODO**
-- Test thoroughly the behaviour on LaTeX syntax errors that temporarily
-  may be present, while one is editing the source.
-  Compare the remark at beginning of section
-  [Filter actions](#filter-actions).
-  Perhaps, another scheme is more appropriate here.
 
 Here is again the [introductory example](#example-html-report) from above.
 On pressing F9, LT's rule ID, the complete message, replacement suggestions,
