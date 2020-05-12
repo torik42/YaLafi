@@ -417,7 +417,9 @@ the proofreader ('linter') by default is invoked as background task,
 whenever one leaves insert mode.
 You might add to \~/.vimrc
 ```
-" F9: show detailed LT message for error under cursor
+" if not yet set:
+filetype plugin on
+" F9: show detailed LT message for error under cursor, is left with 'q'
 map <F9> :ALEDetail<CR>
 " this turns off all other tex linters
 let g:ale_linters = { 'plaintex': ['lty'], 'tex': ['lty'] }
@@ -448,8 +450,8 @@ to directory `~/.vim/bundle/ale/ale_linters/tex/`, or a similar location.
   Perhaps, another scheme is more appropriate here.
 
 Here is again the [introductory example](#example-html-report) from above.
-On pressing F9, LT's rule ID, replacement suggestions, and the problem
-context are displayed.
+On pressing F9, LT's rule ID, the complete message, replacement suggestions,
+and the problem context are displayed.
 
 ![Vim plug-in ALE](figs/vim-ale.png)
 
