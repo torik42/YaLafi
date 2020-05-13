@@ -1,6 +1,7 @@
-Work in progress
-----------------
-- yalafi: fixed issue #23, error recovery for missing \] / \}
+Version 1.1.0 (2020/05/13)
+--------------------------
+- yalafi: fixed issue #23 (error recovery for missing \] or \}),
+  added test to tests/test\_error.py
 - yalafi.shell
     - yalafi/shell/proofreader.py: fixed issue #14
     - added output mode 'xml-b' for XML report, addresses issue #16
