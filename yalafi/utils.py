@@ -30,9 +30,9 @@ def latex_error(err, pos, latex, parms):
     col = pos - nl + 1
     sys.stderr.write('*** LaTeX error: line ' + str(lin)
                         + ', column ' + str(col) + ':\n*** ' + err + '\n')
-    mark = parms.mark_latex_error + ' (' + err + ')'
+    mark = ' ' + parms.mark_latex_error + ' (' + err + ') '
     mx = min(len(mark), len(latex) - pos)
-    out = [defs.TextToken(pos, mark[:mx])]
+    out = [defs.TextToken(pos, mark[:mx], pos_fix=True)]
     if mx < len(mark):
         out.append(defs.TextToken(pos + mx -1, mark[mx:], pos_fix=True))
     return out

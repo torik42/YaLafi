@@ -196,6 +196,7 @@ class Parser:
             return scanner.Buffer([tok])
         pos = tok.pos
         lev = 1 if tok.txt == '{' else 0
+        opening_tok = tok
         tok = buf.next()    # skip opening { or [
         out = []
         while tok:
@@ -210,8 +211,19 @@ class Parser:
                 return scanner.Buffer(out)
             out.append(tok)
             tok = buf.next()
-        return scanner.Buffer(utils.latex_error('cannot find closing ' + end,
-                                            pos, self.latex, self.parms) + out)
+
+        # HACK, see Issue 23:
+        # We have read till end of text, and the collected tokens might be
+        # skipped by the caller.
+        # Thus, we push back the tokens to the input, together with an
+        # error message.
+        # To the caller, we return a buffer only yielding an error mark.
+        buf.back([opening_tok]
+                    + utils.latex_error('cannot find closing "' + end + '"',
+                                        pos, self.latex, self.parms) + out)
+        return scanner.Buffer([defs.TextToken(opening_tok.pos,
+                                    ' ' + self.parms.mark_latex_error + ' ',
+                                    pos_fix=True)])
 
     #   expand a "normal" macro
     #   Return: tokens to be inserted
