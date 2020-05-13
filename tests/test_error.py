@@ -124,7 +124,7 @@ def test_8():
 #   see Issue #23
 #
 latex_9 = r"""
-\section[1{Title}
+\section[1}{Title}
 This is a text.
 """
 plain_9 = r"""
