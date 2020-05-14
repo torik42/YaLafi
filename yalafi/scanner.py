@@ -198,8 +198,26 @@ class Buffer:
     #
     def skip_space(self):
         tok = self.cur()
-        while type(tok) in (defs.SpaceToken, defs.CommentToken,
-                                defs.ActionToken, defs.VoidToken):
+        while self.is_space(tok):
             tok = self.next()
         return tok
+
+    #   look ahead to next non-space token, return it or None
+    #   - NB: may return ParagraphToken
+    #   - buffer remains unchanged
+    #
+    def look_ahead(self):
+        buf = []
+        tok = self.cur()
+        while self.is_space(tok):
+            buf.append(tok)
+            tok = self.next()
+        self.back(buf)
+        return tok
+
+    #   test whether token is space or comment (but not paragraph)
+    #
+    def is_space(self, tok):
+        return type(tok) in (defs.SpaceToken, defs.CommentToken,
+                                defs.ActionToken, defs.VoidToken)
 

@@ -79,6 +79,7 @@ class MathParser:
                 first_section = False
             elif end and end.txt == '\\\\':
                 out.append(defs.SpaceToken(out[-1].pos, '\n  ', pos_fix=True))
+                self.parser.parse_newline_option(buf, False)
                 first_section = True
             else:
                 break
