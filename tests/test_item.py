@@ -102,6 +102,5 @@ def test_4():
     p = parser.Parser(parms)
     toks = p.parse(latex_4)
     plain, pos = utils.get_txt_pos(toks)
-    print(repr(plain))
     assert plain_4 == plain
 

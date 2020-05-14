@@ -155,6 +155,12 @@ class Parser:
             elif type(tok) is defs.AccentToken:
                 out += self.expand_accent(buf, tok)
                 continue
+            elif tok.txt == '\\\\':
+                out.append(defs.ActionToken(tok.pos))
+                out.append(defs.SpaceToken(tok.pos, ' '))
+                buf.next()
+                self.parse_newline_option(buf, True)
+                continue
             elif tok.txt == '{' or tok.txt == '}':
                 out.append(defs.ActionToken(tok.pos))
             elif type(tok) is defs.SpecialToken:
@@ -376,6 +382,18 @@ class Parser:
     def get_environment_name(self, buf, tok):
         buf.next()
         return self.get_text_expanded(self.arg_buffer(buf, tok.pos).all())
+
+    #   parse (skip) optional [...] after \\
+    #
+    def parse_newline_option(self, buf, skip_space):
+        if skip_space:
+            # we do not want to remove a line break for \\ without [...]
+            tok = buf.look_ahead()
+            if tok and tok.txt == '[':
+                buf.skip_space()
+        tok = buf.cur()
+        if tok and tok.txt == '[':
+            self.arg_buffer(buf, tok.pos, end=']')
 
     #   generate string from token sequence, without macro expansion
     #
