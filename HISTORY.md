@@ -1,5 +1,5 @@
-Work in progress
-----------------
+Version 1.1.1 (2020/05/14)
+--------------------------
 - yalafi: fixed issue #26 (handling of \\\\\[...\]),
   added tests/test\_linebreak.py
 
