@@ -37,7 +37,7 @@ It
 You may easily
 - create a proofreading report in text or HTML format for a complete
   document tree,
-- check LaTeX texts in the editors Emacs and Vim via several plug-ins,
+- check LaTeX texts in the editors Emacs and Vim via several plugins,
 - run the script as emulation of a LanguageTool server with integrated
   LaTeX filtering.
 
@@ -187,7 +187,7 @@ Default option values are set at the Python script beginning.
   Mode is one of 'plain', 'html', 'xml', 'xml-b', 'json'
   (default: 'plain' for text report).
   Variant 'html' generates an HTML report, see below for further details.
-  Modes 'xml' and 'xml-b' are intended for Vim plug-ins, compare section
+  Modes 'xml' and 'xml-b' are intended for Vim plugins, compare section
   [Interface to Vim](#interface-to-vim).
 - `--link`<br>
   In an HTML report, left-click on a highlighted text part opens a
@@ -290,7 +290,7 @@ Default option values are set at the Python script beginning.
     See also
     [http://wiki.languagetool.org/http-server](http://wiki.languagetool.org/http-server).
     This may be faster than the command-line tool used otherwise, especially
-    for a large number of LaTeX files or together with an editor plug-in.
+    for a large number of LaTeX files or together with an editor plugin.
     The server will not be stopped at the end (use '--server stop').
 - `--lt-server-options opts`<br>
   Pass additional options when starting a local LT server.
@@ -340,11 +340,16 @@ In case of multiple input files, the HTML report starts with an index.
 
 As [\[Vim\]](https://www.vim.org)
 is a great editor, there are several possibilities that build
-on existing Vim plug-ins.
+on existing Vim plugins or use Vim's compiler interface.
 
-### Application of plug-in vim-grammarous
+- [Application of plugin vim-grammarous](#application-of-plugin-vim-grammarous)
+- [Application of plugin vim-LanguageTool](#application-of-plugin-vim-languageTool)
+- [Application of plugin ALE](#application-of-plugin-ale)
+- [Application via compiler interface](#application-via-compiler-interface)
 
-For the Vim plug-in
+### Application of plugin vim-grammarous
+
+For the Vim plugin
 [\[vim-grammarous\]](https://github.com/rhysd/vim-grammarous),
 it is possible to provide an interface for checking LaTeX texts.
 With an entry in \~/.vimrc, one may simply replace the command that
@@ -386,11 +391,11 @@ Place vim-grammarous/ under this directory.
 
 Here is the [introductory example](#example-html-report) from above:
 
-![Vim plug-in vim-grammarous](figs/vim-grammarous.png)
+![Vim plugin vim-grammarous](figs/vim-grammarous.png)
 
-### Application of plug-in vim-LanguageTool
+### Application of plugin vim-LanguageTool
 
-The Vim plug-in
+The Vim plugin
 [\[vim-LanguageTool\]](https://github.com/dpelle/vim-LanguageTool)
 relies on the same XML interface to LanguageTool as the previous variant.
 Therefore, one can reuse the Bash script
@@ -404,11 +409,13 @@ map <F9> :LanguageToolCheck<CR>
 ```
 Please note the general problem indicated in
 [Issue #17](../../issues/17).
-Here is again the [introductory example](#example-html-report) from above:
+Here is again the [introductory example](#example-html-report) from above.
+Navigation between highlighted text parts is possible with `:lne` and `:lp`,
+an error list is shown with `:lli`.
 
-![Vim plug-in vim-LanguageTool](figs/vim-languagetool.png)
+![Vim plugin vim-LanguageTool](figs/vim-languagetool.png)
 
-### Application of plug-in ALE
+### Application of plugin ALE
 
 With [\[ALE\]](https://github.com/dense-analysis/ale),
 the proofreader ('linter') by default is invoked as background task,
@@ -441,18 +448,35 @@ Additionally, one has to install ALE and copy or link file [lty.vim](lty.vim)
 to directory `~/.vim/bundle/ale/ale_linters/tex/`, or a similar location.
 
 Here is again the [introductory example](#example-html-report) from above.
-Navigation between highlighted text parts is possible with `:lne` and `:lp`.
-On pressing `F9`, LT's rule ID, the complete message, replacement suggestions,
-and the problem context are displayed (left with `q`).
+The complete message for the error at the cursor is displayed on `F9`,
+together with LT's rule ID, replacement suggestions, and the problem context
+(left with `q`).
+Navigation between highlighted text parts is possible with `:lne` and `:lp`,
+an error list is shown with `:lli`.
 
-![Vim plug-in ALE](figs/vim-ale.png)
+![Vim plugin ALE](figs/vim-ale.png)
+
+### Application via compiler interface
+
+File [ltyc.vim](ltyc.vim) proposes a simple application to “plain Vim”
+via Vim's compiler interface.
+The file has to be copied to a directory like `~/.vim/compiler/`.
+Configuration variables as `g:ltyc_ltdirectory` may be modified
+in `~/.vimrc`.
+
+For a Vim session, the component is activated with `:comp ltyc`.
+Command `:make` invokes yalafi.shell, and the cursor is set to the first
+indicated problem.
+The related error message is displayed in the status line.
+Navigation between errors is possible with `:cn` and `:cp`, an error list
+is shown with `:cl`.
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
 
 ## Interface to Emacs
 
-The Emacs plug-in
+The Emacs plugin
 [\[Emacs-langtool\]](https://github.com/mhayashi1120/Emacs-langtool)
 may be used in two variants.
 First, you can add to \~/.emacs
@@ -507,7 +531,7 @@ export EMACSLOADPATH=~/.emacs.d/lisp:
 
 Here is the [introductory example](#example-html-report) from above:
 
-![Emacs plug-in Emacs-langtool](figs/emacs-langtool.png)
+![Emacs plugin Emacs-langtool](figs/emacs-langtool.png)
 
 [Back to top](#yalafi-yet-another-latex-filter)
 

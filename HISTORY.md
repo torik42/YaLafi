@@ -1,3 +1,8 @@
+Work in progress
+----------------
+- added Vim "compiler" ltyc.vim
+- README: updated
+
 Version 1.1.1 (2020/05/14)
 --------------------------
 - yalafi: fixed issue #26 (handling of \\\\\[...\]),
