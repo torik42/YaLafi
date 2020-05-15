@@ -124,11 +124,13 @@ Choose one of the following possibilities.
 - Use `python -m pip install [--user] yalafi`.
   This installs the last version uploaded to [PyPI](https://www.pypi.org).
   Module pip itself can be installed with `python -m ensurepip`.
-- Place yalafi/ or a link to it in the current directory.
-- Place yalafi/ in a standard directory like `/usr/lib/python3.?/`
-  or `~/.local/lib/python3.?/site-packages/`.
-- Place yalafi/ somewhere else and set environment variable PYTHONPATH
-  accordingly.
+- Say `python -m pip install [--user] git+https://github.com/matze-dd/YaLafi.git@master`.
+  This installs the current snapshot from here.
+- Download the archive from here and unpack it.
+  Place yalafi/ in the working directory, or in a standard directory like
+  `/usr/lib/python3.x/` or `~/.local/lib/python3.x/site-packages/`.
+  You can also locate it somewhere else and set environment variable
+  PYTHONPATH accordingly.
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
@@ -439,8 +441,9 @@ Additionally, one has to install ALE and copy or link file [lty.vim](lty.vim)
 to directory `~/.vim/bundle/ale/ale_linters/tex/`, or a similar location.
 
 Here is again the [introductory example](#example-html-report) from above.
-On pressing F9, LT's rule ID, the complete message, replacement suggestions,
-and the problem context are displayed.
+Navigation between highlighted text parts is possible with `:lne` and `:lp`.
+On pressing `F9`, LT's rule ID, the complete message, replacement suggestions,
+and the problem context are displayed (left with `q`).
 
 ![Vim plug-in ALE](figs/vim-ale.png)
 
@@ -989,7 +992,7 @@ Due to token generation for each single “normal” character, memory usage
 may be substantial for long input texts.
 
 Number of effective code lines (without blank and pure comment lines)
-is around 1050 for Tex2txt/tex2txt.py and 1350 for yalafi/\*.py in total.
+is around 1050 for Tex2txt/tex2txt.py and 1400 for yalafi/\*.py in total.
 
 <a name="equation-html-report"></a>
 With
