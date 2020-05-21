@@ -29,11 +29,9 @@ The sample Python application script
 [yalafi/shell/shell.py](yalafi/shell/shell.py) from section
 [Example application](#example-application) integrates the LaTeX filter
 with the proofreading software [LanguageTool](https://www.languagetool.org).
-It
-- sends the extracted plain text to the proofreader,
-- maps position information in returned messages back to the LaTeX text,
-- generates results in different formats.
-
+It sends the extracted plain text to the proofreader,
+maps position information in returned messages back to the LaTeX text,
+and generates results in different formats.
 You may easily
 - create a proofreading report in text or HTML format for a complete
   document tree,
