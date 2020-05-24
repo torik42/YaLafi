@@ -11,7 +11,7 @@ options = tex2txt.Options(lang='en', char=True)
 
 def test_nested_macro():
 
-    latex = '\\textcolor{x}{\\textcolor{y}{z}}'
+    latex = '\\usepackage{xcolor}\\textcolor{x}{\\textcolor{y}{z}}'
     plain, nums = tex2txt.tex2txt(latex, options)
     assert plain == 'z'
 

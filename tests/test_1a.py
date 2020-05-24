@@ -6,6 +6,7 @@
 from yalafi import tex2txt
 
 latex = r"""
+\usepackage{xcolor}
 Only few people\footnote{We use
 \textcolor{red}{redx colour.}}
 is lazy.

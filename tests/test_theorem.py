@@ -8,6 +8,7 @@ from yalafi import parameters, parser, utils
 p = parser.Parser(parameters.Parameters())
 
 latex_theorem = r"""
+\usepackage{.tests.defs}
 A\begin{theorem}B\end{theorem}C
 
 X\begin{theorem}[T]Y\end{theorem}Z
@@ -34,6 +35,8 @@ def test_theorem():
 
 
 latex_option = r"""
+\usepackage{.tests.defs}
+\usepackage{xcolor}
 X\begin{theorem}[\textcolor{red}{blue}]Y
 """
 plain_option = r"""

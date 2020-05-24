@@ -6,7 +6,7 @@ add_macros = r"""
 """
 
 parms = parameters.Parameters()
-parms.add_latex_macros(add_macros)
+parms.macro_defs_latex += add_macros
 p = parser.Parser(parms)
 
 latex1 = r"""
@@ -57,6 +57,7 @@ def test_3():
     assert plain3_should_be == plain3
 
 latex_macro_in_arg = r"""
+\usepackage{xcolor}
 \newcommand{\xxx}[2]{#1#2}
 A \xxx{\textcolor}{}{red}{blue} B
 """

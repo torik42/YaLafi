@@ -51,6 +51,7 @@ def test_3():
     assert plain_3 == plain
 
 latex_4 = r"""
+\usepackage{xcolor}
 \textcolor{red}{
 XXX
 """

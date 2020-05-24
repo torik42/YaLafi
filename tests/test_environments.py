@@ -8,6 +8,7 @@ from yalafi import defs, parameters, parser, utils
 p = parser.Parser(parameters.Parameters('de'))
 
 latex_proof = r"""
+\usepackage{amsthm}
 1\begin{proof}
 2\end{proof}3
 
@@ -60,6 +61,7 @@ def test_table():
     assert plain_table_should_be == plain_table
 
 latex_comment = r"""
+\usepackage{.tests.defs}
 A\begin{comment}B\end{comment}C
 X
 \begin{comment}
@@ -73,9 +75,7 @@ X
 Z
 """
 def test_comment():
-    import definitions
     parms = parameters.Parameters()
-    definitions.modify_parameters(parms)
     p = parser.Parser(parms)
     toks = p.parse(latex_comment)
     plain_comment, pos = utils.get_txt_pos(toks)
@@ -103,6 +103,7 @@ def test_unknown():
     assert plain_unknown_should_be == plain_unknown
 
 latex_macro_in_arg = r"""
+\usepackage{xcolor}
 X\begin{XXX}{\textcolor}
 {red}{blue}
 """

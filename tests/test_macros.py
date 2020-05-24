@@ -14,23 +14,23 @@ options = tex2txt.Options(lang='en', char=True)
 def test_macro_arguments():
 
     # normal expansion
-    latex = '\\textcolor\n{red}\n{blue}'
+    latex = '\\usepackage{xcolor}\n\\textcolor\n{red}\n{blue}'
     plain, nums = tex2txt.tex2txt(latex, options)
     assert plain == 'blue'
-    assert nums == [19, 20, 21, 22]
+    assert nums == [39, 40, 41, 42]
 
     # no expansion: argument in next paragraph
-    latex = '\\textcolor\n{red}\n \n{blue}'
+    latex = '\\usepackage{xcolor}\\textcolor\n{red}\n \n{blue}'
     plain, nums = tex2txt.tex2txt(latex, options)
     assert plain == ' \nblue'
 
     # no expansion: argument in next paragraph
-    latex = '\\textcolor\n\n{red}\n{blue}'
+    latex = '\\usepackage{xcolor}\\textcolor\n\n{red}\n{blue}'
     plain, nums = tex2txt.tex2txt(latex, options)
     assert plain == '\nred\nblue'
 
     # expansion: comment line
-    latex = '\\textcolor\n %x\n{red}\n{blue}'
+    latex = '\\usepackage{xcolor}\\textcolor\n %x\n{red}\n{blue}'
     plain, nums = tex2txt.tex2txt(latex, options)
     assert plain == 'blue'
 
@@ -48,14 +48,14 @@ def test_cite():
 
 def test_proof():
 
-    latex = '\\begin{proof}'
+    latex = '\\usepackage{amsthm}\n\\begin{proof}'
     plain, nums = tex2txt.tex2txt(latex, options)
     assert plain == '\n\nProof.\n'
 
-    latex = 'A \\begin{proof}[Test] B'
+    latex = '\\usepackage{amsthm}\nA \\begin{proof}[Test] B'
     plain, nums = tex2txt.tex2txt(latex, options)
     assert plain == 'A \n\nTest.\n B'
-    assert nums == [1, 2, 3, 3, 17, 18, 19, 20, 20, 20, 22, 23]
+    assert nums == [21, 22, 23, 23, 37, 38, 39, 40, 40, 40, 42, 43]
 
 
 def test_footnotemark():
