@@ -95,8 +95,9 @@ def h_cite(parser, buf, mac, args, pos):
     return out
 
 #   macro \LTmacros: read macro definitions from file
+#   - this also activates packages
 #
-def h_read_macros(parser, buf, mac, args, pos):
+def h_load_defs(parser, buf, mac, args, pos):
     if not parser.read_macros:
         return []
     file = parser.get_text_expanded(args[0])
@@ -105,5 +106,13 @@ def h_read_macros(parser, buf, mac, args, pos):
         return utils.latex_error('could not read file ' + repr(file),
                                         pos, parser.latex, parser.parms)
     parser.parser_work(latex)
+    return []
+
+#   read definitions for a LaTeX package
+#
+def h_load_package(parser, buf, mac, args, pos):
+    pack = parser.get_text_expanded(args[1])
+    f = utils.get_package_handler(pack)
+    parser.init_package(pack, f)
     return []
 

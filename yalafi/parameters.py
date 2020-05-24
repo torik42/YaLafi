@@ -35,24 +35,22 @@ class Parameters:
         #
         self.macro_defs_latex = r"""
 
+        % XXX: shift to modules
+        \newcommand{\includegraphics}[2][]{}
+        \newcommand{\texorpdfstring}[2]{#1}
+        % end XXX
+
         \newcommand{\AA}{Å}
         \newcommand{\aa}{å}
         \newcommand{\AE}{Æ}
         \newcommand{\ae}{æ}
-        \newcommand{\color}[1]{}
-        \newcommand{\colorbox}[2]{#2}
-        \newcommand{\documentclass}[2][]{}
-        \newcommand{\eqref}[1]{(0)}
-        \newcommand{\fcolorbox}[3]{#3}
         \newcommand{\footnotemark}[1][]{}
         \newcommand{\hfill}{ }
         \newcommand{\include}[1]{}
-        \newcommand{\includegraphics}[2][]{}
         \newcommand{\input}[1]{}
         \newcommand{\L}{Ł}
         \newcommand{\l}{ł}
         \newcommand{\label}[1]{}
-        \newcommand{\medspace}{ }
         \newcommand{\newline}{ }
         \newcommand{\O}{Ø}
         \newcommand{\o}{ø}
@@ -62,19 +60,14 @@ class Parameters:
         \newcommand{\par}{
 
 }
-        \newcommand{\qquad}{ }
-        \newcommand{\quad}{ }
+        \newcommand{\qquad}{\;}
+        \newcommand{\quad}{\;}
         \newcommand{\ref}[1]{0}
         \newcommand{\S}{§}
         \newcommand{\ss}{ß}
-        \newcommand{\texorpdfstring}[2]{#1}
         \newcommand{\textasciicircum}{\verb?^?} % \^ is accent
         \newcommand{\textasciitilde}{\verb?~?}  % \~ is accent
         \newcommand{\textbackslash}{\verb?\?}   % \\ is line break
-        \newcommand{\textcolor}[2]{#2}
-        \newcommand{\thickspace}{ }
-        \newcommand{\thinspace}{ }
-        \newcommand{\usepackage}[2][]{}
 
         """
 
@@ -83,31 +76,29 @@ class Parameters:
         self.macro_defs_python = [
 
         Macro(self, '\\caption', args='OA', extract='#2'),
+        Macro(self, '\\chapter', args='*OA', repl=hs.h_heading),
         Macro(self, '\\cite', args='OA', repl=hs.h_cite),
-            # or simpler: \newcommand{\cite}[2][none]{[0, #1]}
+        Macro(self, '\\documentclass', args='OA', repl=hs.h_load_package),
         Macro(self, '\\footnote', args='OA', extract='#2'),
         Macro(self, '\\footnotetext', args='OA', extract='#2'),
         Macro(self, '\\framebox', args='OOA', repl='#3'),
         Macro(self, '\\hspace', args='*A', repl=' '),
-        Macro(self, '\\vspace', args='*A', repl=' '),
-
-        Macro(self, '\\chapter', args='*OA', repl=hs.h_heading),
-            # or simpler, without added dot: \newcommand{\chapter}[1]{#1}
+        Macro(self, '\\newcommand', args='*AOOA', repl=hs.h_newcommand),
         Macro(self, '\\part', args='*OA', repl=hs.h_heading),
+        Macro(self, '\\renewcommand', args='*AOOA', repl=hs.h_newcommand),
         Macro(self, '\\section', args='*OA', repl=hs.h_heading),
         Macro(self, '\\subsection', args='*OA', repl=hs.h_heading),
         Macro(self, '\\subsubsection', args='*OA', repl=hs.h_heading),
         Macro(self, '\\title', args='*OA', repl=hs.h_heading),
+        Macro(self, '\\usepackage', args='OA', repl=hs.h_load_package),
+        Macro(self, '\\vspace', args='*A', repl=' '),
 
         #   \LTadd etc.
         #
         Macro(self, self.macro_filter_add, args='A', repl='#1'),
         Macro(self, self.macro_filter_alter, args='AA', repl='#2'),
         Macro(self, self.macro_filter_skip, args='A', repl=''),
-        Macro(self, self.macro_read_macros, args='A', repl=hs.h_read_macros),
-
-        Macro(self, '\\newcommand', args='*AOOA', repl=hs.h_newcommand),
-        Macro(self, '\\renewcommand', args='*AOOA', repl=hs.h_newcommand),
+        Macro(self, self.macro_load_defs, args='A', repl=hs.h_load_defs),
 
         ]
 
@@ -115,44 +106,16 @@ class Parameters:
     #
     def init_environments(self):
 
-        #   little helper for theorem environments
-        #
-        def thm(s):
-            return hs.h_theorem(s)
-
         self.environment_defs = [
 
         Environ(self, 'minipage', args='A'),
         Environ(self, 'table', repl='[Tabelle]', remove=True),
         Environ(self, 'verbatim', remove=False, add_pars=True),
 
-        Environ(self, 'proof', args='O',
-                            # Parser.expand_arguments() may skip space
-                            repl='#1.\n', defaults=[self.proof_name]),
-
-        #   theorem-style environments
-        #   or simpler: Environ(self, 'theorem', args='O',
-        #                           repl='Theorem (#1). ', defaults=['none']),
-        Environ(self, 'corollary', args='O', repl=thm('Corollary')),
-        Environ(self, 'definition', args='O', repl=thm('Definition')),
-        Environ(self, 'example', args='O', repl=thm('Example')),
-        Environ(self, 'lemma', args='O', repl=thm('Lemma')),
-        Environ(self, 'proposition', args='O', repl=thm('Proposition')),
-        Environ(self, 'remark', args='O', repl=thm('Remark')),
-        Environ(self, 'theorem', args='O', repl=thm('Theorem')),
-
-        #   equation environments
-        #
-        EquEnv(self, 'align'),
-        EquEnv(self, 'align*'),
-        EquEnv(self, 'alignat', args='A'),
-        EquEnv(self, 'alignat*', args='A'),
         EquEnv(self, 'displaymath'),
         EquEnv(self, 'eqnarray'),
         EquEnv(self, 'eqnarray*'),
         EquEnv(self, 'equation'),
-        EquEnv(self, 'equation*'),
-        EquEnv(self, 'flalign', repl='  relation', remove=True),
 
         ]
 
@@ -232,7 +195,7 @@ class Parameters:
         self.macro_filter_add = '\\LTadd'
         self.macro_filter_alter = '\\LTalter'
         self.macro_filter_skip = '\\LTskip'
-        self.macro_read_macros = '\\LTmacros'
+        self.macro_load_defs = '\\LTinput'
 
         #   ignore re-definitions in LaTeX text for these macros:
         #
@@ -240,7 +203,7 @@ class Parameters:
             self.macro_filter_add,
             self.macro_filter_alter,
             self.macro_filter_skip,
-            self.macro_read_macros,
+            self.macro_load_defs,
         ]
 
         #   accent macros
@@ -335,12 +298,7 @@ class Parameters:
             '\\!',
             '\\label',
             '\\mathrlap',
-            '\\negthickspace',
-            '\\negthinspace',
-            '\\negmedspace',
             '\\nonumber',
-            '\\notag',
-            '\\qedhere',
 
         ]
 
@@ -355,11 +313,6 @@ class Parameters:
             '\\:',
             '\\,',
             '\\;',
-            '\\medspace',
-            '\\qquad',
-            '\\quad',
-            '\\thickspace',
-            '\\thinspace',
 
         ]
 
@@ -381,8 +334,9 @@ class Parameters:
         #   macros whose argument is treated in text mode
         #
         self.math_text_macros = [
+
             '\\mbox',
-            '\\text',
+
         ]
 
         #   math environment for $$ and \[
@@ -393,9 +347,6 @@ class Parameters:
         #   appended to the replacement from self_repl_xxx
         #
         self.math_punctuation = ['.', ',', ';', ':']
-
-    def add_latex_macros(self, latex):
-        self.macro_defs_latex += latex
 
     #   determine whether a character may be part of macro name
     #

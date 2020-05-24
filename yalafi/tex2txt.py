@@ -23,7 +23,7 @@
 #   differences:
 #   - option '--char' is  always assumed to be set
 #   - option '--defs file' reads macro definitions as LaTeX code
-#   - option '--pyth module' calls function modify_parameters() from module
+#   - option '--pack mods' calls functions modify_parameters() from packages
 #
 
 from . import parameters, parser, utils
@@ -36,16 +36,17 @@ def tex2txt(latex, opts):
         except:
             return False, ''
     parms = parameters.Parameters(opts.lang)
+    packages = []
+    if opts.pack:
+        for pack in opts.pack.split(','):
+            packages.append((pack, utils.get_package_handler(pack)))
     if opts.defs:
-        parms.add_latex_macros(opts.defs)
-    if opts.pyth:
-        exec('import ' + opts.pyth)
-        exec(opts.pyth + '.modify_parameters(parms)')
+        packages.append(('', utils.get_latex_handler(opts.defs)))
     if opts.extr:
         extr = ['\\' + s for s in opts.extr.split(',')]
     else:
         extr = []
-    p = parser.Parser(parms, read_macros=read)
+    p = parser.Parser(parms, packages, read_macros=read)
     toks = p.parse(latex, extract=extr)
     txt, pos = utils.get_txt_pos(toks)
     if opts.repl:
@@ -181,7 +182,7 @@ class Options:
             repl=None,      # or set by read_replacements()
             char=False,     # True: character position tracking
             defs=None,      # or set by read_definitions()
-            pyth=None,      # import module for parameter modification
+            pack=None,      # import module for parameter modification
             extr=None,      # or string: comma-separated macro list
             lang=None,      # or set to language code
             unkn=False):    # True: print unknowns
@@ -192,7 +193,7 @@ class Options:
         if not self.defs:
             # need default defs object
             self.defs = read_definitions(None, '?')
-        self.pyth = pyth
+        self.pack = pack
         self.extr = extr
         self.lang = lang
         self.unkn = unkn
@@ -206,7 +207,7 @@ def main():
     parser.add_argument('--nums')
     parser.add_argument('--char', action='store_true')
     parser.add_argument('--defs')
-    parser.add_argument('--pyth')
+    parser.add_argument('--pack')
     parser.add_argument('--extr')
     parser.add_argument('--lang')
     parser.add_argument('--ienc')
@@ -221,7 +222,7 @@ def main():
                 repl=read_replacements(cmdline.repl, encoding=cmdline.ienc),
                 char=cmdline.char,
                 defs=read_definitions(cmdline.defs, encoding=cmdline.ienc),
-                pyth=cmdline.pyth,
+                pack=cmdline.pack,
                 extr=cmdline.extr,
                 lang=cmdline.lang,
                 unkn=cmdline.unkn)

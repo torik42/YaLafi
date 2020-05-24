@@ -99,3 +99,24 @@ def substitute(i_txt, i_pos, expr, repl):
         last = m.end(0)
     return o_txt + i_txt[last:], o_pos + i_pos[last:]
 
+#   get handler for importing a package:
+#   - if package name starts with '.': remove that dot
+#   - else: prepend 'yalafi.packages.'
+#   return handler, dummy on error (XXX: warning?)
+#
+def get_package_handler(name):
+    if name.startswith('.'):
+        mod = name[1:]
+    else:
+        mod = 'yalafi.packages.' + name
+    try:
+        exec('import ' + mod)
+        return (eval(mod + '.require_packages'),
+                        eval(mod + '.modify_parameters'))
+    except:
+        return [], lambda p: defs.ModParm()
+
+def get_latex_handler(macros_latex):
+    def f(p):
+        return defs.ModParm(macros_latex=macros_latex)
+    return [], f
