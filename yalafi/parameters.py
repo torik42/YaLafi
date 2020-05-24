@@ -108,6 +108,7 @@ class Parameters:
 
         self.environment_defs = [
 
+        Environ(self, 'figure', args='O', add_pars=False),
         Environ(self, 'minipage', args='A'),
         Environ(self, 'table', repl='[Tabelle]', remove=True),
         Environ(self, 'verbatim', remove=False, add_pars=True),
