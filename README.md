@@ -59,7 +59,9 @@ Only few people is lazy.    We use redx colour.
                 ^^
 ```
 <a name="example-html-report"></a>
-This is the corresponding HTML report
+For this result, we presume that definitions of LaTeX package xcolor have
+been loaded.
+Here is the corresponding HTML report
 (for another example, [see here](#equation-html-report)):
 
 ![HTML report](figs/shell.png)
@@ -224,6 +226,8 @@ Default option values are set at the Python script beginning.
   A '\#' sign marks the rest of line as comment.
 - `--define file`<br>
   Read macro definitions as LaTeX code (using \\newcommand).
+  If the code invokes \\documentclass or \\usepackage, then the corresponding
+  modules are loaded.
 - `--python-defs module`<br>
   Modify default definitions in file yalafi/parameters.py by function
   'modify\_parameters()' in the given module.

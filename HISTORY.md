@@ -1,7 +1,32 @@
 Work in progress
 ----------------
+- yalafi
+    - added submodule yalafi.packages, currently with:
+      amsmath, amsthm, xcolor
+    - changed otion --pyth to --pack
+    - macros \\documentclass and \\usepackage activate package modules
+      from yalafi.packages
+    - removed redundancies in Parameters.math\_space and
+      Parameters.math\_ignore (issue #29)
+    - shifted declarations from yalafi/parameters.py to package modules
+      (issue #29)
+    - \\LTmacros renamed to \\LTinput: also may activate packages
+- yalafi.shell
+    - changed option --python-defs to --packages
+    - added option '--add-packages file'
 - added Vim "compiler" ltyc.vim
 - README: updated
+    - XXX: LTmacros --> LTinput
+    - XXX: code snippet tex2txt()
+    - remark: example assumes that package xcolor has been loaded
+    - options --defs and --define also load packages
+    - XXX: add section on package management: \\documentclass, \\usepackage,
+            \\LTinput, --defs / --define, --pack / --packages, --add-packages
+    - XXX: document modify\_parameters()
+    - XXX: replace example definitions.py by yalafi/packages/amsmath.py
+            --> remove definitions.py
+    - XXX: --pack, --packages, .xyz vs. yalafi.packages
+    - XXX: --add-packages
 
 Version 1.1.1 (2020/05/14)
 --------------------------
