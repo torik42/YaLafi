@@ -119,3 +119,26 @@ def test_macro_in_arg():
     plain, pos = utils.get_txt_pos(toks)
     assert plain_macro_in_arg == plain
 
+latex_figure = r"""
+A
+\begin{figure}
+B
+\end{figure}
+C
+\begin{figure}[h]
+D
+\end{figure}
+E
+"""
+plain_figure = r"""
+A
+B
+C
+D
+E
+"""
+def test_figure():
+    p = parser.Parser(parameters.Parameters())
+    toks = p.parse(latex_figure)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_figure == plain
