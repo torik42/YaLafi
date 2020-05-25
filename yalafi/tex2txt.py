@@ -36,10 +36,7 @@ def tex2txt(latex, opts):
         except:
             return False, ''
     parms = parameters.Parameters(opts.lang)
-    packages = []
-    if opts.pack:
-        for pack in opts.pack.split(','):
-            packages.append((pack, utils.get_package_handler(pack)))
+    packages = get_packages(opts.pack)
     if opts.defs:
         packages.append(('', utils.get_latex_handler(opts.defs)))
     if opts.extr:
@@ -56,6 +53,19 @@ def tex2txt(latex, opts):
         pos = [0 for n in range(len(txt))]
     pos = [n + 1 for n in pos]
     return txt, pos
+
+def get_packages(packs):
+    ret = []
+    if not packs:
+        return ret
+    for p in packs.split(','):
+        if p == '*':
+            from . import packages
+            for f in packages.all_packages:
+                ret.append((f, utils.get_package_handler(f)))
+        else:
+            ret.append((p, utils.get_package_handler(p)))
+    return ret
 
 #########################################################
 #
@@ -207,7 +217,7 @@ def main():
     parser.add_argument('--nums')
     parser.add_argument('--char', action='store_true')
     parser.add_argument('--defs')
-    parser.add_argument('--pack')
+    parser.add_argument('--pack', default='*')
     parser.add_argument('--extr')
     parser.add_argument('--lang')
     parser.add_argument('--ienc')
