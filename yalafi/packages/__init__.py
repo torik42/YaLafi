@@ -1,8 +1,12 @@
 
-#   this list is used by yalafi/tex2txt.py for package '*'
+#   this list is used by yalafi/tex2txt.py
 #
-all_packages = [
-    'amsmath',
-    'amsthm',
-    'xcolor',
-]
+load_table = {
+    '*': [
+        'amsmath',
+        'amsthm',
+        'xcolor',
+    ],
+    '': [
+    ],
+}
