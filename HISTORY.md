@@ -18,7 +18,6 @@ Work in progress
 - added Vim "compiler" ltyc.vim
 - removed file definitions.py
 - README: updated
-    - XXX: code snippet tex2txt()
 
 Version 1.1.1 (2020/05/14)
 --------------------------

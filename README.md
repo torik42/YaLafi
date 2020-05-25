@@ -11,7 +11,7 @@
 [Usage under Windows](#usage-under-windows)&nbsp;\|
 [Extension modules for LaTeX packages](#extension-modules-for-latex-packages)&nbsp;\|
 [Inclusion of own macros](#inclusion-of-own-macros)&nbsp;\|
-[Package interface](#package-interface)&nbsp;\|
+[Python package interface](#python-package-interface)&nbsp;\|
 [Handling of displayed equations](#handling-of-displayed-equations)&nbsp;\|
 [Command-line of pure filter](#command-line-of-pure-filter)&nbsp;\|
 [Differences to Tex2txt](#differences-to-tex2txt)&nbsp;\|
@@ -73,7 +73,8 @@ and a small machinery for macro expansion are implemented; see sections
 [Differences to Tex2txt](#differences-to-tex2txt) and
 [Remarks on implementation](#remarks-on-implementation).
 
-Beside the interface from section [Package interface](#package-interface),
+Beside the interface from section
+[Python package interface](#python-package-interface),
 application Python scripts like [yalafi/shell/shell.py](yalafi/shell/shell.py)
 from section [Example application](#example-application)
 can access an interface emulating tex2txt.py from repository Tex2txt by
@@ -679,7 +680,7 @@ All other output is fixed to UTF-8 encoding.
 
 Module yalafi.packages contains further submodules that are activated by
 the LaTeX filter when executing \\documentclass or \\usepackage, and on
-other occations.
+other occasions.
 
 - Options `--pack mods` (yalafi) and `--packages mods` (yalafi.shell)<br>
   They expect a comma-separated list of package names or placeholders
@@ -778,8 +779,9 @@ in yalafi/parameters.py.
 
 `Environ(parms, name, args='', repl='', defaults=[], remove=False, add_pars=True, items=None)`
 
-Argument `parms` to `defaults` are the same as for `Macro()`, where the
-arguments are those behind the opening '\\begin{xyz}'.
+Parameters `parms` to `defaults` are the same as for `Macro()`, where
+`name` does not start with a backslash.
+The arguments are those behind the opening '\\begin{xyz}'.
 This means that the environment name 'xyz' does not yet count as argument
 in `args` and `repl`.
 
@@ -807,9 +809,7 @@ file yalafi/parameters.py is appended
 [Back to top](#yalafi-yet-another-latex-filter)
 
 
-## Package interface
-
-TBD: This has to be updated.
+## Python package interface
 
 We comment the central function in file
 [yalafi/tex2txt.py](yalafi/tex2txt.py)
@@ -827,46 +827,45 @@ script tex2txt.py in repository
  7          except:
  8              return False, ''
  9      parms = parameters.Parameters(opts.lang)
-10      if opts.defs:
-11          parms.add_latex_macros(opts.defs)
-12      if opts.pyth:
-13          exec('import ' + opts.pyth)
-14          exec(opts.pyth + '.modify_parameters(parms)')
-15      if opts.extr:
-16          extr = ['\\' + s for s in opts.extr.split(',')]
-17      else:
-18          extr = []
-19      p = parser.Parser(parms, read_macros=read)
-20      toks = p.parse(latex, extract=extr)
-21      txt, pos = utils.get_txt_pos(toks)
-22      if opts.repl:
-23          txt, pos = utils.replace_phrases(txt, pos, opts.repl)
-24      if opts.unkn:
-25          txt = '\n'.join(p.get_unknowns()) + '\n'
-26          pos = [0 for n in range(len(txt))]
-27      pos = [n + 1 for n in pos]
-28      return txt, pos
+10      packages = get_packages(opts.pack, parms.package_modules)
+11      if opts.defs:
+12          packages.append(('', utils.get_latex_handler(opts.defs)))
+13      if opts.extr:
+14          extr = ['\\' + s for s in opts.extr.split(',')]
+15      else:
+16          extr = []
+17      p = parser.Parser(parms, packages, read_macros=read)
+18      toks = p.parse(latex, extract=extr)
+19      txt, pos = utils.get_txt_pos(toks)
+20      if opts.repl:
+21          txt, pos = utils.replace_phrases(txt, pos, opts.repl)
+22      if opts.unkn:
+23          txt = '\n'.join(p.get_unknowns()) + '\n'
+24          pos = [0 for n in range(len(txt))]
+25      pos = [n + 1 for n in pos]
+26      return txt, pos
 ```
 - 3-8: This is an auxiliary function for the parser.
 - 9: The created parameter object contains all default settings
   and definitions from file yalafi/parameters.py.
-- 11: If requested by script option --defs, additional macros are included
+- 10: We read the LateX packages from option --pack and convert them to 
+  a list of handler functions called later by the parser.
+- 12: If requested by script option --defs, additional macros are included
   from the string opts.defs.
-- 14: On option --pyth, we call a function to modify the parameter object,
-  see file [definitions.py](definitions.py) for an example.
-- 15-18: If option --extr requests only extraction of arguments of certain
+  The parser has to process them after loading packages.
+- 13-16: If option --extr requests only extraction of arguments of certain
   macros, this is prepared.
-- 19: We create a parser object, the passed function is called on \\LTinput.
-- 20: The parsing method returns a list of tokens.
-- 21: The token list is converted into a 2-tuple containing the plain-text
+- 17: We create a parser object, the passed function is called on \\LTinput.
+- 18: The parsing method returns a list of tokens.
+- 19: The token list is converted into a 2-tuple containing the plain-text
   string and a list of numbers.
   Each number in the list indicates the estimated position of the
   corresponding character in the text string.
-- 23: If phrase replacements are requested by option --repl, this is done.
+- 21: If phrase replacements are requested by option --repl, this is done.
   String opts.repl contains the replacement specifications read from the file.
-- 25: On option --unkn, a list of unknown macros and environments is
+- 23: On option --unkn, a list of unknown macros and environments is
   generated.
-- 27: This is necessary, since position numbers are zero-based in yalafi,
+- 25: This is necessary, since position numbers are zero-based in yalafi,
   but one-based in Tex2txt/tex2txt.py.
 
 [Back to top](#yalafi-yet-another-latex-filter)
