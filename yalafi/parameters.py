@@ -78,7 +78,8 @@ class Parameters:
         Macro(self, '\\caption', args='OA', extract='#2'),
         Macro(self, '\\chapter', args='*OA', repl=hs.h_heading),
         Macro(self, '\\cite', args='OA', repl=hs.h_cite),
-        Macro(self, '\\documentclass', args='OA', repl=hs.h_load_package),
+        Macro(self, '\\documentclass', args='OA',
+                            repl=hs.h_load_module(self.class_modules)),
         Macro(self, '\\footnote', args='OA', extract='#2'),
         Macro(self, '\\footnotetext', args='OA', extract='#2'),
         Macro(self, '\\framebox', args='OOA', repl='#3'),
@@ -90,7 +91,8 @@ class Parameters:
         Macro(self, '\\subsection', args='*OA', repl=hs.h_heading),
         Macro(self, '\\subsubsection', args='*OA', repl=hs.h_heading),
         Macro(self, '\\title', args='*OA', repl=hs.h_heading),
-        Macro(self, '\\usepackage', args='OA', repl=hs.h_load_package),
+        Macro(self, '\\usepackage', args='OA',
+                            repl=hs.h_load_module(self.package_modules)),
         Macro(self, '\\vspace', args='*A', repl=' '),
 
         #   \LTadd etc.
@@ -206,6 +208,11 @@ class Parameters:
             self.macro_filter_skip,
             self.macro_load_defs,
         ]
+
+        #   module directories
+        #
+        self.class_modules = 'yalafi.packages'
+        self.package_modules = 'yalafi.packages'
 
         #   accent macros
         #

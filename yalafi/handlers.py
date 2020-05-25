@@ -94,7 +94,7 @@ def h_cite(parser, buf, mac, args, pos):
                     defs.ActionToken(pos)]
     return out
 
-#   macro \LTmacros: read macro definitions from file
+#   macro \LTinclude: read macro definitions from file
 #   - this also activates packages
 #
 def h_load_defs(parser, buf, mac, args, pos):
@@ -110,9 +110,11 @@ def h_load_defs(parser, buf, mac, args, pos):
 
 #   read definitions for a LaTeX package
 #
-def h_load_package(parser, buf, mac, args, pos):
-    pack = parser.get_text_expanded(args[1])
-    f = utils.get_package_handler(pack)
-    parser.init_package(pack, f)
-    return []
+def h_load_module(prefix):
+    def f(parser, buf, mac, args, pos):
+        pack = parser.get_text_expanded(args[1])
+        f = utils.get_module_handler(pack, prefix)
+        parser.init_package(pack, f)
+        return []
+    return f
 

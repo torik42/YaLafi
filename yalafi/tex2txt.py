@@ -36,7 +36,7 @@ def tex2txt(latex, opts):
         except:
             return False, ''
     parms = parameters.Parameters(opts.lang)
-    packages = get_packages(opts.pack)
+    packages = get_packages(opts.pack, parms.package_modules)
     if opts.defs:
         packages.append(('', utils.get_latex_handler(opts.defs)))
     if opts.extr:
@@ -54,17 +54,17 @@ def tex2txt(latex, opts):
     pos = [n + 1 for n in pos]
     return txt, pos
 
-def get_packages(packs):
+def get_packages(packs, prefix):
     ret = []
     if not packs:
         return ret
+    from . import packages
     for p in packs.split(','):
-        if p == '*':
-            from . import packages
-            for f in packages.all_packages:
-                ret.append((f, utils.get_package_handler(f)))
+        if p in packages.load_table:
+            for m in packages.load_table[p]:
+                ret.append((m, utils.get_module_handler(m, prefix)))
         else:
-            ret.append((p, utils.get_package_handler(p)))
+            ret.append((p, utils.get_module_handler(p, prefix)))
     return ret
 
 #########################################################

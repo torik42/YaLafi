@@ -99,16 +99,16 @@ def substitute(i_txt, i_pos, expr, repl):
         last = m.end(0)
     return o_txt + i_txt[last:], o_pos + i_pos[last:]
 
-#   get handler for importing a package:
-#   - if package name starts with '.': remove that dot
-#   - else: prepend 'yalafi.packages.'
+#   get handler for importing a module:
+#   - if module name starts with '.': remove that dot
+#   - else: prepend given prefix
 #   return handler, dummy on error (XXX: warning?)
 #
-def get_package_handler(name):
+def get_module_handler(name, prefix):
     if name.startswith('.'):
         mod = name[1:]
     else:
-        mod = 'yalafi.packages.' + name
+        mod = prefix + '.' + name
     try:
         exec('import ' + mod)
         return (eval(mod + '.require_packages'),
