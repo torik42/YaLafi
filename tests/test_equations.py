@@ -6,6 +6,7 @@
 from yalafi import tex2txt
 
 latex = r"""
+\usepackage{amsmath}
 We consider\footnote{Thix is a footnote.}
 \begin{itemize}
 \item a set $M$, a domain $\Omega\subset M$, andx

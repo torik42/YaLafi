@@ -46,6 +46,7 @@ def test_2():
     assert plain_2 == plain
 
 latex_3 = r"""
+\usepackage{amsmath}
 \begin{align}
     a   &= b \\
         &= c \\[5ex]

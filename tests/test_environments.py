@@ -5,9 +5,13 @@
 
 from yalafi import defs, parameters, parser, utils
 
-p = parser.Parser(parameters.Parameters('de'))
+parms = parameters.Parameters('de')
+parms.environment_defs.append(
+        defs.Environ(parms, 'table', repl='[Tabelle]', remove=True))
+p = parser.Parser(parms)
 
 latex_proof = r"""
+\usepackage{amsthm}
 1\begin{proof}
 2\end{proof}3
 
@@ -60,6 +64,7 @@ def test_table():
     assert plain_table_should_be == plain_table
 
 latex_comment = r"""
+\usepackage{.tests.defs}
 A\begin{comment}B\end{comment}C
 X
 \begin{comment}
@@ -73,9 +78,7 @@ X
 Z
 """
 def test_comment():
-    import definitions
     parms = parameters.Parameters()
-    definitions.modify_parameters(parms)
     p = parser.Parser(parms)
     toks = p.parse(latex_comment)
     plain_comment, pos = utils.get_txt_pos(toks)
@@ -103,6 +106,7 @@ def test_unknown():
     assert plain_unknown_should_be == plain_unknown
 
 latex_macro_in_arg = r"""
+\usepackage{xcolor}
 X\begin{XXX}{\textcolor}
 {red}{blue}
 """
@@ -117,4 +121,28 @@ def test_macro_in_arg():
     toks = p.parse(latex_macro_in_arg)
     plain, pos = utils.get_txt_pos(toks)
     assert plain_macro_in_arg == plain
+
+latex_figure = r"""
+A
+\begin{figure}
+B
+\end{figure}
+C
+\begin{figure}[h]
+D
+\end{figure}
+E
+"""
+plain_figure = r"""
+A
+B
+C
+D
+E
+"""
+def test_figure():
+    p = parser.Parser(parameters.Parameters())
+    toks = p.parse(latex_figure)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_figure == plain
 

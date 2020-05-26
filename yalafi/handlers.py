@@ -80,6 +80,13 @@ def h_heading(parser, buf, mac, args, pos):
         arg.append(defs.TextToken(arg[-1].pos, '.'))
     return arg
 
+#   \phantom, \hphantom
+#
+def h_phantom(parser, buf, mac, args, pos):
+    if len(parser.get_text_expanded(args[0])) > 0:
+        return [defs.SpecialToken(pos, '\\;')]
+    return []
+
 #   macro \cite[opt]
 #
 def h_cite(parser, buf, mac, args, pos):
@@ -94,9 +101,10 @@ def h_cite(parser, buf, mac, args, pos):
                     defs.ActionToken(pos)]
     return out
 
-#   macro \LTmacros: read macro definitions from file
+#   macro \LTinclude: read macro definitions from file
+#   - this also activates packages
 #
-def h_read_macros(parser, buf, mac, args, pos):
+def h_load_defs(parser, buf, mac, args, pos):
     if not parser.read_macros:
         return []
     file = parser.get_text_expanded(args[0])
@@ -106,4 +114,14 @@ def h_read_macros(parser, buf, mac, args, pos):
                                         pos, parser.latex, parser.parms)
     parser.parser_work(latex)
     return []
+
+#   read definitions for a LaTeX package
+#
+def h_load_module(prefix):
+    def f(parser, buf, mac, args, pos):
+        pack = parser.get_text_expanded(args[1])
+        f = utils.get_module_handler(pack, prefix)
+        parser.init_package(pack, f)
+        return []
+    return f
 

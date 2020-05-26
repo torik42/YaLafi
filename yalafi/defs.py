@@ -18,6 +18,11 @@
 
 from . import utils
 
+class ModParm:
+    def __init__(self, macros_latex='', macros_python=[], environments=[]):
+        self.macros_latex = macros_latex
+        self.macros_python = macros_python
+        self.environs = environments
 
 class Printable:
     def __repr__(self):

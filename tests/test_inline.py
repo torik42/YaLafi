@@ -32,6 +32,7 @@ def test_2():
     assert plain_2 == plain
 
 latex_3 = r"""
+\usepackage{amsmath}
 X \( f(n)=0 \text{ for all}\medspace n \) Y
 """
 plain_3 = r"""

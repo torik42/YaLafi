@@ -25,12 +25,12 @@ import unicodedata
 
 
 class Parser:
-    def __init__(self, parms, read_macros=None):
+    def __init__(self, parms, packages=[], read_macros=None):
         self.parms = parms
         self.read_macros = read_macros
-        self.the_macros = dict((m.name, m) for m in parms.macro_defs_python)
-        self.the_environments = dict((e.name, e)
-                                            for e in parms.environment_defs)
+        self.packages = []
+        self.the_macros = {}
+        self.the_environments = {}
         self.mathparser = mathparser.MathParser(self)
         self.unknowns = []
         self.latex = ''
@@ -53,8 +53,38 @@ class Parser:
         ]
         self.verbatim_end = parms.scanner.scan('\\end{verbatim}')
 
-        # read macro definitions from LaTeX text
-        self.parser_work(parms.macro_defs_latex)
+        # initialise and modify parameters, macros, etc.
+        builtin = [], lambda p: defs.ModParm(
+                                macros_latex=parms.macro_defs_latex,
+                                macros_python=parms.macro_defs_python,
+                                environments=parms.environment_defs)
+        for name, actions in [('', builtin)] + packages:
+            self.init_package(name, actions)
+
+    #   call handler of a package module:
+    #   - load other required packages
+    #   - let package handler update parameter object
+    #   - update local dictionaries for macros and environments
+    #
+    def init_package(self, name, actions):
+        if name and name in self.packages:
+            return
+        try:
+            for requ in actions[0]:
+                if requ not in self.packages:
+                    self.init_package(requ, utils.get_module_handler(
+                                            requ, self.parms.package_modules))
+            if name:
+                self.packages.append(name)
+            mods = actions[1](self.parms)
+            for m in mods.macros_python:
+                self.the_macros[m.name] = m
+            for e in mods.environs:
+                self.the_environments[e.name] = e
+            if mods.macros_latex:
+                self.parser_work(mods.macros_latex)
+        except:
+            utils.fatal('error loading module ' + repr(name))
 
     #   scan and parse (expand) LaTeX string to tokens
     #

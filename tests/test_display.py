@@ -6,6 +6,7 @@
 from yalafi import parameters, parser, utils
 
 latex_1 = r"""
+\usepackage{amsmath}
 A
 \begin{align}
     a &= b \\
@@ -26,6 +27,7 @@ def test_1():
     assert plain_1 == plain
 
 latex_2 = r"""
+\usepackage{amsmath}
 \begin{align}
     a &= b, \\
     -c &= d
@@ -42,6 +44,7 @@ def test_2():
     assert plain_2 == plain
 
 latex_3 = r"""
+\usepackage{amsmath}
 \begin{align}
     a &= b \\
     & \quad -d.
@@ -58,6 +61,7 @@ def test_3():
     assert plain_3 == plain
 
 latex_4 = r"""
+\usepackage{amsmath}
 \begin{align}
     a &= b \text{ for all $c$.} \\
     d &\ne e.
@@ -74,6 +78,7 @@ def test_4():
     assert plain_4 == plain
 
 latex_4a = r"""
+\usepackage{amsmath}
 \begin{align}
     a &= b \text{ for all $c$}. \\
     d &\ne e.
@@ -90,6 +95,7 @@ def test_4a():
     assert plain_4a == plain
 
 latex_5 = r"""
+\usepackage{amsmath}
 \begin{align}
     a &= b \text{ for all } c. \\
     d &\ne e.
@@ -106,6 +112,7 @@ def test_5():
     assert plain_5 == plain
 
 latex_6 = r"""
+\usepackage{amsmath}
 \begin{alignat}
 {2}
     &- b
@@ -155,6 +162,7 @@ def test_8():
     assert plain_8 == plain
 
 latex_9 = r"""
+\usepackage{.tests.defs}
 \begin{flalign}
     x
 \end{flalign}

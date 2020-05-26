@@ -9,8 +9,9 @@
 [Filter actions](#filter-actions)&nbsp;\|
 [Principal limitations](#principal-limitations)&nbsp;\|
 [Usage under Windows](#usage-under-windows)&nbsp;\|
+[Extension modules for LaTeX packages](#extension-modules-for-latex-packages)&nbsp;\|
 [Inclusion of own macros](#inclusion-of-own-macros)&nbsp;\|
-[Package interface](#package-interface)&nbsp;\|
+[Python package interface](#python-package-interface)&nbsp;\|
 [Handling of displayed equations](#handling-of-displayed-equations)&nbsp;\|
 [Command-line of pure filter](#command-line-of-pure-filter)&nbsp;\|
 [Differences to Tex2txt](#differences-to-tex2txt)&nbsp;\|
@@ -72,7 +73,8 @@ and a small machinery for macro expansion are implemented; see sections
 [Differences to Tex2txt](#differences-to-tex2txt) and
 [Remarks on implementation](#remarks-on-implementation).
 
-Beside the interface from section [Package interface](#package-interface),
+Beside the interface from section
+[Python package interface](#python-package-interface),
 application Python scripts like [yalafi/shell/shell.py](yalafi/shell/shell.py)
 from section [Example application](#example-application)
 can access an interface emulating tex2txt.py from repository Tex2txt by
@@ -224,10 +226,15 @@ Default option values are set at the Python script beginning.
   A '\#' sign marks the rest of line as comment.
 - `--define file`<br>
   Read macro definitions as LaTeX code (using \\newcommand).
-- `--python-defs module`<br>
-  Modify default definitions in file yalafi/parameters.py by function
-  'modify\_parameters()' in the given module.
-  For an example, compare file [definitions.py](definitions.py).
+  If the code invokes \\documentclass or \\usepackage, then the corresponding
+  modules are loaded.
+- `--packages modules`<br>
+  Load these extension modules for LaTeX packages (default: '\*').
+  See section
+  [Extension modules for LaTeX packages](#extension-modules-for-latex-packages).
+- `--add-packages file`<br>
+  Parse the given LaTeX file and prepend all modules included by
+  \\documentclass or \\usepackage to the list provided in option --packages.
 - `--extract macros`<br>
   Only check arguments of the LaTeX macros whose names are given as
   comma-separated list.
@@ -549,8 +556,13 @@ where the problem was detected.
   Compare variables 'Parameters.macro\_defs\_latex', 
   'Parameters.macro\_defs\_python', and
   'Parameters.environment\_defs' in file yalafi/parameters.py.
+- The macros \\documentclass and \\usepackage load extension modules that
+  define important macros and environments provided by the corresponding
+  LaTeX packages.
+  For other activation methods of these modules, see also section
+  [Extension modules for LaTeX packages](#extension-modules-for-latex-packages).
 - Macro definitions with \\(re)newcommand in the input text are processed.
-  Statement \\LTmacros{file.tex} reads macro definitions from the given file.
+  Statement \\LTinput{file.tex} reads macro definitions from the given file.
   Further own macros with arbitrary arguments can be defined on Python level,
   see section [Inclusion of own macros](#inclusion-of-own-macros).
 - Unknown macros are silently ignored, keeping their arguments
@@ -664,6 +676,46 @@ All other output is fixed to UTF-8 encoding.
 [Back to top](#yalafi-yet-another-latex-filter)
 
 
+## Extension modules for LaTeX packages
+
+Module yalafi.packages contains further submodules that are activated by
+the LaTeX filter when executing \\documentclass or \\usepackage, and on
+other occasions.
+
+- Options `--pack mods` (yalafi) and `--packages mods` (yalafi.shell)<br>
+  They expect a comma-separated list of package names or placeholders
+  (default: '\*').
+  For a name not starting with '.', the submodule is loaded from
+  yalafi.packages (variable 'Parameters.package\_modules' in file
+  yalafi/parameters.py).
+  Otherwise, the leading '.' is removed, and the module is loaded from
+  the current directory or a directory in PYTHONPATH.
+  This allows inclusion of project-specific modules.
+  File yalafi/packages/\_\_init\_\_.py contains lists of modules to
+  be loaded for placeholders like '\*'.
+- See also option `--add-packages file` in section
+  [Example application](#example-application).
+- Side-effect of options `--defs file` (yalafi)
+  and `--define file` (yalafi.shell)<br>
+  If the given file invokes \\documentclass or \\usepackage, then the
+  corresponding modules are loaded.
+- Side-effect of executing macro `\LTinput{file}`<br>
+  This is similar to the previous case.
+
+Each extension module has to provide a list 'require\_packages' of strings
+that causes loading of other modules, and a function 'modify\_parameters()'.
+It is called by the parser and can modify the passed object of
+class 'Parameters'.
+In order to add macros and environments, it has to construct strings or
+object lists that are included in the returned object of class 'ModParm'.
+Classes for definition of macros and environments are described in the
+sections starting at [Definition of macros](#definition-of-macros).
+For an example, see file
+[yalafi/packages/amsmath.py](yalafi/packages/amsmath.py).
+
+[Back to top](#yalafi-yet-another-latex-filter)
+
+
 ## Inclusion of own macros
 
 Unknown macros and environment frames are silently ignored.
@@ -671,31 +723,34 @@ As all input files are processed independently, it may be necessary to
 provide project-specific definitions in advance.
 
 For macros, which may be declared with \\newcommand, you can apply
-`\LTmacros{file.tex}` as a simple solution.
+`\LTinput{file.tex}` as a simple solution.
 This adds the macros defined in the given file, skipping all other content.
-For the “real” LaTeX, the macro \\LTmacros has to be defined as
-`\newcommand{\LTmacros}[1]{}` that is in turn ignored by the filter.
+For the “real” LaTeX, the macro \\LTinput has to be defined as
+`\newcommand{\LTinput}[1]{}` that is in turn ignored by the filter.
 
 If LaTeX files have to stay untouched, you can use options
 --defs and --define for yalafi and yalafi.shell, respectively.
 Alternatively, one can add the definitions to member
 'Parameters.macro\_defs\_latex' in file yalafi/parameters.py.
-Here is a short excerpt from this file:
+Here are examples from this file:
 ```
-        self.macro_defs_latex = r"""
-        ...
-        \newcommand{\color}[1]{}
-        \newcommand{\colorbox}[2]{#2}
-        \newcommand{\documentclass}[2][]{}
-        \newcommand{\eqref}[1]{(0)}
+        \newcommand{\footnotemark}[1][]{}
+        \newcommand{\quad}{\;}
+        \newcommand{\textasciicircum}{\verb?^?} % \^ is accent
+```
+The extension module for LaTeX package 'xcolor' contains definitions with
+argument expansion:
+```
         \newcommand{\fcolorbox}[3]{#3}
+        \newcommand{\textcolor}[2]{#2}
 ```
 
 More complicated macros as well as environments have to be registered
 with Python code.
-This may be done with options --pyth and --python-defs for yalafi and
+This may be done with options --pack and --packages for yalafi and
 yalafi.shell, respectively;
-see the example in [definitions.py](definitions.py).
+compare section
+[Extension modules for LaTeX packages](#extension-modules-for-latex-packages).
 Alternatively, you can modify the collections
 'Parameters.macro\_defs\_python' and 'Parameters.environment\_defs'
 in yalafi/parameters.py.
@@ -724,8 +779,9 @@ in yalafi/parameters.py.
 
 `Environ(parms, name, args='', repl='', defaults=[], remove=False, add_pars=True, items=None)`
 
-Argument `parms` to `defaults` are the same as for `Macro()`, where the
-arguments are those behind the opening '\\begin{xyz}'.
+Parameters `parms` to `defaults` are the same as for `Macro()`, where
+`name` does not start with a backslash.
+The arguments are those behind the opening '\\begin{xyz}'.
 This means that the environment name 'xyz' does not yet count as argument
 in `args` and `repl`.
 
@@ -753,7 +809,7 @@ file yalafi/parameters.py is appended
 [Back to top](#yalafi-yet-another-latex-filter)
 
 
-## Package interface
+## Python package interface
 
 We comment the central function in file
 [yalafi/tex2txt.py](yalafi/tex2txt.py)
@@ -771,46 +827,45 @@ script tex2txt.py in repository
  7          except:
  8              return False, ''
  9      parms = parameters.Parameters(opts.lang)
-10      if opts.defs:
-11          parms.add_latex_macros(opts.defs)
-12      if opts.pyth:
-13          exec('import ' + opts.pyth)
-14          exec(opts.pyth + '.modify_parameters(parms)')
-15      if opts.extr:
-16          extr = ['\\' + s for s in opts.extr.split(',')]
-17      else:
-18          extr = []
-19      p = parser.Parser(parms, read_macros=read)
-20      toks = p.parse(latex, extract=extr)
-21      txt, pos = utils.get_txt_pos(toks)
-22      if opts.repl:
-23          txt, pos = utils.replace_phrases(txt, pos, opts.repl)
-24      if opts.unkn:
-25          txt = '\n'.join(p.get_unknowns()) + '\n'
-26          pos = [0 for n in range(len(txt))]
-27      pos = [n + 1 for n in pos]
-28      return txt, pos
+10      packages = get_packages(opts.pack, parms.package_modules)
+11      if opts.defs:
+12          packages.append(('', utils.get_latex_handler(opts.defs)))
+13      if opts.extr:
+14          extr = ['\\' + s for s in opts.extr.split(',')]
+15      else:
+16          extr = []
+17      p = parser.Parser(parms, packages, read_macros=read)
+18      toks = p.parse(latex, extract=extr)
+19      txt, pos = utils.get_txt_pos(toks)
+20      if opts.repl:
+21          txt, pos = utils.replace_phrases(txt, pos, opts.repl)
+22      if opts.unkn:
+23          txt = '\n'.join(p.get_unknowns()) + '\n'
+24          pos = [0 for n in range(len(txt))]
+25      pos = [n + 1 for n in pos]
+26      return txt, pos
 ```
 - 3-8: This is an auxiliary function for the parser.
 - 9: The created parameter object contains all default settings
   and definitions from file yalafi/parameters.py.
-- 11: If requested by script option --defs, additional macros are included
+- 10: We read the LateX packages from option --pack and convert them to 
+  a list of handler functions called later by the parser.
+- 12: If requested by script option --defs, additional macros are included
   from the string opts.defs.
-- 14: On option --pyth, we call a function to modify the parameter object,
-  see file [definitions.py](definitions.py) for an example.
-- 15-18: If option --extr requests only extraction of arguments of certain
+  The parser has to process them after loading packages.
+- 13-16: If option --extr requests only extraction of arguments of certain
   macros, this is prepared.
-- 19: We create a parser object, the passed function is called on \\LTmacros.
-- 20: The parsing method returns a list of tokens.
-- 21: The token list is converted into a 2-tuple containing the plain-text
+- 17: We create a parser object, the passed function is called on \\LTinput.
+- 18: The parsing method returns a list of tokens.
+- 19: The token list is converted into a 2-tuple containing the plain-text
   string and a list of numbers.
   Each number in the list indicates the estimated position of the
   corresponding character in the text string.
-- 23: If phrase replacements are requested by option --repl, this is done.
+- 21: If phrase replacements are requested by option --repl, this is done.
   String opts.repl contains the replacement specifications read from the file.
-- 25: On option --unkn, a list of unknown macros and environments is
+- 23: On option --unkn, a list of unknown macros and environments is
   generated.
-- 27: This is necessary, since position numbers are zero-based in yalafi,
+- 25: This is necessary, since position numbers are zero-based in yalafi,
   but one-based in Tex2txt/tex2txt.py.
 
 [Back to top](#yalafi-yet-another-latex-filter)
@@ -955,7 +1010,7 @@ The LaTeX filter can be integrated in scripts, compare the examples in
 [Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#tool-integration).
 
 ```
-python -m yalafi [--nums file] [--repl file] [--defs file] [--pyth module]
+python -m yalafi [--nums file] [--repl file] [--defs file] [--pack modules]
                  [--extr macros] [--lang xy] [--ienc enc] [--unkn]
                  [latexfile]
 ```
@@ -969,9 +1024,9 @@ Without positional argument `latexfile`, standard input is read.
   As option --replace in section [Example application](#example-application).
 - `--defs file`<br>
   As option --define in section [Example application](#example-application).
-- `--pyth module`<br>
-  As option --python-defs in section
-  [Example application](#example-application)
+- `--pack modules`<br>
+  As option --packages in section
+  [Example application](#example-application).
 - `--extr ma[,mb,...]`<br>
   As option --extract in section [Example application](#example-application).
 - `--lang xy`<br>
@@ -995,12 +1050,13 @@ Invocation of `python -m yalafi ...` differs as follows from
 `python tex2txt.py ...` (the script described in
 [Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#command-line)).
 
-- Macro definitions with \\(re)newcommand in the LaTeX input are processed.
+- Macro definitions with \\(re)newcommand in the LaTeX input are processed,
+  as well as \\documentclass and \\usepackage.
 - Macro arguments need not be delimited by {} braces or \[\] brackets.
 - Macros are expanded in the order they appear in the text.
 - Character position tracking for displayed equations is improved,
   see [the example below](#equation-html-report).
-- Added option --pyth allows to modify predefined LaTeX macros and
+- Added option --pack allows to modify predefined LaTeX macros and
   environments at Python level.
 - Option --defs expects a file containing macro definitions as LaTeX code.
 - Option --ienc is also effective for file from --defs.
@@ -1014,7 +1070,7 @@ Due to token generation for each single “normal” character, memory usage
 may be substantial for long input texts.
 
 Number of effective code lines (without blank and pure comment lines)
-is around 1050 for Tex2txt/tex2txt.py and 1400 for yalafi/\*.py in total.
+is around 1050 for Tex2txt/tex2txt.py and 1450 for yalafi/\*.py in total.
 
 <a name="equation-html-report"></a>
 With

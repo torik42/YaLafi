@@ -32,17 +32,19 @@ def test_1():
 
 latex_2 = r"""
 % this definition should be ignored
-\newcommand{\LTmacros}[1]{}
-\LTmacros {z.tex}
+\newcommand{\LTinput}[1]{}
+\LTinput {z.tex}
 \xxx
 Y
+A\color XB
 """
 plain_2 = r"""
  Y Y
+AB
 """
 def test_2():
     def read(file):
-        return True, r'\newcommand{\xxx}[1]{ #1 #1}'
+        return True, r'\usepackage{xcolor}\newcommand{\xxx}[1]{ #1 #1}'
     parms = parameters.Parameters()
     p = parser.Parser(parms, read_macros=read)
     toks = p.parse(latex_2)

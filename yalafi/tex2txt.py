@@ -23,7 +23,7 @@
 #   differences:
 #   - option '--char' is  always assumed to be set
 #   - option '--defs file' reads macro definitions as LaTeX code
-#   - option '--pyth module' calls function modify_parameters() from module
+#   - option '--pack mods' calls functions modify_parameters() from packages
 #
 
 from . import parameters, parser, utils
@@ -36,16 +36,14 @@ def tex2txt(latex, opts):
         except:
             return False, ''
     parms = parameters.Parameters(opts.lang)
+    packages = get_packages(opts.pack, parms.package_modules)
     if opts.defs:
-        parms.add_latex_macros(opts.defs)
-    if opts.pyth:
-        exec('import ' + opts.pyth)
-        exec(opts.pyth + '.modify_parameters(parms)')
+        packages.append(('', utils.get_latex_handler(opts.defs)))
     if opts.extr:
         extr = ['\\' + s for s in opts.extr.split(',')]
     else:
         extr = []
-    p = parser.Parser(parms, read_macros=read)
+    p = parser.Parser(parms, packages, read_macros=read)
     toks = p.parse(latex, extract=extr)
     txt, pos = utils.get_txt_pos(toks)
     if opts.repl:
@@ -55,6 +53,19 @@ def tex2txt(latex, opts):
         pos = [0 for n in range(len(txt))]
     pos = [n + 1 for n in pos]
     return txt, pos
+
+def get_packages(packs, prefix):
+    ret = []
+    if not packs:
+        return ret
+    from . import packages
+    for p in packs.split(','):
+        if p in packages.load_table:
+            for m in packages.load_table[p]:
+                ret.append((m, utils.get_module_handler(m, prefix)))
+        else:
+            ret.append((p, utils.get_module_handler(p, prefix)))
+    return ret
 
 #########################################################
 #
@@ -181,7 +192,7 @@ class Options:
             repl=None,      # or set by read_replacements()
             char=False,     # True: character position tracking
             defs=None,      # or set by read_definitions()
-            pyth=None,      # import module for parameter modification
+            pack=None,      # import module for parameter modification
             extr=None,      # or string: comma-separated macro list
             lang=None,      # or set to language code
             unkn=False):    # True: print unknowns
@@ -192,7 +203,7 @@ class Options:
         if not self.defs:
             # need default defs object
             self.defs = read_definitions(None, '?')
-        self.pyth = pyth
+        self.pack = pack
         self.extr = extr
         self.lang = lang
         self.unkn = unkn
@@ -206,7 +217,7 @@ def main():
     parser.add_argument('--nums')
     parser.add_argument('--char', action='store_true')
     parser.add_argument('--defs')
-    parser.add_argument('--pyth')
+    parser.add_argument('--pack', default='*')
     parser.add_argument('--extr')
     parser.add_argument('--lang')
     parser.add_argument('--ienc')
@@ -221,7 +232,7 @@ def main():
                 repl=read_replacements(cmdline.repl, encoding=cmdline.ienc),
                 char=cmdline.char,
                 defs=read_definitions(cmdline.defs, encoding=cmdline.ienc),
-                pyth=cmdline.pyth,
+                pack=cmdline.pack,
                 extr=cmdline.extr,
                 lang=cmdline.lang,
                 unkn=cmdline.unkn)

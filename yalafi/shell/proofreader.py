@@ -61,7 +61,7 @@ def run_proofreader_options(tex, language, disable, enable,
     t2t_options = tex2txt.Options(char=True, repl=cmdline.replace,
                             defs=cmdline.define, lang=language[:2],
                             extr=cmdline.extract, unkn=cmdline.list_unknown,
-                            pyth=cmdline.python_defs)
+                            pack=cmdline.packages)
 
     if cmdline.plain_input:
         (plain, charmap) = (tex, list(range(1, len(tex) + 1)))
