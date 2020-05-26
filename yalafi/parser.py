@@ -72,7 +72,8 @@ class Parser:
         try:
             for requ in actions[0]:
                 if requ not in self.packages:
-                    self.init_package(requ, utils.get_package_handler(requ))
+                    self.init_package(requ, utils.get_module_handler(
+                                            requ, self.parms.package_modules))
             if name:
                 self.packages.append(name)
             mods = actions[1](self.parms)
