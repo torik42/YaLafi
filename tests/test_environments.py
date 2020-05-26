@@ -5,7 +5,10 @@
 
 from yalafi import defs, parameters, parser, utils
 
-p = parser.Parser(parameters.Parameters('de'))
+parms = parameters.Parameters('de')
+parms.environment_defs.append(
+        defs.Environ(parms, 'table', repl='[Tabelle]', remove=True))
+p = parser.Parser(parms)
 
 latex_proof = r"""
 \usepackage{amsthm}
@@ -142,3 +145,4 @@ def test_figure():
     toks = p.parse(latex_figure)
     plain, pos = utils.get_txt_pos(toks)
     assert plain_figure == plain
+
