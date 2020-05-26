@@ -2,7 +2,7 @@ Work in progress
 ----------------
 - yalafi
     - added submodule yalafi.packages, currently with:
-      amsmath, amsthm, xcolor
+      amsmath, amsthm, xcolor (incomplete initial versions)
     - changed otion --pyth to --pack
     - macros \\documentclass and \\usepackage activate package modules
       from yalafi.packages
@@ -10,7 +10,8 @@ Work in progress
       Parameters.math\_ignore (issue #29)
     - shifted declarations from yalafi/parameters.py to package modules
       (issue #29)
-    - closed issue #30 (optional argument for figure environment)
+    - closed issue #30 (optional argument for figure environment,
+      missing \\phantom macros)
     - \\LTmacros renamed to \\LTinput: also may activate packages
 - yalafi.shell
     - changed option --python-defs to --packages

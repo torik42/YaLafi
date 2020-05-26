@@ -689,7 +689,7 @@ other occasions.
   yalafi.packages (variable 'Parameters.package\_modules' in file
   yalafi/parameters.py).
   Otherwise, the leading '.' is removed, and the module is loaded from
-  the current directory.
+  the current directory or a directory in PYTHONPATH.
   This allows inclusion of project-specific modules.
   File yalafi/packages/\_\_init\_\_.py contains lists of modules to
   be loaded for placeholders like '\*'.
@@ -702,8 +702,8 @@ other occasions.
 - Side-effect of executing macro `\LTinput{file}`<br>
   This is similar to the previous case.
 
-Each extension module has to provide a list 'require\_packages' that causes
-loading of other modules, and a function 'modify\_parameters()'.
+Each extension module has to provide a list 'require\_packages' of strings
+that causes loading of other modules, and a function 'modify\_parameters()'.
 It is called by the parser and can modify the passed object of
 class 'Parameters'.
 In order to add macros and environments, it has to construct strings or
@@ -1070,7 +1070,7 @@ Due to token generation for each single “normal” character, memory usage
 may be substantial for long input texts.
 
 Number of effective code lines (without blank and pure comment lines)
-is around 1050 for Tex2txt/tex2txt.py and 1400 for yalafi/\*.py in total.
+is around 1050 for Tex2txt/tex2txt.py and 1450 for yalafi/\*.py in total.
 
 <a name="equation-html-report"></a>
 With
