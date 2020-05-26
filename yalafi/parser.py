@@ -75,12 +75,15 @@ class Parser:
         if name:
             self.packages.append(name)
         mods = actions[1](self.parms)
-        for m in mods.macros_python:
-            self.the_macros[m.name] = m
-        for e in mods.environs:
-            self.the_environments[e.name] = e
-        if mods.macros_latex:
-            self.parser_work(mods.macros_latex)
+        try:
+            for m in mods.macros_python:
+                self.the_macros[m.name] = m
+            for e in mods.environs:
+                self.the_environments[e.name] = e
+            if mods.macros_latex:
+                self.parser_work(mods.macros_latex)
+        except:
+            utils.fatal('error loading module ' + repr(name))
 
     #   scan and parse (expand) LaTeX string to tokens
     #

@@ -42,6 +42,10 @@ def fatal(err):
                         + err + '\n')
     sys.exit(1)
 
+def warning(err):
+    sys.stderr.write('*** ' + sys.argv[0] + ': warning:\n*** '
+                        + err + '\n')
+
 def get_txt_pos(toks):
     txt = ''
     pos = []
@@ -102,7 +106,7 @@ def substitute(i_txt, i_pos, expr, repl):
 #   get handler for importing a module:
 #   - if module name starts with '.': remove that dot
 #   - else: prepend given prefix
-#   return handler, dummy on error (XXX: warning?)
+#   return handler, dummy on error
 #
 def get_module_handler(name, prefix):
     if name.startswith('.'):
@@ -114,6 +118,7 @@ def get_module_handler(name, prefix):
         return (eval(mod + '.require_packages'),
                         eval(mod + '.modify_parameters'))
     except:
+        warning('could not load module ' + repr(mod))
         return [], lambda p: defs.ModParm()
 
 def get_latex_handler(macros_latex):
