@@ -35,7 +35,7 @@ class Parameters:
         #
         self.macro_defs_latex = r"""
 
-        % XXX: shift to modules
+        % XXX: shift to extension modules
         \newcommand{\includegraphics}[2][]{}
         \newcommand{\texorpdfstring}[2]{#1}
         % end XXX
@@ -115,7 +115,8 @@ class Parameters:
 
         Environ(self, 'figure', args='O', add_pars=False),
         Environ(self, 'minipage', args='A'),
-        Environ(self, 'table', repl='[Tabelle]', remove=True),
+#       Environ(self, 'table', repl='[Tabelle]', remove=True),
+        Environ(self, 'table', args='O', add_pars=False),
         Environ(self, 'verbatim', remove=False, add_pars=True),
 
         EquEnv(self, 'displaymath'),
