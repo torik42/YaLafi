@@ -2,7 +2,7 @@
 from yalafi.defs import ModParm, Environ, EquEnv
 from yalafi import handlers
 
-require_packages = []
+require_packages = ['amsmath']
 
 def modify_parameters(parms):
 
