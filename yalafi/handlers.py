@@ -80,6 +80,13 @@ def h_heading(parser, buf, mac, args, pos):
         arg.append(defs.TextToken(arg[-1].pos, '.'))
     return arg
 
+#   \phantom, \hphantom
+#
+def h_phantom(parser, buf, mac, args, pos):
+    if len(parser.get_text_expanded(args[0])) > 0:
+        return [defs.SpecialToken(pos, '\\;')]
+    return []
+
 #   macro \cite[opt]
 #
 def h_cite(parser, buf, mac, args, pos):

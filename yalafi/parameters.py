@@ -68,6 +68,7 @@ class Parameters:
         \newcommand{\textasciicircum}{\verb?^?} % \^ is accent
         \newcommand{\textasciitilde}{\verb?~?}  % \~ is accent
         \newcommand{\textbackslash}{\verb?\?}   % \\ is line break
+        \newcommand{\vphantom}[1]{}
 
         """
 
@@ -83,9 +84,11 @@ class Parameters:
         Macro(self, '\\footnote', args='OA', extract='#2'),
         Macro(self, '\\footnotetext', args='OA', extract='#2'),
         Macro(self, '\\framebox', args='OOA', repl='#3'),
+        Macro(self, '\\hphantom', args='A', repl=hs.h_phantom),
         Macro(self, '\\hspace', args='*A', repl=' '),
         Macro(self, '\\newcommand', args='*AOOA', repl=hs.h_newcommand),
         Macro(self, '\\part', args='*OA', repl=hs.h_heading),
+        Macro(self, '\\phantom', args='A', repl=hs.h_phantom),
         Macro(self, '\\renewcommand', args='*AOOA', repl=hs.h_newcommand),
         Macro(self, '\\section', args='*OA', repl=hs.h_heading),
         Macro(self, '\\subsection', args='*OA', repl=hs.h_heading),
