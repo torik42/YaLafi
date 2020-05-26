@@ -69,13 +69,13 @@ class Parser:
     def init_package(self, name, actions):
         if name and name in self.packages:
             return
-        for requ in actions[0]:
-            if requ not in self.packages:
-                self.init_package(requ, utils.get_package_handler(requ))
-        if name:
-            self.packages.append(name)
-        mods = actions[1](self.parms)
         try:
+            for requ in actions[0]:
+                if requ not in self.packages:
+                    self.init_package(requ, utils.get_package_handler(requ))
+            if name:
+                self.packages.append(name)
+            mods = actions[1](self.parms)
             for m in mods.macros_python:
                 self.the_macros[m.name] = m
             for e in mods.environs:
