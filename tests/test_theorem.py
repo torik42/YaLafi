@@ -8,7 +8,7 @@ from yalafi import parameters, parser, utils
 p = parser.Parser(parameters.Parameters())
 
 latex_theorem = r"""
-\usepackage{.tests.defs}
+\newtheorem{theorem}{Theorem}
 A\begin{theorem}B\end{theorem}C
 
 X\begin{theorem}[T]Y\end{theorem}Z
@@ -35,7 +35,7 @@ def test_theorem():
 
 
 latex_option = r"""
-\usepackage{.tests.defs}
+\newtheorem{theorem}{Theorem}
 \usepackage{xcolor}
 X\begin{theorem}[\textcolor{red}{blue}]Y
 """
