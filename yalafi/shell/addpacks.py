@@ -29,7 +29,11 @@ from yalafi import defs, tex2txt
 require_packages = []
 def modify_parameters(parms):
     def add(parser, buf, mac, args, pos):
-        packages.append(parser.get_text_expanded(args[1]))
+        name = parser.get_text_expanded(args[1])
+        if mac.name == '\\usepackage':
+            packages.append(name)
+        else:
+            documentclass[0] = name
         return []
     macros_python = [
         defs.Macro(parms, '\\documentclass', args='OA', repl=add),
@@ -37,16 +41,17 @@ def modify_parameters(parms):
     ]
     return defs.ModParm(macros_python=macros_python)
 
+documentclass = ['']
 packages = []
 def addpacks(cmdline):
     packs = '.yalafi.shell.addpacks'
     if cmdline.packages.strip(','):
         packs = cmdline.packages.strip(',') + ',' + packs
     opts = tex2txt.Options(defs=cmdline.define, lang=cmdline.language[:2],
-                                    pack=packs)
-    f = tex2txt.myopen(cmdline.add_packages, encoding=cmdline.encoding)
+                                    dcls=cmdline.documentclass, pack=packs)
+    f = tex2txt.myopen(cmdline.add_modules, encoding=cmdline.encoding)
     latex = f.read()
     f.close()
     tex2txt.tex2txt(latex, opts)
-    return packages
+    return documentclass[0], packages
 

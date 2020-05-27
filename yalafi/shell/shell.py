@@ -142,7 +142,8 @@ parser.add_argument('--encoding', default=default_option_encoding)
 parser.add_argument('--replace')
 parser.add_argument('--define')
 parser.add_argument('--packages', default='*')
-parser.add_argument('--add-packages', default='')
+parser.add_argument('--documentclass', default='')
+parser.add_argument('--add-modules', default='')
 parser.add_argument('--extract')
 parser.add_argument('--disable', default=default_option_disable)
 parser.add_argument('--enable', default=default_option_enable)
@@ -213,12 +214,15 @@ if cmdline.server == 'stop':
     tex2txt.fatal('could not kill LT server "' + ltserver_local_cmd + '"')
 
 
-# option --add-packages: read packages from root document,
-# prepend them to package list from option --packages
+# option --add-modules: read declarations from root document
+# - prepend packages to list from option --packages
+# - possibly overwrite option --documentclass
 #
-if cmdline.add_packages:
+if cmdline.add_modules:
     from yalafi.shell import addpacks
-    packs = addpacks.addpacks(cmdline)
+    dcls, packs = addpacks.addpacks(cmdline)
+    if dcls:
+        cmdline.documentclass = dcls
     if cmdline.packages:
         packs += cmdline.packages.split(',')
     cmdline.packages = ','.join(packs)
@@ -231,7 +235,7 @@ if cmdline.include:
     sys.stderr.flush()
     opts = tex2txt.Options(extr=inclusion_macros, repl=cmdline.replace,
                             defs=cmdline.define, lang=cmdline.language[:2],
-                            pack=cmdline.packages)
+                            dcls=cmdline.documentclass, pack=cmdline.packages)
 
 def skip_file(fn):
     # does file name match regex from option --skip?
