@@ -49,6 +49,7 @@ def h_newcommand(parser, buf, mac, args, pos):
 #   \begin{theorem}[opt]
 #   - if present, add content of option opt in () parantheses
 #   - add '.'
+#   --> now only used by h_newtheorem()
 #
 def h_theorem(name):
     def handler (parser, buf, mac, args, pos):
@@ -69,6 +70,17 @@ def h_theorem(name):
             
     # this creates a closure
     return handler
+
+#   \newtheorem
+#
+def h_newtheorem(parser, buf, mac, args, pos):
+    name = parser.get_text_expanded(args[0])
+    title = parser.get_text_expanded(args[2])
+    def f(parms):
+        envs = [defs.Environ(parms, name, args='O', repl=h_theorem(title))]
+        return defs.ModParm(environments=envs)
+    parser.modify_parameters(f)
+    return []
 
 #   heading macros: append '.', unless last char in parms.heading_punct
 #

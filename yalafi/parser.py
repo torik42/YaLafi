@@ -76,15 +76,22 @@ class Parser:
                                             requ, self.parms.package_modules))
             if name:
                 self.packages.append(name)
-            mods = actions[1](self.parms)
-            for m in mods.macros_python:
-                self.the_macros[m.name] = m
-            for e in mods.environs:
-                self.the_environments[e.name] = e
-            if mods.macros_latex:
-                self.parser_work(mods.macros_latex)
+            self.modify_parameters(actions[1])
         except:
             utils.fatal('error loading module ' + repr(name))
+
+    #   modify local parameter object
+    #   - used by package extension mechanism
+    #   - used by handlers of LaTeX macros / environments
+    #
+    def modify_parameters(self, f):
+        mods = f(self.parms)
+        for m in mods.macros_python:
+            self.the_macros[m.name] = m
+        for e in mods.environs:
+            self.the_environments[e.name] = e
+        if mods.macros_latex:
+            self.parser_work(mods.macros_latex)
 
     #   scan and parse (expand) LaTeX string to tokens
     #
