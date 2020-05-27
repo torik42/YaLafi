@@ -3,19 +3,23 @@ Work in progress
 - yalafi
     - added submodule yalafi.packages, currently with:
       amsmath, amsthm, xcolor (incomplete initial versions)
+    - added submodule yalafi.documentclasses
     - changed otion --pyth to --pack
+    - added option --dcls
     - macros \\documentclass and \\usepackage activate package modules
-      from yalafi.packages
+      from yalafi.documentclasses and yalafi.packages
     - removed redundancies in Parameters.math\_space and
       Parameters.math\_ignore (issue #29)
-    - shifted declarations from yalafi/parameters.py to package modules
+    - shifted declarations from yalafi/parameters.py to extension modules
       (issue #29)
     - closed issue #30 (optional argument for figure environment,
       missing \\phantom macros)
-    - \\LTmacros renamed to \\LTinput: also may activate packages
+    - changed definition of table environment
+    - \\LTmacros renamed to \\LTinput: also may activate extension modules
 - yalafi.shell
     - changed option --python-defs to --packages
-    - added option '--add-packages file'
+    - added option --documentclass
+    - added option --add-modules
 - added Vim "compiler" ltyc.vim
 - removed file definitions.py
 - README: updated
