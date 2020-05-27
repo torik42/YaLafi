@@ -36,7 +36,8 @@ def tex2txt(latex, opts):
         except:
             return False, ''
     parms = parameters.Parameters(opts.lang)
-    packages = get_packages(opts.pack, parms.package_modules)
+    packages = get_packages(opts.dcls, parms.class_modules)
+    packages.extend(get_packages(opts.pack, parms.package_modules))
     if opts.defs:
         packages.append(('', utils.get_latex_handler(opts.defs)))
     if opts.extr:
@@ -58,10 +59,12 @@ def get_packages(packs, prefix):
     ret = []
     if not packs:
         return ret
-    from . import packages
+    vars = {}
+    exec('import ' + prefix + ' as mods', vars)
+    load_table = vars['mods'].load_table
     for p in packs.split(','):
-        if p in packages.load_table:
-            for m in packages.load_table[p]:
+        if p in load_table:
+            for m in load_table[p]:
                 ret.append((m, utils.get_module_handler(m, prefix)))
         else:
             ret.append((p, utils.get_module_handler(p, prefix)))
@@ -192,7 +195,8 @@ class Options:
             repl=None,      # or set by read_replacements()
             char=False,     # True: character position tracking
             defs=None,      # or set by read_definitions()
-            pack=None,      # import module for parameter modification
+            dcls=None,      # import module for \documentclass
+            pack=None,      # import modules for \usepackage
             extr=None,      # or string: comma-separated macro list
             lang=None,      # or set to language code
             unkn=False):    # True: print unknowns
@@ -203,6 +207,7 @@ class Options:
         if not self.defs:
             # need default defs object
             self.defs = read_definitions(None, '?')
+        self.dcls = dcls
         self.pack = pack
         self.extr = extr
         self.lang = lang
@@ -217,6 +222,7 @@ def main():
     parser.add_argument('--nums')
     parser.add_argument('--char', action='store_true')
     parser.add_argument('--defs')
+    parser.add_argument('--dcls', default='')
     parser.add_argument('--pack', default='*')
     parser.add_argument('--extr')
     parser.add_argument('--lang')
@@ -232,6 +238,7 @@ def main():
                 repl=read_replacements(cmdline.repl, encoding=cmdline.ienc),
                 char=cmdline.char,
                 defs=read_definitions(cmdline.defs, encoding=cmdline.ienc),
+                dcls=cmdline.dcls,
                 pack=cmdline.pack,
                 extr=cmdline.extr,
                 lang=cmdline.lang,
