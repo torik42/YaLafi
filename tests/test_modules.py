@@ -63,3 +63,13 @@ def test_5():
     plain, pos = utils.get_txt_pos(toks)
     assert plain_5 == plain
 
+latex_6 = r"""
+\documentclass{scrreprt}
+\KOMAoptions{DIV=11}
+"""
+plain_6 = r"""
+"""
+def test_6():
+    plain, nums = tex2txt.tex2txt(latex_6, tex2txt.Options())
+    assert plain == plain_6
+
