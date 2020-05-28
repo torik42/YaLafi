@@ -216,7 +216,7 @@ class Parameters:
 
         #   module directories
         #
-        self.class_modules = 'yalafi.packages'
+        self.class_modules = 'yalafi.documentclasses'
         self.package_modules = 'yalafi.packages'
 
         #   accent macros

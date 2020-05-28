@@ -228,13 +228,18 @@ Default option values are set at the Python script beginning.
   Read macro definitions as LaTeX code (using \\newcommand).
   If the code invokes \\documentclass or \\usepackage, then the corresponding
   modules are loaded.
+- `--documentclass  class`<br>
+  Load extension module for this class.
+  See section
+  [Extension modules for LaTeX packages](#extension-modules-for-latex-packages).
 - `--packages modules`<br>
   Load these extension modules for LaTeX packages (default: '\*').
   See section
   [Extension modules for LaTeX packages](#extension-modules-for-latex-packages).
-- `--add-packages file`<br>
-  Parse the given LaTeX file and prepend all modules included by
-  \\documentclass or \\usepackage to the list provided in option --packages.
+- `--add-modules file`<br>
+  Parse the given LaTeX file and prepend all modules included by macro
+  \\usepackage to the list provided in option --packages.
+  Value of option --documentclass is overridden by macro \\documentclass.
 - `--extract macros`<br>
   Only check arguments of the LaTeX macros whose names are given as
   comma-separated list.
@@ -678,9 +683,9 @@ All other output is fixed to UTF-8 encoding.
 
 ## Extension modules for LaTeX packages
 
-Module yalafi.packages contains further submodules that are activated by
-the LaTeX filter when executing \\documentclass or \\usepackage, and on
-other occasions.
+The modules yalafi.documentclass and yalafi.packages contain further
+submodules that are activated by the LaTeX filter when executing
+\\documentclass or \\usepackage, and on other occasions.
 
 - Options `--pack mods` (yalafi) and `--packages mods` (yalafi.shell)<br>
   They expect a comma-separated list of package names or placeholders
@@ -693,7 +698,11 @@ other occasions.
   This allows inclusion of project-specific modules.
   File yalafi/packages/\_\_init\_\_.py contains lists of modules to
   be loaded for placeholders like '\*'.
-- See also option `--add-packages file` in section
+- Options `--dcls cls` (yalafi) and `--documentclass cls` (yalafi.shell)<br>
+  This is similar to --pack and --packages.
+  Submodule is loaded from yalafi.documentclasses (variable
+  'Parameters.class\_modules'), if name does not start with '.'.
+- See also option `--add-modules file` in section
   [Example application](#example-application).
 - Side-effect of options `--defs file` (yalafi)
   and `--define file` (yalafi.shell)<br>
@@ -1024,8 +1033,8 @@ Without positional argument `latexfile`, standard input is read.
   As option --replace in section [Example application](#example-application).
 - `--defs file`<br>
   As option --define in section [Example application](#example-application).
-- `--pack modules`<br>
-  As option --packages in section
+- `--dcls class` and `--pack modules`<br>
+  As options --documentclass and --packages in section
   [Example application](#example-application).
 - `--extr ma[,mb,...]`<br>
   As option --extract in section [Example application](#example-application).
@@ -1056,7 +1065,7 @@ Invocation of `python -m yalafi ...` differs as follows from
 - Macros are expanded in the order they appear in the text.
 - Character position tracking for displayed equations is improved,
   see [the example below](#equation-html-report).
-- Added option --pack allows to modify predefined LaTeX macros and
+- Added options --dcsl and --pack allow to modify predefined LaTeX macros and
   environments at Python level.
 - Option --defs expects a file containing macro definitions as LaTeX code.
 - Option --ienc is also effective for file from --defs.
