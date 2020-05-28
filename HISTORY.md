@@ -1,5 +1,5 @@
-Work in progress
-----------------
+Version 1.1.2 (2020/05/28)
+--------------------------
 - yalafi
     - added submodule yalafi.packages, currently with:
       amsmath, amsthm, xcolor (incomplete initial versions)

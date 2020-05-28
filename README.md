@@ -17,6 +17,13 @@
 [Differences to Tex2txt](#differences-to-tex2txt)&nbsp;\|
 [Remarks on implementation](#remarks-on-implementation)
 
+**Notice.**
+The library of LaTeX macros, environments, document classes, and packages
+is still rather restricted.
+Please don't hesitate to
+[raise an Issue](https://github.com/matze-dd/YaLafi/issues),
+if you would like to see something added.
+
 This Python package extracts plain text from LaTeX documents.
 The software may be integrated with a proofreading tool and an editor.
 It provides
@@ -683,7 +690,7 @@ All other output is fixed to UTF-8 encoding.
 
 ## Extension modules for LaTeX packages
 
-The modules yalafi.documentclass and yalafi.packages contain further
+The modules yalafi.documentclasses and yalafi.packages contain further
 submodules that are activated by the LaTeX filter when executing
 \\documentclass or \\usepackage, and on other occasions.
 
@@ -1065,7 +1072,7 @@ Invocation of `python -m yalafi ...` differs as follows from
 - Macros are expanded in the order they appear in the text.
 - Character position tracking for displayed equations is improved,
   see [the example below](#equation-html-report).
-- Added options --dcsl and --pack allow to modify predefined LaTeX macros and
+- Added options --dcls and --pack allow to modify predefined LaTeX macros and
   environments at Python level.
 - Option --defs expects a file containing macro definitions as LaTeX code.
 - Option --ienc is also effective for file from --defs.
