@@ -93,3 +93,22 @@ def test_unknown_macro():
     plain, nums = tex2txt.tex2txt(latex, options)
     assert plain == 'a\n\nb c'
 
+#   an absent trailing optional argument consumes space
+#   - this is in accord with LaTeX
+#
+latex_newthm = r"""
+A\newtheorem{thm}{Theorem}
+B
+C\newtheorem{prop}{Proposition}[section]
+D
+"""
+plain_newthm = r"""
+AB
+C
+D
+"""
+def test_newthm():
+
+    plain, nums = tex2txt.tex2txt(latex_newthm, options)
+    assert plain == plain_newthm
+
