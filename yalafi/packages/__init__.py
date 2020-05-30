@@ -5,6 +5,9 @@ load_table = {
     '*': [
         'amsmath',
         'amsthm',
+        'graphicx',
+        'hyperref',
+        'listings',
         'xcolor',
     ],
     '': [

@@ -1,6 +1,6 @@
 
 #
-#   YaLafi module for LaTeX package xcolor
+#   YaLafi module for LaTeX package hyperref
 #
 
 from yalafi.defs import ModParm
@@ -11,11 +11,7 @@ def modify_parameters(parms):
 
     macros_latex = r"""
 
-        \newcommand{\color}[1]{}
-        \newcommand{\colorbox}[2]{#2}
-        \newcommand{\definecolor}[3]{}
-        \newcommand{\fcolorbox}[3]{#3}
-        \newcommand{\textcolor}[2]{#2}
+        \newcommand{\texorpdfstring}[2]{#1}
 
     """
 
