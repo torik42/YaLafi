@@ -3,7 +3,7 @@
 import pytest
 from yalafi import parameters, parser, utils
 
-preamble = '\\usepackage{xcolor}\n'
+preamble = '\\usepackage{amsmath}\n'
 
 def get_plain(latex):
     parms = parameters.Parameters()
@@ -14,14 +14,16 @@ def get_plain(latex):
 
 data_test_macros_latex = [
 
-    (r'A\color{red}B', 'AB'),
-    (r'A\color[rgb]{1,1,1}B', 'AB'),
-    (r'A\colorbox{red}{blue}B', 'AblueB'),
-    (r'A\colorbox[rgb]{1,1,1}{blue}B', 'AblueB'),
-    (r'A\definecolor{xyz}{rgb}{1,1,1}B', 'AB'),
-    (r'A\definecolor[named]{xyz}{rgb}{1,1,1}B', 'AB'),
-    (r'A\textcolor{red}{blue}B', 'AblueB'),
-    (r'A\textcolor[rgb]{1,1,1}{blue}B', 'AblueB'),
+    (r'\eqref{e}', '(0)'),
+    (r'A\medspace B', 'A B'),
+    (r'A\[\negmedspace\]B', 'A  B'),
+            # the space is due to leading '  ' in displayed equations
+    (r'A\[\negthickspace\]B', 'A  B'),
+    (r'A\[\negthinspace\]B', 'A  B'),
+    (r'A\[\notag\]B', 'A  B'),
+    (r'A\numberwithin{x}{y}B', 'AB'),
+    (r'A\thickspace B', 'A B'),
+    (r'A\thinspace B', 'A\N{NARROW NO-BREAK SPACE}B'),
 
 ]
 
@@ -33,8 +35,7 @@ def test_macros_latex(latex, plain_expected):
 
 data_test_macros_python = [
 
-    (r'A\fcolorbox{red}{green}{blue}B', 'AblueB'),
-    (r'A\fcolorbox[rgb]{1,1,1}[rgb]{5,5,5}{blue}B', 'AblueB'),
+    (r'A\DeclareMathOperator*xy B', 'A B'),
 
 ]
 
