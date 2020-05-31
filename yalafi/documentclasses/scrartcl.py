@@ -1,6 +1,6 @@
 
 #
-#   YaLafi: \documentclass{scrreprt}
+#   YaLafi: \documentclass{scrartcl}
 #
 
 from yalafi.defs import ModParm

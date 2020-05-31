@@ -1,6 +1,6 @@
 
 #
-#   YaLafi module for LaTeX package amsthm
+#   YaLafi module for LaTeX package listings
 #
 
 from yalafi.defs import ModParm, Environ
@@ -11,8 +11,8 @@ def modify_parameters(parms):
 
     macros_latex = r"""
 
-        \newcommand{\qedhere}{}
-        \newcommand{\theoremstyle}[1]{}
+        \newcommand{\lstinputlisting}[2][]{\par}
+        \newcommand{\lstset}[1]{}
 
     """
 
@@ -20,9 +20,7 @@ def modify_parameters(parms):
 
     environments = [
 
-        Environ(parms, 'proof', args='O',
-                            # Parser.expand_arguments() may skip space
-                            repl='#1.\n', defaults=[parms.proof_name]),
+        Environ(parms, 'lstlisting', remove=True),
 
     ]
 

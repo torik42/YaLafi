@@ -19,7 +19,7 @@
 
 **Notice.**
 The library of LaTeX macros, environments, document classes, and packages
-is still rather restricted.
+is still rather restricted ([list of macros](list-of-macros.md)).
 Please don't hesitate to
 [raise an Issue](https://github.com/matze-dd/YaLafi/issues),
 if you would like to see something added.
@@ -706,9 +706,9 @@ submodules that are activated by the LaTeX filter when executing
   File yalafi/packages/\_\_init\_\_.py contains lists of modules to
   be loaded for placeholders like '\*'.
 - Options `--dcls cls` (yalafi) and `--documentclass cls` (yalafi.shell)<br>
-  This is similar to --pack and --packages.
+  This is similar to --pack and --packages (default: '').
   Submodule is loaded from yalafi.documentclasses (variable
-  'Parameters.class\_modules'), if name does not start with '.'.
+  'Parameters.class\_modules'), if 'cls' does not start with '.'.
 - See also option `--add-modules file` in section
   [Example application](#example-application).
 - Side-effect of options `--defs file` (yalafi)
@@ -748,17 +748,13 @@ If LaTeX files have to stay untouched, you can use options
 --defs and --define for yalafi and yalafi.shell, respectively.
 Alternatively, one can add the definitions to member
 'Parameters.macro\_defs\_latex' in file yalafi/parameters.py.
-Here are examples from this file:
+Here are examples from this file and extension module
+yalafi/packages/xcolor.py:
 ```
-        \newcommand{\footnotemark}[1][]{}
         \newcommand{\quad}{\;}
         \newcommand{\textasciicircum}{\verb?^?} % \^ is accent
-```
-The extension module for LaTeX package 'xcolor' contains definitions with
-argument expansion:
-```
-        \newcommand{\fcolorbox}[3]{#3}
-        \newcommand{\textcolor}[2]{#2}
+---
+        \newcommand{\textcolor}[3][]{#3}
 ```
 
 More complicated macros as well as environments have to be registered

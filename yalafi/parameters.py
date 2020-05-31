@@ -35,11 +35,6 @@ class Parameters:
         #
         self.macro_defs_latex = r"""
 
-        % XXX: shift to extension modules
-        \newcommand{\includegraphics}[2][]{}
-        \newcommand{\texorpdfstring}[2]{#1}
-        % end XXX
-
         \newcommand{\AA}{Å}
         \newcommand{\aa}{å}
         \newcommand{\AE}{Æ}
