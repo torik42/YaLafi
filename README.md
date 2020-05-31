@@ -748,17 +748,13 @@ If LaTeX files have to stay untouched, you can use options
 --defs and --define for yalafi and yalafi.shell, respectively.
 Alternatively, one can add the definitions to member
 'Parameters.macro\_defs\_latex' in file yalafi/parameters.py.
-Here are examples from this file:
+Here are examples from this file and extension module
+yalafi/packages/xcolor.py:
 ```
-        \newcommand{\footnotemark}[1][]{}
         \newcommand{\quad}{\;}
         \newcommand{\textasciicircum}{\verb?^?} % \^ is accent
-```
-The extension module for LaTeX package 'xcolor' contains definitions with
-argument expansion:
-```
-        \newcommand{\fcolorbox}[3]{#3}
-        \newcommand{\textcolor}[2]{#2}
+---
+        \newcommand{\textcolor}[3][]{#3}
 ```
 
 More complicated macros as well as environments have to be registered
