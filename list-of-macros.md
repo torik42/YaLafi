@@ -31,7 +31,8 @@ Please note that not everything has to be declared.
 
 ## LaTeX builtins
 
-[yalafi/parameters.py](yalafi/parameters.py)
+[yalafi/parameters.py](yalafi/parameters.py),
+[tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_latex_builtins.py)
 
 **Macros**
 (Major side-effects for the filter are noted in parantheses.)
@@ -103,7 +104,8 @@ verbatim
 
 ## Package amsmath
 
-[yalafi/packages/amsmath.py](yalafi/packages/amsmath.py)
+[yalafi/packages/amsmath.py](yalafi/packages/amsmath.py),
+[tests/test\_packages/test\_amsmath.py](tests/test_packages/test_amsmath.py)
 
 **Macros**
 
@@ -131,7 +133,8 @@ multiline(\*)
 
 ## Package amsthm
 
-[yalafi/packages/amsthm.py](yalafi/packages/amsthm.py)
+[yalafi/packages/amsthm.py](yalafi/packages/amsthm.py),
+[tests/test\_packages/test\_amsthm.py](tests/test_packages/test_amsthm.py)
 
 **Macros**
 
@@ -145,7 +148,8 @@ proof
 
 ## Package graphicx
 
-[yalafi/packages/graphicx.py](yalafi/packages/graphicx.py)
+[yalafi/packages/graphicx.py](yalafi/packages/graphicx.py),
+[tests/test\_packages/test\_graphicx.py](tests/test_packages/test_graphicx.py)
 
 **Macros**
 
@@ -154,7 +158,8 @@ proof
 
 ## Package hyperref
 
-[yalafi/packages/hyperref.py](yalafi/packages/hyperref.py)
+[yalafi/packages/hyperref.py](yalafi/packages/hyperref.py),
+[tests/test\_packages/test\_hyperref.py](tests/test_packages/test_hyperref.py)
 
 **Macros**
 
@@ -163,7 +168,8 @@ proof
 
 ## Package listings
 
-[yalafi/packages/listings.py](yalafi/packages/listings.py)
+[yalafi/packages/listings.py](yalafi/packages/listings.py),
+[tests/test\_packages/test\_listings.py](tests/test_packages/test_listings.py)
 
 We simply remove the listings, inserting a paragraph break.
 
@@ -179,7 +185,8 @@ lstlisting
 
 ## Package xcolor
 
-[yalafi/packages/xcolor.py](yalafi/packages/xcolor.py)
+[yalafi/packages/xcolor.py](yalafi/packages/xcolor.py),
+[tests/test\_packages/test\_xcolor.py](tests/test_packages/test_xcolor.py)
 
 **Macros**
 
@@ -192,28 +199,32 @@ lstlisting
 
 ## Class article
 
-[yalafi/documentclasses/article.py](yalafi/documentclasses/article.py)
+[yalafi/documentclasses/article.py](yalafi/documentclasses/article.py),
+[tests/test\_documentclasses/test\_article.py](tests/test_documentclasses/test_article.py)
 
 &mdash;
 
 
 ## Class book
 
-[yalafi/documentclasses/book.py](yalafi/documentclasses/book.py)
+[yalafi/documentclasses/book.py](yalafi/documentclasses/book.py),
+[tests/test\_documentclasses/test\_book.py](tests/test_documentclasses/test_book.py)
 
 &mdash;
 
 
 ## Class report
 
-[yalafi/documentclasses/report.py](yalafi/documentclasses/report.py)
+[yalafi/documentclasses/report.py](yalafi/documentclasses/report.py),
+[tests/test\_documentclasses/test\_report.py](tests/test_documentclasses/test_report.py)
 
 &mdash;
 
 
 ## Class scrartcl
 
-[yalafi/documentclasses/scrartcl.py](yalafi/documentclasses/scrartcl.py)
+[yalafi/documentclasses/scrartcl.py](yalafi/documentclasses/scrartcl.py),
+[tests/test\_documentclasses/test\_scrartcl.py](tests/test_documentclasses/test_scrartcl.py)
 
 **Macros**
 
@@ -223,7 +234,8 @@ lstlisting
 
 ## Class scrbook
 
-[yalafi/documentclasses/scrbook.py](yalafi/documentclasses/scrbook.py)
+[yalafi/documentclasses/scrbook.py](yalafi/documentclasses/scrbook.py),
+[tests/test\_documentclasses/test\_scrbook.py](tests/test_documentclasses/test_scrbook.py)
 
 **Macros**
 
@@ -233,7 +245,8 @@ lstlisting
 
 ## Class scrreprt
 
-[yalafi/documentclasses/scrreprt.py](yalafi/documentclasses/scrreprt.py)
+[yalafi/documentclasses/scrreprt.py](yalafi/documentclasses/scrreprt.py),
+[tests/test\_documentclasses/test\_scrreprt.py](tests/test_documentclasses/test_scrreprt.py)
 
 **Macros**
 
