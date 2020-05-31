@@ -31,6 +31,8 @@ Please note that not everything has to be declared.
 
 ## LaTeX builtins
 
+[yalafi/parameters.py](yalafi/parameters.py)
+
 **Macros**
 (Major side-effects for the filter are noted in parantheses.)
 
@@ -101,10 +103,11 @@ verbatim
 
 ## Package amsmath
 
+[yalafi/packages/amsmath.py](yalafi/packages/amsmath.py)
+
 **Macros**
 
 \\DeclareMathOperator,
-\\text,
 \\eqref,
 \\medspace,
 \\negmedspace,
@@ -112,6 +115,7 @@ verbatim
 \\negthinspace,
 \\notag,
 \\numberwithin,
+\\text,
 \\thickspace,
 \\thinspace
 
@@ -127,6 +131,8 @@ multiline(\*)
 
 ## Package amsthm
 
+[yalafi/packages/amsthm.py](yalafi/packages/amsthm.py)
+
 **Macros**
 
 \\qedhere,
@@ -139,6 +145,8 @@ proof
 
 ## Package graphicx
 
+[yalafi/packages/graphicx.py](yalafi/packages/graphicx.py)
+
 **Macros**
 
 \\includegraphics
@@ -146,12 +154,16 @@ proof
 
 ## Package hyperref
 
+[yalafi/packages/hyperref.py](yalafi/packages/hyperref.py)
+
 **Macros**
 
 \\texorpdfstring
 
 
 ## Package listings
+
+[yalafi/packages/listings.py](yalafi/packages/listings.py)
 
 We simply remove the listings, inserting a paragraph break.
 
@@ -167,6 +179,8 @@ lstlisting
 
 ## Package xcolor
 
+[yalafi/packages/xcolor.py](yalafi/packages/xcolor.py)
+
 **Macros**
 
 \\color,
@@ -178,20 +192,28 @@ lstlisting
 
 ## Class article
 
+[yalafi/documentclasses/article.py](yalafi/documentclasses/article.py)
+
 &mdash;
 
 
 ## Class book
+
+[yalafi/documentclasses/book.py](yalafi/documentclasses/book.py)
 
 &mdash;
 
 
 ## Class report
 
+[yalafi/documentclasses/report.py](yalafi/documentclasses/report.py)
+
 &mdash;
 
 
 ## Class scrartcl
+
+[yalafi/documentclasses/scrartcl.py](yalafi/documentclasses/scrartcl.py)
 
 **Macros**
 
@@ -201,6 +223,8 @@ lstlisting
 
 ## Class scrbook
 
+[yalafi/documentclasses/scrbook.py](yalafi/documentclasses/scrbook.py)
+
 **Macros**
 
 \\KOMAoption,
@@ -208,6 +232,8 @@ lstlisting
 
 
 ## Class scrreprt
+
+[yalafi/documentclasses/scrreprt.py](yalafi/documentclasses/scrreprt.py)
 
 **Macros**
 
