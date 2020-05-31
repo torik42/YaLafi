@@ -3,7 +3,7 @@
 #   YaLafi module for LaTeX package xcolor
 #
 
-from yalafi.defs import ModParm
+from yalafi.defs import Macro, ModParm
 
 require_packages = []
 
@@ -11,15 +11,18 @@ def modify_parameters(parms):
 
     macros_latex = r"""
 
-        \newcommand{\color}[1]{}
-        \newcommand{\colorbox}[2]{#2}
-        \newcommand{\definecolor}[3]{}
-        \newcommand{\fcolorbox}[3]{#3}
-        \newcommand{\textcolor}[2]{#2}
+        \newcommand{\color}[2][]{}
+        \newcommand{\colorbox}[3][]{#3}
+        \newcommand{\definecolor}[4][]{}
+        \newcommand{\textcolor}[3][]{#3}
 
     """
 
-    macros_python = []
+    macros_python = [
+
+        Macro(parms, '\\fcolorbox', args='OAOAA', repl='#5'),
+
+    ]
 
     environments = []
 
