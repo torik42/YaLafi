@@ -1,7 +1,9 @@
 Work in progress
 ----------------
-- added list-of-macros.md
-- added extension modules
+- yalafi
+    - added extension modules
+    - added tests for extension modules
+- added file list-of-macros.md
 
 Version 1.1.2 (2020/05/28)
 --------------------------
