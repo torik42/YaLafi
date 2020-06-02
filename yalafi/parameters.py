@@ -195,6 +195,10 @@ class Parameters:
         #
         self.mark_latex_error = 'LATEXXXERROR'
 
+        #   True: include error description
+        #
+        self.mark_latex_error_verbose = False
+
         self.macro_filter_add = '\\LTadd'
         self.macro_filter_alter = '\\LTalter'
         self.macro_filter_skip = '\\LTskip'
