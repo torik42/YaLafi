@@ -7,6 +7,7 @@ from yalafi import parameters, parser, utils
 
 parms = parameters.Parameters()
 parms.mark_latex_error = 'LATEXXXERROR'
+parms.mark_latex_error_verbose = True
 
 latex_1 = r"""
 $
