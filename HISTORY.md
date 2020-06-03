@@ -3,6 +3,9 @@ Work in progress
 - yalafi
     - added extension modules
     - added tests for extension modules
+    - reduced error message in filter output on LaTeX syntax problem;
+      full message now only with `Parameters.mark_latex_error_verbose = True`
+      (full message unchanged to stderr)
 - added file list-of-macros.md
 
 Version 1.1.2 (2020/05/28)
