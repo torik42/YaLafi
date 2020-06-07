@@ -59,7 +59,7 @@ Please note that not everything has to be declared.
 \\label,
 \\LTadd,
 \\LTalter,
-\\LTinput (excutes code in file),
+\\LTinput (executes code in file),
 \\LTskip,
 \\newcommand (defines macro),
 \\newline,
