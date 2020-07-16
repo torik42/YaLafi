@@ -82,7 +82,7 @@ let &l:makeprg =
         \ . ' %:S'
 
 let &l:errorformat = 
-        \ '%A%*\d.) Line %l\, column %v\, Rule ID:%.%#,%Z'
+        \ '%I=== %f ===,%C%*\d.) Line %l\, column %v\, Rule ID:%.%#,%Z'
         \ . 'Message: %m,%-G%.%#'
 
 silent CompilerSet makeprg
