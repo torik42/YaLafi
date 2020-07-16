@@ -24,7 +24,7 @@ Please don't hesitate to
 [raise an Issue](https://github.com/matze-dd/YaLafi/issues),
 if you would like to see something added.
 
-This Python package extracts plain text from LaTeX documents.
+This Python (version 3.x) package extracts plain text from LaTeX documents.
 The software may be integrated with a proofreading tool and an editor.
 It provides
 - mapping of character positions between LaTeX and plain text,
@@ -359,10 +359,18 @@ As [\[Vim\]](https://www.vim.org)
 is a great editor, there are several possibilities that build
 on existing Vim plugins or use Vim's compiler interface.
 
+- [Application of plugin vimtex](#application-of-plugin-vimtex)
 - [Application of plugin vim-grammarous](#application-of-plugin-vim-grammarous)
 - [Application of plugin vim-LanguageTool](#application-of-plugin-vim-languageTool)
 - [Application of plugin ALE](#application-of-plugin-ale)
 - [Application via compiler interface](#application-via-compiler-interface)
+
+### Application of plugin vimtex
+
+The Vim plugin [\[vimtex\]](https://github.com/lervag/vimtex)
+provides comprehensive support for writing LaTeX documents.
+It includes an interface to YaLafi, documentation is available with
+`:help vimtex-grammar-vlty`.
 
 ### Application of plugin vim-grammarous
 
