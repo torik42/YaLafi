@@ -1,4 +1,5 @@
 
+
 # YaLafi: Yet another LaTeX filter
 
 [Related projects](#related-projects)&nbsp;\|
@@ -58,12 +59,12 @@ will lead to the text report
 1.) Line 2, column 17, Rule ID: MORFOLOGIK_RULE_EN_GB
 Message: Possible spelling mistake found
 Suggestion: red; Rex; reds; redo; Red; Rede; redox; red x
-Only few people is lazy.    We use redx colour. 
+Only few people is lazy.    We use redx colour.
                                    ^^^^
 2.) Line 3, column 1, Rule ID: PEOPLE_VBZ[1]
 Message: If 'people' is plural here, don't use the third-person singular verb.
 Suggestion: am; are; aren
-Only few people is lazy.    We use redx colour. 
+Only few people is lazy.    We use redx colour.
                 ^^
 ```
 <a name="example-html-report"></a>
@@ -334,7 +335,7 @@ LT version 4.8 introduced additional files 'spelling\_custom.txt' and
 **HTML report.**
 The idea of an HTML report goes back to Sylvain Hallé, who developed
 [TeXtidote](https://github.com/sylvainhalle/textidote).
-Opened in a Web browser, the report displays excerpts from the original 
+Opened in a Web browser, the report displays excerpts from the original
 LaTeX text, highlighting the problems indicated by LT.
 The corresponding LT messages can be viewed when hovering the mouse
 over these marked places, see the
@@ -362,6 +363,7 @@ on existing Vim plugins or use Vim's compiler interface.
 - [Application of plugin vimtex](#application-of-plugin-vimtex)
 - [Application of plugin vim-grammarous](#application-of-plugin-vim-grammarous)
 - [Application of plugin vim-LanguageTool](#application-of-plugin-vim-languageTool)
+- [Application of plugin vim-langtool](#application-of-plugin-vim-langtool)
 - [Application of plugin ALE](#application-of-plugin-ale)
 - [Application via compiler interface](#application-via-compiler-interface)
 
@@ -439,6 +441,23 @@ Navigation between highlighted text parts is possible with `:lne` and `:lp`,
 an error list is shown with `:lli`.
 
 ![Vim plugin vim-LanguageTool](figs/vim-languagetool.png)
+
+### Application of plugin vim-LanguageTool
+
+The Vim plugin
+[\[vim-langtool\]](https://github.com/Konfekt/vim-langtool)
+relies on the plain output of LanguageTool.
+Therefore, one can use the Bash script
+[yalafi-grammarous](yalafi-grammarous) but remove the `XML` output type.
+You can add to \~/.vimrc
+```
+let g:languagetool_cmd = '$HOME/bin/yalafi-grammarous'
+let g:languagetool_lang = 'en-GB'
+let g:languagetool_disable_rules = 'WHITESPACE_RULE'
+map <F9> :LanguageToolCheck<CR>
+```
+Navigation between highlighted text parts is possible with `:lne` and `:lp`,
+an error list is shown with `:lli`.
 
 ### Application of plugin ALE
 
@@ -573,7 +592,7 @@ where the problem was detected.
 
 - A collection of standard LaTeX macros and environments is already included,
   but very probably it has to be complemented.
-  Compare variables 'Parameters.macro\_defs\_latex', 
+  Compare variables 'Parameters.macro\_defs\_latex',
   'Parameters.macro\_defs\_python', and
   'Parameters.environment\_defs' in file yalafi/parameters.py.
 - The macros \\documentclass and \\usepackage load extension modules that
@@ -595,7 +614,7 @@ where the problem was detected.
   see section [Inclusion of own macros](#inclusion-of-own-macros).
   For instance, environment bodies can be removed or replaced by fixed text.
 - Text in heading macros as \\section\{...\} is extracted with
-  added interpunction, see variable 'Parameters.heading\_punct' in 
+  added interpunction, see variable 'Parameters.heading\_punct' in
   file yalafi/parameters.py.
   This suppresses false positives from LanguageTool.
 - For macros as \\ref, \\eqref, \\pageref, and \\cite, suitable placeholders
@@ -868,7 +887,7 @@ script tex2txt.py in repository
 - 3-8: This is an auxiliary function for the parser.
 - 9: The created parameter object contains all default settings
   and definitions from file yalafi/parameters.py.
-- 10: We read the LateX packages from option --pack and convert them to 
+- 10: We read the LateX packages from option --pack and convert them to
   a list of handler functions called later by the parser.
 - 12: If requested by script option --defs, additional macros are included
   from the string opts.defs.
@@ -1097,7 +1116,7 @@ With
 ```
 python -m yalafi.shell --equation-punct all --output html test.tex > test.html
 ```
-and input 
+and input
 ```
 For each $\epsilon > 0$, there is a $\delta > 0$ so that
 %
