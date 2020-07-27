@@ -442,19 +442,20 @@ an error list is shown with `:lli`.
 
 ![Vim plugin vim-LanguageTool](figs/vim-languagetool.png)
 
-### Application of plugin vim-LanguageTool
+### Application of plugin vim-langtool
 
 The Vim plugin
 [\[vim-langtool\]](https://github.com/Konfekt/vim-langtool)
 relies on the plain output of LanguageTool.
 Therefore, one can use the Bash script
-[yalafi-grammarous](yalafi-grammarous) but remove the `XML` output type.
+[yalafi-grammarous](yalafi-grammarous) but replace both `XML` output types by `plain` 
+instead of `xml` respectively `xml-b` and run it by `:lmake` instead of `LanguageToolCheck`.
 You can add to \~/.vimrc
 ```
 let g:languagetool_cmd = '$HOME/bin/yalafi-grammarous'
 let g:languagetool_lang = 'en-GB'
 let g:languagetool_disable_rules = 'WHITESPACE_RULE'
-map <F9> :LanguageToolCheck<CR>
+map <F9> :lmake<CR>
 ```
 Navigation between highlighted text parts is possible with `:lne` and `:lp`,
 an error list is shown with `:lli`.
