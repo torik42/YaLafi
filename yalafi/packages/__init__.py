@@ -8,6 +8,7 @@ load_table = {
         'graphicx',
         'hyperref',
         'listings',
+        'tikz',
         'xcolor',
     ],
     '': [
