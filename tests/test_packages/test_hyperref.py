@@ -17,6 +17,7 @@ data_test_macros_latex = [
     (r'\href XY', 'Y'),
     (r'\href[O]XY', 'Y'),
     (r'\texorpdfstring XY', 'X'),
+    (r'\url XY', 'XY'),
 
 ]
 
