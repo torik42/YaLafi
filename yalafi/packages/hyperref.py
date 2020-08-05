@@ -11,7 +11,9 @@ def modify_parameters(parms):
 
     macros_latex = r"""
 
+        \newcommand{\href}[3][]{#3}
         \newcommand{\texorpdfstring}[2]{#1}
+        \newcommand{\url}[1]{#1}
 
     """
 
