@@ -17,6 +17,7 @@ Please note that not everything has to be declared.
 [graphicx](#package-graphicx),
 [hyperref](#package-hyperref),
 [listings](#package-listings),
+[tikz](#package-tikz),
 [xcolor](#package-xcolor)
 
 **Document classes**
@@ -183,6 +184,23 @@ We simply remove the listings, inserting a paragraph break.
 **Environments**
 
 lstlisting
+
+
+## Package tikz
+
+[yalafi/packages/tikz.py](yalafi/packages/tikz.py),
+[tests/test\_packages/test\_tikz.py](tests/test_packages/test_tikz.py)
+
+We simply remove the picture in environment 'tikzpicture'.
+
+**Macros**
+
+\\tikzset,
+\\usetikzlibrary
+
+**Environments**
+
+tikzpicture
 
 
 ## Package xcolor
