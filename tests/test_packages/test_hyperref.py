@@ -14,6 +14,8 @@ def get_plain(latex):
 
 data_test_macros_latex = [
 
+    (r'\href XY', 'Y'),
+    (r'\href[O]XY', 'Y'),
     (r'\texorpdfstring XY', 'X'),
 
 ]
