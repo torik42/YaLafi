@@ -1,14 +1,15 @@
 Work in progress
 ----------------
+- added extension modules
+    - packages: graphicx, hyperref, listings, tikz
+    - document classes: article, book, report, scrartcl, scrbook
+- added file list-of-macros.md
 - yalafi
-    - added extension modules
     - added tests for extension modules
     - reduced error message in filter output on LaTeX syntax problem;
       full message now only with `Parameters.mark_latex_error_verbose = True`
       (full message unchanged to stderr)
-    - added \\href and \\url to hyperref package
 - ltyc.vim: added file information to errorformat
-- added file list-of-macros.md
 - updated README
 
 Version 1.1.2 (2020/05/28)
