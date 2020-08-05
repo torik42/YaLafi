@@ -163,7 +163,9 @@ proof
 
 **Macros**
 
-\\texorpdfstring
+\\href,
+\\texorpdfstring,
+\\url
 
 
 ## Package listings

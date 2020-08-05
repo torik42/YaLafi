@@ -6,6 +6,7 @@ Work in progress
     - reduced error message in filter output on LaTeX syntax problem;
       full message now only with `Parameters.mark_latex_error_verbose = True`
       (full message unchanged to stderr)
+    - added \\href and \\url to hyperref package
 - ltyc.vim: added file information to errorformat
 - added file list-of-macros.md
 - updated README
