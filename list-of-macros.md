@@ -14,6 +14,7 @@ Please note that not everything has to be declared.
 [LaTeX builtins](#latex-builtins),
 [amsmath](#package-amsmath),
 [amsthm](#package-amsthm),
+[biblatex](#package-biblatex),
 [graphicx](#package-graphicx),
 [hyperref](#package-hyperref),
 [listings](#package-listings),
@@ -145,6 +146,21 @@ multiline(\*)
 **Environments**
 
 proof
+
+
+## Package biblatex
+
+[yalafi/packages/biblatex.py](yalafi/packages/biblatex.py),
+[tests/test\_packages/test\_biblatex.py](tests/test_packages/test_biblatex.py)
+
+**Macros**
+
+\\cite,
+\\Cite,
+\\footcite,
+\\footcitetext,
+\\parencite,
+\\Parencite
 
 
 ## Package graphicx
