@@ -1,5 +1,5 @@
-Work in progress
-----------------
+Version 1.1.3 (2020/08/07)
+--------------------------
 - added extension modules
     - packages: biblatex, graphicx, hyperref, listings, tikz
     - document classes: article, book, report, scrartcl, scrbook
