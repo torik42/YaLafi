@@ -1,7 +1,7 @@
 Work in progress
 ----------------
 - added extension modules
-    - packages: graphicx, hyperref, listings, tikz
+    - packages: biblatex, graphicx, hyperref, listings, tikz
     - document classes: article, book, report, scrartcl, scrbook
 - added file list-of-macros.md
 - yalafi
