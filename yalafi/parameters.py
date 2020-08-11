@@ -363,7 +363,7 @@ class Parameters:
     #   determine whether a character may be part of macro name
     #
     def macro_character(self, c):
-        return c >= 'a' and c <= 'z' or c >= 'A' and c <= 'Z'
+        return c >= 'a' and c <= 'z' or c >= 'A' and c <= 'Z' or c == '@'
 
     def __init__(self, language='en'):
         self.init_collections()
