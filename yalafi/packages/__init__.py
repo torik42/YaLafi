@@ -6,6 +6,8 @@ load_table = {
         'amsmath',
         'amsthm',
         'biblatex',
+        'glossaries',
+        'glossaries-extra',
         'graphicx',
         'hyperref',
         'listings',
