@@ -5,6 +5,9 @@
 #   - In order to let LaTeX generate the .glsdefs file, say
 #       \usepackage[docdef=true]{glossaries-extra}
 #   - Please note the comments at the beginning of glossaries.py.
+#   - You can keep all definitions of glossary entries in the preamble,
+#     if you say
+#       \usepackage[docdef=atom]{glossaries-extra}
 #
 
 from yalafi.defs import Macro, ModParm
