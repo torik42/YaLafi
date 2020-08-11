@@ -9,7 +9,7 @@
 #     \newacronym, \newglossaryentry etc. are not placed in the LaTeX preamble,
 #     but inside of \begin{document} ... \end{document}. Be aware that you
 #     might call twice (latex + makeglossaries + latex) in order to obtain a
-#     completely udated .glsdefs file.
+#     completely updated .glsdefs file.
 #   - A tex file needs to read this database, if \gls etc. have to be expanded
 #     by the filter. This can be done with
 #       \newcommand{\LTinput}[1]{}  % if not yet defined in LaTeX source
@@ -153,6 +153,7 @@ def cap_all(toks):
 #
 def modify_description(toks):
     toks = cap_first(toks)
-    toks.append(defs.TextToken(toks[-1].pos if toks else 0, '.', pos_fix=True))
+    if toks:
+        toks.append(defs.TextToken(toks[-1].pos, '.', pos_fix=True))
     return toks
 
