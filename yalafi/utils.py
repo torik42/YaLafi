@@ -111,6 +111,7 @@ def substitute(i_txt, i_pos, expr, repl):
 #   return handler, dummy on error
 #
 def get_module_handler(name, prefix):
+    name = ''.join((c if c.isalnum() or c == '.' else '_') for c in name)
     if name.startswith('.'):
         mod = name[1:]
     else:
