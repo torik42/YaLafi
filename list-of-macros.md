@@ -200,7 +200,7 @@ Please note the comments at the beginning of file
 [tests/test\_packages/test\_glossaries\_extra.py](tests/test_packages/test_glossaries_extra.py)
 
 Please note the comments at the beginning of file
-[yalafi/packages/glossaries.py](yalafi/packages/glossaries.py).
+[yalafi/packages/glossaries\_extra.py](yalafi/packages/glossaries_extra.py).
 
 **Macros**
 
