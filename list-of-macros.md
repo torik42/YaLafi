@@ -175,7 +175,6 @@ Please note the comments at the beginning of file
 
 **Macros**
 
-\\longnewglossaryentry,
 \\GLS,
 \\Gls,
 \\gls,
@@ -190,6 +189,7 @@ Please note the comments at the beginning of file
 \\GLStext,
 \\Glstext,
 \\glstext,
+\\longnewglossaryentry,
 \\newacronym,
 \\newglossaryentry
 
