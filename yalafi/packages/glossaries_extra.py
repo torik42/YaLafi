@@ -2,7 +2,9 @@
 #
 #   YaLafi module for LaTeX package glossaries-extra
 #
-#   PLEASE NOTE the comments at the beginning of glossaries.py
+#   - In order to let LaTeX generate the .glsdefs file, say
+#       \usepackage[docdef=true]{glossaries-extra}
+#   - Please note the comments at the beginning of glossaries.py.
 #
 
 from yalafi.defs import Macro, ModParm
