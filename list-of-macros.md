@@ -172,6 +172,9 @@ proof
 
 Please note the comments at the beginning of file
 [yalafi/packages/glossaries.py](yalafi/packages/glossaries.py).
+You have to load the `.glsdefs` file into each LaTeX source, and to place
+all definitions of glossary entries inside of
+`\begin{document} ... \end{document}`.
 
 **Macros**
 
@@ -201,6 +204,11 @@ Please note the comments at the beginning of file
 
 Please note the comments at the beginning of file
 [yalafi/packages/glossaries\_extra.py](yalafi/packages/glossaries_extra.py).
+You have to load the `.glsdefs` file into each LaTeX source, and to say
+something like `\usepackage[docdef=true]{glossaries-extra}`
+or `\usepackage[docdef=atom]{glossaries-extra}` in the preamble.
+With `docdef=true`, all glossary entries have to be defined inside of
+`\begin{document} ... \end{document}`.
 
 **Macros**
 
