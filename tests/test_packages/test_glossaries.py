@@ -47,9 +47,17 @@ data_test_macros_latex = [
     (r'\GLStext{ex}', 'EXAMPLE'),
 
     (r'\longnewglossaryentry{ex}{name=example}{a sample}', 'A sample.'),
+    (r'\longnewglossaryentry{ex}{name=example}{a sample.}', 'A sample.'),
+    (r'\longnewglossaryentry{ex}{name=example}{a sample?}', 'A sample?'),
     (r'\newacronym{pp}{ppm}{parts per million}', 'Parts per million.'),
+    (r'\newacronym{pp}{ppm}{parts per million.}', 'Parts per million.'),
+    (r'\newacronym{pp}{ppm}{parts per million?}', 'Parts per million?'),
     (r'\newglossaryentry{ex}{name=example, description = {a sample}}',
                                                             'A sample.'),
+    (r'\newglossaryentry{ex}{name=example, description = {a sample.}}',
+                                                            'A sample.'),
+    (r'\newglossaryentry{ex}{name=example, description = {a sample?}}',
+                                                            'A sample?'),
 
 ]
 
