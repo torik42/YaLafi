@@ -27,7 +27,8 @@
 #   Behaviour of macros
 #   -------------------
 #   - \newacronym and \newglossaryentry create plain-text output from the
-#     description. We start with a capital letter, and append a dot.
+#     description. We start with a capital letter, and append a dot. The
+#     latter is only done, if the text does not end in one of '.!?'.
 #   - For the simple \gls commands, we always use the 'text' entry, as this
 #     is available for all glossary entries in .glsdefs. The same accounts for
 #     all plural forms, where we use entry 'plural'.
@@ -102,11 +103,11 @@ def h_gls(key, mods):
     return f
 
 def h_newacronym(parser, buf, mac, args, pos):
-    return modify_description(args[2])
+    return modify_description(parser, args[2])
 
 def h_newglossaryentry(parser, buf, mac, args, pos):
     descr = parser.parse_keyval_list(args[1]).get('description', [])
-    return modify_description(descr)
+    return modify_description(parser, descr)
 
 the_glossary = {}
 
@@ -151,9 +152,10 @@ def cap_all(toks):
 #   - capitalise first letter
 #   - append dot
 #
-def modify_description(toks):
+def modify_description(parser, toks):
     toks = cap_first(toks)
-    if toks:
+    txt = parser.get_text_expanded(toks)
+    if txt and txt[-1] not in ('.', '!', '?'):
         toks.append(defs.TextToken(toks[-1].pos, '.', pos_fix=True))
     return toks
 
