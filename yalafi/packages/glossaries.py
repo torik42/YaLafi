@@ -8,13 +8,14 @@
 #     Note that the .glsdefs file is only generated, if the definitions with
 #     \newacronym, \newglossaryentry etc. are not placed in the LaTeX preamble,
 #     but inside of \begin{document} ... \end{document}. Be aware that you
-#     might call twice (latex + makeglossaries + latex) in order to obtain a
-#     completely updated .glsdefs file.
-#   - A tex file needs to read this database, if \gls etc. have to be expanded
-#     by the filter. This can be done with
-#       \newcommand{\LTinput}[1]{}  % if not yet defined in LaTeX source
+#     might need to call twice (latex + makeglossaries + latex) in order to
+#     obtain a completely updated .glsdefs file.
+#   - All LaTeX files have to read this database, before \gls etc. can be
+#     expanded by the filter. This may be done with
+#       \newcommand{\LTinput}[1]{}  % only, if not yet seen by LaTeX
+#                                   % --> better placed in document preamble
 #       \LTinput{main.glsdefs}
-#     where the LaTeX file 'main.tex' invokes \makeglossaries in the preamble.
+#     Here, the LaTeX file 'main.tex' invokes \makeglossaries in the preamble.
 #   - Call of \LTinput{file.glsdefs} also can be done in an auxiliary
 #     file that contains custom YaLafi macro definitions, say custom.tex.
 #     This file in turn may be included by \LTinput{custom.tex} into each
@@ -39,7 +40,7 @@
 #
 
 import copy
-from yalafi import defs
+from yalafi import defs, utils
 from yalafi.defs import Macro, ModParm
 
 require_packages = []
@@ -94,6 +95,10 @@ def modify_parameters(parms):
 def h_gls(key, mods):
     def f(parser, buf, mac, args, pos):
         toks = get_tokens(parser, args[1], key)
+        if toks is None:
+            return utils.latex_error('could not find label for \\gls...'
+                    + ' - did you include "\\LTinput{<main file>.glsdefs}"?',
+                    pos, parser.latex, parser.parms)
         for f in mods:
             toks = f(toks)
         for t in toks:
@@ -123,7 +128,7 @@ def h_parse_glsdefs(parser, buf, mac, args, pos):
 def get_tokens(parser, label, key):
     label = parser.get_text_expanded(label)
     if label not in the_glossary or key not in the_glossary[label]:
-        return []
+        return None
     return the_glossary[label][key]
 
 #   capitalise first letter
