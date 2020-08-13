@@ -22,6 +22,7 @@ def get_plain(latex):
 data_test_macros_latex = [
 
     (r'\gls{pp}', 'ppm'),
+    (r'\gls{XXX}', ' LATEXXXERROR '),
     (r'\gls[OOO]{pp}', 'ppm'),
     (r'\glspl{pp}', 'ppms'),
     (r'\Gls{pp}', 'Ppm'),
