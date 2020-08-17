@@ -16,6 +16,11 @@
 #                                   % --> better placed in document preamble
 #       \LTinput{main.glsdefs}
 #     Here, the LaTeX file 'main.tex' invokes \makeglossaries in the preamble.
+#   - Please note that the path to main.glsdefs has to be valid at the moment
+#     YaLafi is called, e.g., when starting a proofreader via an editor plugin.
+#     If you invoke the editor at a subdirectory of the LaTeX project, then you
+#     might have to write something like \LTinput{../main.glsdefs}.
+#     A good way is to use something like `vi ch-Banach/open-mapping.tex`.
 #   - Call of \LTinput{file.glsdefs} also can be done in an auxiliary
 #     file that contains custom YaLafi macro definitions, say custom.tex.
 #     This file in turn may be included by \LTinput{custom.tex} into each
@@ -77,7 +82,8 @@ def modify_parameters(parms):
         Macro(parms, '\\newglossaryentry', args='AA', repl=h_newglossaryentry),
 
         # this is for reading the .glsdefs database
-        Macro(parms, '\\gls@defglossaryentry', args='AA', repl=h_parse_glsdefs),
+        Macro(parms, '\\gls@defglossaryentry', args='AA',
+                                                    repl=h_parse_glsdefs),
 
     ]
 

@@ -69,6 +69,7 @@ def h_footcite(parser, buf, mac, args, pos):
                 defs.SpecialToken(pos, '{')]
     out += h_cite(parser, buf, mac, args, pos)
     out += [defs.TextToken(out[-1].pos, '.', pos_fix=True),
-                defs.SpecialToken(out[-1].pos, '}'), defs.ActionToken(out[-1].pos)]
+                    defs.SpecialToken(out[-1].pos, '}'),
+                    defs.ActionToken(out[-1].pos)]
     return out
 
