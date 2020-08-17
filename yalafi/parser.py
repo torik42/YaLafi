@@ -542,3 +542,52 @@ class Parser:
         out.insert(0, Space(start))
         return out
 
+    #   parse a key-value list of the form 'a=b,a4paper,x={ hoho }'
+    #   - return a dictionary
+    #   - values are token lists, except if no '=' given: value then is None
+    #   XXX: parsing of key name is not really robust
+    #
+    def parse_keyval_list(self, tokens):
+        buf = scanner.Buffer(tokens)
+        values = {}
+        while True:
+            tok = buf.skip_space()
+            if not tok:
+                break
+            key = []
+            while type(tok) is defs.TextToken and tok.txt not in ('=', ','):
+                key.append(tok)
+                tok = buf.next()
+            key = self.get_text_expanded(key)
+            tok = buf.skip_space()
+            if not tok or tok.txt == ',':
+                # no value given with = ...
+                tok = buf.next()
+                values[key] = None
+                continue
+            buf.next()                  # skip '='
+            tok = buf.skip_space()      # skip leading space of value
+            val = []
+            while tok and tok.txt != ',':
+                if tok.txt == '{':
+                    # {...} protects space and ','
+                    seq = self.arg_buffer(buf, 0).all()
+                    if len(seq) == 1 and type(seq[0]) is defs.VoidToken:
+                        # this was an empty {}
+                        seq = []
+                    else:
+                        # {} braces have been removed by arg_buffer()
+                        seq = ([defs.SpecialToken(tok.pos, '{')] + seq
+                                    + [defs.SpecialToken(seq[-1].pos, '}')])
+                    val += seq
+                    tok = buf.cur()
+                else:
+                    val.append(tok)
+                    tok = buf.next()
+            if val and type(val[-1]) is defs.SpaceToken:
+                # skip trailing space of value
+                val.pop()
+            values[key] = val
+            buf.next()                  # skip ','
+        return values
+

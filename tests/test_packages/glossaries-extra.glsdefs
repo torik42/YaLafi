@@ -1,0 +1,68 @@
+\ifglsentryexists{pp}{}%
+{%
+\gls@defglossaryentry{pp}%
+{%
+name={\protect \glsabbrvfont {ppm}},%
+sort={ppm},%
+type={main},%
+first={\protect \glsfirstabbrvfont {ppm}},%
+firstplural={\protect \glsfirstabbrvfont {ppms}},%
+text={\protect \glsabbrvfont {ppm}},%
+plural={\protect \glsabbrvfont {ppms}},%
+description={parts per million},%
+descriptionplural={parts per million},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={parts per million},%
+longplural={parts per millions},%
+short={ppm},%
+shortplural={ppms},%
+counter={page},%
+parent={},%
+see={},%
+alias={},%
+seealso={},%
+category={acronym},%
+%
+}%
+}%
+\ifglsentryexists{ex}{}%
+{%
+\gls@defglossaryentry{ex}%
+{%
+name={example},%
+sort={example},%
+type={main},%
+first={example},%
+firstplural={examples},%
+text={example},%
+plural={examples},%
+description={a sample},%
+descriptionplural={a sample},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={},%
+longplural={},%
+short={},%
+shortplural={},%
+counter={page},%
+parent={},%
+see={},%
+alias={},%
+seealso={},%
+category={general},%
+%
+}%
+}%

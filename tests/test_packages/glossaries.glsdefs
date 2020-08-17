@@ -1,0 +1,60 @@
+\ifglsentryexists{pp}{}%
+{%
+\gls@defglossaryentry{pp}%
+{%
+name={ppm},%
+sort={ppm},%
+type={main},%
+first={parts per million\glsspace (ppm)},%
+firstplural={parts per millions\glsspace (ppms)},%
+text={ppm},%
+plural={ppms},%
+description={parts per million},%
+descriptionplural={parts per million\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={parts per million},%
+longplural={parts per millions},%
+short={ppm},%
+shortplural={ppms},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{ex}{}%
+{%
+\gls@defglossaryentry{ex}%
+{%
+name={example},%
+sort={example},%
+type={main},%
+first={example},%
+firstplural={examples},%
+text={example},%
+plural={examples},%
+description={a sample},%
+descriptionplural={a sample},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={},%
+longplural={},%
+short={},%
+shortplural={},%
+counter={page},%
+parent={},%
+%
+}%
+}%

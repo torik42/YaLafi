@@ -15,6 +15,8 @@ Please note that not everything has to be declared.
 [amsmath](#package-amsmath),
 [amsthm](#package-amsthm),
 [biblatex](#package-biblatex),
+[glossaries](#package-glossaries),
+[glossaries-extra](#package-glossaries-extra),
 [graphicx](#package-graphicx),
 [hyperref](#package-hyperref),
 [listings](#package-listings),
@@ -161,6 +163,56 @@ proof
 \\footcitetext,
 \\parencite,
 \\Parencite
+
+
+## Package glossaries
+
+[yalafi/packages/glossaries.py](yalafi/packages/glossaries.py),
+[tests/test\_packages/test\_glossaries.py](tests/test_packages/test_glossaries.py)
+
+Please note the comments at the beginning of file
+[yalafi/packages/glossaries.py](yalafi/packages/glossaries.py).
+You have to load the `.glsdefs` file into each LaTeX source, and to place
+all definitions of glossary entries inside of
+`\begin{document} ... \end{document}`.
+
+**Macros**
+
+\\GLS,
+\\Gls,
+\\gls,
+\\GLSpl,
+\\Glspl,
+\\glspl,
+\\GLSdesc,
+\\Glsdesc,
+\\glsdesc,
+\\glsdisp,
+\\glslink,
+\\GLStext,
+\\Glstext,
+\\glstext,
+\\longnewglossaryentry,
+\\newacronym,
+\\newglossaryentry
+
+
+## Package glossaries-extra
+
+[yalafi/packages/glossaries\_extra.py](yalafi/packages/glossaries_extra.py),
+[tests/test\_packages/test\_glossaries\_extra.py](tests/test_packages/test_glossaries_extra.py)
+
+Please note the comments at the beginning of file
+[yalafi/packages/glossaries\_extra.py](yalafi/packages/glossaries_extra.py).
+You have to load the `.glsdefs` file into each LaTeX source, and to say
+something like `\usepackage[docdef=true]{glossaries-extra}`
+or `\usepackage[docdef=atom]{glossaries-extra}` in the preamble.
+With `docdef=true`, all glossary entries have to be defined inside of
+`\begin{document} ... \end{document}`.
+
+**Macros**
+
+\\newabbreviation
 
 
 ## Package graphicx

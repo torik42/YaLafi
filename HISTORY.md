@@ -1,3 +1,15 @@
+Work in progress
+----------------
+- new packages: glossaries, glossaries-extra
+- list-of-macros.md: updated
+- yalafi core
+    - allow '@' in macro names (parameters.py:Parameters.macro\_characters())
+    - added method parser.py:Parser.parse\_keyval\_list(): parses lists like
+      `name=xxx, description={a b c}`
+    - non-alphanumeric characters (except '.') in LaTeX package names are
+      replaced by '\_' for corresponding Python package names
+      (utils.py:get\_module\_handler())
+
 Version 1.1.3 (2020/08/07)
 --------------------------
 - added extension modules

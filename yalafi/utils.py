@@ -106,11 +106,14 @@ def substitute(i_txt, i_pos, expr, repl):
     return o_txt + i_txt[last:], o_pos + i_pos[last:]
 
 #   get handler for importing a module:
+#   - replace non-alphanumeric characters (except '.') in LaTeX package name
+#     by '_'
 #   - if module name starts with '.': remove that dot
 #   - else: prepend given prefix
 #   return handler, dummy on error
 #
 def get_module_handler(name, prefix):
+    name = ''.join((c if c.isalnum() or c == '.' else '_') for c in name)
     if name.startswith('.'):
         mod = name[1:]
     else:
