@@ -20,6 +20,7 @@ Please note that not everything has to be declared.
 [graphicx](#package-graphicx),
 [hyperref](#package-hyperref),
 [listings](#package-listings),
+[pgfplots](#package-pgfplots),
 [tikz](#package-tikz),
 [xcolor](#package-xcolor)
 
@@ -35,8 +36,8 @@ Please note that not everything has to be declared.
 
 ## LaTeX builtins
 
-[yalafi/parameters.py](yalafi/parameters.py),
-[tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_latex_builtins.py)
+Source: [yalafi/parameters.py](yalafi/parameters.py),
+tests: [tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_latex_builtins.py)
 
 **Macros**
 (Major side-effects for the filter are noted in parantheses.)
@@ -109,8 +110,8 @@ verbatim
 
 ## Package amsmath
 
-[yalafi/packages/amsmath.py](yalafi/packages/amsmath.py),
-[tests/test\_packages/test\_amsmath.py](tests/test_packages/test_amsmath.py)
+Source: [yalafi/packages/amsmath.py](yalafi/packages/amsmath.py),
+tests: [tests/test\_packages/test\_amsmath.py](tests/test_packages/test_amsmath.py)
 
 **Macros**
 
@@ -138,8 +139,8 @@ multiline(\*)
 
 ## Package amsthm
 
-[yalafi/packages/amsthm.py](yalafi/packages/amsthm.py),
-[tests/test\_packages/test\_amsthm.py](tests/test_packages/test_amsthm.py)
+Source: [yalafi/packages/amsthm.py](yalafi/packages/amsthm.py),
+tests: [tests/test\_packages/test\_amsthm.py](tests/test_packages/test_amsthm.py)
 
 **Macros**
 
@@ -153,8 +154,8 @@ proof
 
 ## Package biblatex
 
-[yalafi/packages/biblatex.py](yalafi/packages/biblatex.py),
-[tests/test\_packages/test\_biblatex.py](tests/test_packages/test_biblatex.py)
+Source: [yalafi/packages/biblatex.py](yalafi/packages/biblatex.py),
+tests: [tests/test\_packages/test\_biblatex.py](tests/test_packages/test_biblatex.py)
 
 **Macros**
 
@@ -168,8 +169,8 @@ proof
 
 ## Package glossaries
 
-[yalafi/packages/glossaries.py](yalafi/packages/glossaries.py),
-[tests/test\_packages/test\_glossaries.py](tests/test_packages/test_glossaries.py)
+Source: [yalafi/packages/glossaries.py](yalafi/packages/glossaries.py),
+tests: [tests/test\_packages/test\_glossaries.py](tests/test_packages/test_glossaries.py)
 
 Please note the comments at the beginning of file
 [yalafi/packages/glossaries.py](yalafi/packages/glossaries.py).
@@ -200,8 +201,8 @@ all definitions of glossary entries inside of
 
 ## Package glossaries-extra
 
-[yalafi/packages/glossaries\_extra.py](yalafi/packages/glossaries_extra.py),
-[tests/test\_packages/test\_glossaries\_extra.py](tests/test_packages/test_glossaries_extra.py)
+Source: [yalafi/packages/glossaries\_extra.py](yalafi/packages/glossaries_extra.py),
+tests: [tests/test\_packages/test\_glossaries\_extra.py](tests/test_packages/test_glossaries_extra.py)
 
 Please note the comments at the beginning of file
 [yalafi/packages/glossaries\_extra.py](yalafi/packages/glossaries_extra.py).
@@ -211,6 +212,10 @@ or `\usepackage[docdef=atom]{glossaries-extra}` in the preamble.
 With `docdef=true`, all glossary entries have to be defined inside of
 `\begin{document} ... \end{document}`.
 
+**Loaded packages**
+
+[glossaries](#package-glossaries)
+
 **Macros**
 
 \\newabbreviation
@@ -218,8 +223,8 @@ With `docdef=true`, all glossary entries have to be defined inside of
 
 ## Package graphicx
 
-[yalafi/packages/graphicx.py](yalafi/packages/graphicx.py),
-[tests/test\_packages/test\_graphicx.py](tests/test_packages/test_graphicx.py)
+Source: [yalafi/packages/graphicx.py](yalafi/packages/graphicx.py),
+tests: [tests/test\_packages/test\_graphicx.py](tests/test_packages/test_graphicx.py)
 
 **Macros**
 
@@ -228,8 +233,8 @@ With `docdef=true`, all glossary entries have to be defined inside of
 
 ## Package hyperref
 
-[yalafi/packages/hyperref.py](yalafi/packages/hyperref.py),
-[tests/test\_packages/test\_hyperref.py](tests/test_packages/test_hyperref.py)
+Source: [yalafi/packages/hyperref.py](yalafi/packages/hyperref.py),
+tests: [tests/test\_packages/test\_hyperref.py](tests/test_packages/test_hyperref.py)
 
 **Macros**
 
@@ -240,8 +245,8 @@ With `docdef=true`, all glossary entries have to be defined inside of
 
 ## Package listings
 
-[yalafi/packages/listings.py](yalafi/packages/listings.py),
-[tests/test\_packages/test\_listings.py](tests/test_packages/test_listings.py)
+Source: [yalafi/packages/listings.py](yalafi/packages/listings.py),
+tests: [tests/test\_packages/test\_listings.py](tests/test_packages/test_listings.py)
 
 We simply remove the listings, inserting a paragraph break.
 
@@ -255,10 +260,25 @@ We simply remove the listings, inserting a paragraph break.
 lstlisting
 
 
+## Package pgfplots
+
+Source: [yalafi/packages/pgfplots.py](yalafi/packages/pgfplots.py),
+tests: [tests/test\_packages/test\_pgfplots.py](tests/test_packages/test_pgfplots.py)
+
+**Loaded packages**
+
+[graphicx](#package-graphicx),
+[tikz](#package-tikz)
+
+**Macros**
+
+\\pgfplotsset
+
+
 ## Package tikz
 
-[yalafi/packages/tikz.py](yalafi/packages/tikz.py),
-[tests/test\_packages/test\_tikz.py](tests/test_packages/test_tikz.py)
+Source: [yalafi/packages/tikz.py](yalafi/packages/tikz.py),
+tests: [tests/test\_packages/test\_tikz.py](tests/test_packages/test_tikz.py)
 
 We simply remove the picture in environment 'tikzpicture'.
 
@@ -274,8 +294,8 @@ tikzpicture
 
 ## Package xcolor
 
-[yalafi/packages/xcolor.py](yalafi/packages/xcolor.py),
-[tests/test\_packages/test\_xcolor.py](tests/test_packages/test_xcolor.py)
+Source: [yalafi/packages/xcolor.py](yalafi/packages/xcolor.py),
+tests: [tests/test\_packages/test\_xcolor.py](tests/test_packages/test_xcolor.py)
 
 **Macros**
 
@@ -288,32 +308,32 @@ tikzpicture
 
 ## Class article
 
-[yalafi/documentclasses/article.py](yalafi/documentclasses/article.py),
-[tests/test\_documentclasses/test\_article.py](tests/test_documentclasses/test_article.py)
+Source: [yalafi/documentclasses/article.py](yalafi/documentclasses/article.py),
+tests: [tests/test\_documentclasses/test\_article.py](tests/test_documentclasses/test_article.py)
 
 &mdash;
 
 
 ## Class book
 
-[yalafi/documentclasses/book.py](yalafi/documentclasses/book.py),
-[tests/test\_documentclasses/test\_book.py](tests/test_documentclasses/test_book.py)
+Source: [yalafi/documentclasses/book.py](yalafi/documentclasses/book.py),
+tests: [tests/test\_documentclasses/test\_book.py](tests/test_documentclasses/test_book.py)
 
 &mdash;
 
 
 ## Class report
 
-[yalafi/documentclasses/report.py](yalafi/documentclasses/report.py),
-[tests/test\_documentclasses/test\_report.py](tests/test_documentclasses/test_report.py)
+Source: [yalafi/documentclasses/report.py](yalafi/documentclasses/report.py),
+tests: [tests/test\_documentclasses/test\_report.py](tests/test_documentclasses/test_report.py)
 
 &mdash;
 
 
 ## Class scrartcl
 
-[yalafi/documentclasses/scrartcl.py](yalafi/documentclasses/scrartcl.py),
-[tests/test\_documentclasses/test\_scrartcl.py](tests/test_documentclasses/test_scrartcl.py)
+Source: [yalafi/documentclasses/scrartcl.py](yalafi/documentclasses/scrartcl.py),
+tests: [tests/test\_documentclasses/test\_scrartcl.py](tests/test_documentclasses/test_scrartcl.py)
 
 **Macros**
 
@@ -323,8 +343,8 @@ tikzpicture
 
 ## Class scrbook
 
-[yalafi/documentclasses/scrbook.py](yalafi/documentclasses/scrbook.py),
-[tests/test\_documentclasses/test\_scrbook.py](tests/test_documentclasses/test_scrbook.py)
+Source: [yalafi/documentclasses/scrbook.py](yalafi/documentclasses/scrbook.py),
+tests: [tests/test\_documentclasses/test\_scrbook.py](tests/test_documentclasses/test_scrbook.py)
 
 **Macros**
 
@@ -334,8 +354,8 @@ tikzpicture
 
 ## Class scrreprt
 
-[yalafi/documentclasses/scrreprt.py](yalafi/documentclasses/scrreprt.py),
-[tests/test\_documentclasses/test\_scrreprt.py](tests/test_documentclasses/test_scrreprt.py)
+Source: [yalafi/documentclasses/scrreprt.py](yalafi/documentclasses/scrreprt.py),
+tests: [tests/test\_documentclasses/test\_scrreprt.py](tests/test_documentclasses/test_scrreprt.py)
 
 **Macros**
 

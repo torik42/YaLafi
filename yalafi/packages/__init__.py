@@ -11,6 +11,7 @@ load_table = {
         'graphicx',
         'hyperref',
         'listings',
+        'pgfplots',
         'tikz',
         'xcolor',
     ],
