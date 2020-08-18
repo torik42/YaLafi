@@ -22,6 +22,7 @@ data_test_macros_latex = [
     (r'A\footnotemark[1] B', 'A B'),
     (r'A\hfill B', 'A B'),
     (r'A\include{x_y.tex}B', 'AB'),
+    (r'A\index{x_y}B', 'AB'),
     (r'A\input{x_y.tex}B', 'AB'),
     (r'\L', 'Ł'),
     (r'\l', 'ł'),
