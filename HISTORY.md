@@ -10,7 +10,7 @@ Work in progress
     - non-alphanumeric characters (except '.') in LaTeX package names are
       replaced by '\_' for corresponding Python module names
       (utils.py:get\_module\_handler())
-- travis.yml: use`'python -m pytest' instead of 'pytest'
+- travis.yml: use 'python -m pytest' instead of 'pytest'
 
 Version 1.1.3 (2020/08/07)
 --------------------------
