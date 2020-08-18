@@ -7,4 +7,4 @@ python:
 install: true
 
 script:
-  - PYTHONPATH=. pytest tests
+  - python -m pytest tests

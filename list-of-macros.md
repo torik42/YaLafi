@@ -57,6 +57,7 @@ Please note that not everything has to be declared.
 \\hphantom,
 \\hspace,
 \\include,
+\\index,
 \\input,
 \\L,
 \\l,
