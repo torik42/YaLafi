@@ -18,8 +18,8 @@
 [Remarks on implementation](#remarks-on-implementation)
 
 **Notice.**
-The library of LaTeX macros, environments, document classes, and packages
-is still rather restricted ([list of macros](list-of-macros.md)).
+The library of LaTeX macros, environments, document classes, and packages is
+still rather restricted, compare the [list of macros](list-of-macros.md).
 Please don't hesitate to
 [raise an Issue](https://github.com/matze-dd/YaLafi/issues),
 if you would like to see something added.
@@ -31,7 +31,7 @@ It provides
 - simple inclusion of own LaTeX macros and environments with tailored
   treatment,
 - careful conservation of text flows,
-- replacement of equations with detection of trailing interpunction.
+- some parsing of displayed equations for detection of interpunction problems.
 
 The sample Python application script
 [yalafi/shell/shell.py](yalafi/shell/shell.py) from section
@@ -112,9 +112,9 @@ This project relates to software like
 - [tex2txt](http://hackage.haskell.org/package/tex2txt), and
 - [vscode-ltex](https://github.com/valentjn/vscode-ltex).
 
-From these examples, currently only TeXtidote and vscode-ltex provide
-position mapping between the LaTeX input text and the plain text that
-is sent to the proofreading software.
+From these examples, currently (March 2020) only TeXtidote and vscode-ltex
+provide position mapping between the LaTeX input text and the plain text
+that is sent to the proofreading software.
 Both use (simple) regular expressions for plain-text extraction and are
 easy to install.
 YaLafi, on the other hand, aims to achieve high flexibility and a
