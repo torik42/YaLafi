@@ -1,6 +1,6 @@
 Work in progress
 ----------------
-- new LaTeX packages: glossaries, glossaries-extra
+- new LaTeX packages: glossaries, glossaries-extra, pgfplots
 - LaTeX builtins: added macro \\index
 - list-of-macros.md: updated
 - yalafi core
