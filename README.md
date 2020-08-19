@@ -371,6 +371,7 @@ The Vim plugin [\[vimtex\]](https://github.com/lervag/vimtex)
 provides comprehensive support for writing LaTeX documents.
 It includes an interface to YaLafi, documentation is available with
 `:help vimtex-grammar-vlty`.
+A copy of the corresponding Vim compiler script is [vlty.vim](vlty.vim).
 
 ### Application of plugin vim-grammarous
 
@@ -495,6 +496,7 @@ indicated problem.
 The related error message is displayed in the status line.
 Navigation between errors is possible with `:cn` and `:cp`, an error list
 is shown with `:cl`.
+The quickfix window appears on `:cw`.
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
