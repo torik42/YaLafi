@@ -373,6 +373,30 @@ It includes an interface to YaLafi, documentation is available with
 `:help vimtex-grammar-vlty`.
 A copy of the corresponding Vim compiler script is [vlty.vim](vlty.vim).
 
+The following vimrc snippet demonstrates some useful settings for vlty
+option field 'shell\_options'.
+```
+let g:vimtex_grammar_vlty.shell_options =
+    \   ' --packages "*"'
+    \ . ' --define ~/vlty/defs.tex'
+    \ . ' --replace ~/vlty/repls.txt'
+```
+- By default, the vlty compiler passes names of all necessary LaTeX packages
+  to YaLafi, which may result in annoying warnings.
+  These my by avoided by `--packages "*"` that simply loads all packages
+  known to the filter.
+- YaLafi's expansion of project-specific macros can be controlled via
+  option `--define ...`.
+  Example for defs.tex:
+```
+\newcommand{\zB}{z.\,B. }   % LanguageTool correctly insists on
+                            % narrow space in this German abbreviation
+\newtheorem{Satz}{Satz}     % correctly expand \begin{Satz}[siehe ...]
+\LTinput{main.glsdefs}      % read database of glossaries package
+```
+- Replacement of phrases may be performed via `--replace ...`, compare
+  section [Example application](#example-application).
+
 ### Application of plugin vim-grammarous
 
 For the Vim plugin
