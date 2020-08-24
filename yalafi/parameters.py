@@ -117,6 +117,7 @@ class Parameters:
         Environ(self, 'minipage', args='A'),
 #       Environ(self, 'table', repl='[Tabelle]', remove=True),
         Environ(self, 'table', args='O', add_pars=False),
+        Environ(self, 'tabular', args='A', add_pars=False),
         Environ(self, 'verbatim', remove=False, add_pars=True),
 
         EquEnv(self, 'displaymath'),
