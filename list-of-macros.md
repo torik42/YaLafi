@@ -108,6 +108,7 @@ figure,
 itemize,
 minipage,
 table,
+tabular,
 verbatim
 
 

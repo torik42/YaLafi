@@ -2,7 +2,8 @@ Work in progress
 ----------------
 - new LaTeX packages: glossaries, glossaries-extra, pgfplots
 - added macros
-    - LaTeX builtins: \\index, \\pagenumbering, \\pagestyle, \\thispagestyle
+    - LaTeX builtins: \\index, \\pagenumbering, \\pagestyle, \\thispagestyle,
+      \begin{tabular}
     - package biblatex: \\addbibresource, \\printbibliography
 - list-of-macros.md: updated
 - yalafi core
