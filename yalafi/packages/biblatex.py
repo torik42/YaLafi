@@ -20,12 +20,14 @@ def modify_parameters(parms):
 
     macros_python = [
 
+        Macro(parms, '\\addbibresource', args='OA', repl=''),
         Macro(parms, '\\cite', args='*OOA', repl=h_cite),
         Macro(parms, '\\Cite', args='*OOA', repl=h_cite),
         Macro(parms, '\\footcite', args='*OOA', repl=h_footcite),
         Macro(parms, '\\footcitetext', args='*OOA', repl=h_footcite),
         Macro(parms, '\\parencite', args='*OOA', repl=h_cite),
         Macro(parms, '\\Parencite', args='*OOA', repl=h_cite),
+        Macro(parms, '\\printbibliography', args='O', repl=''),
 
     ]
 

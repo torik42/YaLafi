@@ -383,8 +383,8 @@ let g:vimtex_grammar_vlty.shell_options =
 ```
 - By default, the vlty compiler passes names of all necessary LaTeX packages
   to YaLafi, which may result in annoying warnings.
-  These my by avoided by `--packages "*"` that simply loads all packages
-  known to the filter.
+  In multi-file projects, these my by avoided by `--packages "*"` that simply
+  loads all packages known to the filter.
 - YaLafi's expansion of project-specific macros can be controlled via
   option `--define ...`.
   Example for defs.tex:

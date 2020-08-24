@@ -32,7 +32,9 @@ data_test_macros_latex = [
     (r'\o', 'ø'),
     (r'\OE', 'Œ'),
     (r'\oe', 'œ'),
+    (r'A\pagenumbering{roman}B', 'AB'),
     (r'\pageref{l}', '0'),
+    (r'A\pagestyle{empty}B', 'AB'),
     (r'A\par B', 'A\n\nB'),
     (r'A\qquad B', 'A B'),
     (r'A\quad B', 'A B'),
@@ -42,6 +44,7 @@ data_test_macros_latex = [
     (r'\textasciicircum', '^'),
     (r'\textasciitilde', '~'),
     (r'\textbackslash', '\\'),
+    (r'A\thispagestyle{empty}B', 'AB'),
     (r'A\vphantom{X}B', 'AB'),
 
 ]

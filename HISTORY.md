@@ -1,7 +1,8 @@
 Work in progress
 ----------------
 - new LaTeX packages: glossaries, glossaries-extra, pgfplots
-- LaTeX builtins: added macro \\index
+- LaTeX builtins: added macros \\index, \\pagenumbering, \\pagestyle,
+  \\thispagestyle
 - list-of-macros.md: updated
 - yalafi core
     - allow '@' in macro names (parameters.py:Parameters.macro\_characters())

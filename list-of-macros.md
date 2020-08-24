@@ -74,7 +74,9 @@ tests: [tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_
 \\o,
 \\OE,
 \\oe,
+\\pagenumbering,
 \\pageref,
+\\pagestyle,
 \\par,
 \\part,
 \\phantom,
@@ -90,6 +92,7 @@ tests: [tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_
 \\textasciicircum,
 \\textasciitilde,
 \\textbackslash,
+\\thispagestyle,
 \\title,
 \\usepackage (activates module),
 \\vphantom,
@@ -159,12 +162,14 @@ tests: [tests/test\_packages/test\_biblatex.py](tests/test_packages/test_biblate
 
 **Macros**
 
+\\addbibresource,
 \\cite,
 \\Cite,
 \\footcite,
 \\footcitetext,
 \\parencite,
-\\Parencite
+\\Parencite,
+\\printbibliography
 
 
 ## Package glossaries

@@ -52,7 +52,9 @@ class Parameters:
         \newcommand{\o}{ø}
         \newcommand{\OE}{Œ}
         \newcommand{\oe}{œ}
+        \newcommand{\pagenumbering}[1]{}
         \newcommand{\pageref}[1]{0}
+        \newcommand{\pagestyle}[1]{}
         \newcommand{\par}{
 
 }
@@ -64,6 +66,7 @@ class Parameters:
         \newcommand{\textasciicircum}{\verb?^?} % \^ is accent
         \newcommand{\textasciitilde}{\verb?~?}  % \~ is accent
         \newcommand{\textbackslash}{\verb?\?}   % \\ is line break
+        \newcommand{\thispagestyle}[1]{}
         \newcommand{\vphantom}[1]{}
 
         """
