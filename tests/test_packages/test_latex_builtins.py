@@ -140,3 +140,15 @@ def test_specials(latex, plain_expected):
     plain = get_plain(latex)
     assert plain == plain_expected
 
+
+data_test_environments = [
+
+    (r'A\begin{tabular}{|||}B\end{tabular}C', 'ABC'),
+
+]
+
+@pytest.mark.parametrize('latex,plain_expected', data_test_environments)
+def test_macros_latex(latex, plain_expected):
+    plain = get_plain(latex)
+    assert plain == plain_expected
+
