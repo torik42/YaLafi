@@ -143,7 +143,13 @@ def test_specials(latex, plain_expected):
 
 data_test_environments = [
 
+    (r'A\begin{figure}B\end{figure}C', 'ABC'),
+    (r'A\begin{figure}[o]B\end{figure}C', 'ABC'),
+    (r'A\begin{minipage}{0.5\linewidth}B\end{minipage}C', 'A\n\nB\n\nC'),
+    (r'A\begin{table}B\end{table}C', 'ABC'),
+    (r'A\begin{table}[o]B\end{table}C', 'ABC'),
     (r'A\begin{tabular}{|||}B\end{tabular}C', 'ABC'),
+    (r'A\begin{verbatim}B\end{verbatim}C', 'A\n\nB\n\nC'),
 
 ]
 
