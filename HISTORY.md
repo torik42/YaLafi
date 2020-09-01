@@ -1,5 +1,5 @@
-Work in progress
-----------------
+Version 1.1.4 (2020/09/01)
+--------------------------
 - new LaTeX packages: glossaries, glossaries-extra, pgfplots
 - added macros
     - LaTeX builtins: \\index, \\pagenumbering, \\pagestyle, \\thispagestyle,
