@@ -307,7 +307,7 @@ Default option values are set at the Python script beginning.
     See also
     [http://wiki.languagetool.org/http-server](http://wiki.languagetool.org/http-server).
     This may be faster than the command-line tool used otherwise, especially
-    for a large number of LaTeX files or together with an editor plugin.
+    when checking many LaTeX files or together with an editor plugin.
     The server will not be stopped at the end (use '--server stop').
 - `--lt-server-options opts`<br>
   Pass additional options when starting a local LT server.
@@ -380,21 +380,25 @@ let g:vimtex_grammar_vlty.shell_options =
     \   ' --packages "*"'
     \ . ' --define ~/vlty/defs.tex'
     \ . ' --replace ~/vlty/repls.txt'
+    \ . ' --equation-punctuation display'
 ```
 - By default, the vlty compiler passes names of all necessary LaTeX packages
   to YaLafi, which may result in annoying warnings.
-  In multi-file projects, these my by avoided by `--packages "*"` that simply
+  In multi-file projects, these may be avoided by `--packages "*"` that simply
   loads all packages known to the filter.
 - YaLafi's expansion of project-specific macros can be controlled via
   option `--define ...`.
   Example for defs.tex:
 ```
-\newcommand{\zB}{z.\,B. }   % LanguageTool correctly insists on
-                            % narrow space in this German abbreviation
-\newtheorem{Satz}{Satz}     % correctly expand \begin{Satz}[siehe ...]
-\LTinput{main.glsdefs}      % read database of glossaries package
+    \newcommand{\zB}{z.\,B. }   % LanguageTool correctly insists on
+                                % narrow space in this German abbreviation
+    \newtheorem{Satz}{Satz}     % correctly expand \begin{Satz}[siehe ...]
+    \LTinput{main.glsdefs}      % read database of glossaries package
 ```
 - Replacement of phrases may be performed via `--replace ...`, compare
+  section [Example application](#example-application).
+- Option `--equation-punctuation display` enables some additional
+  interpunction checking for displayed equations in English texts, see
   section [Example application](#example-application).
 
 ### Application of plugin vim-grammarous
@@ -410,7 +414,7 @@ let g:grammarous#languagetool_cmd = '/home/foo/bin/yalafi-grammarous'
 map <F9> :GrammarousCheck --lang=en-GB<CR>
 ```
 A proposal for Bash script /home/foo/bin/yalafi-grammarous (replace foo
-with user name ;-) is given in [yalafi-grammarous](yalafi-grammarous).
+with username ;-) is given in [yalafi-grammarous](yalafi-grammarous).
 It has to be made executable with `chmod +x ...`.
 Please adapt script variable `ltdir`, compare option --lt-directory
 in section [Example application](#example-application).
@@ -538,7 +542,7 @@ First, you can add to \~/.emacs
 (require 'langtool)
 ```
 A proposal for Bash script /home/foo/bin/yalafi-emacs (replace foo
-with user name ;-) is given in [yalafi-emacs](yalafi-emacs).
+with username ;-) is given in [yalafi-emacs](yalafi-emacs).
 It has to be made executable with `chmod +x ...`.
 Please adapt script variable `ltdir`, compare option --lt-directory
 in section [Example application](#example-application).
@@ -894,7 +898,7 @@ script tex2txt.py in repository
 - 3-8: This is an auxiliary function for the parser.
 - 9: The created parameter object contains all default settings
   and definitions from file yalafi/parameters.py.
-- 10: We read the LateX packages from option --pack and convert them to 
+- 10: We read the LaTeX packages from option --pack and convert them to 
   a list of handler functions called later by the parser.
 - 12: If requested by script option --defs, additional macros are included
   from the string opts.defs.
@@ -1102,8 +1106,8 @@ Invocation of `python -m yalafi ...` differs as follows from
 - Macros are expanded in the order they appear in the text.
 - Character position tracking for displayed equations is improved,
   see [the example below](#equation-html-report).
-- Added options --dcls and --pack allow to modify predefined LaTeX macros and
-  environments at Python level.
+- Added options --dcls and --pack allow modification of predefined LaTeX
+  macros and environments at Python level.
 - Option --defs expects a file containing macro definitions as LaTeX code.
 - Option --ienc is also effective for file from --defs.
 - Option --char (position tracking for single characters) is always activated.
@@ -1213,8 +1217,6 @@ Displayed equations are parsed as follows.
       but not on “line”,
     - if a “maths part” only consists of an operator,
     - if a “maths part” includes trailing interpunction.
-
-[Back to top](#yalafi-yet-another-latex-filter)
 
 ### Removal of unnecessary blank lines
 
