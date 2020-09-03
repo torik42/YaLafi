@@ -42,6 +42,9 @@ endif
 if !exists("g:ltyc_shelloptions")
     let g:ltyc_shelloptions = ''
 endif
+if !exists("g:ltyc_showsuggestions")
+    let g:ltyc_showsuggestions = 0
+endif
 
 "   check installation components
 "
@@ -81,9 +84,12 @@ let &l:makeprg =
         \ . ' ' . g:ltyc_shelloptions
         \ . ' %:S'
 
-let &l:errorformat = 
-        \ '%I=== %f ===,%C%*\d.) Line %l\, column %v\, Rule ID:%.%#,%Z'
-        \ . 'Message: %m,%-G%.%#'
+let &l:errorformat = '%I=== %f ===,%C%*\d.) Line %l\, column %v\, Rule ID:%.%#,'
+if g:ltyc_showsuggestions == 0
+  let &l:errorformat .= '%ZMessage: %m,%-G%.%#'
+else
+  let &l:errorformat .= '%CMessage: %m,%Z%m,%-G%.%#'
+endif
 
 silent CompilerSet makeprg
 silent CompilerSet errorformat

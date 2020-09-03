@@ -1,3 +1,7 @@
+Work in progress
+----------------
+- Vim script ltyc.vim: added option g:ltyc\_showsuggestions
+
 Version 1.1.4 (2020/09/01)
 --------------------------
 - new LaTeX packages: glossaries, glossaries-extra, pgfplots
