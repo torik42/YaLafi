@@ -19,30 +19,39 @@ set cpo&vim
 "   set default values
 "
 if !exists("g:ltyc_ltdirectory")
+    " home of LT software
     let g:ltyc_ltdirectory = '~/lib/LanguageTool'
 endif
 if !exists("g:ltyc_server")
+    " use an LT server?
     let g:ltyc_server = 'my'
 endif
 if !exists("g:ltyc_language")
+    " language code for LT
     let g:ltyc_language = 'en-GB'
 endif
 if !exists("g:ltyc_disable")
+    " LT option --disable
     let g:ltyc_disable = 'WHITESPACE_RULE'
 endif
 if !exists("g:ltyc_enable")
+    " LT option --enable
     let g:ltyc_enable = ''
 endif
 if !exists("g:ltyc_disablecategories")
+    " LT option --disablecategories
     let g:ltyc_disablecategories = ''
 endif
 if !exists("g:ltyc_enablecategories")
+    " LT option --enablecategories
     let g:ltyc_enablecategories = ''
 endif
 if !exists("g:ltyc_shelloptions")
+    " further options passed to yalafi.shell
     let g:ltyc_shelloptions = ''
 endif
 if !exists("g:ltyc_showsuggestions")
+    " if set to 1: show LT's replacement suggestions
     let g:ltyc_showsuggestions = 0
 endif
 

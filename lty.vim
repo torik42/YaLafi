@@ -7,15 +7,24 @@
 "   --> yalafi.shell: add reading from stdin
 "
 
+" home directory of LT software
 call ale#Set('tex_lty_ltdirectory', '~/lib/LanguageTool')
+" use an LT server?
 call ale#Set('tex_lty_server', 'my')
+" language code passed to LT
 call ale#Set('tex_lty_language', 'en-GB')
+" LT option --disable
 call ale#Set('tex_lty_disable', 'WHITESPACE_RULE')
+" LT option --enable
 call ale#Set('tex_lty_enable', '')
+" LT option --disablecategories
 call ale#Set('tex_lty_disablecategories', '')
+" LT option --enablecategories
 call ale#Set('tex_lty_enablecategories', '')
+" further options passed to yalafi.shell
 call ale#Set('tex_lty_shelloptions', '')
-call ale#Set('tex_lty_code', 'LT')      " displayed in status line
+" displayed in status line
+call ale#Set('tex_lty_code', 'LT')
 
 call ale#Set('tex_lty_executable', 'python')
 call ale#Set('tex_lty_options',
