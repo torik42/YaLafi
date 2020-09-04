@@ -1,6 +1,9 @@
 Work in progress
 ----------------
 - Vim script ltyc.vim: added option g:ltyc\_showsuggestions
+- lty.vim and ltyc.vim: added comments for option setting
+- Added screenshot for vimtex plugin
+- README.md: updated
 
 Version 1.1.4 (2020/09/01)
 --------------------------

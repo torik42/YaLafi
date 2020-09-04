@@ -4,7 +4,7 @@
 [Related projects](#related-projects)&nbsp;\|
 [Installation](#installation)&nbsp;\|
 [Example application](#example-application)&nbsp;\|
-[Interface to Vim](#interface-to-vim)&nbsp;\|
+[Interfaces to Vim](#interfaces-to-vim)&nbsp;\|
 [Interface to Emacs](#interface-to-emacs)&nbsp;\|
 [Filter actions](#filter-actions)&nbsp;\|
 [Principal limitations](#principal-limitations)&nbsp;\|
@@ -195,7 +195,7 @@ Default option values are set at the Python script beginning.
   (default: 'plain' for text report).
   Variant 'html' generates an HTML report, see below for further details.
   Modes 'xml' and 'xml-b' are intended for Vim plugins, compare section
-  [Interface to Vim](#interface-to-vim).
+  [Interfaces to Vim](#interfaces-to-vim).
 - `--link`<br>
   In an HTML report, left-click on a highlighted text part opens a
   Web link related to the problem, if provided by LT.
@@ -353,19 +353,19 @@ In case of multiple input files, the HTML report starts with an index.
 [Back to top](#yalafi-yet-another-latex-filter)
 
 
-## Interface to Vim
+## Interfaces to Vim
 
 As [\[Vim\]](https://www.vim.org)
 is a great editor, there are several possibilities that build
-on existing Vim plugins or use Vim's compiler interface.
+on existing Vim plugins or use Vim's compiler interface:
 
-- [Application of plugin vimtex](#application-of-plugin-vimtex)
-- [Application of plugin vim-grammarous](#application-of-plugin-vim-grammarous)
-- [Application of plugin vim-LanguageTool](#application-of-plugin-vim-languageTool)
-- [Application of plugin ALE](#application-of-plugin-ale)
-- [Application via compiler interface](#application-via-compiler-interface)
+[plugin vimtex](#plugin-vimtex)&nbsp;\|
+[“plain Vim”](#plain-vim)&nbsp;\|
+[plugin vim-grammarous](#plugin-vim-grammarous)&nbsp;\|
+[plugin vim-LanguageTool](#plugin-vim-languagetool)&nbsp;\|
+[plugin ALE](#plugin-ale)
 
-### Application of plugin vimtex
+### Plugin vimtex
 
 The Vim plugin [\[vimtex\]](https://github.com/lervag/vimtex)
 provides comprehensive support for writing LaTeX documents.
@@ -373,18 +373,28 @@ It includes an interface to YaLafi, documentation is available with
 `:help vimtex-grammar-vlty`.
 A copy of the corresponding Vim compiler script is [vlty.vim](vlty.vim).
 
-The following vimrc snippet demonstrates some useful settings for vlty
-option field 'shell\_options'.
+The following snippet demonstrates a basic vimrc setting and some useful
+values for vlty option field 'shell\_options'.
 ```
+map <F9> :w <bar> compiler vlty <bar> make <bar> cw <cr><esc>
+let g:tex_flavor = 'latex'
+set spelllang=de_DE
+let g:vimtex_grammar_vlty = {}
+let g:vimtex_grammar_vlty.lt_directory = '~/lib/LanguageTool-5.0'
+let g:vimtex_grammar_vlty.server = 'my'
 let g:vimtex_grammar_vlty.shell_options =
     \   ' --packages "*"'
     \ . ' --define ~/vlty/defs.tex'
     \ . ' --replace ~/vlty/repls.txt'
     \ . ' --equation-punctuation display'
 ```
+- Function key 'F9' saves the file, starts the compiler, and opens the quickfix
+  window.
+- The option `g:vimtex_grammar_vlty.server = 'my'` usually results in faster 
+  checks for small to medium LaTeX files.
 - By default, the vlty compiler passes names of all necessary LaTeX packages
   to YaLafi, which may result in annoying warnings.
-  In multi-file projects, these may be avoided by `--packages "*"` that simply
+  In multi-file projects, these are suppressed by `--packages "*"` that simply
   loads all packages known to the filter.
 - YaLafi's expansion of project-specific macros can be controlled via
   option `--define ...`.
@@ -401,7 +411,41 @@ let g:vimtex_grammar_vlty.shell_options =
   interpunction checking for displayed equations in English texts, see
   section [Example application](#example-application).
 
-### Application of plugin vim-grammarous
+Here is the [introductory example](#example-html-report) from above:
+
+![Vim plugin vim-vimtex](figs/vim-vimtex.png)
+
+### “Plain Vim”
+
+File [ltyc.vim](ltyc.vim) proposes a simple application to Vim's compiler
+interface.
+The file has to be copied to a directory like `~/.vim/compiler/`.
+
+For a Vim session, the component is activated with `:compiler ltyc`.
+Command `:make` invokes yalafi.shell, and the cursor is set to the first
+indicated problem.
+The related error message is displayed in the status line.
+Navigation between errors is possible with `:cn` and `:cp`, an error list
+is shown with `:cl`.
+The quickfix window appears on `:cw`.
+
+The following snippet demonstrates a basic vimrc setting and some useful
+values for option 'ltyc\_shelloptions'.
+Please compare section [Plugin vimtex](#plugin-vimtex)
+for related comments.
+```
+map <F9> :w <bar> make <bar> cw <cr><esc>
+let g:ltyc_ltdirectory = '~/lib/LanguageTool-5.0'
+let g:ltyc_server = 'my'
+let g:ltyc_language = 'de-DE'
+let g:ltyc_shelloptions =
+        \   ' --replace ~/ltyc/repls.txt'
+        \ . ' --define ~/ltyc/defs.tex'
+        \ . ' --equation-punctuation display'
+compiler ltyc
+```
+
+### Plugin vim-grammarous
 
 For the Vim plugin
 [\[vim-grammarous\]](https://github.com/rhysd/vim-grammarous),
@@ -447,7 +491,7 @@ Here is the [introductory example](#example-html-report) from above:
 
 ![Vim plugin vim-grammarous](figs/vim-grammarous.png)
 
-### Application of plugin vim-LanguageTool
+### Plugin vim-LanguageTool
 
 The Vim plugin
 [\[vim-LanguageTool\]](https://github.com/dpelle/vim-LanguageTool)
@@ -469,7 +513,7 @@ an error list is shown with `:lli`.
 
 ![Vim plugin vim-LanguageTool](figs/vim-languagetool.png)
 
-### Application of plugin ALE
+### Plugin ALE
 
 With [\[ALE\]](https://github.com/dense-analysis/ale),
 the proofreader ('linter') by default is invoked as background task,
@@ -509,22 +553,6 @@ Navigation between highlighted text parts is possible with `:lne` and `:lp`,
 an error list is shown with `:lli`.
 
 ![Vim plugin ALE](figs/vim-ale.png)
-
-### Application via compiler interface
-
-File [ltyc.vim](ltyc.vim) proposes a simple application to “plain Vim”
-via Vim's compiler interface.
-The file has to be copied to a directory like `~/.vim/compiler/`.
-Configuration variables as `g:ltyc_ltdirectory` may be modified
-in `~/.vimrc`.
-
-For a Vim session, the component is activated with `:comp ltyc`.
-Command `:make` invokes yalafi.shell, and the cursor is set to the first
-indicated problem.
-The related error message is displayed in the status line.
-Navigation between errors is possible with `:cn` and `:cp`, an error list
-is shown with `:cl`.
-The quickfix window appears on `:cw`.
 
 [Back to top](#yalafi-yet-another-latex-filter)
 
