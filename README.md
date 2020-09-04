@@ -444,6 +444,7 @@ let g:ltyc_shelloptions =
         \ . ' --equation-punctuation display'
 compiler ltyc
 ```
+The screenshot resembles that from section [Plugin vimtex](#plugin-vimtex).
 
 ### Plugin vim-grammarous
 
