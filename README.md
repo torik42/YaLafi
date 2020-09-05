@@ -182,7 +182,8 @@ Default option values are set at the Python script beginning.
   from the [LT download page](https://www.languagetool.org/download).
   See also the script comment at variable 'ltdirectory' (default value).
 - `--lt-command cmd`<br>
-  Set base command to call LT (default value in script variable 'ltcommand').
+  Set base command to call LT (default value in script variable 'ltcommand');
+  compare [Issue #19](../../issues/19).
 - `--as-server port`<br>
   Emulate an LT server listening on the given port, for an example
   see section [Interface to Emacs](#interface-to-emacs).
@@ -383,10 +384,11 @@ let g:vimtex_grammar_vlty = {}
 let g:vimtex_grammar_vlty.lt_directory = '~/lib/LanguageTool-5.0'
 let g:vimtex_grammar_vlty.server = 'my'
 let g:vimtex_grammar_vlty.shell_options =
-    \   ' --packages "*"'
-    \ . ' --define ~/vlty/defs.tex'
-    \ . ' --replace ~/vlty/repls.txt'
-    \ . ' --equation-punctuation display'
+        \   ' --packages "*"'
+        \ . ' --define ~/vlty/defs.tex'
+        \ . ' --replace ~/vlty/repls.txt'
+        \ . ' --equation-punctuation display'
+        \ . ' --single-letters "i.\,A.\|z.\,B.\|\|"'
 ```
 - Function key 'F9' saves the file, starts the compiler, and opens the quickfix
   window.
@@ -409,6 +411,9 @@ let g:vimtex_grammar_vlty.shell_options =
   section [Example application](#example-application).
 - Option `--equation-punctuation display` enables some additional
   interpunction checking for displayed equations in English texts, see
+  section [Example application](#example-application).
+- Option `--single-letters ...` activates search for isolated single letters.
+  Note that only the '\|' signs need to be escaped here; compare
   section [Example application](#example-application).
 
 Here is the [introductory example](#example-html-report) from above:
@@ -442,6 +447,7 @@ let g:ltyc_shelloptions =
         \   ' --replace ~/ltyc/repls.txt'
         \ . ' --define ~/ltyc/defs.tex'
         \ . ' --equation-punctuation display'
+        \ . ' --single-letters "i.\,A.\|z.\,B.\|\|"'
 compiler ltyc
 ```
 The screenshot resembles that from section [Plugin vimtex](#plugin-vimtex).
@@ -482,11 +488,6 @@ $ ~/bin/yalafi-grammarous t.tex
 ```
 This should display some error message, if the problem goes back to
 running the script, Python, yalafi.shell or LanguageTool.
-
-**Installation of vim-grammarous.**
-Download and unzip vim-grammarous.
-Create a directory \~/.vim/pack/bundle/start/.
-Place vim-grammarous/ under this directory.
 
 Here is the [introductory example](#example-html-report) from above:
 
