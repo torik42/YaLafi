@@ -182,7 +182,8 @@ Default option values are set at the Python script beginning.
   from the [LT download page](https://www.languagetool.org/download).
   See also the script comment at variable 'ltdirectory' (default value).
 - `--lt-command cmd`<br>
-  Set base command to call LT (default value in script variable 'ltcommand').
+  Set base command to call LT (default value in script variable 'ltcommand');
+  compare [Issue #19](../../issues/19).
 - `--as-server port`<br>
   Emulate an LT server listening on the given port, for an example
   see section [Interface to Emacs](#interface-to-emacs).
@@ -482,11 +483,6 @@ $ ~/bin/yalafi-grammarous t.tex
 ```
 This should display some error message, if the problem goes back to
 running the script, Python, yalafi.shell or LanguageTool.
-
-**Installation of vim-grammarous.**
-Download and unzip vim-grammarous.
-Create a directory \~/.vim/pack/bundle/start/.
-Place vim-grammarous/ under this directory.
 
 Here is the [introductory example](#example-html-report) from above:
 
