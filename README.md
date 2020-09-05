@@ -384,10 +384,11 @@ let g:vimtex_grammar_vlty = {}
 let g:vimtex_grammar_vlty.lt_directory = '~/lib/LanguageTool-5.0'
 let g:vimtex_grammar_vlty.server = 'my'
 let g:vimtex_grammar_vlty.shell_options =
-    \   ' --packages "*"'
-    \ . ' --define ~/vlty/defs.tex'
-    \ . ' --replace ~/vlty/repls.txt'
-    \ . ' --equation-punctuation display'
+        \   ' --packages "*"'
+        \ . ' --define ~/vlty/defs.tex'
+        \ . ' --replace ~/vlty/repls.txt'
+        \ . ' --equation-punctuation display'
+        \ . ' --single-letters "i.\,A.\|z.\,B.\|\|"'
 ```
 - Function key 'F9' saves the file, starts the compiler, and opens the quickfix
   window.
@@ -410,6 +411,9 @@ let g:vimtex_grammar_vlty.shell_options =
   section [Example application](#example-application).
 - Option `--equation-punctuation display` enables some additional
   interpunction checking for displayed equations in English texts, see
+  section [Example application](#example-application).
+- Option `--single-letters ...` activates search for isolated single letters.
+  Note that only the '\|' signs need to be escaped here; compare
   section [Example application](#example-application).
 
 Here is the [introductory example](#example-html-report) from above:
@@ -443,6 +447,7 @@ let g:ltyc_shelloptions =
         \   ' --replace ~/ltyc/repls.txt'
         \ . ' --define ~/ltyc/defs.tex'
         \ . ' --equation-punctuation display'
+        \ . ' --single-letters "i.\,A.\|z.\,B.\|\|"'
 compiler ltyc
 ```
 The screenshot resembles that from section [Plugin vimtex](#plugin-vimtex).
