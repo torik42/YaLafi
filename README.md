@@ -372,7 +372,8 @@ The Vim plugin [\[vimtex\]](https://github.com/lervag/vimtex)
 provides comprehensive support for writing LaTeX documents.
 It includes an interface to YaLafi, documentation is available with
 `:help vimtex-grammar-vlty`.
-A copy of the corresponding Vim compiler script is [vlty.vim](vlty.vim).
+A copy of the corresponding Vim compiler script is
+[editors/vlty.vim](editors/vlty.vim).
 
 The following snippet demonstrates a basic vimrc setting and some useful
 values for vlty option field 'shell\_options'.
@@ -422,8 +423,8 @@ Here is the [introductory example](#example-html-report) from above:
 
 ### “Plain Vim”
 
-File [ltyc.vim](ltyc.vim) proposes a simple application to Vim's compiler
-interface.
+File [editors/ltyc.vim](editors/ltyc.vim) proposes a simple application to
+Vim's compiler interface.
 The file has to be copied to a directory like `~/.vim/compiler/`.
 
 For a Vim session, the component is activated with `:compiler ltyc`.
@@ -465,7 +466,8 @@ let g:grammarous#languagetool_cmd = '/home/foo/bin/yalafi-grammarous'
 map <F9> :GrammarousCheck --lang=en-GB<CR>
 ```
 A proposal for Bash script /home/foo/bin/yalafi-grammarous (replace foo
-with username ;-) is given in [yalafi-grammarous](yalafi-grammarous).
+with username ;-) is given in
+[editors/yalafi-grammarous](editors/yalafi-grammarous).
 It has to be made executable with `chmod +x ...`.
 Please adapt script variable `ltdir`, compare option --lt-directory
 in section [Example application](#example-application).
@@ -499,7 +501,7 @@ The Vim plugin
 [\[vim-LanguageTool\]](https://github.com/dpelle/vim-LanguageTool)
 relies on the same XML interface to LanguageTool as the previous variant.
 Therefore, one can reuse the Bash script
-[yalafi-grammarous](yalafi-grammarous).
+[editors/yalafi-grammarous](editors/yalafi-grammarous).
 You can add to \~/.vimrc
 ```
 let g:languagetool_cmd = '$HOME/bin/yalafi-grammarous'
@@ -544,7 +546,8 @@ Further options for yalafi.shell may be passed like
 let g:ale_tex_lty_shelloptions = '--single-letters "A|a|I|e.g.|i.e.||"'
                 \ . ' --equation-punctuation display'
 ```
-Additionally, one has to install ALE and copy or link file [lty.vim](lty.vim)
+Additionally, one has to install ALE and copy or link file
+[editors/lty.vim](editors/lty.vim)
 to directory `~/.vim/bundle/ale/ale_linters/tex/`, or a similar location.
 
 Here is again the [introductory example](#example-html-report) from above.
@@ -572,7 +575,7 @@ First, you can add to \~/.emacs
 (require 'langtool)
 ```
 A proposal for Bash script /home/foo/bin/yalafi-emacs (replace foo
-with username ;-) is given in [yalafi-emacs](yalafi-emacs).
+with username ;-) is given in [editors/yalafi-emacs](editors/yalafi-emacs).
 It has to be made executable with `chmod +x ...`.
 Please adapt script variable `ltdir`, compare option --lt-directory
 in section [Example application](#example-application).

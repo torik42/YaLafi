@@ -4,6 +4,7 @@ Work in progress
 - lty.vim and ltyc.vim: added comments for option setting
 - Added screenshot for vimtex plugin
 - Bash script yalafi-grammarous: assume installation under ~/.vim/bundle
+- new directory editors/ with all editor interfaces
 - README.md: updated
 
 Version 1.1.4 (2020/09/01)
