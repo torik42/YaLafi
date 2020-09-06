@@ -108,18 +108,18 @@ class Parser:
         while True:
             beg = next((i for i in range(last, len(toks))
                     if type(toks[i]) is defs.CommentToken and
-                    toks[i].txt.startswith(self.parms.comment_lt_skip_begin)),
-                        len(toks))
+                    toks[i].txt.startswith(self.parms.comment_skip_begin)),
+                                    len(toks))
             out += toks[last:beg]
             if beg == len(toks):
                 break
             end = next((i for i in range(beg + 1, len(toks))
                     if type(toks[i]) is defs.CommentToken and
-                    toks[i].txt.startswith(self.parms.comment_lt_skip_end)),
-                        len(toks))
+                    toks[i].txt.startswith(self.parms.comment_skip_end)),
+                                    len(toks))
             if end == len(toks):
                 out += utils.latex_error('cannot find closing LaTeX comment '
-                                    + repr(self.parms.comment_lt_skip_end),
+                                    + repr(self.parms.comment_skip_end),
                                     toks[beg].pos, latex, self.parms)
                 out += toks[beg+1:]
                 break

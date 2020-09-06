@@ -222,8 +222,8 @@ class Parameters:
 
         #   special LaTeX comments to skip input text
         #
-        self.comment_lt_skip_begin = '%%% LT-SKIP-BEGIN'
-        self.comment_lt_skip_end = '%%% LT-SKIP-END'
+        self.comment_skip_begin = '%%% LT-SKIP-BEGIN'
+        self.comment_skip_end = '%%% LT-SKIP-END'
 
         #   module directories
         #
