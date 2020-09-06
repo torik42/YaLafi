@@ -8,7 +8,7 @@ Work in progress
 - Added screenshot for vimtex plugin
 - Bash script yalafi-grammarous: assume installation under ~/.vim/bundle
 - new directory editors/ with all editor interfaces
-- README.md: updated
+- README.md: updated, shifted some sections
 
 Version 1.1.4 (2020/09/01)
 --------------------------
