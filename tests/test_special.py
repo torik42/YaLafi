@@ -51,3 +51,37 @@ def test_2():
     plain, pos = utils.get_txt_pos(toks)
     assert plain_2 == plain
 
+latex_3 = r"""
+A
+%%% LT-SKIP-BEGIN
+$$
+%%% LT-SKIP-END
+    B
+C %%% LT-SKIP-BEGIN
+$$
+%%% LT-SKIP-END
+D
+E%%% LT-SKIP-BEGIN
+$$
+%%% LT-SKIP-END
+F
+G
+%%% LT-SKIP-BEGIN
+H
+% missing LT-SKIP-END
+"""
+plain_3 = r"""
+A
+B
+C D
+EF
+G
+ LATEXXXERROR H
+"""
+
+def test_3():
+    p = parser.Parser(parameters.Parameters())
+    toks = p.parse(latex_3)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_3 == plain
+
