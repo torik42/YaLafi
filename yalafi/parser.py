@@ -94,12 +94,38 @@ class Parser:
             self.parser_work(mods.macros_latex)
 
     #   scan and parse (expand) LaTeX string to tokens
+    #   - here also skip LaTeX text enclosed in special comments
     #
     def parser_work(self, latex):
-        # save self.latex for nested calls, e.g. \LTmacros{}
+        # save self.latex for nested calls, e.g. \LTinput{}
         latex_sav = self.latex
         self.latex = latex
         toks = self.parms.scanner.scan(latex)
+
+        # treat special comments for skipping LaTeX text
+        out = []
+        last = 0
+        while True:
+            beg = next((i for i in range(last, len(toks))
+                    if type(toks[i]) is defs.CommentToken and
+                    toks[i].txt.startswith(self.parms.comment_lt_skip_begin)),
+                        len(toks))
+            out += toks[last:beg]
+            if beg == len(toks):
+                break
+            end = next((i for i in range(beg + 1, len(toks))
+                    if type(toks[i]) is defs.CommentToken and
+                    toks[i].txt.startswith(self.parms.comment_lt_skip_end)),
+                        len(toks))
+            if end == len(toks):
+                out += utils.latex_error('cannot find closing LaTeX comment '
+                                    + repr(self.parms.comment_lt_skip_end),
+                                    toks[beg].pos, latex, self.parms)
+                out += toks[beg+1:]
+                break
+            last = end + 1
+        toks = out
+
         toks = self.expand_sequence(scanner.Buffer(toks))
         self.latex = latex_sav
         return toks
