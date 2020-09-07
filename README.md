@@ -1,22 +1,6 @@
 
 # YaLafi: Yet another LaTeX filter
 
-[Related projects](#related-projects)&nbsp;\|
-[Installation](#installation)&nbsp;\|
-[Example application](#example-application)&nbsp;\|
-[Interfaces to Vim](#interfaces-to-vim)&nbsp;\|
-[Interface to Emacs](#interface-to-emacs)&nbsp;\|
-[Filter actions](#filter-actions)&nbsp;\|
-[Principal limitations](#principal-limitations)&nbsp;\|
-[Usage under Windows](#usage-under-windows)&nbsp;\|
-[Extension modules for LaTeX packages](#extension-modules-for-latex-packages)&nbsp;\|
-[Inclusion of own macros](#inclusion-of-own-macros)&nbsp;\|
-[Python package interface](#python-package-interface)&nbsp;\|
-[Handling of displayed equations](#handling-of-displayed-equations)&nbsp;\|
-[Command-line of pure filter](#command-line-of-pure-filter)&nbsp;\|
-[Differences to Tex2txt](#differences-to-tex2txt)&nbsp;\|
-[Remarks on implementation](#remarks-on-implementation)
-
 **Notice.**
 The library of LaTeX macros, environments, document classes, and packages is
 still rather restricted, compare the [list of macros](list-of-macros.md).
@@ -24,6 +8,7 @@ Please don't hesitate to
 [raise an Issue](https://github.com/matze-dd/YaLafi/issues),
 if you would like to see something added.
 
+**Summary.**
 This Python (version 3.x) package extracts plain text from LaTeX documents.
 The software may be integrated with a proofreading tool and an editor.
 It provides
@@ -33,8 +18,7 @@ It provides
 - careful conservation of text flows,
 - some parsing of displayed equations for detection of interpunction problems.
 
-The sample Python application script
-[yalafi/shell/shell.py](yalafi/shell/shell.py) from section
+The sample Python application yalafi.shell from section
 [Example application](#example-application) integrates the LaTeX filter
 with the proofreading software [LanguageTool](https://www.languagetool.org).
 It sends the extracted plain text to the proofreader,
@@ -98,30 +82,27 @@ Many thanks in advance.
 
 Happy TeXing!
 
-[Back to top](#yalafi-yet-another-latex-filter)
 
+## Contents
 
-## Related projects
-
-This project relates to software like
-- [OpenDetex](https://github.com/pkubowicz/opendetex),
-- [pandoc](https://github.com/jgm/pandoc),
-- [plasTeX](https://github.com/tiarno/plastex),
-- [pylatexenc](https://github.com/phfaist/pylatexenc),
-- [TeXtidote](https://github.com/sylvainhalle/textidote),
-- [tex2txt](http://hackage.haskell.org/package/tex2txt), and
-- [vscode-ltex](https://github.com/valentjn/vscode-ltex).
-
-From these examples, currently (March 2020) only TeXtidote and vscode-ltex
-provide position mapping between the LaTeX input text and the plain text
-that is sent to the proofreading software.
-Both use (simple) regular expressions for plain-text extraction and are
-easy to install.
-YaLafi, on the other hand, aims to achieve high flexibility and a
-good filtering quality with minimal number of false positives from the
-proofreading software.
-
-[Back to top](#yalafi-yet-another-latex-filter)
+[Installation](#installation)<br>
+[Example application](#example-application)<br>
+[Interfaces to Vim](#interfaces-to-vim)<br>
+[Interface to Emacs](#interface-to-emacs)<br>
+[Usage under Windows](#usage-under-windows)<br>
+[Related projects](#related-projects)<br>
+<br>
+[Filter actions](#filter-actions)<br>
+[Principal limitations](#principal-limitations)<br>
+[Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text)<br>
+[Extension modules for LaTeX packages](#extension-modules-for-latex-packages)<br>
+[Inclusion of own macros](#inclusion-of-own-macros)<br>
+<br>
+[Handling of displayed equations](#handling-of-displayed-equations)<br>
+[Python package interface](#python-package-interface)<br>
+[Command-line of pure filter](#command-line-of-pure-filter)<br>
+[Differences to Tex2txt](#differences-to-tex2txt)<br>
+[Remarks on implementation](#remarks-on-implementation)
 
 
 ## Installation
@@ -139,7 +120,7 @@ Choose one of the following possibilities.
   You can also locate it somewhere else and set environment variable
   PYTHONPATH accordingly.
 
-[Back to top](#yalafi-yet-another-latex-filter)
+[Back to contents](#contents)
 
 
 ## Example application
@@ -149,10 +130,7 @@ You can find examples for tool integration with Bash scripts in
 [Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#tool-integration).
 
 Example Python script [yalafi/shell/shell.py](yalafi/shell/shell.py)
-has been copied with minor changes from repository
-[Tex2txt](https://github.com/matze-dd/Tex2txt)
-and subdivided into several files.
-It will generate a proofreading report in text or HTML format from filtering
+will generate a proofreading report in text or HTML format from filtering
 the LaTeX input and application of
 [LanguageTool](https://www.languagetool.org) (LT).
 It is best called as module as shown below, but can also be placed elsewhere
@@ -226,12 +204,8 @@ Default option values are set at the Python script beginning.
   (default: UTF-8).
 - `--replace file`<br>
   File with phrase replacements to be performed after the conversion to
-  plain text.
-  Per line, a '\&' sign separated by space splits two parts: the first part
-  is replaced by the second part.
-  Space in the first part is interpreted as arbitrary space not breaking
-  the paragraph.
-  A '\#' sign marks the rest of line as comment.
+  plain text; see section
+  [Phrase replacement in the plain text](#phrase-replacement-in-the-plain-text).
 - `--define file`<br>
   Read macro definitions as LaTeX code (using \\newcommand).
   If the code invokes \\documentclass or \\usepackage, then the corresponding
@@ -351,7 +325,7 @@ For simplicity, marked text regions that intertwine with other ones
 are separately repeated at the end.
 In case of multiple input files, the HTML report starts with an index.
 
-[Back to top](#yalafi-yet-another-latex-filter)
+[Back to contents](#contents)
 
 
 ## Interfaces to Vim
@@ -408,8 +382,8 @@ let g:vimtex_grammar_vlty.shell_options =
     \newtheorem{Satz}{Satz}     % correctly expand \begin{Satz}[siehe ...]
     \LTinput{main.glsdefs}      % read database of glossaries package
 ```
-- Replacement of phrases may be performed via `--replace ...`, compare
-  section [Example application](#example-application).
+- Replacement of phrases may be performed via `--replace ...`, compare section
+  [Phrase replacement in the plain text](#phrase-replacement-in-the-plain-text).
 - Option `--equation-punctuation display` enables some additional
   interpunction checking for displayed equations in English texts, see
   section [Example application](#example-application).
@@ -437,7 +411,7 @@ The quickfix window appears on `:cw`.
 
 The following snippet demonstrates a basic vimrc setting and some useful
 values for option 'ltyc\_shelloptions'.
-Please compare section [Plugin vimtex](#plugin-vimtex)
+Please refer to section [Plugin vimtex](#plugin-vimtex)
 for related comments.
 ```
 map <F9> :w <bar> make <bar> cw <cr><esc>
@@ -559,7 +533,7 @@ an error list is shown with `:lli`.
 
 ![Vim plugin ALE](figs/vim-ale.png)
 
-[Back to top](#yalafi-yet-another-latex-filter)
+[Back to contents](#contents)
 
 
 ## Interface to Emacs
@@ -621,7 +595,58 @@ Here is the [introductory example](#example-html-report) from above:
 
 ![Emacs plugin Emacs-langtool](figs/emacs-langtool.png)
 
-[Back to top](#yalafi-yet-another-latex-filter)
+[Back to contents](#contents)
+
+
+## Usage under Windows
+
+Both yalafi.shell and yalafi can be directly used in a Windows command
+script or console.
+For example, this could look like
+```
+py -3 -m yalafi.shell --server lt --output html t.tex > t.html
+```
+or
+```
+"c:\Program Files\Python\Python37\python.exe" -m yalafi.shell --server lt --output html t.tex > t.html
+```
+if the Python launcher has not been installed.
+
+Files with Windows-style line endings (CRLF) are accepted, but the text
+output of the pure LaTeX filter will be Unix style (LF only), unless a
+Windows Python interpreter is used.
+
+Python's version for Windows by default prints Latin-1 encoded text to
+standard output.
+As this ensures proper work in a Windows command console, we do not change it
+for yalafi.shell when generating a text report.
+All other output is fixed to UTF-8 encoding.
+
+[Back to contents](#contents)
+
+
+## Related projects
+
+This project relates to software like
+
+[OpenDetex](https://github.com/pkubowicz/opendetex)&nbsp;\|
+[pandoc](https://github.com/jgm/pandoc)&nbsp;\|
+[plasTeX](https://github.com/tiarno/plastex)&nbsp;\|
+[pylatexenc](https://github.com/phfaist/pylatexenc)&nbsp;\|
+[TeXtidote](https://github.com/sylvainhalle/textidote)&nbsp;\|
+[tex2txt](http://hackage.haskell.org/package/tex2txt)&nbsp;\|
+[vscode-ltex](https://github.com/valentjn/vscode-ltex)
+
+From these examples, currently (March 2020) only TeXtidote and vscode-ltex
+provide position mapping between the LaTeX input text and the plain text
+that is sent to the proofreading software.
+Both use (simple) regular expressions for plain-text extraction and are
+easy to install.
+YaLafi, on the other hand, aims to achieve high flexibility and a
+good filtering quality with minimal number of false positives from the
+proofreading software.
+
+[Back to contents](#contents)
 
 
 ## Filter actions
@@ -699,12 +724,14 @@ where the problem was detected.
   with an appropriate entry in 'Parameters.environment\_defs' in
   yalafi/parameters.py.
 - Rare warnings from the proofreading program can be suppressed using
-  \\LTadd{...}, \\LTskip{...}, \\LTalter{...}{...} in the LaTeX text.
-  Suitable macro definitions there would be (ignored by the filter)
-  `\newcommand{\LTadd}[1]{}` and `\newcommand{\LTskip}[1]{#1}` and
-  `\newcommand{\LTalter}[2]{#1}`.
+  \\LTadd{...}, \\LTskip{...}, \\LTalter{...}{...} in the LaTeX text;
+  compare section
+  [Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text).
+- Complete text sections, for instance part of the LaTeX preamble, may be
+  skipped with the special LaTeX comment '%%% LT-SKIP-BEGIN'; see section
+  [Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text).
 
-[Back to top](#yalafi-yet-another-latex-filter)
+[Back to contents](#contents)
 
 
 ## Principal limitations
@@ -713,7 +740,8 @@ The implemented parsing mechanism can only roughly approximate the behaviour
 of a real LaTeX system.
 We assume that only “reasonable” macros are used, lower-level TeX operations
 are not supported.
-If necessary, they should be enclosed in \\LTskip{...}
+If necessary, they should be enclosed in \\LTskip{...} (see section
+[Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text))
 or be placed in a LaTeX file “hidden” for the filter
 (compare option --skip of yalafi.shell in section
 [Example application](#example-application)).
@@ -729,34 +757,81 @@ points.
   Tracking of file inclusions is possible though.
 - Macros depending on (spacing) lengths may be treated incorrectly.
 
-[Back to top](#yalafi-yet-another-latex-filter)
+[Back to contents](#contents)
 
 
-## Usage under Windows
+## Adaptation of LaTeX and plain text
 
-Both yalafi.shell and yalafi can be directly used in a Windows command
-script or console.
-For example, this could look like
+In order to suppress unsuitable but annoying messages from the proofreading
+tool, it is sometimes necessary to modify the input text.
+You can do that in the LaTeX code, or after filtering in the plain text.
+
+### Modification of LaTeX text
+
+**Special macros.**
+Small modifications, for instance concerning interpunction, can be made
+with the predefined macros \\LTadd, \\LTalter and \\LTskip.
+In order to add a full stop for the proofreader only, you would write
 ```
-py -3 -m yalafi.shell --server lt --output html t.tex > t.html
+... some text\LTadd{.}
 ```
-or
+For LaTeX itself, the macros also have to be defined.
+A good place is the document preamble.
+(For the last line, compare section
+[Inclusion of own macros](#inclusion-of-own-macros).)
 ```
-"c:\Program Files\Python\Python37\python.exe" -m yalafi.shell --server lt --output html t.tex > t.html
+\newcommand{\LTadd}[1]{}
+\newcommand{\LTalter}[2]{#1}
+\newcommand{\LTskip}[1]{#1}
+\newcommand{\LTinput}[1]{}
 ```
-if the Python launcher has not been installed.
+The LaTeX filter will ignore these statements.
+In turn, it will include the argument of \\LTadd, use the second argument
+of \\LTalter, and neglect the argument of \\LTskip.
+The macro names for \\LTadd etc. are defined by variables
+'Parameters.macro\_filter\_add' etc. in file yalafi/parameters.py.
 
-Files with Windows-style line endings (CRLF) are accepted, but the text
-output of the pure LaTeX filter will be Unix style (LF only), unless a
-Windows Python interpreter is used.
+**Special comments.**
+Mainly the document preamble often contains statements not properly
+processed “out-of-the-box”.
+Placing the critical parts in \\LTskip{...} may lead to problems, as the
+statements now are executed slightly differently by the TeX system.
+As “brute-force” variant, the LaTeX filter therefore ignores input enclosed
+in comments starting with `%%% LT-SKIP-BEGIN` and `%%% LT-SKIP-END`.
+Note that the single space after `%%%` is significant.
+The opening special comment is given in variable
+'Parameters.comment\_skip\_begin' of file yalafi/parameters.py.
 
-Python's version for Windows by default prints Latin-1 encoded text to
-standard output.
-As this ensures proper work in a Windows command console, we do not change it
-for yalafi.shell when generating a text report.
-All other output is fixed to UTF-8 encoding.
+A preamble could look as follows.
+```
+\documentclass{article}
+%%% LT-SKIP-BEGIN
+... disturbing stuff ...
+%%% LT-SKIP-END
+\title{A paper}
+\begin{document}
+```
 
-[Back to top](#yalafi-yet-another-latex-filter)
+### Phrase replacement in the plain text
+
+Yalafi.shell and yalafi provide options `--replace file` and `--repl file`,
+respectively.
+They may be valuable, if you often use a phrase (possibly of multiple
+words) that is not accepted by the proofreader.
+In the given file, a '\#' sign marks the rest of the line as comment.
+The first '\&' separated by space splits a line into two parts;
+the first part is replaced by the second one.
+Space in the first part may correspond to arbitrary space in the plain
+text that does not break the paragraph.
+
+This German example replaces two words by a single one and vice versa.
+```
+so dass & sodass
+nichtlineare & nicht lineare
+nichtlineares & nicht lineares
+```
+
+[Back to contents](#contents)
 
 
 ## Extension modules for LaTeX packages
@@ -800,7 +875,7 @@ sections starting at [Definition of macros](#definition-of-macros).
 For an example, see file
 [yalafi/packages/amsmath.py](yalafi/packages/amsmath.py).
 
-[Back to top](#yalafi-yet-another-latex-filter)
+[Back to contents](#contents)
 
 
 ## Inclusion of own macros
@@ -889,69 +964,7 @@ Replacements in `repl` and `defaults` are still interpreted in text mode.
 and trailing interpunction given by 'Parameters.math\_punctuation' in
 file yalafi/parameters.py is appended
 
-[Back to top](#yalafi-yet-another-latex-filter)
-
-
-## Python package interface
-
-We comment the central function in file
-[yalafi/tex2txt.py](yalafi/tex2txt.py)
-that uses the package interface to emulate the behaviour of
-script tex2txt.py in repository
-[Tex2txt](https://github.com/matze-dd/Tex2txt).
-
-```
- 1  from . import parameters, parser, utils
- 2  def tex2txt(latex, opts):
- 3      def read(file):
- 4          try:
- 5              with open(file, encoding=opts.ienc) as f:
- 6                  return True, f.read()
- 7          except:
- 8              return False, ''
- 9      parms = parameters.Parameters(opts.lang)
-10      packages = get_packages(opts.pack, parms.package_modules)
-11      if opts.defs:
-12          packages.append(('', utils.get_latex_handler(opts.defs)))
-13      if opts.extr:
-14          extr = ['\\' + s for s in opts.extr.split(',')]
-15      else:
-16          extr = []
-17      p = parser.Parser(parms, packages, read_macros=read)
-18      toks = p.parse(latex, extract=extr)
-19      txt, pos = utils.get_txt_pos(toks)
-20      if opts.repl:
-21          txt, pos = utils.replace_phrases(txt, pos, opts.repl)
-22      if opts.unkn:
-23          txt = '\n'.join(p.get_unknowns()) + '\n'
-24          pos = [0 for n in range(len(txt))]
-25      pos = [n + 1 for n in pos]
-26      return txt, pos
-```
-- 3-8: This is an auxiliary function for the parser.
-- 9: The created parameter object contains all default settings
-  and definitions from file yalafi/parameters.py.
-- 10: We read the LaTeX packages from option --pack and convert them to 
-  a list of handler functions called later by the parser.
-- 12: If requested by script option --defs, additional macros are included
-  from the string opts.defs.
-  The parser has to process them after loading packages.
-- 13-16: If option --extr requests only extraction of arguments of certain
-  macros, this is prepared.
-- 17: We create a parser object, the passed function is called on \\LTinput.
-- 18: The parsing method returns a list of tokens.
-- 19: The token list is converted into a 2-tuple containing the plain-text
-  string and a list of numbers.
-  Each number in the list indicates the estimated position of the
-  corresponding character in the text string.
-- 21: If phrase replacements are requested by option --repl, this is done.
-  String opts.repl contains the replacement specifications read from the file.
-- 23: On option --unkn, a list of unknown macros and environments is
-  generated.
-- 25: This is necessary, since position numbers are zero-based in yalafi,
-  but one-based in Tex2txt/tex2txt.py.
-
-[Back to top](#yalafi-yet-another-latex-filter)
+[Back to contents](#contents)
 
 
 ## Handling of displayed equations
@@ -1056,7 +1069,8 @@ since the filter replaces both 'b' and '-c' by 'W-W-W' without
 intermediate text.
 
 In rare cases, manipulation with \\LTadd{...} or \\LTskip{...} may be
-necessary to avoid false warnings from the proofreader.
+necessary to avoid false warnings from the proofreader; compare section
+[Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text).
 
 ### Inclusion of “normal” text
 
@@ -1084,7 +1098,69 @@ application script [yalafi/shell/shell.py](yalafi/shell/shell.py)
 described in section
 [Example application](#example-application).
 
-[Back to top](#yalafi-yet-another-latex-filter)
+[Back to contents](#contents)
+
+
+## Python package interface
+
+We comment the central function in file
+[yalafi/tex2txt.py](yalafi/tex2txt.py)
+that uses the package interface to emulate the behaviour of
+script tex2txt.py in repository
+[Tex2txt](https://github.com/matze-dd/Tex2txt).
+
+```
+ 1  from . import parameters, parser, utils
+ 2  def tex2txt(latex, opts):
+ 3      def read(file):
+ 4          try:
+ 5              with open(file, encoding=opts.ienc) as f:
+ 6                  return True, f.read()
+ 7          except:
+ 8              return False, ''
+ 9      parms = parameters.Parameters(opts.lang)
+10      packages = get_packages(opts.pack, parms.package_modules)
+11      if opts.defs:
+12          packages.append(('', utils.get_latex_handler(opts.defs)))
+13      if opts.extr:
+14          extr = ['\\' + s for s in opts.extr.split(',')]
+15      else:
+16          extr = []
+17      p = parser.Parser(parms, packages, read_macros=read)
+18      toks = p.parse(latex, extract=extr)
+19      txt, pos = utils.get_txt_pos(toks)
+20      if opts.repl:
+21          txt, pos = utils.replace_phrases(txt, pos, opts.repl)
+22      if opts.unkn:
+23          txt = '\n'.join(p.get_unknowns()) + '\n'
+24          pos = [0 for n in range(len(txt))]
+25      pos = [n + 1 for n in pos]
+26      return txt, pos
+```
+- 3-8: This is an auxiliary function for the parser.
+- 9: The created parameter object contains all default settings
+  and definitions from file yalafi/parameters.py.
+- 10: We read the LaTeX packages from option --pack and convert them to 
+  a list of handler functions called later by the parser.
+- 12: If requested by script option --defs, additional macros are included
+  from the string opts.defs.
+  The parser has to process them after loading packages.
+- 13-16: If option --extr requests only extraction of arguments of certain
+  macros, this is prepared.
+- 17: We create a parser object, the passed function is called on \\LTinput.
+- 18: The parsing method returns a list of tokens.
+- 19: The token list is converted into a 2-tuple containing the plain-text
+  string and a list of numbers.
+  Each number in the list indicates the estimated position of the
+  corresponding character in the text string.
+- 21: If phrase replacements are requested by option --repl, this is done.
+  String opts.repl contains the replacement specifications read from the file.
+- 23: On option --unkn, a list of unknown macros and environments is
+  generated.
+- 25: This is necessary, since position numbers are zero-based in yalafi,
+  but one-based in Tex2txt/tex2txt.py.
+
+[Back to contents](#contents)
 
 
 ## Command-line of pure filter
@@ -1124,7 +1200,7 @@ Without positional argument `latexfile`, standard input is read.
   [Example application](#example-application).
 
 
-[Back to top](#yalafi-yet-another-latex-filter)
+[Back to contents](#contents)
 
 
 ## Differences to Tex2txt
@@ -1176,7 +1252,7 @@ we get
 ![HTML report](figs/example-equation.png)
 
 
-[Back to top](#yalafi-yet-another-latex-filter)
+[Back to contents](#contents)
 
 
 ## Remarks on implementation
@@ -1263,5 +1339,5 @@ Together with the extraction of special text flows, for instance from
 footnotes, this preserves sentences and paragraphs, thus improving checks
 and reducing false positives from the proofreading software.
 
-[Back to top](#yalafi-yet-another-latex-filter)
+[Back to contents](#contents)
 

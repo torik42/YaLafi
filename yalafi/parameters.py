@@ -204,6 +204,8 @@ class Parameters:
         #
         self.mark_latex_error_verbose = False
 
+        #   names of special macros
+        #
         self.macro_filter_add = '\\LTadd'
         self.macro_filter_alter = '\\LTalter'
         self.macro_filter_skip = '\\LTskip'
@@ -217,6 +219,11 @@ class Parameters:
             self.macro_filter_skip,
             self.macro_load_defs,
         ]
+
+        #   special LaTeX comments to skip input text
+        #
+        self.comment_skip_begin = '%%% LT-SKIP-BEGIN'
+        self.comment_skip_end = '%%% LT-SKIP-END'
 
         #   module directories
         #

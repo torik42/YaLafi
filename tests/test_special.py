@@ -51,3 +51,73 @@ def test_2():
     plain, pos = utils.get_txt_pos(toks)
     assert plain_2 == plain
 
+#   test %%% LT-SKIP in text mode,
+#
+latex_3 = r"""
+A
+%%% LT-SKIP-BEGIN
+$$
+%%% LT-SKIP-END
+    B
+C %%% LT-SKIP-BEGIN
+$$
+%%% LT-SKIP-END
+D
+E%%% LT-SKIP-BEGIN
+$$
+%%% LT-SKIP-END
+F
+"""
+plain_3 = r"""
+A
+B
+C D
+EF
+"""
+def test_3():
+    p = parser.Parser(parameters.Parameters())
+    toks = p.parse(latex_3)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_3 == plain
+
+#   %%% LT-SKIP: test on missing end
+#
+latex_4 = r"""
+A
+%%% LT-SKIP-BEGIN
+B
+% missing LT-SKIP-END
+"""
+plain_4 = r"""
+A
+ LATEXXXERROR B
+"""
+def test_4():
+    p = parser.Parser(parameters.Parameters())
+    toks = p.parse(latex_4)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_4 == plain
+
+#   test %%% LT-SKIP in math mode
+#
+latex_5 = r"""
+A
+\[
+    \alpha, \\
+%%% LT-SKIP-BEGIN
+    \alpha \\
+%%% LT-SKIP-END
+\]
+B
+"""
+plain_5 = r"""
+A
+  V-V-V,
+B
+"""
+def test_5():
+    p = parser.Parser(parameters.Parameters())
+    toks = p.parse(latex_5)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_5 == plain
+

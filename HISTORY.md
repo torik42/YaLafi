@@ -1,11 +1,14 @@
 Work in progress
 ----------------
+- yalafi core
+  - added special LaTeX comments '%%% LT-SKIP-BEGIN' and '%%% LT-SKIP-END',
+    e.g., for skipping LaTeX preamble (Issue #56)
 - Vim script ltyc.vim: added option g:ltyc\_showsuggestions
 - lty.vim and ltyc.vim: added comments for option setting
 - Added screenshot for vimtex plugin
 - Bash script yalafi-grammarous: assume installation under ~/.vim/bundle
 - new directory editors/ with all editor interfaces
-- README.md: updated
+- README.md: updated, shifted some sections
 
 Version 1.1.4 (2020/09/01)
 --------------------------
