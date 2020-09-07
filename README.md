@@ -768,7 +768,7 @@ You can do that in the LaTeX code, or after filtering in the plain text.
 
 ### Modification of LaTeX text
 
-**First method.**
+**Special macros.**
 Small modifications, for instance concerning interpunction, can be made
 with the predefined macros \\LTadd, \\LTalter and \\LTskip.
 In order to add a full stop for the proofreader only, you would write
@@ -791,9 +791,9 @@ of \\LTalter, and neglect the argument of \\LTskip.
 The macro names for \\LTadd etc. are defined by variables
 'Parameters.macro\_filter\_add' etc. in file yalafi/parameters.py.
 
-**Second method.**
-Especially the document preamble often contains many statements not
-properly processed “out-of-the-box”.
+**Special comments.**
+Mainly the document preamble often contains statements not properly
+processed “out-of-the-box”.
 Placing the critical parts in \\LTskip{...} may lead to problems, as the
 statements now are executed slightly differently by the TeX system.
 As “brute-force” variant, the LaTeX filter therefore ignores input enclosed
