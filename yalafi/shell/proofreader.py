@@ -24,6 +24,7 @@ import sys
 import time
 import urllib.parse
 import urllib.request
+import urllib.error
 
 ##################################################################
 #
@@ -145,7 +146,7 @@ def run_languagetool(plain, language, disable, enable,
             except:
                 if cmdline.server != 'my':
                     tex2txt.fatal('error connecting to "' + server + '"')
-                start_local_lt_server()
+                start_local_lt_server(language)
     else:
         # use local installation
         lt_cmd = ltcommand.split() + ['--language', language]
@@ -178,14 +179,15 @@ def run_languagetool(plain, language, disable, enable,
 #   start local LT server, if none is running
 #
 ltserver_local_running = False
-def start_local_lt_server():
+def start_local_lt_server(language):
     def check_server():
         # check for running server
         global ltserver_local_running
         if ltserver_local_running:
             return True
 
-        data = {'text': '', 'language': cmdline.language}
+        # NB: we need at least one character to check (issue #57)
+        data = {'text': ' ', 'language': language}
         data = urllib.parse.urlencode(data).encode(encoding='ascii')
         request = urllib.request.Request(ltserver_local, data=data)
         try:
@@ -193,6 +195,11 @@ def start_local_lt_server():
             reply.close()
             ltserver_local_running = True
             return True
+        except urllib.error.HTTPError as e:
+            # as we have no real text, this is probably a wrong language code
+            tex2txt.fatal('The server couldn\'t fulfill the request;'
+                            + ' error code: ' + repr(e.code)
+                            + '\n(probably an unknown language code)')
         except:
             return False
 
