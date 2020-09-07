@@ -3,6 +3,8 @@ Work in progress
 - yalafi core
   - added special LaTeX comments '%%% LT-SKIP-BEGIN' and '%%% LT-SKIP-END',
     e.g., for skipping LaTeX preamble (Issue #56)
+- yalafi.shell
+  - fixed issue #57 (error message on unknown language for HTTP server)
 - Vim script ltyc.vim: added option g:ltyc\_showsuggestions
 - lty.vim and ltyc.vim: added comments for option setting
 - Added screenshot for vimtex plugin
