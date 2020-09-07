@@ -18,8 +18,7 @@ It provides
 - careful conservation of text flows,
 - some parsing of displayed equations for detection of interpunction problems.
 
-The sample Python application script
-[yalafi/shell/shell.py](yalafi/shell/shell.py) from section
+The sample Python application yalafi.shell from section
 [Example application](#example-application) integrates the LaTeX filter
 with the proofreading software [LanguageTool](https://www.languagetool.org).
 It sends the extracted plain text to the proofreader,
@@ -95,7 +94,7 @@ Happy TeXing!
 <br>
 [Filter actions](#filter-actions)<br>
 [Principal limitations](#principal-limitations)<br>
-[Manipulation of LaTeX and plain text](#manipulation-of-latex-and-plain-text)<br>
+[Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text)<br>
 [Extension modules for LaTeX packages](#extension-modules-for-latex-packages)<br>
 [Inclusion of own macros](#inclusion-of-own-macros)<br>
 <br>
@@ -206,7 +205,7 @@ Default option values are set at the Python script beginning.
 - `--replace file`<br>
   File with phrase replacements to be performed after the conversion to
   plain text; see section
-  [Manipulation of LaTeX and plain text](#manipulation-of-latex-and-plain-text).
+  [Phrase replacement in the plain text](#phrase-replacement-in-the-plain-text).
 - `--define file`<br>
   Read macro definitions as LaTeX code (using \\newcommand).
   If the code invokes \\documentclass or \\usepackage, then the corresponding
@@ -384,7 +383,7 @@ let g:vimtex_grammar_vlty.shell_options =
     \LTinput{main.glsdefs}      % read database of glossaries package
 ```
 - Replacement of phrases may be performed via `--replace ...`, compare section
-  [Manipulation of LaTeX and plain text](#manipulation-of-latex-and-plain-text).
+  [Phrase replacement in the plain text](#phrase-replacement-in-the-plain-text).
 - Option `--equation-punctuation display` enables some additional
   interpunction checking for displayed equations in English texts, see
   section [Example application](#example-application).
@@ -727,10 +726,10 @@ where the problem was detected.
 - Rare warnings from the proofreading program can be suppressed using
   \\LTadd{...}, \\LTskip{...}, \\LTalter{...}{...} in the LaTeX text;
   compare section
-  [Manipulation of LaTeX and plain text](#manipulation-of-latex-and-plain-text).
+  [Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text).
 - Complete text sections, for instance part of the LaTeX preamble, may be
   skipped with the special LaTeX comment '%%% LT-SKIP-BEGIN'; see section
-  [Manipulation of LaTeX and plain text](#manipulation-of-latex-and-plain-text).
+  [Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text).
 
 [Back to contents](#contents)
 
@@ -742,7 +741,7 @@ of a real LaTeX system.
 We assume that only “reasonable” macros are used, lower-level TeX operations
 are not supported.
 If necessary, they should be enclosed in \\LTskip{...} (see section
-[Manipulation of LaTeX and plain text](#manipulation-of-latex-and-plain-text))
+[Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text))
 or be placed in a LaTeX file “hidden” for the filter
 (compare option --skip of yalafi.shell in section
 [Example application](#example-application)).
@@ -761,7 +760,7 @@ points.
 [Back to contents](#contents)
 
 
-## Manipulation of LaTeX and plain text
+## Adaptation of LaTeX and plain text
 
 In order to suppress unsuitable but annoying messages from the proofreading
 tool, it is sometimes necessary to modify the input text.
@@ -778,10 +777,13 @@ In order to add a full stop for the proofreader only, you would write
 ```
 For LaTeX itself, the macros also have to be defined.
 A good place is the document preamble.
+(For the last line, compare section
+[Inclusion of own macros](#inclusion-of-own-macros).)
 ```
 \newcommand{\LTadd}[1]{}
 \newcommand{\LTalter}[2]{#1}
 \newcommand{\LTskip}[1]{#1}
+\newcommand{\LTinput}[1]{}
 ```
 The LaTeX filter will ignore these statements.
 In turn, it will include the argument of \\LTadd, use the second argument
@@ -822,9 +824,11 @@ the first part is replaced by the second one.
 Space in the first part may correspond to arbitrary space in the plain
 text that does not break the paragraph.
 
-This German example replaces two words by a single one:
+This German example replaces two words by a single one and vice versa.
 ```
 so dass & sodass
+nichtlineare & nicht lineare
+nichtlineares & nicht lineares
 ```
 
 [Back to contents](#contents)
@@ -1066,7 +1070,7 @@ intermediate text.
 
 In rare cases, manipulation with \\LTadd{...} or \\LTskip{...} may be
 necessary to avoid false warnings from the proofreader; compare section
-[Manipulation of LaTeX and plain text](#manipulation-of-latex-and-plain-text).
+[Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text).
 
 ### Inclusion of “normal” text
 
