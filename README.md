@@ -107,6 +107,7 @@ Happy TeXing!
 
 ## Installation
 
+**YaLafi (with Python 3.x).**
 Choose one of the following possibilities.
 
 - Use `python -m pip install [--user] yalafi`.
@@ -119,6 +120,24 @@ Choose one of the following possibilities.
   `/usr/lib/python3.x/` or `~/.local/lib/python3.x/site-packages/`.
   You can also locate it somewhere else and set environment variable
   PYTHONPATH accordingly.
+
+**LanguageTool.**
+On most systems, you have to install the software “manually” (1).
+At least under Arch Linux, you can also use a packet manager (2).
+
+1. The LanguageTool zip archive, for example LanguageTool-5.0.zip, can be
+obtained from the
+[LanguageTool download page](https://www.languagetool.org/download).
+Option --lt-directory of application yalafi.shell from section
+[Example application](#example-application)
+has to point to the directory created after uncompressing the archive
+at a suitable place.
+For instance, the directory has to contain file 'languagetool-server.jar'.
+
+2. Under Arch Linux, you can simply say `pacman -S languagetool`.
+In this case, it is not necessary to set option --lt-directory from
+variant 1.
+Instead, you have to specify `--lt-command languagetool`.
 
 [Back to contents](#contents)
 
@@ -137,7 +156,7 @@ It is best called as module as shown below, but can also be placed elsewhere
 and invoked as script.
 On option '--server lt', LT's Web server is contacted.
 Otherwise, [Java](https://java.com) has to be present, and
-the path to LT has to be specified with --lt-directory.
+the path to LT has to be specified with --lt-directory or --lt-command.
 Note that from version 4.8, LT does not fully support 32-bit systems any more.
 Both LT and the script will print some progress messages to stderr.
 They can be suppressed with `python ... 2>/dev/null`.
@@ -152,16 +171,17 @@ unless --no-config is given.
 Default option values are set at the Python script beginning.
 
 - `--lt-directory dir`<br>
-  Directory of the local LT installation.
+  Directory of the “manual” local LT installation (for variant 1 in section
+  [Installation](#installation)).
   May be omitted on options '--server lt' and '--textgears apikey',
   or if script variable 'ltdirectory' has been set appropriately.
-  For instance, the directory has to contain file 'languagetool-server.jar'.
-  The LT zip archive, for example LanguageTool-4.9.zip, can be obtained
-  from the [LT download page](https://www.languagetool.org/download).
-  See also the script comment at variable 'ltdirectory' (default value).
+  See also the script comment at variable 'ltdirectory'.
 - `--lt-command cmd`<br>
-  Set base command to call LT (default value in script variable 'ltcommand');
-  compare [Issue #19](../../issues/19).
+  Base command to call LT (for variant 2 in section
+  [Installation](#installation)).
+  For instance, this is '--lt-command languagetool'.
+  Note that option '--server stop' for stopping a local LT server will not
+  work in this case.
 - `--as-server port`<br>
   Emulate an LT server listening on the given port, for an example
   see section [Interface to Emacs](#interface-to-emacs).
