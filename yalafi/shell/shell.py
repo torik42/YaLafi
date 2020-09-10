@@ -43,10 +43,11 @@ ltserver = 'https://languagetool.org/api/v2/check'
 
 # on option --server my: use local LT server
 #
-ltserver_local = 'http://localhost:8081/v2/check'
+ltserver_local_port = 8081
+ltserver_local = 'http://localhost:' + str(ltserver_local_port) + '/v2/check'
 ltserver_local_cmd = ('java -cp'
             + ' languagetool-server.jar org.languagetool.server.HTTPServer'
-            + ' --port 8081')
+            + ' --port ' + str(ltserver_local_port))
 
 # config file
 #
@@ -126,8 +127,8 @@ from yalafi import tex2txt
 # parse command line
 #
 parser = argparse.ArgumentParser()
-parser.add_argument('--lt-directory', default=default_option_lt_directory)
-parser.add_argument('--lt-command', default=default_option_lt_command)
+parser.add_argument('--lt-directory')
+parser.add_argument('--lt-command')
 parser.add_argument('--as-server', type=int)
 parser.add_argument('--output', default='plain',
                         choices=['plain', 'html', 'xml', 'xml-b', 'json'])
@@ -173,7 +174,17 @@ if not cmdline.no_config:
         config = []
     cmdline = parser.parse_args(config + sys.argv[1:])
 
-ltcommand = cmdline.lt_command + ' --json --encoding utf-8'
+ltcommand = ((cmdline.lt_command or default_option_lt_command)
+                    + ' --json --encoding utf-8')
+if cmdline.lt_command:
+    ltserver_local_cmd = (cmdline.lt_command + ' --http --port '
+                                + str(ltserver_local_port))
+if not cmdline.lt_directory:
+    if cmdline.lt_command:
+        cmdline.lt_directory = '.'
+    else:
+        cmdline.lt_directory = default_option_lt_directory
+
 if cmdline.context < 0:
     # huge context: display whole text
     cmdline.context = int(1e8)
