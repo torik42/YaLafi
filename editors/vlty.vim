@@ -52,6 +52,7 @@ let s:language = substitute(s:language, '_', '-', '')
 let &l:makeprg =
       \ s:python . ' -m yalafi.shell'
       \ . ' --lt-directory ' . s:vlty.lt_directory
+      \ . ' --lt-command "' . s:vlty.lt_command . '"'
       \ . (s:vlty.server ==# 'no'
       \    ?  ''
       \    : ' --server ' . s:vlty.server)

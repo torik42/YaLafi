@@ -9,6 +9,8 @@
 
 " home directory of LT software
 call ale#Set('tex_lty_ltdirectory', '~/lib/LanguageTool')
+" alternative LT command
+call ale#Set('tex_lty_ltcommand', '')
 " use an LT server?
 call ale#Set('tex_lty_server', 'my')
 " language code passed to LT
@@ -31,6 +33,7 @@ call ale#Set('tex_lty_options',
     \   ' -m yalafi.shell'
     \ . ' --output json'
     \ . ' --lt-directory ' . g:ale_tex_lty_ltdirectory
+    \ . ' --lt-command "' . g:ale_tex_lty_ltcommand . '"'
     \ . (g:ale_tex_lty_server == '' ?
                 \ '' : ' --server ' . g:ale_tex_lty_server)
     \ . ' --language ' . g:ale_tex_lty_language
