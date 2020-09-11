@@ -377,6 +377,7 @@ let g:tex_flavor = 'latex'
 set spelllang=de_DE
 let g:vimtex_grammar_vlty = {}
 let g:vimtex_grammar_vlty.lt_directory = '~/lib/LanguageTool-5.0'
+" let g:vimtex_grammar_vlty.lt_command = 'languagetool'
 let g:vimtex_grammar_vlty.server = 'my'
 let g:vimtex_grammar_vlty.shell_options =
         \   ' --packages "*"'
@@ -387,6 +388,10 @@ let g:vimtex_grammar_vlty.shell_options =
 ```
 - Function key 'F9' saves the file, starts the compiler, and opens the quickfix
   window.
+- Uncomment the line with `g:vimtex_grammar_vlty.lt_command`, if LanguageTool
+  has been installed by variant 2 in section [Installation](#installation).
+  In this case, specification of `g:vimtex_grammar_vlty.lt_directory` is
+  not necessary.
 - The option `g:vimtex_grammar_vlty.server = 'my'` usually results in faster 
   checks for small to medium LaTeX files.
 - By default, the vlty compiler passes names of all necessary LaTeX packages
@@ -436,6 +441,7 @@ for related comments.
 ```
 map <F9> :w <bar> make <bar> cw <cr><esc>
 let g:ltyc_ltdirectory = '~/lib/LanguageTool-5.0'
+" let g:ltyc_ltcommand = 'languagetool'
 let g:ltyc_server = 'my'
 let g:ltyc_language = 'de-DE'
 let g:ltyc_shelloptions =
@@ -526,6 +532,8 @@ map <F9> :ALEDetail<CR>
 let g:ale_linters = { 'plaintex': ['lty'], 'tex': ['lty'] }
 " default place of LT installation: '~/lib/LanguageTool'
 let g:ale_tex_lty_ltdirectory = '~/lib/LanguageTool-4.7'
+" uncomment the following line, if LT has been installed via packet manager
+" let g:ale_tex_lty_command = 'languagetool'
 " set to '' to disable server usage or to 'lt' for LT's Web server
 let g:ale_tex_lty_server = 'my'
 " default language: 'en-GB'
