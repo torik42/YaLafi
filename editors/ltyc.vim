@@ -22,6 +22,10 @@ if !exists("g:ltyc_ltdirectory")
     " home of LT software
     let g:ltyc_ltdirectory = '~/lib/LanguageTool'
 endif
+if !exists("g:ltyc_ltcommand")
+    " alternative LT command
+    let g:ltyc_ltcommand = ''
+endif
 if !exists("g:ltyc_server")
     " use an LT server?
     let g:ltyc_server = 'my'
@@ -83,6 +87,7 @@ endif
 let &l:makeprg =
         \ 'python -m yalafi.shell'
         \ . ' --lt-directory ' . g:ltyc_ltdirectory
+        \ . ' --lt-command "' . g:ltyc_ltcommand . '"'
         \ . (g:ltyc_server == '' ? 
                     \ '' : ' --server ' . g:ltyc_server)
         \ . ' --language ' . g:ltyc_language

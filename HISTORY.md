@@ -1,15 +1,19 @@
 Work in progress
 ----------------
-- yalafi core
-  - added special LaTeX comments '%%% LT-SKIP-BEGIN' and '%%% LT-SKIP-END',
-    e.g., for skipping LaTeX preamble (Issue #56)
+- yalafi core:
+  added special LaTeX comments '%%% LT-SKIP-BEGIN' and '%%% LT-SKIP-END',
+  e.g., for skipping parts of LaTeX preamble (issue #56)
 - yalafi.shell
   - fixed issue #57 (error message on unknown language for HTTP server)
-- Vim script ltyc.vim: added option g:ltyc\_showsuggestions
-- lty.vim and ltyc.vim: added comments for option setting
-- Added screenshot for vimtex plugin
-- Bash script yalafi-grammarous: assume installation under ~/.vim/bundle
-- new directory editors/ with all editor interfaces
+  - fixed issue #60 (--lt-command can be used together with '--server my',
+    just using current directory if --lt-directory is not specified)
+- Vim scripts
+    - ltyc.vim: added option g:ltyc\_showsuggestions
+    - vlty.vim, lty.vim, ltyc.vim: added option lt\_command or similar
+    - lty.vim, ltyc.vim: added comments for option setting
+    - new directory editors/ with all editor interfaces
+- Bash script yalafi-grammarous: assume plugin installed under ~/.vim/bundle
+- added screenshot for vimtex plugin
 - README.md: updated, shifted some sections
 
 Version 1.1.4 (2020/09/01)
