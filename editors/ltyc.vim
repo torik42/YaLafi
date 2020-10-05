@@ -76,18 +76,26 @@ if g:ltyc_server != 'lt'
         echoerr s:pref . 'install Java.'
         finish
     endif
-    if !filereadable(fnamemodify(g:ltyc_ltdirectory
-                            \ . '/languagetool-commandline.jar', ':p'))
-        echoerr s:pref . 'set g:ltyc_ltdirectory to the'
-                    \ . ' path of LanguageTool.'
-        finish
+    if g:ltyc_ltcommand != ''
+        if !executable(g:ltyc_ltcommand)
+            echoerr s:pref . 'set g:ltyc_ltcommand correctly.'
+            finish
+        endif
+    else
+        if !filereadable(fnamemodify(g:ltyc_ltdirectory
+                                \ . '/languagetool-commandline.jar', ':p'))
+            echoerr s:pref . 'set g:ltyc_ltdirectory to the'
+                        \ . ' path of LanguageTool.'
+            finish
+        endif
     endif
 endif
 
 let &l:makeprg =
         \ 'python -m yalafi.shell'
-        \ . ' --lt-directory ' . g:ltyc_ltdirectory
         \ . ' --lt-command "' . g:ltyc_ltcommand . '"'
+        \ . (g:ltyc_ltcommand != '' ?
+                    \ '' : ' --lt-directory ' . g:ltyc_ltdirectory)
         \ . (g:ltyc_server == '' ? 
                     \ '' : ' --server ' . g:ltyc_server)
         \ . ' --language ' . g:ltyc_language
