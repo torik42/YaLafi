@@ -32,8 +32,9 @@ call ale#Set('tex_lty_executable', 'python')
 call ale#Set('tex_lty_options',
     \   ' -m yalafi.shell'
     \ . ' --output json'
-    \ . ' --lt-directory ' . g:ale_tex_lty_ltdirectory
     \ . ' --lt-command "' . g:ale_tex_lty_ltcommand . '"'
+    \ . (g:ale_tex_lty_ltcommand != '' ?
+                \ '' : ' --lt-directory ' . g:ale_tex_lty_ltdirectory)
     \ . (g:ale_tex_lty_server == '' ?
                 \ '' : ' --server ' . g:ale_tex_lty_server)
     \ . ' --language ' . g:ale_tex_lty_language
@@ -68,10 +69,16 @@ function! s:check_installation(buffer) abort
         if !executable('java')
             return l:pref . 'install Java.'
         endif
-        if !filereadable(fnamemodify(ale#Var(a:buffer, 'tex_lty_ltdirectory')
-                                \ . '/languagetool-commandline.jar', ':p'))
-            return l:pref . 'set g:ale_tex_lty_ltdirectory (or similar)'
-                        \ . ' to the path of LanguageTool.'
+        if ale#Var(a:buffer, 'tex_lty_ltcommand') != ''
+            if !executable(ale#Var(a:buffer, 'tex_lty_ltcommand'))
+                return l:pref . 'set g:ale_tex_lty_ltcommand (or similar) correctly.'
+            endif
+        else
+            if !filereadable(fnamemodify(ale#Var(a:buffer, 'tex_lty_ltdirectory')
+                                    \ . '/languagetool-commandline.jar', ':p'))
+                return l:pref . 'set g:ale_tex_lty_ltdirectory (or similar)'
+                            \ . ' to the path of LanguageTool.'
+            endif
         endif
     endif
     return ''
