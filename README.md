@@ -295,12 +295,12 @@ Default option values are set at the Python script beginning.
   and Cygwin).
   - LT's server: Server address is set in script variable 'ltserver'.
     For conditions and restrictions, please refer to
-    [http://wiki.languagetool.org/public-http-api](http://wiki.languagetool.org/public-http-api).
+    [https://dev.languagetool.org/public-http-api](https://dev.languagetool.org/public-http-api).
   - Local server: If not yet running, then start it according to script
     variable 'ltserver\_local\_cmd'.
     Additional server options can be passed with --lt-server-options.
     See also
-    [http://wiki.languagetool.org/http-server](http://wiki.languagetool.org/http-server).
+    [https://dev.languagetool.org/http-server](https://dev.languagetool.org/http-server).
     This may be faster than the command-line tool used otherwise, especially
     when checking many LaTeX files or together with an editor plugin.
     The server will not be stopped at the end (use '--server stop').
@@ -532,7 +532,8 @@ map <F9> :ALEDetail<CR>
 let g:ale_linters = { 'plaintex': ['lty'], 'tex': ['lty'] }
 " default place of LT installation: '~/lib/LanguageTool'
 let g:ale_tex_lty_ltdirectory = '~/lib/LanguageTool-4.7'
-" uncomment the following line, if LT has been installed via packet manager
+" uncomment the following assignment, if LT has been installed via packet
+" manager; in this case, g:ale_tex_lty_ltdirectory hasn't to be specified
 " let g:ale_tex_lty_command = 'languagetool'
 " set to '' to disable server usage or to 'lt' for LT's Web server
 let g:ale_tex_lty_server = 'my'
@@ -1197,9 +1198,9 @@ The LaTeX filter can be integrated in scripts, compare the examples in
 [Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#tool-integration).
 
 ```
-python -m yalafi [--nums file] [--repl file] [--defs file] [--pack modules]
-                 [--extr macros] [--lang xy] [--ienc enc] [--unkn]
-                 [latexfile]
+python -m yalafi [--nums file] [--repl file] [--defs file] [--dcls class]
+                 [--pack modules] [--extr macros] [--lang xy] [--ienc enc]
+                 [--unkn] [latexfile]
 ```
 Without positional argument `latexfile`, standard input is read.
 
