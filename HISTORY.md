@@ -8,14 +8,15 @@ Work in progress
   - fixed issue #57 (error message on unknown language for HTTP server)
   - fixed issue #60 (--lt-command can be used together with '--server my',
     just using current directory if --lt-directory is not specified)
+  - fixed issue #66 (references to deprecated wiki.languagetool.org)
 - Vim scripts
     - ltyc.vim: added option g:ltyc\_showsuggestions
     - vlty.vim, lty.vim, ltyc.vim: added option lt\_command or similar
+      (issues #60, #63)
     - lty.vim, ltyc.vim: added comments for option setting
-- new directory editors/ with all editor interfaces
 - Bash script yalafi-grammarous: assume plugin installed under ~/.vim/bundle
-- added screenshot for vimtex plugin
-- README.md: updated, shifted some sections
+- new directory editors/ with all editor interfaces
+- README.md: updated, shifted some sections, added screenshot for vimtex plugin
 
 Version 1.1.4 (2020/09/01)
 --------------------------
