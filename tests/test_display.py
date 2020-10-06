@@ -47,12 +47,16 @@ latex_3 = r"""
 \usepackage{amsmath}
 \begin{align}
     a &= b \\
-    & \quad -d.
+    & \quad -c \\
+    & {} \cdot d \\
+    & \mbox{} \times e.
 \end{align}
 """
 plain_3 = r"""
   V-V-V  equal W-W-W
-     minus X-X-X.
+     minus X-X-X
+    times Y-Y-Y
+    times Z-Z-Z.
 """
 def test_3():
     p = parser.Parser(parameters.Parameters())

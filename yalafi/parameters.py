@@ -166,7 +166,8 @@ class Parameters:
             self.math_repl_display = ['U-U-U', 'V-V-V', 'W-W-W',
                                         'X-X-X', 'Y-Y-Y', 'Z-Z-Z']
             self.math_op_text = {'+': 'plus', '-': 'minus',
-                                    '*': 'mal', '/': 'durch',
+                                    '\\cdot': 'mal', '\\times': 'mal',
+                                    '/': 'durch',
                                     None: 'gleich'}     # default value
         else:
             self.proof_name = 'Proof'
@@ -175,7 +176,8 @@ class Parameters:
             self.math_repl_display = ['U-U-U', 'V-V-V', 'W-W-W',
                                         'X-X-X', 'Y-Y-Y', 'Z-Z-Z']
             self.math_op_text = {'+': 'plus', '-': 'minus',
-                                    '*': 'times', '/': 'over',
+                                    '\\cdot': 'times', '\\times': 'times',
+                                    '/': 'over',
                                     None: 'equal'}      # default value
 
     #   set misc collections
@@ -345,7 +347,7 @@ class Parameters:
         #
         self.math_operators = [
 
-            '+', '-', '*', '/',
+            '+', '-', '\\cdot', '\\times', '/',
             '=', '\\eq', '\\ne', '\\neq',
             '<', '>', '\\le', '\\leq', '\\ge', '\\geq',
             ':', ':=', '\\to', '\\cap', '\\cup',
