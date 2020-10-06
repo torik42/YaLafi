@@ -96,7 +96,7 @@ number_style = 'color: grey'
 msg_LT_server_txt = '''===
 === Using LanguageTool server at https://languagetool.org/
 === For conditions and restrictions, refer to
-===     http://wiki.languagetool.org/public-http-api
+===     https://dev.languagetool.org/public-http-api
 ===
 '''
 msg_LT_server_html = '''
@@ -104,8 +104,8 @@ msg_LT_server_html = '''
 <a href="https://languagetool.org/" target="_blank">
 https://languagetool.org/</a></H2>
 For conditions and restrictions, refer to
-<a href="http://wiki.languagetool.org/public-http-api" target="_blank">
-http://wiki.languagetool.org/public-http-api</a>
+<a href="https://dev.languagetool.org/public-http-api" target="_blank">
+https://dev.languagetool.org/public-http-api</a>
 <hr><hr>
 '''
 
