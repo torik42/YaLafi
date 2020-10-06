@@ -2,17 +2,20 @@ Work in progress
 ----------------
 - yalafi core
   - added special LaTeX comments '%%% LT-SKIP-BEGIN' and '%%% LT-SKIP-END',
-    e.g., for skipping parts of LaTeX preamble (issue #56)
-  - added math operators \\cdot and \\times (issue #65)
+    e.g., for skipping parts of LaTeX preamble (issue [#56](../../issues/56))
+  - added math operators \\cdot and \\times (issue [#65](../../issues/65))
 - yalafi.shell
-  - fixed issue #57 (error message on unknown language for HTTP server)
-  - fixed issue #60 (--lt-command can be used together with '--server my',
-    just using current directory if --lt-directory is not specified)
-  - fixed issue #66 (references to deprecated wiki.languagetool.org)
+  - fixed error message on unknown language for HTTP server
+    (issue [#57](../../issues/57))
+  - added option --lt-command, can be used together with '--server my';
+    just using current directory if --lt-directory is not specified
+    (issue [#60](../../issues/60))
+  - updated references to deprecated wiki.languagetool.org
+    (issue [#66](../../issues/66))
 - Vim scripts
     - ltyc.vim: added option g:ltyc\_showsuggestions
     - vlty.vim, lty.vim, ltyc.vim: added option lt\_command or similar
-      (issues #60, #63)
+      (issues [#60](../../issues/60), [#63](../../issues/63))
     - lty.vim, ltyc.vim: added comments for option setting
 - Bash script yalafi-grammarous: assume plugin installed under ~/.vim/bundle
 - new directory editors/ with all editor interfaces
