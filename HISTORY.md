@@ -1,5 +1,5 @@
-Work in progress
-----------------
+Version 1.1.5 (2020/10/07)
+--------------------------
 - yalafi core
   - added special LaTeX comments '%%% LT-SKIP-BEGIN' and '%%% LT-SKIP-END',
     e.g., for skipping parts of LaTeX preamble (issue [#56](../../issues/56))

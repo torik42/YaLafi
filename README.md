@@ -5,11 +5,11 @@
 The library of LaTeX macros, environments, document classes, and packages is
 still rather restricted, compare the [list of macros](list-of-macros.md).
 Please don't hesitate to
-[raise an Issue](https://github.com/matze-dd/YaLafi/issues),
+[raise an Issue](../../issues),
 if you would like to see something added.
 
 **Summary.**
-This Python (version 3.x) package extracts plain text from LaTeX documents.
+This Python (version >= 3.6) package extracts plain text from LaTeX documents.
 The software may be integrated with a proofreading tool and an editor.
 It provides
 - mapping of character positions between LaTeX and plain text,
@@ -107,7 +107,7 @@ Happy TeXing!
 
 ## Installation
 
-**YaLafi (with Python 3.x).**
+**YaLafi (with Python >= 3.6).**
 Choose one of the following possibilities.
 
 - Use `python -m pip install [--user] yalafi`.
@@ -117,7 +117,7 @@ Choose one of the following possibilities.
   This installs the current snapshot from here.
 - Download the archive from here and unpack it.
   Place yalafi/ in the working directory, or in a standard directory like
-  `/usr/lib/python3.x/` or `~/.local/lib/python3.x/site-packages/`.
+  `/usr/lib/python3.8/` or `~/.local/lib/python3.8/site-packages/`.
   You can also locate it somewhere else and set environment variable
   PYTHONPATH accordingly.
 
