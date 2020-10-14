@@ -1,6 +1,7 @@
 Work in progress
 ----------------
 - minor update of Vim script vlty.vim (for vimtex)
+- README.md: minor edits
 
 Version 1.1.5 (2020/10/07)
 --------------------------

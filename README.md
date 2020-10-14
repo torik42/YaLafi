@@ -9,7 +9,8 @@ Please don't hesitate to
 if you would like to see something added.
 
 **Summary.**
-This Python (version >= 3.6) package extracts plain text from LaTeX documents.
+This Python (at least version 3.6) package extracts plain text from LaTeX
+documents.
 The software may be integrated with a proofreading tool and an editor.
 It provides
 - mapping of character positions between LaTeX and plain text,
@@ -68,8 +69,9 @@ Beside the interface from section
 [Python package interface](#python-package-interface),
 application Python scripts like [yalafi/shell/shell.py](yalafi/shell/shell.py)
 from section [Example application](#example-application)
-can access an interface emulating tex2txt.py from repository Tex2txt by
-'from yalafi import tex2txt'.
+can access an interface emulating tex2txt.py from repository
+[Tex2txt](https://github.com/matze-dd/Tex2txt)
+by 'from yalafi import tex2txt'.
 
 The pure LaTeX filter can be directly used in scripts via a command-line
 interface, it is described in section
@@ -107,7 +109,7 @@ Happy TeXing!
 
 ## Installation
 
-**YaLafi (with Python >= 3.6).**
+**YaLafi (at least with Python version 3.6).**
 Choose one of the following possibilities.
 
 - Use `python -m pip install [--user] yalafi`.
@@ -123,7 +125,7 @@ Choose one of the following possibilities.
 
 **LanguageTool.**
 On most systems, you have to install the software “manually” (1).
-At least under Arch Linux, you can also use a packet manager (2).
+At least under Arch Linux, you can also use a package manager (2).
 
 1. The LanguageTool zip archive, for example LanguageTool-5.0.zip, can be
 obtained from the
@@ -213,7 +215,7 @@ Default option values are set at the Python script beginning.
   Assume plain-text input, do not evaluate LaTeX syntax.
   This cannot be used together with options --include or --replace.
 - `--list-unknown`<br>
-  Only print list of unknown macros and environments seen outside of
+  Only print a list of unknown macros and environments seen outside of
   maths parts.
 - `--language lang`<br>
   Language code as expected by LT (default: 'en-GB').
@@ -235,7 +237,8 @@ Default option values are set at the Python script beginning.
   See section
   [Extension modules for LaTeX packages](#extension-modules-for-latex-packages).
 - `--packages modules`<br>
-  Load these extension modules for LaTeX packages (default: '\*').
+  Load these extension modules for LaTeX packages, given as comma-separated list
+  (default: '\*').
   See section
   [Extension modules for LaTeX packages](#extension-modules-for-latex-packages).
 - `--add-modules file`<br>
@@ -317,6 +320,7 @@ Default option values are set at the Python script beginning.
 - `--no-config`<br>
   Do not read config file, whose name is set in script variable 'config\_file'.
 
+<a name="dictionary-adaptation"></a>
 **Dictionary adaptation.**
 LT evaluates the two files 'spelling.txt' and 'prohibit.txt' in directory
 ```
@@ -411,7 +415,8 @@ let g:vimtex_grammar_vlty.shell_options =
   [Phrase replacement in the plain text](#phrase-replacement-in-the-plain-text).
 - Option `--equation-punctuation display` enables some additional
   interpunction checking for displayed equations in English texts, see
-  section [Example application](#example-application).
+  section [Example application](#example-application) and
+  [this example](#equation-html-report).
 - Option `--single-letters ...` activates search for isolated single letters.
   Note that only the '\|' signs need to be escaped here; compare
   section [Example application](#example-application).
@@ -499,7 +504,8 @@ Here is the [introductory example](#example-html-report) from above:
 
 The Vim plugin
 [\[vim-LanguageTool\]](https://github.com/dpelle/vim-LanguageTool)
-relies on the same XML interface to LanguageTool as the previous variant.
+relies on the same XML interface to LanguageTool as the variant in
+section [Plugin vim-grammarous](#plugin-vim-grammarous).
 Therefore, one can reuse the Bash script
 [editors/yalafi-grammarous](editors/yalafi-grammarous).
 You can add to \~/.vimrc
@@ -512,8 +518,7 @@ map <F9> :LanguageToolCheck<CR>
 Please note the general problem indicated in
 [Issue #17](../../issues/17).
 Here is again the [introductory example](#example-html-report) from above.
-Navigation between highlighted text parts is possible with `:lne` and `:lp`,
-an error list is shown with `:lli`.
+Navigation between highlighted text parts is possible with `:lne` and `:lp`.
 
 ![Vim plugin vim-LanguageTool](figs/vim-languagetool.png)
 
@@ -532,7 +537,7 @@ map <F9> :ALEDetail<CR>
 let g:ale_linters = { 'plaintex': ['lty'], 'tex': ['lty'] }
 " default place of LT installation: '~/lib/LanguageTool'
 let g:ale_tex_lty_ltdirectory = '~/lib/LanguageTool-4.7'
-" uncomment the following assignment, if LT has been installed via packet
+" uncomment the following assignment, if LT has been installed via package
 " manager; in this case, g:ale_tex_lty_ltdirectory hasn't to be specified
 " let g:ale_tex_lty_command = 'languagetool'
 " set to '' to disable server usage or to 'lt' for LT's Web server
@@ -683,8 +688,8 @@ proofreading software.
 Here is a list of the most important filter operations.
 When the filter encounters a LaTeX problem like a missing end of equation,
 a message is printed to stderr.
-Additionally, the message is included into the filter output together
-with the mark from 'Parameters.mark\_latex\_error' in yalafi/parameters.py.
+Additionally, the mark from 'Parameters.mark\_latex\_error' in file
+yalafi/parameters.py is included into the filter output.
 This mark should raise a spelling error from the proofreader at the place
 where the problem was detected.
 
@@ -726,7 +731,8 @@ where the problem was detected.
   Trailing interpunction from 'Parameters.math\_punctuation' is appended.
 - Equation environments are resolved in a way suitable for check of
   interpunction and spacing.
-  The argument of \\text{...} is included into the output text.
+  The argument of macros like \\mbox and \\text is included into the output
+  text.
   Versions \\\[...\\\] and $$...$$ are handled like environment displaymath.
   See also sections
   [Handling of displayed equations](#handling-of-displayed-equations)
@@ -756,7 +762,7 @@ where the problem was detected.
   \\LTadd{...}, \\LTskip{...}, \\LTalter{...}{...} in the LaTeX text;
   compare section
   [Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text).
-- Complete text sections, for instance part of the LaTeX preamble, may be
+- Complete text sections, for instance parts of the LaTeX preamble, may be
   skipped with the special LaTeX comment '%%% LT-SKIP-BEGIN'; see section
   [Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text).
 
@@ -853,12 +859,14 @@ the first part is replaced by the second one.
 Space in the first part may correspond to arbitrary space in the plain
 text that does not break the paragraph.
 
-This German example replaces two words by a single one and vice versa.
+This German example replaces two words by a single one and vice versa:
 ```
 so dass & sodass
 nichtlineare & nicht lineare
 nichtlineares & nicht lineares
 ```
+Finally, please note the comment on
+[dictionary adaptation](#dictionary-adaptation).
 
 [Back to contents](#contents)
 
@@ -882,7 +890,7 @@ submodules that are activated by the LaTeX filter when executing
   be loaded for placeholders like '\*'.
 - Options `--dcls cls` (yalafi) and `--documentclass cls` (yalafi.shell)<br>
   This is similar to --pack and --packages (default: '').
-  Submodule is loaded from yalafi.documentclasses (variable
+  The submodule is loaded from yalafi.documentclasses (variable
   'Parameters.class\_modules'), if 'cls' does not start with '.'.
 - See also option `--add-modules file` in section
   [Example application](#example-application).
@@ -1103,9 +1111,10 @@ necessary to avoid false warnings from the proofreader; compare section
 
 ### Inclusion of “normal” text
 
-In variant “Full version”, the argument of \\text\{...\}
-(macro names: collection 'Parameters.math\_text\_macros') is directly copied.
-Outside of \\text, only maths space like \\; and \\quad
+In variant “Full version”, the argument of \\mbox (macro names: collection
+'Parameters.math\_text\_macros', loading of LaTeX package amsmath adds \\text)
+is directly copied.
+Outside of \\mbox etc., only maths space like \\; and \\quad
 (see 'Parameters.math\_space') is considered as space.
 Therefore, one will get warnings from the proofreading program, if subsequent
 \\text and maths parts are not properly separated.
@@ -1194,7 +1203,7 @@ script tex2txt.py in repository
 
 ## Command-line of pure filter
 
-The LaTeX filter can be integrated in scripts, compare the examples in
+The LaTeX filter can be integrated in shell scripts, compare the examples in
 [Tex2txt/README.md](https://github.com/matze-dd/Tex2txt#tool-integration).
 
 ```
@@ -1256,9 +1265,6 @@ for larger files it can be slower than 'Tex2txt/tex2txt.py --char'.
 Run-time increases quasi linearly with file size.
 Due to token generation for each single “normal” character, memory usage
 may be substantial for long input texts.
-
-Number of effective code lines (without blank and pure comment lines)
-is around 1050 for Tex2txt/tex2txt.py and 1450 for yalafi/\*.py in total.
 
 <a name="equation-html-report"></a>
 With
