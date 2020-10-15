@@ -11,14 +11,16 @@ Please note that not everything has to be declared.
 
 **Packages**
 
-[LaTeX builtins](#latex-builtins),
+[LaTeX builtins](#latex-builtins),<br>
 [amsmath](#package-amsmath),
 [amsthm](#package-amsthm),
+[babel](#package-babel),
 [biblatex](#package-biblatex),
 [glossaries](#package-glossaries),
 [glossaries-extra](#package-glossaries-extra),
 [graphicx](#package-graphicx),
 [hyperref](#package-hyperref),
+[inputenc](#package-inputenc),
 [listings](#package-listings),
 [pgfplots](#package-pgfplots),
 [tikz](#package-tikz),
@@ -156,6 +158,17 @@ tests: [tests/test\_packages/test\_amsthm.py](tests/test_packages/test_amsthm.py
 proof
 
 
+## Package babel
+
+Source: [yalafi/packages/babel.py](yalafi/packages/babel.py),
+tests: [tests/test\_packages/test\_babel.py](tests/test_packages/test_babel.py)
+
+**Macros**
+
+\\foreignlanguage,
+\\selectlanguage
+
+
 ## Package biblatex
 
 Source: [yalafi/packages/biblatex.py](yalafi/packages/biblatex.py),
@@ -247,6 +260,16 @@ tests: [tests/test\_packages/test\_hyperref.py](tests/test_packages/test_hyperre
 \\href,
 \\texorpdfstring,
 \\url
+
+
+## Package inputenc
+
+Source: [yalafi/packages/inputenc.py](yalafi/packages/inputenc.py),
+tests: [tests/test\_packages/test\_inputenc.py](tests/test_packages/test_inputenc.py)
+
+**Macros**
+
+\\inputencoding
 
 
 ## Package listings

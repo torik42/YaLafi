@@ -1,6 +1,10 @@
 Work in progress
 ----------------
-- minor update of Vim script vlty.vim (for vimtex)
+- new LaTeX packages
+    - babel: macros \\foreignlanguage, \\selectlanguage
+      (issue [#72](../../issues/72))
+    - inputenc: macro \\inputencoding (issue [#72](../../issues/72))
+- Vim script vlty.vim (for vimtex): minor update
 - README.md: minor edits
 
 Version 1.1.5 (2020/10/07)
