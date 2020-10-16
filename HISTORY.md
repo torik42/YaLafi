@@ -1,9 +1,12 @@
 Work in progress
 ----------------
 - new LaTeX packages
-    - babel: macros \\foreignlanguage, \\selectlanguage
-      (issue [#72](../../issues/72))
-    - inputenc: macro \\inputencoding (issue [#72](../../issues/72))
+  - babel: macros \\foreignlanguage, \\selectlanguage
+    (issue [#72](../../issues/72))
+  - inputenc: macro \\inputencoding (issue [#72](../../issues/72))
+- yalafi.shell
+  - better error handling if position mapping fails for text report
+    (issue [#75](../../issues/75))
 - Vim script vlty.vim (for vimtex): minor update
 - README.md: minor edits
 

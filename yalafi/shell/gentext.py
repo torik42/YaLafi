@@ -17,7 +17,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from yalafi import tex2txt
+from yalafi import tex2txt, utils
 import sys
 
 #####################################################################
@@ -41,6 +41,10 @@ def output_text_report(tex, plain, charmap, matches, file, out):
         nl = plain.rfind('\n', 0, offset) + 1
         col = offset - nl + 1
         lc = tex2txt.translate_numbers(tex, plain, charmap, starts, lin, col)
+        if not lc:
+            utils.fatal('output_text_report(): could not map character'
+                        + ' position at lin=' + str(lin) + ', col=' + str(col)
+                        + ' (in plain text)')
 
         rule = json_get(m, 'rule', dict)
         out.write('=== ' + file + ' ===\n')
