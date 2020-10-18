@@ -17,7 +17,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from yalafi import tex2txt, utils
+from . import utils
 import sys
 
 #####################################################################
@@ -33,23 +33,17 @@ import sys
 #   - XXX: some code duplication with genhtml.begin_match()
 #
 def output_text_report(tex, plain, charmap, matches, file, out):
-    starts = tex2txt.get_line_starts(plain)
-
     for (nr, m) in enumerate(matches, 1):
+        m = utils.map_match_position(m, tex, charmap)
         offset = json_get(m, 'offset', int)
-        lin = plain.count('\n', 0, offset) + 1
-        nl = plain.rfind('\n', 0, offset) + 1
+        lin = tex.count('\n', 0, offset) + 1
+        nl = tex.rfind('\n', 0, offset) + 1
         col = offset - nl + 1
-        lc = tex2txt.translate_numbers(tex, plain, charmap, starts, lin, col)
-        if not lc:
-            utils.fatal('output_text_report(): could not map character'
-                        + ' position at lin=' + str(lin) + ', col=' + str(col)
-                        + ' (in plain text)')
 
         rule = json_get(m, 'rule', dict)
         out.write('=== ' + file + ' ===\n')
 
-        s = (str(nr) + '.) Line ' + str(lc.lin) + ', column ' + str(lc.col)
+        s = (str(nr) + '.) Line ' + str(lin) + ', column ' + str(col)
                 + ', Rule ID: ' + json_get(rule, 'id', str))
         if 'subId' in rule:
                 s += '[' + json_get(rule, 'subId', str) + ']'
