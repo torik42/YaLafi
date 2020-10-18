@@ -7,6 +7,8 @@ Work in progress
 - yalafi.shell
   - revised character position mapping for text report
     (issues [#73](../../issues/73), [#75](../../issues/75), [#77](../../issues/77))
+- added tests for yalafi.shell, using option --lt-command and temporarily
+  created LT emulations
 - Vim script vlty.vim (for vimtex): minor update
 - README.md: minor edits
 
