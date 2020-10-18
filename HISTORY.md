@@ -6,7 +6,7 @@ Work in progress
   - inputenc: macro \\inputencoding (issue [#72](../../issues/72))
 - yalafi.shell
   - revised character position mapping for text report
-    (issues [#75](../../issues/75), [#77](../../issues/77))
+    (issues [#73](../../issues/73), [#75](../../issues/75), [#77](../../issues/77))
 - Vim script vlty.vim (for vimtex): minor update
 - README.md: minor edits
 
