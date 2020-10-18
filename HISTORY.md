@@ -5,8 +5,8 @@ Work in progress
     (issue [#72](../../issues/72))
   - inputenc: macro \\inputencoding (issue [#72](../../issues/72))
 - yalafi.shell
-  - better error handling if position mapping fails for text report
-    (issue [#75](../../issues/75))
+  - revised character position mapping for text report
+    (issues [#75](../../issues/75), [#77](../../issues/77))
 - Vim script vlty.vim (for vimtex): minor update
 - README.md: minor edits
 
