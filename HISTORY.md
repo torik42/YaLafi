@@ -1,3 +1,7 @@
+Work in progress
+----------------
+- README.md: minor edits
+
 Version 1.1.6 (2020/10/19)
 --------------------------
 - new LaTeX packages

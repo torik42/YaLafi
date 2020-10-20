@@ -404,7 +404,8 @@ let g:vimtex_grammar_vlty.shell_options =
   loads all packages known to the filter.
 - YaLafi's expansion of project-specific macros can be controlled via
   option `--define ...`.
-  Example for defs.tex:
+  Example for defs.tex (Note that the first three lines are only necessary,
+  if the currently edited file does not directly contain these definitions.):
 ```
     \newcommand{\zB}{z.\,B. }   % LanguageTool correctly insists on
                                 % narrow space in this German abbreviation
@@ -1033,7 +1034,7 @@ With the entry
 ```
     Environ(self, 'align', remove=True, add_pars=False),
 ```
-in 'Parameters.environment\_defs' of file yalafi/parameters.py,
+in local variable 'environments' of file yalafi/packages/amsmath.py,
 the equation environment is simply removed.
 We get the following filter output that will probably cause a problem,
 even if the equation itself ends with a correct interpunction sign.
@@ -1060,6 +1061,12 @@ This will also hold true, if the interpunction sign
 as \\label and \\nonumber.
 
 ### Full version
+
+**Remark.**
+Our equation parsing currently assumes that aligned operators like '=' and '+'
+are placed at the right side of the alignment character '\&'.
+LaTeX does not enforce that, but it is the style found in examples of the
+documentation for package amsmath.
 
 With the default entry
 ```
