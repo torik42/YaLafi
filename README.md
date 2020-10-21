@@ -17,7 +17,8 @@ It provides
 - simple inclusion of own LaTeX macros and environments with tailored
   treatment,
 - careful conservation of text flows,
-- some parsing of displayed equations for detection of interpunction problems.
+- some parsing of displayed equations for detection of included “plain” text
+  and of interpunction problems.
 
 The sample Python application yalafi.shell from section
 [Example application](#example-application) integrates the LaTeX filter
