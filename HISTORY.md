@@ -5,6 +5,8 @@ Work in progress
     (issue [#80](../../issues/80))
 - yalafi core
   - added 'ru' for option --lang (issue [#84](../../issues/84))
+  - fixed problem in tests/test_packages/test\_latex\_builtins.py
+    (issue [#86](../../issues/86))
 - README.md: minor edits
 
 Version 1.1.6 (2020/10/19)
