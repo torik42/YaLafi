@@ -18,6 +18,8 @@ data_test_macros_latex = [
     (r'\aa', 'å'),
     (r'\AE', 'Æ'),
     (r'\ae', 'æ'),
+    (r'A\bibitem{lab}B', 'A  B'),
+    (r'A\bibliographystyle{alphadin}B', 'AB'),
     (r'A\footnotemark B', 'AB'),
     (r'A\footnotemark[1] B', 'A B'),
     (r'A\hfill B', 'A B'),
@@ -50,7 +52,7 @@ data_test_macros_latex = [
 ]
 
 @pytest.mark.parametrize('latex,plain_expected', data_test_macros_latex)
-def test_macros_latex(latex, plain_expected):
+def test_macros_latex_builtins(latex, plain_expected):
     plain = get_plain(latex)
     assert plain == plain_expected
 
@@ -149,6 +151,7 @@ data_test_environments = [
     (r'A\begin{table}B\end{table}C', 'ABC'),
     (r'A\begin{table}[o]B\end{table}C', 'ABC'),
     (r'A\begin{tabular}{|||}B\end{tabular}C', 'ABC'),
+    (r'A\begin{thebibliography}{lab}B', 'A\n\nB'),
     (r'A\begin{verbatim}B\end{verbatim}C', 'A\n\nB\n\nC'),
 
 ]
