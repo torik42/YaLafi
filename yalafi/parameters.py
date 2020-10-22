@@ -180,10 +180,10 @@ class Parameters:
                                         'Д-Д-Д', 'Е-Е-Е', 'Ж-Ж-Ж']
             self.math_repl_display = ['Х-Х-Х', 'Ц-Ц-Ц', 'Щ-Щ-Щ',
                                         'Ы-Ы-Ы', 'Э-Э-Э', 'Ю-Ю-Ю']
-            self.math_op_text = {'+': 'плюс', '-': 'ми́нус',
+            self.math_op_text = {'+': 'плюс', '-': 'минус',
                                     '\\cdot': 'раз', '\\times': 'раз',
                                     '/': 'на',
-                                    None: 'ра́вный'}     # default value
+                                    None: 'равный'}     # default value
         else:
             # default: English
             self.proof_name = 'Proof'
