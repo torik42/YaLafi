@@ -48,6 +48,8 @@ tests: [tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_
 \\aa,
 \\AE,
 \\ae,
+\\bibitem,
+\\bibliographystyle,
 \\caption (separates text),
 \\chapter,
 \\cite,
@@ -111,6 +113,7 @@ itemize,
 minipage,
 table,
 tabular,
+thebibliography,
 verbatim
 
 
