@@ -162,6 +162,7 @@ class Parameters:
     #
     def init_language(self, language):
         if language == 'de':
+            # German
             self.special_tokens.update(self.special_tokens_de)
             self.proof_name = 'Beweis'
             self.math_repl_inline = ['B-B-B', 'C-C-C', 'D-D-D',
@@ -172,7 +173,19 @@ class Parameters:
                                     '\\cdot': 'mal', '\\times': 'mal',
                                     '/': 'durch',
                                     None: 'gleich'}     # default value
+        elif language == 'ru':
+            # Russian
+            self.proof_name = 'Доказательство'
+            self.math_repl_inline = ['B-B-B', 'C-C-C', 'D-D-D',
+                                        'E-E-E', 'F-F-F', 'G-G-G']
+            self.math_repl_display = ['U-U-U', 'V-V-V', 'W-W-W',
+                                        'X-X-X', 'Y-Y-Y', 'Z-Z-Z']
+            self.math_op_text = {'+': 'плюс', '-': 'минус',
+                                    '\\cdot': 'раз', '\\times': 'раз',
+                                    '/': 'на',
+                                    None: 'равно'}      # default value
         else:
+            # default: English
             self.proof_name = 'Proof'
             self.math_repl_inline = ['B-B-B', 'C-C-C', 'D-D-D',
                                         'E-E-E', 'F-F-F', 'G-G-G']

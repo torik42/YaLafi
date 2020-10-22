@@ -54,7 +54,7 @@ Only few people is lazy.    We use redx colour.
 ```
 <a name="example-html-report"></a>
 This is the corresponding HTML report
-(for another example, [see here](#equation-html-report)):
+(for an example with a Vim plugin, [see here](#example-vimtex-plugin)):
 
 ![HTML report](figs/shell.png)
 
@@ -423,6 +423,7 @@ let g:vimtex_grammar_vlty.shell_options =
   Note that only the '\|' signs need to be escaped here; compare
   section [Example application](#example-application).
 
+<a name="example-vimtex-plugin"></a>
 Here is the [introductory example](#example-html-report) from above:
 
 ![Vim plugin vim-vimtex](figs/vim-vimtex.png)
@@ -1236,7 +1237,7 @@ Without positional argument `latexfile`, standard input is read.
 - `--extr ma[,mb,...]`<br>
   As option --extract in section [Example application](#example-application).
 - `--lang xy`<br>
-  Language 'de' or 'en' (default: 'en', also taken in case of unknown
+  Language 'de', 'en' or 'ru' (default: 'en', also taken in case of unknown
   language).
   Is used for adaptation of equation replacements, maths operator names,
   proof titles, and for handling of macros like '\"\='.
