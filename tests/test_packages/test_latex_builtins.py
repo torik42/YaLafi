@@ -52,7 +52,7 @@ data_test_macros_latex = [
 ]
 
 @pytest.mark.parametrize('latex,plain_expected', data_test_macros_latex)
-def test_macros_latex_builtins(latex, plain_expected):
+def test_macros_latex(latex, plain_expected):
     plain = get_plain(latex)
     assert plain == plain_expected
 
@@ -157,7 +157,7 @@ data_test_environments = [
 ]
 
 @pytest.mark.parametrize('latex,plain_expected', data_test_environments)
-def test_macros_latex(latex, plain_expected):
+def test_environments(latex, plain_expected):
     plain = get_plain(latex)
     assert plain == plain_expected
 
