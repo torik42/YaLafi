@@ -39,6 +39,8 @@ class Parameters:
         \newcommand{\aa}{å}
         \newcommand{\AE}{Æ}
         \newcommand{\ae}{æ}
+        \newcommand{\bibitem}[1]{\item}
+        \newcommand{\bibliographystyle}[1]{}
         \newcommand{\footnotemark}[1][]{}
         \newcommand{\hfill}{ }
         \newcommand{\include}[1]{}
@@ -118,6 +120,7 @@ class Parameters:
 #       Environ(self, 'table', repl='[Tabelle]', remove=True),
         Environ(self, 'table', args='O', add_pars=False),
         Environ(self, 'tabular', args='A', add_pars=False),
+        Environ(self, 'thebibliography', args='A', add_pars=True),
         Environ(self, 'verbatim', remove=False, add_pars=True),
 
         EquEnv(self, 'displaymath'),

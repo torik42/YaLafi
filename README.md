@@ -17,7 +17,7 @@ It provides
 - simple inclusion of own LaTeX macros and environments with tailored
   treatment,
 - careful conservation of text flows,
-- some parsing of displayed equations for detection of included “plain” text
+- some parsing of displayed equations for detection of included “normal” text
   and of interpunction problems.
 
 The sample Python application yalafi.shell from section
@@ -1035,7 +1035,8 @@ With the entry
 ```
     Environ(self, 'align', remove=True, add_pars=False),
 ```
-in local variable 'environments' of file yalafi/packages/amsmath.py,
+in list 'environments' of file
+[yalafi/packages/amsmath.py](yalafi/packages/amsmath.py),
 the equation environment is simply removed.
 We get the following filter output that will probably cause a problem,
 even if the equation itself ends with a correct interpunction sign.

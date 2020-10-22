@@ -1,5 +1,8 @@
 Work in progress
 ----------------
+- LaTeX macros / environments
+  - builtins: added \\bibitem, \\bibliographystyle, \\begin{thebibliography}
+    (issue [#80](../../issues/80))
 - README.md: minor edits
 
 Version 1.1.6 (2020/10/19)
