@@ -54,7 +54,7 @@ Only few people is lazy.    We use redx colour.
 ```
 <a name="example-html-report"></a>
 This is the corresponding HTML report
-(for a Vim plugin, [see here](#example-vimtex-plugin)):
+(for an example with a Vim plugin, [see here](#example-vimtex-plugin)):
 
 ![HTML report](figs/shell.png)
 
