@@ -7,7 +7,8 @@ Work in progress
   - added option --simple-equations for simple replacements of displayed
     equations (issue [#85](../../issues/85))
 - yalafi core
-  - added 'ru' for option --lang (issue [#84](../../issues/84))
+  - added 'ru' for option --lang (issues [#84](../../issues/84),
+    [#90](../../issues/90))
   - added option --seqs for simple replacements of displayed equations
     (issue [#85](../../issues/85))
   - fixed problem in tests/test_packages/test\_latex\_builtins.py

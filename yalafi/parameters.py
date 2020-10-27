@@ -176,10 +176,10 @@ class Parameters:
         elif language == 'ru':
             # Russian
             self.proof_name = 'Доказательство'
-            self.math_repl_inline = ['B-B-B', 'C-C-C', 'D-D-D',
-                                        'E-E-E', 'F-F-F', 'G-G-G']
-            self.math_repl_display = ['U-U-U', 'V-V-V', 'W-W-W',
-                                        'X-X-X', 'Y-Y-Y', 'Z-Z-Z']
+            self.math_repl_inline = ['Б-Б-Б', 'В-В-В', 'Г-Г-Г',
+                                        'Д-Д-Д', 'Е-Е-Е', 'Ж-Ж-Ж']
+            self.math_repl_display = ['Ц-Ц-Ц', 'Ч-Ч-Ч', 'Ш-Ш-Ш',
+                                        'Ы-Ы-Ы', 'Э-Э-Э', 'Ю-Ю-Ю']
             self.math_op_text = {'+': 'плюс', '-': 'минус',
                                     '\\cdot': 'раз', '\\times': 'раз',
                                     '/': 'на',

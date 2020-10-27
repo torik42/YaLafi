@@ -44,3 +44,17 @@ def test_3():
     plain, pos = utils.get_txt_pos(toks)
     assert plain_3 == plain
 
+latex_4 = r"""
+$y$
+для $x$
+"""
+plain_4 = r"""
+В-В-В
+для Г-Г-Г
+"""
+def test_4():
+    p = parser.Parser(parameters.Parameters(language='ru'))
+    toks = p.parse(latex_4)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_4 == plain
+
