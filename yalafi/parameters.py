@@ -329,6 +329,10 @@ class Parameters:
     #
     def init_math_collections(self):
 
+        #   simple replacement for displayed equations?
+        #
+        self.math_displayed_simple = False
+
         #   things to be ignored in math mode
         #   - some entries are redundant, if macros are known from text mode
         #     and expand to 'nothing'

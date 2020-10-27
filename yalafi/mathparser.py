@@ -61,7 +61,7 @@ class MathParser:
 
     def expand_display_math(self, buf, tok, env):
         buf.next()
-        start = tok.pos
+        start_simple = start = tok.pos
         first_section = True
         next_repl = True
         out = [defs.ActionToken(start),
@@ -93,6 +93,15 @@ class MathParser:
             else:
                 out = [defs.ActionToken(out[-1].pos)]
         else:
+            if self.parser.parms.math_displayed_simple:
+                txt = self.parser.get_text_direct(out).strip()
+                out = [defs.ActionToken(start_simple),
+                        defs.SpaceToken(start_simple, '  ', pos_fix=True),
+                        defs.TextToken(start_simple,
+                        self.parser.parms.math_repl_display[0], pos_fix=True)]
+                if txt and txt[-1] in self.parser.parms.math_punctuation:
+                    out.append(defs.TextToken(out[-1].pos, txt[-1],
+                                                        pos_fix=True))
             out.append(defs.ActionToken(out[-1].pos))
         return out
 
