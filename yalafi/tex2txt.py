@@ -44,6 +44,8 @@ def tex2txt(latex, opts):
         extr = ['\\' + s for s in opts.extr.split(',')]
     else:
         extr = []
+    if opts.seqs:
+        parms.math_displayed_simple = True
     p = parser.Parser(parms, packages, read_macros=read)
     toks = p.parse(latex, extract=extr)
     txt, pos = utils.get_txt_pos(toks)
@@ -199,6 +201,7 @@ class Options:
             pack=None,      # import modules for \usepackage
             extr=None,      # or string: comma-separated macro list
             lang=None,      # or set to language code
+            seqs=False,     # True: simple replacements for displayed equations
             unkn=False):    # True: print unknowns
         self.ienc = ienc
         self.repl = repl
@@ -211,6 +214,7 @@ class Options:
         self.pack = pack
         self.extr = extr
         self.lang = lang
+        self.seqs = seqs
         self.unkn = unkn
 
 #   function to be called for stand-alone script
@@ -227,6 +231,7 @@ def main():
     parser.add_argument('--extr')
     parser.add_argument('--lang')
     parser.add_argument('--ienc')
+    parser.add_argument('--seqs', action='store_true')
     parser.add_argument('--unkn', action='store_true')
     cmdline = parser.parse_args()
 
@@ -242,6 +247,7 @@ def main():
                 pack=cmdline.pack,
                 extr=cmdline.extr,
                 lang=cmdline.lang,
+                seqs=cmdline.seqs,
                 unkn=cmdline.unkn)
 
     if cmdline.file:

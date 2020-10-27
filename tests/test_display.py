@@ -186,3 +186,22 @@ def test_9():
     plain, pos = utils.get_txt_pos(toks)
     assert plain_9 == plain
 
+#   simplified equation parsing
+#
+latex_10 = r"""
+\usepackage{amsmath}
+\begin{align}
+    a &= b.
+\end{align}
+"""
+plain_10 = r"""
+  W-W-W.
+"""
+def test_10():
+    parms = parameters.Parameters()
+    parms.math_displayed_simple = True
+    p = parser.Parser(parms)
+    toks = p.parse(latex_10)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_10 == plain
+

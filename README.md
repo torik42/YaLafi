@@ -251,6 +251,10 @@ Default option values are set at the Python script beginning.
   comma-separated list.
   This is useful for check of foreign-language text, if marked accordingly.
   Internally used for detection of file inclusions on --include.
+- `--simple-equations`<br>
+  Replace a displayed equation only with a single placeholder from collection
+  'Paramaters.math\_repl\_display' in file yalafi/parameters; append trailing
+  interpunction, if present.
 - `--disable rules`<br>
   Comma-separated list of ignored LT rules, is passed as --disable to LT
   (default: 'WHITESPACE\_RULE').
@@ -1071,6 +1075,10 @@ are placed at the right side of the alignment character '\&'.
 LaTeX does not enforce that, but it is the style found in examples of the
 documentation for package amsmath.
 
+**Remark.**
+For a simplification, see option --simple-equations in section
+[Example application](#example-application).
+
 With the default entry
 ```
     EquEnv(self, 'align'),
@@ -1219,7 +1227,7 @@ The LaTeX filter can be integrated in shell scripts, compare the examples in
 ```
 python -m yalafi [--nums file] [--repl file] [--defs file] [--dcls class]
                  [--pack modules] [--extr macros] [--lang xy] [--ienc enc]
-                 [--unkn] [latexfile]
+                 [--seqs] [--unkn] [latexfile]
 ```
 Without positional argument `latexfile`, standard input is read.
 
@@ -1243,6 +1251,9 @@ Without positional argument `latexfile`, standard input is read.
   proof titles, and for handling of macros like '\"\='.
 - `--ienc enc`<br>
   As option --encoding in section [Example application](#example-application).
+- `--seqs`<br>
+  As option --simple-equations in section
+  [Example application](#example-application).
 - `--unkn`<br>
   As option --list-unknown in section
   [Example application](#example-application).
@@ -1265,6 +1276,7 @@ Invocation of `python -m yalafi ...` differs as follows from
   see [the example below](#equation-html-report).
 - Added options --dcls and --pack allow modification of predefined LaTeX
   macros and environments at Python level.
+- Added option --seqs.
 - Option --defs expects a file containing macro definitions as LaTeX code.
 - Option --ienc is also effective for file from --defs.
 - Option --char (position tracking for single characters) is always activated.
