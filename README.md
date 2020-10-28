@@ -451,7 +451,7 @@ values for option 'ltyc\_shelloptions'.
 Please refer to section [Plugin vimtex](#plugin-vimtex)
 for related comments.
 ```
-map <F9> :w <bar> make <bar> cw <cr><esc>
+map <F9> :w <bar> compiler ltyc <bar> make <bar> cw <cr><esc>
 let g:ltyc_ltdirectory = '~/lib/LanguageTool-5.0'
 " let g:ltyc_ltcommand = 'languagetool'
 let g:ltyc_server = 'my'
