@@ -30,6 +30,10 @@ if !exists("g:ltyc_server")
     " use an LT server?
     let g:ltyc_server = 'my'
 endif
+if !exists("g:ltyc_encoding")
+    " encoding of LaTeX source
+    let g:ltyc_encoding = 'auto'
+endif
 if !exists("g:ltyc_language")
     " language code for LT
     let g:ltyc_language = 'en-GB'
@@ -98,6 +102,9 @@ let &l:makeprg =
                     \ '' : ' --lt-directory ' . g:ltyc_ltdirectory)
         \ . (g:ltyc_server == '' ? 
                     \ '' : ' --server ' . g:ltyc_server)
+        \ . ' --encoding ' . (g:ltyc_encoding ==# 'auto'
+        \    ? (empty(&l:fileencoding) ? &l:encoding : &l:fileencoding)
+        \    : g:ltyc_encoding)
         \ . ' --language ' . g:ltyc_language
         \ . ' --disable "' . g:ltyc_disable . '"'
         \ . ' --enable "' . g:ltyc_enable . '"'
