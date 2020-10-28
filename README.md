@@ -381,7 +381,7 @@ A copy of the corresponding Vim compiler script is
 The following snippet demonstrates a basic vimrc setting and some useful
 values for vlty option field 'shell\_options'.
 ```
-map <F9> :w <bar> compiler vlty <bar> make <bar> cw <cr><esc>
+map <F9> :w <bar> compiler vlty <bar> make <bar> :cw <cr><esc>
 let g:tex_flavor = 'latex'
 set spelllang=de_DE
 let g:vimtex_grammar_vlty = {}
@@ -451,7 +451,7 @@ values for option 'ltyc\_shelloptions'.
 Please refer to section [Plugin vimtex](#plugin-vimtex)
 for related comments.
 ```
-map <F9> :w <bar> compiler ltyc <bar> make <bar> cw <cr><esc>
+map <F9> :w <bar> compiler ltyc <bar> make <bar> :cw <cr><esc>
 let g:ltyc_ltdirectory = '~/lib/LanguageTool-5.0'
 " let g:ltyc_ltcommand = 'languagetool'
 let g:ltyc_server = 'my'
