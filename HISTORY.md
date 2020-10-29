@@ -17,6 +17,7 @@ Work in progress
     (issue [#85](../../issues/85))
   - fixed problem in tests/test_packages/test\_latex\_builtins.py
     (issue [#86](../../issues/86))
+- added tests with Python 3.9
 - README.md: updated
 
 Version 1.1.6 (2020/10/19)
