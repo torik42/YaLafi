@@ -142,6 +142,4 @@ call ale#linter#Define('tex', {
     \   'callback': 'ale_linters#tex#lty#Handle',
     \   'lint_file': 0,
     \   'read_buffer': 0,
-    \   'read_temporary_file': 1,
 \})
-
