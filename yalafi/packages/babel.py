@@ -11,7 +11,7 @@ def modify_parameters(parms):
 
     macros_latex = r"""
 
-        \newcommand{\foreignlanguage}[2]{#2}
+        \newcommand{\foreignlanguage}[3][]{#3}
         \newcommand{\selectlanguage}[1]{}
 
     """
