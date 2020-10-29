@@ -15,6 +15,7 @@ def get_plain(latex):
 data_test_macros_latex = [
 
     (r'A\foreignlanguage{russian}{T}B', 'ATB'),
+    (r'A\foreignlanguage[opt]{russian}{T}B', 'ATB'),
     (r'A\selectlanguage{russian}B', 'AB'),
 
 ]
