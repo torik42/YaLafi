@@ -3,6 +3,7 @@ Work in progress
 - LaTeX macros / environments
   - builtins: added \\bibitem, \\bibliographystyle, \\begin{thebibliography}
     (issue [#80](../../issues/80))
+  - package babel: optional argument for \\foreignlanguage
 - Vim scripts
   - vlty.vim, ltyc.vim: pass Vim's 'fileencoding' to yalafi.shell
   - lty.vim: small simplification
