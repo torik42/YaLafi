@@ -3,7 +3,9 @@ Work in progress
 - LaTeX macros / environments
   - builtins: added \\bibitem, \\bibliographystyle, \\begin{thebibliography}
     (issue [#80](../../issues/80))
-- Vim scripts vlty.vim, ltyc.vim: pass Vim's 'fileencoding' to yalafi.shell
+- Vim scripts
+  - vlty.vim, ltyc.vim: pass Vim's 'fileencoding' to yalafi.shell
+  - lty.vim: small simplification
 - yalafi.shell
   - added option --simple-equations for simple replacements of displayed
     equations (issue [#85](../../issues/85))
