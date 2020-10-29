@@ -30,7 +30,7 @@ if sys.version_info[:2] == (3, 6):
 <error category="Possible Typo" context="This is ä testx. " contextoffset="10" errorlength="5" fromx="10" fromy="0" msg="Possible spelling mistake found" replacements="test#tests#testy#test x" tox="15" toy="0" />
 </matches>
 """
-elif sys.version_info[:2] == (3, 8):
+else:
     msg_xml = r"""<matches>
 <error fromy="0" fromx="10" toy="0" tox="15" category="Possible Typo" msg="Possible spelling mistake found" replacements="test#tests#testy#test x" context="This is ä testx. " contextoffset="10" errorlength="5" />
 </matches>
@@ -48,7 +48,7 @@ if sys.version_info[:2] == (3, 6):
 <error category="Possible Typo" context="This is ä testx. " contextoffset="11" errorlength="5" fromx="11" fromy="0" msg="Possible spelling mistake found" replacements="test#tests#testy#test x" tox="16" toy="0" />
 </matches>
 """
-elif sys.version_info[:2] == (3, 8):
+else:
     msg_xml_b = r"""<matches>
 <error fromy="0" fromx="11" toy="0" tox="16" category="Possible Typo" msg="Possible spelling mistake found" replacements="test#tests#testy#test x" context="This is ä testx. " contextoffset="11" errorlength="5" />
 </matches>
