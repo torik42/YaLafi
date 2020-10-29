@@ -556,7 +556,8 @@ let g:ale_tex_lty_disable = 'WHITESPACE_RULE'
 ```
 Similarly to setting 'g:ale\_tex\_lty_disable', one can specify LT's options
 --enable, --disablecategories, and --enablecategories.
-Further options for yalafi.shell may be passed like
+Further options for yalafi.shell
+(compare section [Plugin vimtex](#plugin-vimtex)) may be passed like
 ```
 let g:ale_tex_lty_shelloptions = '--single-letters "A|a|I|e.g.|i.e.||"'
                 \ . ' --equation-punctuation display'
