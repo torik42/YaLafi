@@ -247,8 +247,10 @@ Default option values are set at the Python script beginning.
   \\usepackage to the list provided in option --packages.
   Value of option --documentclass is overridden by macro \\documentclass.
 - `--extract macros`<br>
-  Only check arguments of the LaTeX macros whose names are given as
-  comma-separated list.
+  Only check first mandatory argument of the LaTeX macros whose names are
+  given as comma-separated list.
+  The option only works properly for predefined macros, including those
+  imported by options --documentclass, --define, and --packages.
   This is useful for check of foreign-language text, if marked accordingly.
   Internally used for detection of file inclusions on --include.
 - `--simple-equations`<br>
