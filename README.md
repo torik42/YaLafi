@@ -405,6 +405,8 @@ let g:vimtex_grammar_vlty.shell_options =
   not necessary.
 - The option `g:vimtex_grammar_vlty.server = 'my'` usually results in faster 
   checks for small to medium LaTeX files.
+  When one uses the LanguageTool server, speed also benefits from its internal
+  sentence caching.
 - By default, the vlty compiler passes names of all necessary LaTeX packages
   to YaLafi, which may result in annoying warnings.
   In multi-file projects, these are suppressed by `--packages "*"` that simply

@@ -1,12 +1,12 @@
-Work in progress
-----------------
+Version 1.1.7 (2020/11/04)
+--------------------------
 - LaTeX macros / environments
   - builtins: added \\bibitem, \\bibliographystyle, \\begin{thebibliography}
     (issue [#80](../../issues/80))
-  - package babel: optional argument for \\foreignlanguage
+  - package babel: added optional argument for \\foreignlanguage
 - Vim scripts
-  - vlty.vim, ltyc.vim: pass Vim's 'fileencoding' to yalafi.shell
-  - lty.vim: small simplification
+  - vlty.vim, ltyc.vim: now pass Vim's 'fileencoding' to yalafi.shell
+  - lty.vim: removed redundant key read\_temporary\_file
 - yalafi.shell
   - added option --simple-equations for simple replacements of displayed
     equations (issue [#85](../../issues/85))
@@ -15,7 +15,7 @@ Work in progress
     [#90](../../issues/90))
   - added option --seqs for simple replacements of displayed equations
     (issue [#85](../../issues/85))
-  - fixed problem in tests/test_packages/test\_latex\_builtins.py
+  - fixed function name clash in tests/test_packages/test\_latex\_builtins.py
     (issue [#86](../../issues/86))
 - added tests with Python 3.9
 - README.md: updated
