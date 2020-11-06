@@ -65,6 +65,11 @@ default_option_disablecategories = ''
 default_option_enablecategories = ''
 default_option_context = 2
 
+default_option_ml_continue_threshold = 2
+default_option_ml_rule_threshold = 2
+default_option_ml_disable = ''
+default_option_ml_disablecategories = ''
+
 # option --include: inclusion macros
 #
 inclusion_macros = 'include,input'
@@ -77,6 +82,7 @@ equation_replacements_display = r'U-U-U|V-V-V|W-W-W|X-X-X|Y-Y-Y|Z-Z-Z'
 equation_replacements_inline = r'B-B-B|C-C-C|D-D-D|E-E-E|F-F-F|G-G-G'
 equation_replacements = (equation_replacements_display
                             + r'|' + equation_replacements_inline)
+language_change_replacements = r'K-K-K|L-L-L|M-M-M|N-N-N'
 
 # option --textgears
 #
@@ -159,6 +165,14 @@ parser.add_argument('--equation-punctuation')
 parser.add_argument('--server', choices=['my', 'lt', 'stop'], default='')
 parser.add_argument('--lt-server-options', default='')
 parser.add_argument('--textgears')
+parser.add_argument('--multi-language', action='store_true')
+parser.add_argument('--ml-continue-threshold', type=int,
+                        default=default_option_ml_continue_threshold)
+parser.add_argument('--ml-rule-threshold', type=int,
+                        default=default_option_ml_rule_threshold)
+parser.add_argument('--ml-disable', default=default_option_ml_disable)
+parser.add_argument('--ml-disablecategories',
+                        default=default_option_ml_disablecategories)
 parser.add_argument('--no-config', action='store_true')
 parser.add_argument('file', nargs='*')
 
@@ -196,6 +210,8 @@ if cmdline.plain_input and (cmdline.include or cmdline.replace):
                                         + ' --include or --replace')
 if cmdline.single_letters and cmdline.single_letters.endswith('||'):
     cmdline.single_letters += equation_replacements
+    if cmdline.multi_language:
+        cmdline.single_letters += r'|' + language_change_replacements
 if cmdline.replace:
     cmdline.replace = tex2txt.read_replacements(cmdline.replace,
                                                 encoding=cmdline.encoding)
