@@ -882,6 +882,10 @@ the first part is replaced by the second one.
 Space in the first part may correspond to arbitrary space in the plain
 text that does not break the paragraph.
 
+**Remark.**
+With option --multi-language, yalafi.shell only replaces in text parts with
+language according to option --language.
+
 This German example replaces two words by a single one and vice versa:
 ```
 so dass & sodass
