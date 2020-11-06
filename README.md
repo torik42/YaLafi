@@ -1225,6 +1225,7 @@ The following options for yalafi.shell can be used to adjust the behaviour.
   continued.
   The inclusion is represented by a placeholder from collection
   'lang\_change\_repl' in file yalafi/parameters.py.
+  Language changes with \\selectlanguage always break the text flow.
 - `--ml-rule-threshold num`<br>
   If an inserted foreign-language text part consists of at most `num` words
   (default: 2), then options --ml-disable and --ml-disablecategories become
