@@ -107,7 +107,7 @@ def test_unknown():
 
 latex_macro_in_arg = r"""
 \usepackage{xcolor}
-X\begin{XXX}{\textcolor}
+X\begin{XYZ}{\textcolor}
 {red}{blue}
 """
 plain_macro_in_arg = r"""
@@ -115,7 +115,7 @@ Xblue
 """
 def test_macro_in_arg():
     parms = parameters.Parameters()
-    parms.environment_defs.append(defs.Environ(parms, 'XXX',
+    parms.environment_defs.append(defs.Environ(parms, 'XYZ',
                         args='A', repl='#1', add_pars=False))
     p = parser.Parser(parms)
     toks = p.parse(latex_macro_in_arg)

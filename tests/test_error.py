@@ -11,7 +11,7 @@ parms.mark_latex_error_verbose = True
 
 latex_1 = r"""
 $
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 """
 plain_1 = r"""
  LATEXXXERROR (missing end of maths) C-C-C"""
@@ -24,12 +24,12 @@ def test_1():
 latex_2 = r"""
 \verb?
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 """
 plain_2 = r"""
  LATEXXXERROR (bad \verb argument) 
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 """
 def test_2():
     p = parser.Parser(parms)
@@ -39,11 +39,11 @@ def test_2():
 
 latex_3 = r"""
 \begin{verbatim}
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 """
 plain_3 = r"""
  LATEXXXERROR (missing end of verbatim) verbatim
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 """
 def test_3():
     p = parser.Parser(parms)
@@ -54,11 +54,11 @@ def test_3():
 latex_4 = r"""
 \usepackage{xcolor}
 \textcolor{red}{
-XXX
+YYY
 """
 plain_4 = r"""
  LATEXXXERROR  LATEXXXERROR (cannot find closing "}") 
-XXX
+YYY
 """
 def test_4():
     p = parser.Parser(parms)
