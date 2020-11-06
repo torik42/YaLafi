@@ -158,43 +158,64 @@ class Parameters:
 
         ]
 
-    #   set language-dependent parameters
+    #   set language-dependent scanner parameters
     #
-    def init_language(self, language):
-        if language == 'de':
-            # German
-            self.special_tokens.update(self.special_tokens_de)
-            self.proof_name = 'Beweis'
-            self.math_repl_inline = ['B-B-B', 'C-C-C', 'D-D-D',
-                                        'E-E-E', 'F-F-F', 'G-G-G']
-            self.math_repl_display = ['U-U-U', 'V-V-V', 'W-W-W',
-                                        'X-X-X', 'Y-Y-Y', 'Z-Z-Z']
-            self.math_op_text = {'+': 'plus', '-': 'minus',
-                                    '\\cdot': 'mal', '\\times': 'mal',
-                                    '/': 'durch',
-                                    None: 'gleich'}     # default value
-        elif language == 'ru':
-            # Russian
-            self.proof_name = 'Доказательство'
-            self.math_repl_inline = ['Б-Б-Б', 'В-В-В', 'Г-Г-Г',
-                                        'Д-Д-Д', 'Е-Е-Е', 'Ж-Ж-Ж']
-            self.math_repl_display = ['Ц-Ц-Ц', 'Ч-Ч-Ч', 'Ш-Ш-Ш',
-                                        'Ы-Ы-Ы', 'Э-Э-Э', 'Ю-Ю-Ю']
-            self.math_op_text = {'+': 'плюс', '-': 'минус',
-                                    '\\cdot': 'раз', '\\times': 'раз',
-                                    '/': 'на',
-                                    None: 'равно'}      # default value
-        else:
-            # default: English
-            self.proof_name = 'Proof'
-            self.math_repl_inline = ['B-B-B', 'C-C-C', 'D-D-D',
-                                        'E-E-E', 'F-F-F', 'G-G-G']
-            self.math_repl_display = ['U-U-U', 'V-V-V', 'W-W-W',
-                                        'X-X-X', 'Y-Y-Y', 'Z-Z-Z']
-            self.math_op_text = {'+': 'plus', '-': 'minus',
+    def init_scanner_language(self, lang):
+        lang = lang[:2].lower()
+        if lang == 'de':
+            self.special_tokens.update({
+                '"-': '',
+                '"=': '-',
+                '"`': '\N{DOUBLE LOW-9 QUOTATION MARK}',    # \glqq
+                '"\'': '\N{LEFT DOUBLE QUOTATION MARK}',    # \grqq
+            })
+
+
+    #   set language-dependent parser parameters
+    #   - settings for 'en' are taken as fall back
+    #
+    def init_parser_languages(self, lang):
+        settings = self.parser_lang_settings = {}
+
+        settings['en'] = ParserLanguageSettings(
+            proof_name = 'Proof',
+            math_repl_inline = ['B-B-B', 'C-C-C', 'D-D-D',
+                                        'E-E-E', 'F-F-F', 'G-G-G'],
+            math_repl_display = ['U-U-U', 'V-V-V', 'W-W-W',
+                                        'X-X-X', 'Y-Y-Y', 'Z-Z-Z'],
+            math_op_text = {'+': 'plus', '-': 'minus',
                                     '\\cdot': 'times', '\\times': 'times',
                                     '/': 'over',
-                                    None: 'equal'}      # default value
+                                    None: 'equal'},     # default value
+            lang_change_repl = ['K-K-K', 'L-L-L', 'M-M-M', 'N-N-N']
+        )
+        settings['de'] = ParserLanguageSettings(
+            proof_name = 'Beweis',
+            math_repl_inline = ['B-B-B', 'C-C-C', 'D-D-D',
+                                        'E-E-E', 'F-F-F', 'G-G-G'],
+            math_repl_display = ['U-U-U', 'V-V-V', 'W-W-W',
+                                        'X-X-X', 'Y-Y-Y', 'Z-Z-Z'],
+            math_op_text = {'+': 'plus', '-': 'minus',
+                                    '\\cdot': 'mal', '\\times': 'mal',
+                                    '/': 'durch',
+                                    None: 'gleich'},    # default value
+            lang_change_repl = ['K-K-K', 'L-L-L', 'M-M-M', 'N-N-N']
+        )
+        settings['ru'] = ParserLanguageSettings(
+            proof_name = 'Доказательство',
+            math_repl_inline = ['Б-Б-Б', 'В-В-В', 'Г-Г-Г',
+                                        'Д-Д-Д', 'Е-Е-Е', 'Ж-Ж-Ж'],
+            math_repl_display = ['Ц-Ц-Ц', 'Ч-Ч-Ч', 'Ш-Ш-Ш',
+                                        'Ы-Ы-Ы', 'Э-Э-Э', 'Ю-Ю-Ю'],
+            math_op_text = {'+': 'плюс', '-': 'минус',
+                                    '\\cdot': 'раз', '\\times': 'раз',
+                                    '/': 'на',
+                                    None: 'равно'},     # default value
+            lang_change_repl = ['К-К-К', 'Л-Л-Л', 'М-М-М', 'Н-Н-Н']
+        )
+
+        self.parser_lang_stack = [(settings[self.check_parser_lang(lang)],
+                                        lang)]
 
     #   set misc collections
     #
@@ -314,17 +335,6 @@ class Parameters:
 
         }
 
-        #   "special" tokens for German
-        #
-        self.special_tokens_de = {
-
-            '"-': '',
-            '"=': '-',
-            '"`': '\N{DOUBLE LOW-9 QUOTATION MARK}',    # \glqq
-            '"\'': '\N{LEFT DOUBLE QUOTATION MARK}',    # \grqq
-
-        }
-
     #   set math collections
     #
     def init_math_collections(self):
@@ -399,11 +409,53 @@ class Parameters:
     def macro_character(self, c):
         return c >= 'a' and c <= 'z' or c >= 'A' and c <= 'Z' or c == '@'
 
+    #   transform given lang into valid key for dictionary
+    #   self.parser_lang_settings
+    #
+    def check_parser_lang(self, lang):
+        lang = lang[:2].lower()
+        return lang if lang in self.parser_lang_settings else 'en'
+
+    #   switch current parser language settings to new language
+    #
+    def change_parser_lang(self, tok):
+        if tok.back:
+            if len(self.parser_lang_stack) > 1:
+                self.parser_lang_stack.pop()
+        else:
+            if tok.hard:
+                self.parser_lang_stack[-1] = (
+                self.parser_lang_settings[self.check_parser_lang(tok.lang)],
+                        tok.lang)
+            else:
+                self.parser_lang_stack.append(
+                (self.parser_lang_settings[self.check_parser_lang(tok.lang)],
+                        tok.lang))
+
+    def lang_context(self):
+        return self.parser_lang_stack[-1][0]
+
+    def lang_context_lang(self):
+        return self.parser_lang_stack[-1][1]
+
     def __init__(self, language='en'):
         self.init_collections()
         self.init_math_collections()
-        self.init_language(language)
+        self.multi_language = False
+        self.ml_continue_thresh = 3
+        self.init_parser_languages(language)
+        self.init_scanner_language(language)
         self.scanner = scanner.Scanner(self)
         self.init_macros()
         self.init_environments()
+
+
+class ParserLanguageSettings:
+    def __init__(self, proof_name, math_repl_inline, math_repl_display,
+                        math_op_text, lang_change_repl):
+        self.proof_name = proof_name
+        self.math_repl_inline = math_repl_inline
+        self.math_repl_display = math_repl_display
+        self.math_op_text = math_op_text
+        self.lang_change_repl = lang_change_repl
 

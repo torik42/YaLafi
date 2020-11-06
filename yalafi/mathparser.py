@@ -71,8 +71,8 @@ class MathParser:
                                         ['&', '\\\\', '$$', '\\]'], env.name)
             tokens = self.detect_math_parts(tokens)
             sec, next_repl = self.replace_section(False, tokens,
-                                        first_section, next_repl,
-                                        self.parser.parms.math_repl_display)
+                        first_section, next_repl,
+                        self.parser.parms.lang_context().math_repl_display)
             out += sec
             if end and end.txt == '&':
                 out.append(defs.SpaceToken(out[-1].pos, ' ', pos_fix=True))
@@ -97,8 +97,9 @@ class MathParser:
                 txt = self.parser.get_text_direct(out).strip()
                 out = [defs.ActionToken(start_simple),
                         defs.SpaceToken(start_simple, '  ', pos_fix=True),
-                        defs.TextToken(start_simple,
-                        self.parser.parms.math_repl_display[0], pos_fix=True)]
+                        defs.TextToken(start_simple, self.parser.parms.
+                                        lang_context().math_repl_display[0],
+                                        pos_fix=True)]
                 if txt and txt[-1] in self.parser.parms.math_punctuation:
                     out.append(defs.TextToken(out[-1].pos, txt[-1],
                                                         pos_fix=True))
@@ -113,7 +114,7 @@ class MathParser:
         tokens = self.detect_math_parts(tokens)
         out = [defs.ActionToken(tok.pos)]
         t, x = self.replace_section(True, tokens, True, True,
-                                    self.parser.parms.math_repl_inline)
+                            self.parser.parms.lang_context().math_repl_inline)
         out += t
         out.append(defs.ActionToken(out[-1].pos))
         return out
@@ -177,6 +178,8 @@ class MathParser:
                 out.append(tok)
             elif tok.txt in parms.math_ignore:
                 pass
+            elif type(tok) is defs.LanguageToken:
+                pass
             elif tok.txt in parms.math_space:
                 out.append(defs.MathSpaceToken(tok.pos, ' '))
             elif tok.txt in parms.math_operators:
@@ -238,7 +241,8 @@ class MathParser:
             op = tok.leading_op()
             elem = tok.has_elem(parms)
             if not inline and first_part and op:
-                s = parms.math_op_text.get(op.txt, parms.math_op_text[None])
+                s = parms.lang_context().math_op_text.get(
+                            op.txt, parms.lang_context().math_op_text[None])
                 out.append(defs.SpaceToken(tok.pos, ' ', pos_fix=True))
                 out.append(defs.TextToken(op.pos, s, pos_fix=True))
                 out.append(defs.SpaceToken(op.pos, ' ', pos_fix=True))

@@ -219,5 +219,5 @@ class Buffer:
     #
     def is_space(self, tok):
         return type(tok) in (defs.SpaceToken, defs.CommentToken,
-                                defs.ActionToken, defs.VoidToken)
+                        defs.ActionToken, defs.VoidToken, defs.LanguageToken)
 
