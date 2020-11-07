@@ -6,11 +6,11 @@
 import pytest
 from tests.test_shell_cmd import run_shell
 
-latex_in = r"""
+latex_1 = r"""
 $x$ $y$ $z$
 """
 
-data_test_options = [
+data_test_1 = [
     ('', """
 --json --encoding utf-8 --language en-GB --disable WHITESPACE_RULE -
 
@@ -67,7 +67,33 @@ $x$ $y$ $z$
 """),
 ]
 
-@pytest.mark.parametrize('options,lt_in_expected', data_test_options)
-def test_macros_latex(options, lt_in_expected):
-    lt_in = run_shell.get_lt_in(options, latex_in, 'utf-8')
+@pytest.mark.parametrize('options,lt_in_expected', data_test_1)
+def test_1(options, lt_in_expected):
+    lt_in = run_shell.get_lt_in(options, latex_1, 'utf-8')
     assert lt_in == lt_in_expected
+
+latex_2 = r"""
+\begin{eqnarray}
+    a &= b.
+\end{eqnarray}
+"""
+data_test_2 = [
+    ('', """
+--json --encoding utf-8 --language en-GB --disable WHITESPACE_RULE -
+
+  V-V-V  equal W-W-W.
+
+"""),
+    ('--simple-equations', """
+--json --encoding utf-8 --language en-GB --disable WHITESPACE_RULE -
+
+  W-W-W.
+
+"""),
+]
+
+@pytest.mark.parametrize('options,lt_in_expected', data_test_2)
+def test_2(options, lt_in_expected):
+    lt_in = run_shell.get_lt_in(options, latex_2, 'utf-8')
+    assert lt_in == lt_in_expected
+
