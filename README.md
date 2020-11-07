@@ -185,6 +185,7 @@ Default option values are set at the Python script beginning.
   Base command to call LT (for variant 2 in section
   [Installation](#installation)).
   For instance, this is '--lt-command languagetool'.
+  If an LT server has to be started, the command is invoked with option --http.
   Note that option '--server stop' for stopping a local LT server will not
   work in this case.
 - `--as-server port`<br>
