@@ -1,6 +1,7 @@
 
 import os
 import subprocess
+import time
 
 tmp_dir = 'tests/test_shell_cmd/tmp/'
 lt_exec = tmp_dir + 'lt_exec.sh'
@@ -73,4 +74,36 @@ def get_lt_in(options, latex, encoding):
     os.system('rm -r ' + tmp_dir)
 
     return txt
+
+#   test of yalafi.shell running as HTTP server
+#   - to check the HTML response, we use yalafi.shell --server my
+#
+def run_as_server(options, latex, json):
+
+    os.system('mkdir ' + tmp_dir)
+    with open(lt_exec, mode='w') as f:
+        f.write('#!/bin/bash\n')
+        f.write('cat ' + lt_out + '\n')
+    os.system('chmod +x ' + lt_exec)
+
+    with open(shell_in, mode='w') as f:
+        f.write(latex)
+
+    with open(lt_out, mode='w') as f:
+        f.write(json)
+
+    cmd = ('python -m yalafi.shell --as-server 8081 --lt-command ' + lt_exec
+                    + ' ' + options)
+    server = subprocess.Popen(cmd.split(), stdout=subprocess.DEVNULL,
+                                    stderr=subprocess.DEVNULL)
+    time.sleep(10)
+
+    cmd = 'python -m yalafi.shell --plain-input --server my ' + shell_in
+    out = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
+
+    server.terminate()
+    time.sleep(1)
+    os.system('rm -r ' + tmp_dir)
+
+    return out.stdout.decode()
 

@@ -59,6 +59,12 @@ C-C-C D-D-D E-E-E
 C-C-C D-D-D E-E-E
 
 """),
+    ('--plain-input', """
+--json --encoding utf-8 --language en-GB --disable WHITESPACE_RULE -
+
+$x$ $y$ $z$
+
+"""),
 ]
 
 @pytest.mark.parametrize('options,lt_in_expected', data_test_options)
