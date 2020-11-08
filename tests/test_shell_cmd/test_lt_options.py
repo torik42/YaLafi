@@ -74,14 +74,14 @@ def test_1(options, lt_in_expected):
 
 latex_2 = r"""
 \begin{eqnarray}
-    a &= b.
+    a &=& b.
 \end{eqnarray}
 """
 data_test_2 = [
-    ('', """
+    ('--multi-language', """
 --json --encoding utf-8 --language en-GB --disable WHITESPACE_RULE -
 
-  V-V-V  equal W-W-W.
+  V-V-V  equal  W-W-W.
 
 """),
     ('--simple-equations', """
