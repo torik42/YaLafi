@@ -1,7 +1,9 @@
 
 #
-#   test yalafi.shell with options --single-letters and
-#   --equation-puncluation
+#   - test yalafi.shell with options --single-letters
+#     and --equation-punctuation
+#
+#   - test option --list-unknown
 #
 
 from tests.test_shell_cmd import run_shell
@@ -46,4 +48,17 @@ def test_shell_equation():
     out = run_shell.run_shell('--equation-punctuation all',
                                     latex, encoding, json)
     assert out == run_shell.msg_header + msg_equation
+
+
+latex_unkn = r"""
+A \xxxxxx
+\begin{yyyyyyyy}
+B
+"""
+msg_unkn = r"""\xxxxxx
+yyyyyyyy
+"""
+def test_shell_unkn():
+    out = run_shell.run_shell('--list-unknown', latex_unkn, encoding, json)
+    assert out == run_shell.msg_header + msg_unkn
 

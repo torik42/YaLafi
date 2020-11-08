@@ -97,6 +97,13 @@ class VoidToken(TextToken):
     def __init__(self, pos):
         super().__init__(pos, '')
 
+class LanguageToken(TextToken):
+    def __init__(self, pos, lang='', back=False, hard=False):
+        super().__init__(pos, '')
+        self.lang = lang
+        self.back = back
+        self.hard = hard
+
 class MathBeginToken(TextToken):
     def __init__(self, pos, text, env):
         super().__init__(pos, text)

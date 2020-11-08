@@ -130,3 +130,111 @@ def get_latex_handler(macros_latex):
     def f(p):
         return defs.ModParm(macros_latex=macros_latex)
     return [], f
+
+class LanguageSection:
+    def __init__(self, lang, back, hard, txt, pos):
+        self.lang = lang
+        self.back = back
+        self.hard = hard
+        self.txt = txt
+        self.pos = pos
+
+#   transform a token list into text strings and position lists
+#   - seperate into different languages
+#   - heuristic: see comments below marked with HEURISTIC
+#
+def get_txt_pos_ml(toks, main_lang, parms):
+
+    lang_stack = [main_lang]
+    switch_back = False
+    switch_hard = False
+
+    #   split into sections separated by language switches
+    #
+    sections = []
+    cur_sec = []
+    for t in toks:
+        if type(t) is not defs.LanguageToken:
+            cur_sec.append(t)
+            continue
+        if t.lang == lang_stack[-1]:
+            continue
+        txt, pos = get_txt_pos(cur_sec)
+        cur_sec = []
+        if txt:
+            sections.append(LanguageSection(
+                        lang_stack[-1], switch_back, switch_hard, txt, pos))
+        switch_back = t.back
+        switch_hard = t.hard
+        if t.back:
+            if len(lang_stack) > 1:
+                lang_stack.pop()
+        else:
+            if t.hard:
+                lang_stack[-1] = t.lang
+            else:
+                lang_stack.append(t.lang)
+    txt, pos = get_txt_pos(cur_sec)
+    if txt:
+        sections.append(LanguageSection(
+                        lang_stack[-1], switch_back, switch_hard, txt, pos))
+
+    #   try to combine sections, if only interrupted by short change to
+    #   another language
+    #
+    out = []
+    while sections:
+        if (len(sections) > 1
+                    # HEURISTIC to connect sections:
+                    # ==============================
+                    # - next section must not be switch_hard
+                    #   (e.g., caused by \selectlanguage)
+                and not sections[1].hard
+                    # - next section must not start with a switch_back
+                    #   (e.g., section not after \foreignlanguage call)
+                and not sections[1].back
+                    # - following section (if any) has to be same language
+                and (len(sections) < 3
+                            or sections[0].lang == sections[2].lang)
+                    # - next section has to be "suitable" to be replaced
+                and ml_check_lang_section(sections[1], parms)):
+
+            # we have a short inclusion with another language
+            out.append(sections.pop(1))
+            ml_append_placeholder(sections[0], parms)
+            if len(sections) > 1:
+                # append following section with same language
+                sections[0].txt += sections[1].txt
+                sections[0].pos += sections[1].pos
+                sections.pop(1)
+        else:
+            out.append(sections.pop(0))
+
+    #   combine all sections of same language into one list
+    #
+    ret = {}
+    for sec in out:
+        if sec.lang in ret:
+            ret[sec.lang].append([sec.txt, sec.pos])
+        else:
+            ret[sec.lang] = [[sec.txt, sec.pos]]
+    return ret
+
+#   append placeholder for "short" language switch to current section
+#
+def ml_append_placeholder(sec, parms):
+    lang = parms.check_parser_lang(sec.lang)
+    repl = parms.parser_lang_settings[lang].lang_change_repl
+    repl[:] = repl [1:] + repl[:1]
+    sec.txt += repl[0]
+    # XXX: pos+1: this seems save, as there was a LanguageToken
+    sec.pos += [sec.pos[-1] + 1] * len(repl[0])
+
+#   heuristic to determine whether a (short) language section
+#   can be substituted with a placeholder, so that previous and
+#   subsequent sections can be glued together
+#
+def ml_check_lang_section(sec, parms):
+    # accept, if less than 4 words
+    return len(sec.txt.split()) <= parms.ml_continue_thresh
+

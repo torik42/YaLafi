@@ -1,3 +1,13 @@
+Work in progress
+----------------
+- yalafi core
+  - added support for multi-language documents (issue [#98](../../issues/98))
+- yalafi.shell
+  - added support for multi-language documents (issue [#98](../../issues/98))
+  - new options --multi-language, --ml-continue-threshold, --ml-rule-threshold,
+    --ml-disable, --ml-disablecategories
+- README.md: updated
+
 Version 1.1.7 (2020/11/04)
 --------------------------
 - LaTeX macros / environments

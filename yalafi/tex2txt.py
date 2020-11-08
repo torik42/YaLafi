@@ -28,16 +28,19 @@
 
 from . import parameters, parser, utils
 
-def tex2txt(latex, opts):
+def tex2txt(latex, opts, multi_language=False, modify_parms=None):
     def read(file):
         try:
             with open(file, encoding=opts.ienc) as f:
                 return True, f.read()
         except:
             return False, ''
-    parms = parameters.Parameters(opts.lang)
+
+    parms = parameters.Parameters(opts.lang or '')
+    parms.multi_language = multi_language
     packages = get_packages(opts.dcls, parms.class_modules)
     packages.extend(get_packages(opts.pack, parms.package_modules))
+
     if opts.defs:
         packages.append(('', utils.get_latex_handler(opts.defs)))
     if opts.extr:
@@ -46,16 +49,32 @@ def tex2txt(latex, opts):
         extr = []
     if opts.seqs:
         parms.math_displayed_simple = True
+
+    if modify_parms:
+        modify_parms(parms)
     p = parser.Parser(parms, packages, read_macros=read)
     toks = p.parse(latex, extract=extr)
-    txt, pos = utils.get_txt_pos(toks)
-    if opts.repl:
-        txt, pos = utils.replace_phrases(txt, pos, opts.repl)
-    if opts.unkn:
-        txt = '\n'.join(p.get_unknowns()) + '\n'
-        pos = [0 for n in range(len(txt))]
-    pos = [n + 1 for n in pos]
-    return txt, pos
+
+    if not multi_language:
+        txt, pos = utils.get_txt_pos(toks)
+        if opts.repl:
+            txt, pos = utils.replace_phrases(txt, pos, opts.repl)
+        if opts.unkn:
+            txt = '\n'.join(p.get_unknowns()) + '\n'
+            pos = [0 for n in range(len(txt))]
+        pos = [n + 1 for n in pos]
+        return txt, pos
+
+    main_lang = opts.lang or ''
+    ml = utils.get_txt_pos_ml(toks, main_lang, parms)
+    if opts.repl and main_lang in ml:
+        for part in ml[main_lang]:
+            part[0], part[1] = utils.replace_phrases(part[0], part[1],
+                                                        opts.repl)
+    for lang in ml:
+        for part in ml[lang]:
+            part[1]= list(n + 1 for n in part[1])
+    return ml
 
 def get_packages(packs, prefix):
     ret = []
@@ -71,6 +90,7 @@ def get_packages(packs, prefix):
         else:
             ret.append((p, utils.get_module_handler(p, prefix)))
     return ret
+
 
 #########################################################
 #

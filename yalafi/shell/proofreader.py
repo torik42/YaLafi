@@ -53,59 +53,94 @@ def run_proofreader(file):
                         cmdline.disablecategories, cmdline.enablecategories,
                         cmdline.lt_options[1:].split())
 
-#   this can be used by a server
-#   - overwrite CLI options from from fields of HTML request
+#   this can be used, if the shell is run as an HTTP server
+#   - for that: overwrite CLI options from from fields of HTML request
 #
 def run_proofreader_options(tex, language, disable, enable,
                             disablecategories, enablecategories, lt_options):
 
     t2t_options = tex2txt.Options(char=True, repl=cmdline.replace,
-                            defs=cmdline.define, lang=language[:2],
+                            defs=cmdline.define, lang=language,
                             extr=cmdline.extract, unkn=cmdline.list_unknown,
                             seqs=cmdline.simple_equations,
                             dcls=cmdline.documentclass, pack=cmdline.packages)
 
     if cmdline.plain_input:
-        (plain, charmap) = (tex, list(range(1, len(tex) + 1)))
+        plain_map = {language: [(tex, list(range(1, len(tex) + 1)))]}
     else:
-        (plain, charmap) = tex2txt.tex2txt(tex, t2t_options)
         if cmdline.list_unknown:
             # only look for unknown macros and environemnts
+            plain, charmap = tex2txt.tex2txt(tex, t2t_options)
             return (tex, plain, charmap, [])
+        if cmdline.multi_language:
+            def mod_parms(parms):
+                parms.ml_continue_thresh = cmdline.ml_continue_threshold
+            plain_map = tex2txt.tex2txt(tex, t2t_options, multi_language=True,
+                                            modify_parms=mod_parms)
+        else:
+            plain, charmap = tex2txt.tex2txt(tex, t2t_options)
+            plain_map = {language: [(plain, charmap)]}
 
-    # see yalafi Issue #6
-    #
-    if not plain.endswith('\n'):
-        plain += '\n'
-        charmap.append(charmap[-1] if charmap else 1)
+    disa_thresh = disable
+    if cmdline.ml_disable:
+        if disa_thresh:
+            disa_thresh += ','
+        disa_thresh += cmdline.ml_disable
+    disacat_thresh = disablecategories
+    if cmdline.ml_disablecategories:
+        if disacat_thresh:
+            disacat_thresh += ','
+        disacat_thresh += cmdline.ml_disablecategories
 
-    # here, we could dispatch to other tools, see for instance
-    #   - https://textgears.com/api
-    #   - Python package prowritingaid.python
-    #
-    if cmdline.textgears:
-        matches = run_textgears(plain)
-    else:
-        matches = run_languagetool(plain, language, disable, enable,
-                            disablecategories, enablecategories, lt_options)
+    delim = '\n\n'
+    matches_tot = []
+    plain_tot = ''
+    charmap_tot = []
+    for lang in plain_map:
+        for plain, charmap in plain_map[lang]:
+            if not plain.strip():
+                continue
 
-    matches += checks.create_single_letter_matches(plain, cmdline)
-    matches += checks.create_equation_punct_messages(plain, cmdline,
-                                    equation_replacements_display,
-                                    equation_replacements_inline,
-                                    equation_replacements)
+            # here, we could dispatch to other tools, see for instance
+            #   - https://textgears.com/api
+            #   - Python package prowritingaid.python
+            #
+            if cmdline.textgears:
+                matches = run_textgears(plain)
+            else:
+                flag = (cmdline.multi_language
+                        and len(plain.split()) <= cmdline.ml_rule_threshold)
+                matches = run_languagetool(plain, lang,
+                            disa_thresh if flag else disable,
+                            enable,
+                            disacat_thresh if flag else disablecategories,
+                            enablecategories, lt_options)
+
+            matches += checks.create_single_letter_matches(plain, cmdline)
+            matches += checks.create_equation_punct_messages(plain, cmdline,
+                                            equation_replacements_display,
+                                            equation_replacements_inline,
+                                            equation_replacements)
+
+            for m in matches:
+                m['offset'] = json_get(m, 'offset', int) + len(plain_tot)
+            matches_tot += matches
+            plain_tot += plain
+            charmap_tot += charmap
+            plain_tot += delim
+            charmap_tot += [charmap_tot[-1]] * len(delim)
 
     # sort matches according to position in LaTeX text
     #
     def f(m):
         beg = json_get(m, 'offset', int)
-        if beg < 0 or beg >= len(charmap):
+        if beg < 0 or beg >= len(charmap_tot):
             tex2txt.fatal('run_proofreader():'
                             + ' bad message read from proofreader')
-        return abs(charmap[beg])
-    matches.sort(key=f)
+        return abs(charmap_tot[beg])
+    matches_tot.sort(key=f)
 
-    return (tex, plain, charmap, matches)
+    return (tex, plain_tot, charmap_tot, matches_tot)
 
 #   run LT and return element 'matches' from JSON output
 #

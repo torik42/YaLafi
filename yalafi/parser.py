@@ -241,6 +241,10 @@ class Parser:
                 else:
                     out.append(defs.ActionToken(tok.pos))
                     out.append(defs.TextToken(tok.pos, tok.txt))
+            elif type(tok) is defs.LanguageToken:
+                if self.parms.multi_language:
+                    self.parms.change_parser_lang(tok)
+                    out.append(tok)
             elif type(tok) is defs.CommentToken:
                 pass
             else:
@@ -341,8 +345,10 @@ class Parser:
             arguments_extr.append(arg_extr)
 
         if mac.extract:
-            toks = self.generate_replacements(arguments_extr,
-                                                        mac.extract, start)
+            toks = ([defs.LanguageToken(start,
+                            lang=self.parms.lang_context_lang(), hard=True)]
+                        + self.generate_replacements(arguments_extr,
+                                                        mac.extract, start))
             self.extracted.append(self.expand_sequence(scanner.Buffer(toks)))
         out = [defs.ActionToken(start)]
         if callable(mac.repl):
@@ -485,7 +491,8 @@ class Parser:
                 t.can_end = '\n' in txt and not txt[:txt.find('\n')].strip()
             return t
 
-        tokens = [t for t in tokens if t.txt or type(t) is defs.ActionToken]
+        tokens = [t for t in tokens if t.txt or
+                        type(t) in (defs.ActionToken, defs.LanguageToken)]
         tokens = [eval(t) for t in tokens]
         tok = eval(defs.TextToken(0, ''))
         tok.can_start = True
@@ -514,6 +521,7 @@ class Parser:
                     break
             if (can_remove and len(buf) > 1
                     and any(type(t) is defs.ActionToken for t in buf)):
+                lang_toks = [t for t in buf if type(t) is defs.LanguageToken]
                 t1 = copy.copy(buf[0])
                 t2 = copy.copy(buf[-1])
                 # in t1, we remove all behind the last newline
@@ -531,7 +539,7 @@ class Parser:
                 else:
                     t2.txt = ''
                     t2.pos += len(txt)
-                buf = [t1]
+                buf = [t1] + lang_toks
                 tokens.append(eval(t2))
                 # NB: we deleted a line break
                 tok = eval(defs.TextToken(t2.pos, ''))
@@ -541,7 +549,7 @@ class Parser:
                 tokens.append(eval(buf.pop()))
             out += buf
 
-        return [t for t in out if t.txt]
+        return [t for t in out if t.txt or type(t) is defs.LanguageToken]
 
     #   \item: if [...] label is specified, look back in text and append
     #   a possible previous punctuation mark

@@ -18,7 +18,8 @@ It provides
   treatment,
 - careful conservation of text flows,
 - some parsing of displayed equations for detection of included “normal” text
-  and of interpunction problems.
+  and of interpunction problems,
+- support of multi-language documents (experimental).
 
 The sample Python application yalafi.shell from section
 [Example application](#example-application) integrates the LaTeX filter
@@ -102,6 +103,7 @@ Happy TeXing!
 [Inclusion of own macros](#inclusion-of-own-macros)<br>
 <br>
 [Handling of displayed equations](#handling-of-displayed-equations)<br>
+[Multi-language documents](#multi-language-documents)<br>
 [Python package interface](#python-package-interface)<br>
 [Command-line of pure filter](#command-line-of-pure-filter)<br>
 [Differences to Tex2txt](#differences-to-tex2txt)<br>
@@ -183,6 +185,7 @@ Default option values are set at the Python script beginning.
   Base command to call LT (for variant 2 in section
   [Installation](#installation)).
   For instance, this is '--lt-command languagetool'.
+  If an LT server has to be started, the command is invoked with option --http.
   Note that option '--server stop' for stopping a local LT server will not
   work in this case.
 - `--as-server port`<br>
@@ -255,8 +258,8 @@ Default option values are set at the Python script beginning.
   Internally used for detection of file inclusions on --include.
 - `--simple-equations`<br>
   Replace a displayed equation only with a single placeholder from collection
-  'Paramaters.math\_repl\_display' in file yalafi/parameters; append trailing
-  interpunction, if present.
+  'math\_repl\_display' in file yalafi/parameters;
+  append trailing interpunction, if present.
 - `--disable rules`<br>
   Comma-separated list of ignored LT rules, is passed as --disable to LT
   (default: 'WHITESPACE\_RULE').
@@ -278,8 +281,9 @@ Default option values are set at the Python script beginning.
   Check for single letters, accepting those in the patterns given as list
   separated by '\|'.
   Example: `--single-letters 'A|a|I|e.g.|i.e.||'` for an English text,
-  where the trailing '\|\|' causes the addition of equation replacements
-  from script variable 'equation\_replacements'.
+  where the trailing '\|\|' causes the addition of equation and language-change
+  replacements from script variables 'equation\_replacements' and
+  'language\_change\_replacements'.
   All characters except '\|' are taken verbatim, but '~' and '\\,' are
   interpreted as UTF-8 non-breaking space and narrow non-breaking space.
 - `--equation-punctuation mode`<br>
@@ -296,8 +300,8 @@ Default option values are set at the Python script beginning.
   a punctuation mark from ',;:'.
   Patterns for equation elements are given by script variables
   'equation\_replacements\_display' and 'equation\_replacements\_inline',
-  corresponding to member variables 'Parameters.math\_repl\_display' and
-  'Parameters.math\_repl\_inline' in file yalafi/parameters.py.
+  corresponding to variables 'math\_repl\_display' and 'math\_repl\_inline'
+  in file yalafi/parameters.py.
 - `--server mode`<br>
   Use LT's Web server (mode is 'lt') or a local LT server (mode is 'my')
   instead of LT's command-line tool.
@@ -324,6 +328,10 @@ Default option values are set at the Python script beginning.
   [https://textgears.com/signup.php?givemethatgoddamnkey=please](https://textgears.com/signup.php?givemethatgoddamnkey=please),
   but the key 'DEMO\_KEY' seems to work for short input.
   The server address is given by script variable 'textgears\_server'.
+- `--multi-language`<br>
+  Activate support of multi-language documents;
+  compare section [Multi-language documents](#multi-language-documents)
+  for further related options.
 - `--no-config`<br>
   Do not read config file, whose name is set in script variable 'config\_file'.
 
@@ -391,7 +399,8 @@ let g:vimtex_grammar_vlty.lt_directory = '~/lib/LanguageTool-5.0'
 " let g:vimtex_grammar_vlty.lt_command = 'languagetool'
 let g:vimtex_grammar_vlty.server = 'my'
 let g:vimtex_grammar_vlty.shell_options =
-        \   ' --packages "*"'
+        \   ' --multi-language'
+        \ . ' --packages "*"'
         \ . ' --define ~/vlty/defs.tex'
         \ . ' --replace ~/vlty/repls.txt'
         \ . ' --equation-punctuation display'
@@ -407,6 +416,9 @@ let g:vimtex_grammar_vlty.shell_options =
   checks for small to medium LaTeX files.
   When one uses the LanguageTool server, speed also benefits from its internal
   sentence caching.
+- With option `--multi-language`, commands from LaTeX package 'babel' switch
+  the language for the proofreading program.
+  See section [Multi-language documents](#multi-language-documents).
 - By default, the vlty compiler passes names of all necessary LaTeX packages
   to YaLafi, which may result in annoying warnings.
   In multi-file projects, these are suppressed by `--packages "*"` that simply
@@ -461,7 +473,8 @@ let g:ltyc_ltdirectory = '~/lib/LanguageTool-5.0'
 let g:ltyc_server = 'my'
 let g:ltyc_language = 'de-DE'
 let g:ltyc_shelloptions =
-        \   ' --replace ~/ltyc/repls.txt'
+        \   ' --multi-language'
+        \ . ' --replace ~/ltyc/repls.txt'
         \ . ' --define ~/ltyc/defs.tex'
         \ . ' --equation-punctuation display'
         \ . ' --single-letters "i.\,A.\|z.\,B.\|\|"'
@@ -738,8 +751,7 @@ where the problem was detected.
   separated by blank lines.
   This preserves text flows.
 - Inline maths material $...$ and \\(...\\) is replaced with text from
-  the rotating collection in 'Parameters.math\_repl\_inline' in
-  file yalafi/parameters.py.
+  the rotating collection in 'math\_repl\_inline' in file yalafi/parameters.py.
   Trailing interpunction from 'Parameters.math\_punctuation' is appended.
 - Equation environments are resolved in a way suitable for check of
   interpunction and spacing.
@@ -870,6 +882,10 @@ The first '\&' separated by space splits a line into two parts;
 the first part is replaced by the second one.
 Space in the first part may correspond to arbitrary space in the plain
 text that does not break the paragraph.
+
+**Remark.**
+With option --multi-language, yalafi.shell only replaces in text parts with
+language according to option --language.
 
 This German example replaces two words by a single one and vice versa:
 ```
@@ -1076,7 +1092,7 @@ as \\label and \\nonumber.
 
 **Remark.**
 Our equation parsing currently assumes that aligned operators like '=' and '+'
-are placed at the right side of the alignment character '\&'.
+are placed on the right side of the alignment character '\&'.
 LaTeX does not enforce that, but it is the style found in examples of the
 documentation for package amsmath.
 
@@ -1097,7 +1113,7 @@ Wir folgern
 Daher ...
 ```
 The replacements like 'V-V-V' are taken from collection
-'Parameters.math\_repl\_display' that depends on language setting, too.
+'math\_repl\_display' that depends on language setting, too.
 Now, LT will additionally complain about repetition of 'W-W-W'.
 Finally, writing '= b,' and '= d.' in the equation leads to the output:
 ```
@@ -1144,7 +1160,7 @@ Therefore, one will get warnings from the proofreading program, if subsequent
 
 ### Equation replacements in English documents
 
-The replacement collection of 'Parameters.math\_repl\_display' in file
+The replacement collection of 'math\_repl\_display' in file
 yalafi/parameters.py does not work well, if single letters are taken as
 replacements.
 For instance, 'V.' cannot be safely considered as end of a sentence.
@@ -1158,6 +1174,72 @@ An experimental hack is provided by option --equation-punctuation of
 application script [yalafi/shell/shell.py](yalafi/shell/shell.py)
 described in section
 [Example application](#example-application).
+
+[Back to contents](#contents)
+
+
+## Multi-language documents
+
+**Remarks.**
+This feature is experimental, any comments are welcome.
+Operation may be slow, unless a LanguageTool server is used, for instance,
+via option '--server my'.
+
+As an example, assume option '--multi-language' for yalafi.shell and input:
+```
+\documentclass{article}
+\usepackage[german,english]{babel}
+
+\selectlanguage{english}
+\newcommand{\german}[1]{\textit{\foreignlanguage{german}{#1}}}
+
+\begin{document}
+This is thex German word \german{excellent}..
+\end{document}
+
+```
+Then, the Vim example from section [“Plain Vim”](#plain-vim)
+with setting `let g:ltyc_showsuggestions = 1` will produce this quickfix
+window:
+```
+t.tex|8 col 9 info|  Possible spelling mistake found. Suggestion: the; then; they; them; thee; Theo; hex; THX; TeX; Tex; The; t hex; the x; Théo
+t.tex|8 col 34 info|  Möglicher Tippfehler gefunden. Suggestion: exzellent; exzellente; exzellenten; exzellenter; Exzellenz; exzellentes; erzählend; exzellentem; erhellend; erkältend; exzelliert
+t.tex|8 col 44 info|  Two consecutive dots Suggestion: .; …
+```
+The initial language is specified by option --language.
+Language names in 'babel' commands are mapped to xx-XX codes by dictionary
+'language\_map' in file [yalafi/packages/babel.py](yalafi/packages/babel.py).
+Please note:
+- Currently, `\usepackage[...]{babel}` does not set the active language.
+- Using `\selectlanguage{...}` is not effective in files loaded via
+  option --define or with `\LTinput{...}`.
+
+**Further options.**
+In the above example, LanguageTool is invoked for
+'This is thex German word L-L-L..' with language en-GB, and for 'excellent'
+with language de-DE.
+The following options for yalafi.shell can be used to adjust the behaviour.
+
+- `--ml-continue-threshold num`<br>
+  If a short inclusion, for instance via \\foreignlanguage, does not comprise
+  more than `num` plain-text words (default: 2), then the main text flow is
+  continued.
+  The inclusion is represented by a placeholder from collection
+  'lang\_change\_repl' in file yalafi/parameters.py.
+  Language changes with \\selectlanguage always break the text flow.
+- `--ml-rule-threshold num`<br>
+  If an inserted foreign-language text part consists of at most `num` words
+  (default: 2), then options --ml-disable and --ml-disablecategories become
+  effective for this text part.
+- `--ml-disable rules`<br>
+  Additionally disable these LanguageTool rules for text parts matching option
+  --ml-rule-threshold (default: '').
+  For example, one might disable rule UPPERCASE\_SENTENCE\_START.
+- `--ml-disablecategories cats`<br>
+  Similar to --ml-disable for LanguageTool's rule categories (default: '').
+
+Please consider also the tweaks in section
+[Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text).
 
 [Back to contents](#contents)
 
@@ -1372,17 +1454,17 @@ Displayed equations are parsed as follows.
   ('Parameters.math\_text\_macros').
 - Arguments of \\text and \\mbox are directly copied.
 - A “maths part” is substituted with a placeholder from rotating collection
-  'Parameters.math\_repl\_display', if it does not consist only of punctuation
+  'math\_repl\_display', if it does not consist only of punctuation
   marks from 'Parameters.math\_punctuation' or of operators from
   'Parameters.math\_operators'.
-- A leading maths operator is displayed using 'Parameters.math\_op\_text'
+- A leading maths operator is displayed using 'math\_op\_text'
   (language-dependent), if the “maths part” is first in “section” and
   the “section” is not first on “line”.
 - Trailing interpunction of a “maths part” is appended to the placeholder.
 - If the “maths part” includes leading or trailing maths space from
   'Parameters.math\_space', then white space is prepended or appended to the
   replacement.
-- Replacements from 'Parameters.math\_repl\_display' are rotated
+- Replacements from 'math\_repl\_display' are rotated
     - if a non-blank \\text part is detected,
     - if a “maths part” starts with an operator and is first in “section”,
       but not on “line”,
