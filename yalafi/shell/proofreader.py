@@ -92,7 +92,7 @@ def run_proofreader_options(tex, language, disable, enable,
             disacat_thresh += ','
         disacat_thresh += cmdline.ml_disablecategories
 
-    delim = '\n\n'
+    delim = '\n\n'              # NB: issue #6
     matches_tot = []
     plain_tot = ''
     charmap_tot = []
