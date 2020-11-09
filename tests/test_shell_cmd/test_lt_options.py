@@ -6,6 +6,8 @@
 import pytest
 from tests.test_shell_cmd import run_shell
 
+test_dir = 'tests/test_shell_cmd/'
+
 latex_1 = r"""
 $x$ $y$ $z$
 """
@@ -95,5 +97,63 @@ data_test_2 = [
 @pytest.mark.parametrize('options,lt_in_expected', data_test_2)
 def test_2(options, lt_in_expected):
     lt_in = run_shell.get_lt_in(options, latex_2, 'utf-8')
+    assert lt_in == lt_in_expected
+
+
+latex_3 = r"""
+A
+\begin{thm}
+B
+"""
+lt_in_3 = """
+--json --encoding utf-8 --language en-GB --disable WHITESPACE_RULE -
+
+A
+
+
+Theorem.
+B
+
+"""
+def test_3():
+    lt_in = run_shell.get_lt_in('--define ' + test_dir + 'defs.tex',
+                                                latex_3, 'utf-8')
+    assert lt_in == lt_in_3
+
+latex_4 = r"""
+\usepackage{babel}
+\selectlanguage{german}
+so dass
+so
+
+dass
+"""
+data_test_4 = [
+    ('--language de-DE --multi-language', """
+--json --encoding utf-8 --language de-DE --disable WHITESPACE_RULE -
+
+sodass
+so
+
+dass
+
+"""),
+    # - replacement is not performed
+    # - the initial line break is omitted, since it belongs to the English
+    #   text that is only space
+    ('--language en-GB --multi-language', """
+--json --encoding utf-8 --language de-DE --disable WHITESPACE_RULE -
+so dass
+so
+
+dass
+
+"""),
+]
+@pytest.mark.parametrize('options,lt_in_expected', data_test_4)
+def test_4(options, lt_in_expected):
+    repl = test_dir + 'repls.txt'
+    lt_in = run_shell.get_lt_in(options + ' --replace ' + repl,
+                                            latex_4, 'utf-8')
     assert lt_in == lt_in_expected
 
