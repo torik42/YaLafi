@@ -1014,7 +1014,7 @@ in `args` and `repl`.
   before and behind the environment body
 - `items`: for inclusion of specific \\item labels;
   a generator taking a nesting level argument has to be specified;
-  compare declaration of environment enumerate in yalafi/paramters.py
+  compare declaration of environment enumerate in yalafi/parameters.py
 
 ### Definition of equation environments
 
@@ -1196,7 +1196,6 @@ As an example, assume option '--multi-language' for yalafi.shell and input:
 \begin{document}
 This is thex German word \german{excellent}..
 \end{document}
-
 ```
 Then, the Vim example from section [“Plain Vim”](#plain-vim)
 with setting `let g:ltyc_showsuggestions = 1` will produce this quickfix
@@ -1253,55 +1252,83 @@ script tex2txt.py in repository
 [Tex2txt](https://github.com/matze-dd/Tex2txt).
 
 ```
- 1  from . import parameters, parser, utils
- 2  def tex2txt(latex, opts):
- 3      def read(file):
- 4          try:
- 5              with open(file, encoding=opts.ienc) as f:
- 6                  return True, f.read()
- 7          except:
- 8              return False, ''
- 9      parms = parameters.Parameters(opts.lang)
-10      packages = get_packages(opts.pack, parms.package_modules)
-11      if opts.defs:
-12          packages.append(('', utils.get_latex_handler(opts.defs)))
-13      if opts.extr:
-14          extr = ['\\' + s for s in opts.extr.split(',')]
-15      else:
-16          extr = []
-17      p = parser.Parser(parms, packages, read_macros=read)
-18      toks = p.parse(latex, extract=extr)
-19      txt, pos = utils.get_txt_pos(toks)
-20      if opts.repl:
-21          txt, pos = utils.replace_phrases(txt, pos, opts.repl)
-22      if opts.unkn:
-23          txt = '\n'.join(p.get_unknowns()) + '\n'
-24          pos = [0 for n in range(len(txt))]
-25      pos = [n + 1 for n in pos]
-26      return txt, pos
+ 1  def tex2txt(latex, opts, multi_language=False, modify_parms=None):
+ 2      def read(file):
+ 3          try:
+ 4              with open(file, encoding=opts.ienc) as f:
+ 5                  return True, f.read()
+ 6          except:
+ 7              return False, ''
+ 8
+ 9      parms = parameters.Parameters(opts.lang or '')
+10      parms.multi_language = multi_language
+11      packages = get_packages(opts.dcls, parms.class_modules)
+12      packages.extend(get_packages(opts.pack, parms.package_modules))
+13
+14      if opts.defs:
+15          packages.append(('', utils.get_latex_handler(opts.defs)))
+16      if opts.extr:
+17          extr = ['\\' + s for s in opts.extr.split(',')]
+18      else:
+19          extr = []
+20      if opts.seqs:
+21          parms.math_displayed_simple = True
+22
+23      if modify_parms:
+24          modify_parms(parms)
+25      p = parser.Parser(parms, packages, read_macros=read)
+26      toks = p.parse(latex, extract=extr)
+27
+28      if not multi_language:
+29          txt, pos = utils.get_txt_pos(toks)
+30          if opts.repl:
+31              txt, pos = utils.replace_phrases(txt, pos, opts.repl)
+32          if opts.unkn:
+33              txt = '\n'.join(p.get_unknowns()) + '\n'
+34              pos = [0 for n in range(len(txt))]
+35          pos = [n + 1 for n in pos]
+36          return txt, pos
+37
+38      main_lang = opts.lang or ''
+39      ml = utils.get_txt_pos_ml(toks, main_lang, parms)
+40      if opts.repl and main_lang in ml:
+41          for part in ml[main_lang]:
+42              part[0], part[1] = utils.replace_phrases(part[0], part[1],
+43                                                          opts.repl)
+44      for lang in ml:
+45          for part in ml[lang]:
+46              part[1]= list(n + 1 for n in part[1])
+47      return ml
 ```
-- 3-8: This is an auxiliary function for the parser.
+- 2-7: This is an auxiliary function for the parser.
 - 9: The created parameter object contains all default settings
   and definitions from file yalafi/parameters.py.
-- 10: We read the LaTeX packages from option --pack and convert them to 
+- 11: We read the LaTeX packages from option --pack and convert them to 
   a list of handler functions called later by the parser.
-- 12: If requested by script option --defs, additional macros are included
+- 15: If requested by script option --defs, additional macros are included
   from the string opts.defs.
   The parser has to process them after loading packages.
-- 13-16: If option --extr requests only extraction of arguments of certain
+- 16-19: If option --extr requests only extraction of arguments of certain
   macros, this is prepared.
-- 17: We create a parser object, the passed function is called on \\LTinput.
-- 18: The parsing method returns a list of tokens.
-- 19: The token list is converted into a 2-tuple containing the plain-text
+- 24: If call-back modify\_parms is specified, it may change the parameters.
+- 25: We create a parser object, the passed function is called on \\LTinput.
+- 26: The parsing method returns a list of tokens.
+- 29: The token list is converted into a 2-tuple containing the plain-text
   string and a list of numbers.
   Each number in the list indicates the estimated position of the
   corresponding character in the text string.
-- 21: If phrase replacements are requested by option --repl, this is done.
+- 31: If phrase replacements are requested by option --repl, this is done.
   String opts.repl contains the replacement specifications read from the file.
-- 23: On option --unkn, a list of unknown macros and environments is
+- 33: On option --unkn, a list of unknown macros and environments is
   generated.
-- 25: This is necessary, since position numbers are zero-based in yalafi,
+- 35: This is necessary, since position numbers are zero-based in yalafi,
   but one-based in Tex2txt/tex2txt.py.
+- 39: For a multi-language document, utils.get\_txt\_pos\_ml() returns a
+  dictionary, containing plain-text strings and character position maps for
+  each language.
+- 40: Phrase replacements are performed for text parts written in the main
+  language.
+- 46: This corresponds to line 35.
 
 [Back to contents](#contents)
 
