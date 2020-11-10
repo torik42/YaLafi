@@ -776,7 +776,7 @@ where the problem was detected.
   Additionally, we replace '\~' and '\\,' by UTF-8 non-breaking space and
   narrow non-breaking space.
 - For language 'de', suitable replacements for macros like '"\`' and '"='
-  are inserted, see method 'Parameters.init\_language()' in
+  are inserted, see method 'Parameters.init\_parser\_languages()' in
   file yalafi/parameters.py.
 - Macro \\verb and environment verbatim are processed.
   Environment verbatim can be replaced or removed like other environments
