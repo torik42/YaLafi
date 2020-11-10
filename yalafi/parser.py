@@ -245,6 +245,9 @@ class Parser:
                 if self.parms.multi_language:
                     self.parms.change_parser_lang(tok)
                     out.append(tok)
+            elif tok.txt in self.parms.lang_context().active_chars:
+                out.append(self.expand_short_macro(buf, tok))
+                continue
             elif type(tok) is defs.CommentToken:
                 pass
             else:
@@ -575,6 +578,18 @@ class Parser:
         out.append(Space(out[-1].pos))
         out.insert(0, Space(start))
         return out
+
+    #   expand a short macro like "` for German documents
+    #
+    def expand_short_macro(self, buf, tok):
+        cur = buf.next()
+        if (not cur or tok.txt + cur.txt
+                    not in self.parms.lang_context().short_macros):
+            return tok
+        buf.next()
+        return defs.TextToken(tok.pos,
+                    self.parms.lang_context().short_macros[tok.txt + cur.txt],
+                    pos_fix=True)
 
     #   parse a key-value list of the form 'a=b,a4paper,x={ hoho }'
     #   - return a dictionary

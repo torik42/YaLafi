@@ -158,19 +158,6 @@ class Parameters:
 
         ]
 
-    #   set language-dependent scanner parameters
-    #
-    def init_scanner_language(self, lang):
-        lang = lang[:2].lower()
-        if lang == 'de':
-            self.special_tokens.update({
-                '"-': '',
-                '"=': '-',
-                '"`': '\N{DOUBLE LOW-9 QUOTATION MARK}',    # \glqq
-                '"\'': '\N{LEFT DOUBLE QUOTATION MARK}',    # \grqq
-            })
-
-
     #   set language-dependent parser parameters
     #   - settings for 'en' are taken as fall back
     #
@@ -187,7 +174,8 @@ class Parameters:
                                     '\\cdot': 'times', '\\times': 'times',
                                     '/': 'over',
                                     None: 'equal'},     # default value
-            lang_change_repl = ['K-K-K', 'L-L-L', 'M-M-M', 'N-N-N']
+            lang_change_repl = ['K-K-K', 'L-L-L', 'M-M-M', 'N-N-N'],
+            short_macros = {}
         )
         settings['de'] = ParserLanguageSettings(
             proof_name = 'Beweis',
@@ -199,7 +187,20 @@ class Parameters:
                                     '\\cdot': 'mal', '\\times': 'mal',
                                     '/': 'durch',
                                     None: 'gleich'},    # default value
-            lang_change_repl = ['K-K-K', 'L-L-L', 'M-M-M', 'N-N-N']
+            lang_change_repl = ['K-K-K', 'L-L-L', 'M-M-M', 'N-N-N'],
+            short_macros = {
+                '"-': '',
+                '"=': '-',
+                '"`': '\N{DOUBLE LOW-9 QUOTATION MARK}',    # \glqq
+                '"\'': '\N{LEFT DOUBLE QUOTATION MARK}',    # \grqq
+                '"A': 'Ä',
+                '"a': 'ä',
+                '"O': 'Ö',
+                '"o': 'ö',
+                '"U': 'Ü',
+                '"u': 'ü',
+                '"s': 'ß',
+            }
         )
         settings['ru'] = ParserLanguageSettings(
             proof_name = 'Доказательство',
@@ -211,7 +212,8 @@ class Parameters:
                                     '\\cdot': 'раз', '\\times': 'раз',
                                     '/': 'на',
                                     None: 'равно'},     # default value
-            lang_change_repl = ['К-К-К', 'Л-Л-Л', 'М-М-М', 'Н-Н-Н']
+            lang_change_repl = ['К-К-К', 'Л-Л-Л', 'М-М-М', 'Н-Н-Н'],
+            short_macros = {}
         )
 
         self.parser_lang_stack = [(settings[self.check_parser_lang(lang)],
@@ -444,7 +446,6 @@ class Parameters:
         self.multi_language = False
         self.ml_continue_thresh = 3
         self.init_parser_languages(language)
-        self.init_scanner_language(language)
         self.scanner = scanner.Scanner(self)
         self.init_macros()
         self.init_environments()
@@ -452,10 +453,12 @@ class Parameters:
 
 class ParserLanguageSettings:
     def __init__(self, proof_name, math_repl_inline, math_repl_display,
-                        math_op_text, lang_change_repl):
+                        math_op_text, lang_change_repl, short_macros):
         self.proof_name = proof_name
         self.math_repl_inline = math_repl_inline
         self.math_repl_display = math_repl_display
         self.math_op_text = math_op_text
         self.lang_change_repl = lang_change_repl
+        self.short_macros = short_macros
+        self.active_chars = set(k[0] for k in self.short_macros.keys())
 
