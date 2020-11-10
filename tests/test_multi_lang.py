@@ -8,8 +8,8 @@ from yalafi.packages import babel
 
 prefix = '\\usepackage{babel}\n'
 
-def get_ml(latex):
-    parms = parameters.Parameters(language='de-DE')
+def get_ml(latex, lang='de-DE'):
+    parms = parameters.Parameters(language=lang)
     parms.multi_language = True
 
     babel.modify_language_map('lang1', 'de-DE')
@@ -18,10 +18,10 @@ def get_ml(latex):
 
     p = parser.Parser(parms)
     toks = p.parse(prefix + latex)
-    return utils.get_txt_pos_ml(toks, 'de-DE', parms)
+    return utils.get_txt_pos_ml(toks, lang, parms)
 
-def get_ml_txt(latex):
-    ml = get_ml(latex)
+def get_ml_txt(latex, lang='de-DE'):
+    ml = get_ml(latex, lang)
     return {k: [tp[0] for tp in v] for (k,v) in ml.items()}
 
 latex_1 = r"""
@@ -153,4 +153,86 @@ B
 def test_6():
     plain = get_ml_txt(latex_6)
     assert plain == plain_6
+
+latex_7 = r"""
+A"`B"'C"=D"-E
+K""=L"\xxx M
+\selectlanguage{english}
+A"`B"'C"=D"-E
+K""=L"\xxx M
+"""
+plain_7 = {
+'de-DE': [
+"""
+A„B“C-DE
+K"-L"M
+"""
+],
+'en-GB': [
+"""A"`B"'C"=D"-E
+K""=L"M
+"""
+]
+}
+def test_7():
+    plain = get_ml_txt(latex_7, lang='de-DE')
+    assert plain == plain_7
+
+latex_8 = r"""
+"A"a"O"o"U"u"s
+\selectlanguage{english}
+"A"a"O"o"U"u"s
+"""
+plain_8 = {
+'de-DE': [
+"""
+ÄäÖöÜüß
+"""
+],
+'en-GB': [
+""""A"a"O"o"U"u"s
+"""
+]
+}
+def test_8():
+    plain = get_ml_txt(latex_8, lang='de-DE')
+    assert plain == plain_8
+
+#   issue #104
+#
+latex_9 = r"""
+"`\foreignlanguage{english}{"`x"'}"'
+"""
+plain_9 = {
+'de-DE': [
+"""
+„L-L-L“
+"""
+],
+'en-GB': [
+""""`x"'"""
+]
+}
+def test_9():
+    plain = get_ml_txt(latex_9, lang='de-DE')
+    assert plain == plain_9
+
+#   issue #104
+#
+latex_10 = r"""
+"`\foreignlanguage{german}{"`x"'}"'
+"""
+plain_10 = {
+'de-DE': [
+"""„x“"""
+],
+'en-GB': [
+"""
+"`L-L-L"'
+"""
+]
+}
+def test_10():
+    plain = get_ml_txt(latex_10, lang='en-GB')
+    assert plain == plain_10
 
