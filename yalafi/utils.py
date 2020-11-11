@@ -17,6 +17,7 @@
 #
 
 from . import defs, parameters
+import copy
 import re
 import sys
 
@@ -126,16 +127,21 @@ def get_module_handler(name, prefix):
         warning('could not load module ' + repr(mod))
         return [], lambda p: defs.ModParm()
 
-def get_latex_handler(macros_latex):
-    def f(p):
-        return defs.ModParm(macros_latex=macros_latex)
-    return [], f
+#   filter out LanguageTokens and set their position numbers
+#
+def filter_lang_toks(toks, pos):
+    def f(t):
+        t = copy.copy(t)
+        t.pos = pos
+        return t
+    return [f(t) for t in toks if type(t) is defs.LanguageToken]
+
 
 class LanguageSection:
     def __init__(self, lang, back, hard, txt, pos):
         self.lang = lang
-        self.back = back
-        self.hard = hard
+        self.back = back        # e.g., started by end of \foreignlanguage
+        self.hard = hard        # e.g., started by \selectlanguage
         self.txt = txt
         self.pos = pos
 
