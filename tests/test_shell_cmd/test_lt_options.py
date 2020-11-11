@@ -157,3 +157,23 @@ def test_4(options, lt_in_expected):
                                             latex_4, 'utf-8')
     assert lt_in == lt_in_expected
 
+#   test --add-modules
+#
+latex_5 = r"""
+\KOMAoption{koma}
+\selectlanguage{lang}
+A
+"""
+lt_in_5 = """
+--json --encoding utf-8 --language en-GB --disable WHITESPACE_RULE -
+
+A
+
+"""
+def test_5():
+#   this will echo 'koma' and 'lang':
+#   lt_in = run_shell.get_lt_in('--packages ""', latex_5, 'utf-8')
+    lt_in = run_shell.get_lt_in('--packages "" --add-modules '
+                                + test_dir + 'modules.tex', latex_5, 'utf-8')
+    assert lt_in == lt_in_5
+
