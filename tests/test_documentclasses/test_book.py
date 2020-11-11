@@ -11,4 +11,11 @@ def get_plain(latex):
     plain, nums = utils.get_txt_pos(p.parse(preamble + latex))
     return plain
 
+latex_1 = r"""
+"""
+plain_1 = """
+"""
+def test_1():
+    plain = get_plain(latex_1)
+    assert plain == plain_1
 
