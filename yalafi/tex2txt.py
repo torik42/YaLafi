@@ -41,8 +41,6 @@ def tex2txt(latex, opts, multi_language=False, modify_parms=None):
     packages = get_packages(opts.dcls, parms.class_modules)
     packages.extend(get_packages(opts.pack, parms.package_modules))
 
-    if opts.defs:
-        packages.append(('', utils.get_latex_handler(opts.defs)))
     if opts.extr:
         extr = ['\\' + s for s in opts.extr.split(',')]
     else:
@@ -53,7 +51,7 @@ def tex2txt(latex, opts, multi_language=False, modify_parms=None):
     if modify_parms:
         modify_parms(parms)
     p = parser.Parser(parms, packages, read_macros=read)
-    toks = p.parse(latex, extract=extr)
+    toks = p.parse(latex, define=opts.defs, extract=extr)
 
     if not multi_language:
         txt, pos = utils.get_txt_pos(toks)

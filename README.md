@@ -74,7 +74,6 @@ from section [Example application](#example-application)
 can access an interface emulating tex2txt.py from repository
 [Tex2txt](https://github.com/matze-dd/Tex2txt)
 by 'from yalafi import tex2txt'.
-
 The pure LaTeX filter can be directly used in scripts via a command-line
 interface, it is described in section
 [Command-line of pure filter](#command-line-of-pure-filter).
@@ -1206,12 +1205,12 @@ t.tex|8 col 34 info|  Möglicher Tippfehler gefunden. Suggestion: exzellent; exz
 t.tex|8 col 44 info|  Two consecutive dots Suggestion: .; …
 ```
 The initial language is specified by option --language.
+Commands like `\selectlanguage{...}` are effective in files loaded via option
+--define or with `\LTinput{...}`.
 Language names in 'babel' commands are mapped to xx-XX codes by dictionary
 'language\_map' in file [yalafi/packages/babel.py](yalafi/packages/babel.py).
 Please note:
 - Currently, `\usepackage[...]{babel}` does not set the active language.
-- Using `\selectlanguage{...}` is not effective in files loaded via
-  option --define or with `\LTinput{...}`.
 
 **Further options.**
 In the above example, LanguageTool is invoked for
@@ -1250,7 +1249,6 @@ We comment the central function in file
 that uses the package interface to emulate the behaviour of
 script tex2txt.py in repository
 [Tex2txt](https://github.com/matze-dd/Tex2txt).
-
 ```
  1  def tex2txt(latex, opts, multi_language=False, modify_parms=None):
  2      def read(file):
@@ -1265,70 +1263,65 @@ script tex2txt.py in repository
 11      packages = get_packages(opts.dcls, parms.class_modules)
 12      packages.extend(get_packages(opts.pack, parms.package_modules))
 13
-14      if opts.defs:
-15          packages.append(('', utils.get_latex_handler(opts.defs)))
-16      if opts.extr:
-17          extr = ['\\' + s for s in opts.extr.split(',')]
-18      else:
-19          extr = []
-20      if opts.seqs:
-21          parms.math_displayed_simple = True
-22
-23      if modify_parms:
-24          modify_parms(parms)
-25      p = parser.Parser(parms, packages, read_macros=read)
-26      toks = p.parse(latex, extract=extr)
-27
-28      if not multi_language:
-29          txt, pos = utils.get_txt_pos(toks)
-30          if opts.repl:
-31              txt, pos = utils.replace_phrases(txt, pos, opts.repl)
-32          if opts.unkn:
-33              txt = '\n'.join(p.get_unknowns()) + '\n'
-34              pos = [0 for n in range(len(txt))]
-35          pos = [n + 1 for n in pos]
-36          return txt, pos
-37
-38      main_lang = opts.lang or ''
-39      ml = utils.get_txt_pos_ml(toks, main_lang, parms)
-40      if opts.repl and main_lang in ml:
-41          for part in ml[main_lang]:
-42              part[0], part[1] = utils.replace_phrases(part[0], part[1],
-43                                                          opts.repl)
-44      for lang in ml:
-45          for part in ml[lang]:
-46              part[1]= list(n + 1 for n in part[1])
-47      return ml
+14      if opts.extr:
+15          extr = ['\\' + s for s in opts.extr.split(',')]
+16      else:
+17          extr = []
+18      if opts.seqs:
+19          parms.math_displayed_simple = True
+20
+21      if modify_parms:
+22          modify_parms(parms)
+23      p = parser.Parser(parms, packages, read_macros=read)
+24      toks = p.parse(latex, define=opts.defs, extract=extr)
+25
+26      if not multi_language:
+27          txt, pos = utils.get_txt_pos(toks)
+28      if opts.repl:
+29          txt, pos = utils.replace_phrases(txt, pos, opts.repl)
+30      if opts.unkn:
+31          txt = '\n'.join(p.get_unknowns()) + '\n'
+32          pos = [0 for n in range(len(txt))]
+33      pos = [n + 1 for n in pos]
+34      return txt, pos
+35
+36  main_lang = opts.lang or ''
+37  ml = utils.get_txt_pos_ml(toks, main_lang, parms)
+38  if opts.repl and main_lang in ml:
+39      for part in ml[main_lang]:
+40          part[0], part[1] = utils.replace_phrases(part[0], part[1],
+41                                                      opts.repl)
+42  for lang in ml:
+43      for part in ml[lang]:
+44          part[1]= list(n + 1 for n in part[1])
+45  return ml
 ```
 - 2-7: This is an auxiliary function for the parser.
 - 9: The created parameter object contains all default settings
   and definitions from file yalafi/parameters.py.
 - 11: We read the LaTeX packages from option --pack and convert them to 
   a list of handler functions called later by the parser.
-- 15: If requested by script option --defs, additional macros are included
-  from the string opts.defs.
-  The parser has to process them after loading packages.
-- 16-19: If option --extr requests only extraction of arguments of certain
+- 14-17: If option --extr requests only extraction of arguments of certain
   macros, this is prepared.
-- 24: If call-back modify\_parms is specified, it may change the parameters.
-- 25: We create a parser object, the passed function is called on \\LTinput.
-- 26: The parsing method returns a list of tokens.
-- 29: The token list is converted into a 2-tuple containing the plain-text
+- 22: If call-back modify\_parms is specified, it may change the parameters.
+- 23: We create a parser object, the passed function is called on \\LTinput.
+- 24: The parsing method returns a list of tokens.
+- 27: The token list is converted into a 2-tuple containing the plain-text
   string and a list of numbers.
   Each number in the list indicates the estimated position of the
   corresponding character in the text string.
-- 31: If phrase replacements are requested by option --repl, this is done.
+- 29: If phrase replacements are requested by option --repl, this is done.
   String opts.repl contains the replacement specifications read from the file.
-- 33: On option --unkn, a list of unknown macros and environments is
+- 31: On option --unkn, a list of unknown macros and environments is
   generated.
-- 35: This is necessary, since position numbers are zero-based in yalafi,
+- 33: This is necessary, since position numbers are zero-based in yalafi,
   but one-based in Tex2txt/tex2txt.py.
-- 39: For a multi-language document, utils.get\_txt\_pos\_ml() returns a
+- 37: For a multi-language document, utils.get\_txt\_pos\_ml() returns a
   dictionary, containing plain-text strings and character position maps for
   each language.
-- 40: Phrase replacements are performed for text parts written in the main
+- 38: Phrase replacements are performed for text parts written in the main
   language.
-- 46: This corresponds to line 35.
+- 44: This corresponds to line 33.
 
 [Back to contents](#contents)
 

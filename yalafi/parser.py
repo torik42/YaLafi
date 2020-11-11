@@ -132,13 +132,17 @@ class Parser:
 
     #   main entry point
     #
-    def parse(self, latex, extract=None):
+    def parse(self, latex, define='', extract=None):
         if extract:
             self.init_extractions(extract)
         self.extracted = []
         self.unknowns = []
 
-        main = self.parser_work(latex)
+        main = []
+        if define:
+            toks = self.parser_work(define)
+            main = utils.filter_lang_toks(toks, 0)
+        main += self.parser_work(latex)
 
         if extract:
             main = []

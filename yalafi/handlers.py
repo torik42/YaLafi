@@ -114,7 +114,7 @@ def h_cite(parser, buf, mac, args, pos):
     return out
 
 #   macro \LTinclude: read macro definitions from file
-#   - this also activates packages
+#   - this also activates packages and switches languages
 #
 def h_load_defs(parser, buf, mac, args, pos):
     if not parser.read_macros:
@@ -124,8 +124,8 @@ def h_load_defs(parser, buf, mac, args, pos):
     if not ok:
         return utils.latex_error('could not read file ' + repr(file),
                                         pos, parser.latex, parser.parms)
-    parser.parser_work(latex)
-    return []
+    toks = parser.parser_work(latex)
+    return utils.filter_lang_toks(toks, pos)
 
 #   read definitions for a LaTeX package
 #

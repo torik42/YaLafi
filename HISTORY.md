@@ -6,7 +6,7 @@ Work in progress
     --ml-disable, --ml-disablecategories
 - yalafi core
   - added support for multi-language documents (issue [#98](../../issues/98));
-    including fixed issue [#104](../../issues/104)
+    including fixed issues [#104](../../issues/104), [#108](../../issues/108)
 - README.md: updated, added section for multi-language support
 
 Version 1.1.7 (2020/11/04)
