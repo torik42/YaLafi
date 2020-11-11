@@ -5,6 +5,8 @@
 
 from tests.test_shell_cmd import run_shell
 
+test_dir = 'tests/test_shell_cmd/'
+
 #   without multi-lang
 #
 latex_1 = r"""
@@ -116,4 +118,42 @@ def test_6():
     lt_in = run_shell.get_lt_in('--multi-language --ml-disablecategories x,y',
                                                 latex_6, 'utf-8')
     assert lt_in == lt_in_6
+
+#   test that \selectlanguage in file from \LTinput is effective
+#
+latex_7 = r"""
+A
+\LTinput{""" + test_dir + 'defs.tex' + r"""}
+B
+"""
+lt_in_7 = """
+--json --encoding utf-8 --language en-GB --disable WHITESPACE_RULE -
+
+A
+
+
+--json --encoding utf-8 --language de-DE --disable WHITESPACE_RULE -
+B
+
+"""
+def test_7():
+    lt_in = run_shell.get_lt_in('--multi-language --lang en-GB',
+                                                latex_7, 'utf-8')
+    assert lt_in == lt_in_7
+
+#   test that \selectlanguage in file from --define
+#
+latex_8 = r"""
+A
+"""
+lt_in_8 = """
+--json --encoding utf-8 --language de-DE --disable WHITESPACE_RULE -
+
+A
+
+"""
+def test_8():
+    lt_in = run_shell.get_lt_in('--multi-language --lang en-GB --define '
+                                    + test_dir + 'defs.tex', latex_8, 'utf-8')
+    assert lt_in == lt_in_8
 

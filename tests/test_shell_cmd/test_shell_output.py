@@ -25,7 +25,7 @@ def test_shell_plain():
     assert out == run_shell.msg_header + msg_plain
 
 
-if sys.version_info[:2] == (3, 6):
+if sys.version_info[:2] < (3, 8):
     msg_xml = r"""<matches>
 <error category="Possible Typo" context="This is ä testx. " contextoffset="10" errorlength="5" fromx="10" fromy="0" msg="Possible spelling mistake found" replacements="test#tests#testy#test x" tox="15" toy="0" />
 </matches>
@@ -43,7 +43,7 @@ def test_shell_xml():
 
 #   multi-byte character 'ä' shifts column for mode xml-b
 #
-if sys.version_info[:2] == (3, 6):
+if sys.version_info[:2] < (3, 8):
     msg_xml_b = r"""<matches>
 <error category="Possible Typo" context="This is ä testx. " contextoffset="11" errorlength="5" fromx="11" fromy="0" msg="Possible spelling mistake found" replacements="test#tests#testy#test x" tox="16" toy="0" />
 </matches>
