@@ -21,8 +21,10 @@ language_map = {
     'english': 'en-GB',
     'english-au': 'en-AU',
     'english-ca': 'en-CA',
+    'british': 'en-GB',
     'english-gb': 'en-GB',
     'english-nz': 'en-NZ',
+    'american': 'en-US',
     'english-us': 'en-US',
 #   'en-ZA',
     'esperanto': 'eo',
@@ -52,11 +54,12 @@ language_map = {
     'chinese': 'zh-CN',
 }
 
-from yalafi.defs import ModParm, Macro, LanguageToken
+from yalafi.defs import InitModule, Macro, LanguageToken
 
 require_packages = []
 
-def modify_parameters(parms):
+def init_module(parser, options):
+    parms = parser.parms
 
     macros_latex = ''
 
@@ -69,7 +72,7 @@ def modify_parameters(parms):
 
     environments = []
 
-    return ModParm(macros_latex=macros_latex, macros_python=macros_python,
+    return InitModule(macros_latex=macros_latex, macros_python=macros_python,
                         environments=environments)
 
 def modify_language_map(babel, lt):

@@ -3,11 +3,12 @@
 #   YaLafi: \documentclass{scrartcl}
 #
 
-from yalafi.defs import ModParm
+from yalafi.defs import InitModule
 
 require_packages = []
 
-def modify_parameters(parms):
+def init_module(parser, options):
+    parms = parser.parms
 
     macros_latex = r"""
 
@@ -16,5 +17,5 @@ def modify_parameters(parms):
 
     """
 
-    return ModParm(macros_latex=macros_latex)
+    return InitModule(macros_latex=macros_latex)
 

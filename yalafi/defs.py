@@ -18,7 +18,7 @@
 
 from . import utils
 
-class ModParm:
+class InitModule:
     def __init__(self, macros_latex='', macros_python=[], environments=[]):
         self.macros_latex = macros_latex
         self.macros_python = macros_python

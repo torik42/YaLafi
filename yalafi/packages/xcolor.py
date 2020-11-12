@@ -3,11 +3,12 @@
 #   YaLafi module for LaTeX package xcolor
 #
 
-from yalafi.defs import Macro, ModParm
+from yalafi.defs import Macro, InitModule
 
 require_packages = []
 
-def modify_parameters(parms):
+def init_module(parser, options):
+    parms = parser.parms
 
     macros_latex = r"""
 
@@ -26,6 +27,6 @@ def modify_parameters(parms):
 
     environments = []
 
-    return ModParm(macros_latex=macros_latex, macros_python=macros_python,
+    return InitModule(macros_latex=macros_latex, macros_python=macros_python,
                         environments=environments)
 

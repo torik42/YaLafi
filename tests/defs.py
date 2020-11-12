@@ -1,9 +1,10 @@
 
-from yalafi.defs import ModParm, Environ, EquEnv
+from yalafi.defs import InitModule, Environ, EquEnv
 
 require_packages = ['amsmath']  # for test_modules.py
 
-def modify_parameters(parms):
+def init_module(parser, options):
+    parms = parser.parms
 
     environments = [
 
@@ -12,5 +13,5 @@ def modify_parameters(parms):
 
     ]
 
-    return ModParm(environments=environments)
+    return InitModule(environments=environments)
 

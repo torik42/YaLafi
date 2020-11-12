@@ -3,11 +3,12 @@
 #   YaLafi: \documentclass{book}
 #
 
-from yalafi.defs import ModParm
+from yalafi.defs import InitModule
 
 require_packages = []
 
-def modify_parameters(parms):
+def init_module(parser, options):
+    parms = parser.parms
 
-    return ModParm()
+    return InitModule()
 

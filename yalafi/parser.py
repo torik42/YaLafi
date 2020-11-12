@@ -54,29 +54,29 @@ class Parser:
         self.verbatim_end = parms.scanner.scan('\\end{verbatim}')
 
         # initialise and modify parameters, macros, etc.
-        builtin = [], lambda p: defs.ModParm(
+        builtin = [], lambda p, o: defs.InitModule(
                                 macros_latex=parms.macro_defs_latex,
                                 macros_python=parms.macro_defs_python,
                                 environments=parms.environment_defs)
         for name, actions in [('', builtin)] + packages:
-            self.init_package(name, actions)
+            self.init_package(name, actions, [])
 
     #   call handler of a package module:
     #   - load other required packages
     #   - let package handler update parameter object
     #   - update local dictionaries for macros and environments
     #
-    def init_package(self, name, actions):
+    def init_package(self, name, actions, options):
         if name and name in self.packages:
             return
         try:
             for requ in actions[0]:
                 if requ not in self.packages:
                     self.init_package(requ, utils.get_module_handler(
-                                            requ, self.parms.package_modules))
+                                    requ, self.parms.package_modules), options)
             if name:
                 self.packages.append(name)
-            self.modify_parameters(actions[1])
+            self.modify_parameters(actions[1], options)
         except:
             utils.fatal('error loading module ' + repr(name))
 
@@ -84,8 +84,8 @@ class Parser:
     #   - used by package extension mechanism
     #   - used by handlers of LaTeX macros / environments
     #
-    def modify_parameters(self, f):
-        mods = f(self.parms)
+    def modify_parameters(self, f, options):
+        mods = f(self, options)
         for m in mods.macros_python:
             self.the_macros[m.name] = m
         for e in mods.environs:

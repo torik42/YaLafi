@@ -3,7 +3,7 @@
 #   YaLafi module for LaTeX package amsmath
 #
 
-from yalafi.defs import Macro, ModParm, EquEnv
+from yalafi.defs import Macro, InitModule, EquEnv
 
 require_packages = []
 
@@ -15,7 +15,8 @@ require_packages = []
 #   - The spacing macros and \notag are imporant for correct parsing
 #     of maths material.
 #
-def modify_parameters(parms):
+def init_module(parser, options):
+    parms = parser.parms
 
     parms.math_text_macros.append('\\text')
 
@@ -56,6 +57,6 @@ def modify_parameters(parms):
 
     ]
 
-    return ModParm(macros_latex=macros_latex, macros_python=macros_python,
+    return InitModule(macros_latex=macros_latex, macros_python=macros_python,
                         environments=environments)
 
