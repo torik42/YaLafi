@@ -27,7 +27,8 @@
 from yalafi import defs, tex2txt
 
 require_packages = []
-def modify_parameters(parms):
+def init_module(parser, options):
+    parms = parser.parms
     def add(parser, buf, mac, args, pos):
         name = parser.get_text_expanded(args[1])
         if mac.name == '\\usepackage':
@@ -39,7 +40,7 @@ def modify_parameters(parms):
         defs.Macro(parms, '\\documentclass', args='OA', repl=add),
         defs.Macro(parms, '\\usepackage', args='OA', repl=add),
     ]
-    return defs.ModParm(macros_python=macros_python)
+    return defs.InitModule(macros_python=macros_python)
 
 documentclass = ['']
 packages = []

@@ -3,11 +3,12 @@
 #   YaLafi module for LaTeX package amsthm
 #
 
-from yalafi.defs import ModParm, Environ, SpaceToken, TextToken
+from yalafi.defs import InitModule, Environ, SpaceToken, TextToken
 
 require_packages = []
 
-def modify_parameters(parms):
+def init_module(parser, options):
+    parms = parser.parms
 
     macros_latex = r"""
 
@@ -24,7 +25,7 @@ def modify_parameters(parms):
 
     ]
 
-    return ModParm(macros_latex=macros_latex, macros_python=macros_python,
+    return InitModule(macros_latex=macros_latex, macros_python=macros_python,
                         environments=environments)
 
 def h_proof(parser, buf, mac, args, pos):

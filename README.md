@@ -929,11 +929,10 @@ submodules that are activated by the LaTeX filter when executing
   This is similar to the previous case.
 
 Each extension module has to provide a list 'require\_packages' of strings
-that causes loading of other modules, and a function 'modify\_parameters()'.
-It is called by the parser and can modify the passed object of
-class 'Parameters'.
+that causes loading of other modules, and a function 'init\_module()'.
+It is called by the parser and can modify the object of class 'Parameters'.
 In order to add macros and environments, it has to construct strings or
-object lists that are included in the returned object of class 'ModParm'.
+object lists that are included in the returned object of class 'InitModule'.
 Classes for definition of macros and environments are described in the
 sections starting at [Definition of macros](#definition-of-macros).
 For an example, see file

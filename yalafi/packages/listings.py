@@ -3,11 +3,12 @@
 #   YaLafi module for LaTeX package listings
 #
 
-from yalafi.defs import ModParm, Environ
+from yalafi.defs import InitModule, Environ
 
 require_packages = []
 
-def modify_parameters(parms):
+def init_module(parser, options):
+    parms = parser.parms
 
     macros_latex = r"""
 
@@ -24,6 +25,6 @@ def modify_parameters(parms):
 
     ]
 
-    return ModParm(macros_latex=macros_latex, macros_python=macros_python,
+    return InitModule(macros_latex=macros_latex, macros_python=macros_python,
                         environments=environments)
 

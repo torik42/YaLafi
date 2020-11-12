@@ -1,5 +1,10 @@
 Work in progress
 ----------------
+- **Changed interface** to extension modules for packages and document classes
+  (issue [#110](../../issues/110)).
+  Entry point is now function init\_module() with two arguments: parser and
+  list of packet options.
+  See for instance file yalafi/packages/amsmath.py.
 - yalafi.shell
   - added support for multi-language documents (issue [#98](../../issues/98))
   - new options --multi-language, --ml-continue-threshold, --ml-rule-threshold,

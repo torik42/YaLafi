@@ -122,10 +122,10 @@ def get_module_handler(name, prefix):
     try:
         exec('import ' + mod)
         return (eval(mod + '.require_packages'),
-                        eval(mod + '.modify_parameters'))
+                        eval(mod + '.init_module'))
     except:
         warning('could not load module ' + repr(mod))
-        return [], lambda p: defs.ModParm()
+        return [], lambda p, o: defs.InitModule()
 
 #   filter out LanguageTokens and set their position numbers
 #

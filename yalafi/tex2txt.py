@@ -23,7 +23,7 @@
 #   differences:
 #   - option '--char' is  always assumed to be set
 #   - option '--defs file' reads macro definitions as LaTeX code
-#   - option '--pack mods' calls functions modify_parameters() from packages
+#   - option '--pack mods' calls functions init_module() from packages
 #
 
 from . import parameters, parser, utils
