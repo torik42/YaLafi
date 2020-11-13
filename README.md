@@ -1183,12 +1183,11 @@ This feature is experimental, any comments are welcome.
 Operation may be slow, unless a LanguageTool server is used, for instance,
 via option '--server my'.
 
-As an example, assume option '--multi-language' for yalafi.shell and input:
+As an example, assume option '--multi-language' for yalafi.shell and the LaTeX
+text:
 ```
 \documentclass{article}
 \usepackage[german,english]{babel}
-
-\selectlanguage{english}
 \newcommand{\german}[1]{\textit{\foreignlanguage{german}{#1}}}
 
 \begin{document}
@@ -1199,17 +1198,16 @@ Then, the Vim example from section [“Plain Vim”](#plain-vim)
 with setting `let g:ltyc_showsuggestions = 1` will produce this quickfix
 window:
 ```
-t.tex|8 col 9 info|  Possible spelling mistake found. Suggestion: the; then; they; them; thee; Theo; hex; THX; TeX; Tex; The; t hex; the x; Théo
-t.tex|8 col 34 info|  Möglicher Tippfehler gefunden. Suggestion: exzellent; exzellente; exzellenten; exzellenter; Exzellenz; exzellentes; erzählend; exzellentem; erhellend; erkältend; exzelliert
-t.tex|8 col 44 info|  Two consecutive dots Suggestion: .; …
+t.tex|6 col 9 info|  Possible spelling mistake found. Suggestion: the; then; they; them; thee; Theo; hex; THX; TeX; Tex; The; t hex; the x; Théo
+t.tex|6 col 34 info|  Möglicher Tippfehler gefunden. Suggestion: exzellent; exzellente; exzellenten; exzellenter; Exzellenz; exzellentes; erzählend; exzellentem; erhellend; erkältend; exzelliert
+t.tex|6 col 44 info|  Two consecutive dots Suggestion: .; …
 ```
-The initial language is specified by option --language.
-Commands like `\selectlanguage{...}` are effective in files loaded via option
---define or with `\LTinput{...}`.
-Language names in 'babel' commands are mapped to xx-XX codes by dictionary
+The initial language is specified by option --language, it is overwritten
+upon `\usepackage[...]{babel}`.
+Commands like `\selectlanguage{...}` are also effective in files loaded via
+option --define or with `\LTinput{...}`.
+Language names in babel commands are mapped to xx-XX codes by dictionary
 'language\_map' in file [yalafi/packages/babel.py](yalafi/packages/babel.py).
-Please note:
-- Currently, `\usepackage[...]{babel}` does not set the active language.
 
 **Further options.**
 In the above example, LanguageTool is invoked for

@@ -72,7 +72,7 @@ class MathParser:
             tokens = self.detect_math_parts(tokens)
             sec, next_repl = self.replace_section(False, tokens,
                         first_section, next_repl,
-                        self.parser.parms.lang_context().math_repl_display)
+                        self.parser.parms.lang_context.math_repl_display)
             out += sec
             if end and end.txt == '&':
                 out.append(defs.SpaceToken(out[-1].pos, ' ', pos_fix=True))
@@ -98,7 +98,7 @@ class MathParser:
                 out = [defs.ActionToken(start_simple),
                         defs.SpaceToken(start_simple, '  ', pos_fix=True),
                         defs.TextToken(start_simple, self.parser.parms.
-                                        lang_context().math_repl_display[0],
+                                        lang_context.math_repl_display[0],
                                         pos_fix=True)]
                 if txt and txt[-1] in self.parser.parms.math_punctuation:
                     out.append(defs.TextToken(out[-1].pos, txt[-1],
@@ -114,7 +114,7 @@ class MathParser:
         tokens = self.detect_math_parts(tokens)
         out = [defs.ActionToken(tok.pos)]
         t, x = self.replace_section(True, tokens, True, True,
-                            self.parser.parms.lang_context().math_repl_inline)
+                            self.parser.parms.lang_context.math_repl_inline)
         out += t
         out.append(defs.ActionToken(out[-1].pos))
         return out
@@ -241,8 +241,8 @@ class MathParser:
             op = tok.leading_op()
             elem = tok.has_elem(parms)
             if not inline and first_part and op:
-                s = parms.lang_context().math_op_text.get(
-                            op.txt, parms.lang_context().math_op_text[None])
+                s = parms.lang_context.math_op_text.get(
+                            op.txt, parms.lang_context.math_op_text[None])
                 out.append(defs.SpaceToken(tok.pos, ' ', pos_fix=True))
                 out.append(defs.TextToken(op.pos, s, pos_fix=True))
                 out.append(defs.SpaceToken(op.pos, ' ', pos_fix=True))

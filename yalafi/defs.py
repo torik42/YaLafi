@@ -19,10 +19,12 @@
 from . import utils
 
 class InitModule:
-    def __init__(self, macros_latex='', macros_python=[], environments=[]):
+    def __init__(self, macros_latex='', macros_python=[], environments=[],
+                                        inject_tokens=[]):
         self.macros_latex = macros_latex
         self.macros_python = macros_python
         self.environs = environments
+        self.inject_tokens = inject_tokens
 
 class Printable:
     def __repr__(self):

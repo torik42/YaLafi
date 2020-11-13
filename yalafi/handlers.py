@@ -126,16 +126,17 @@ def h_load_defs(parser, buf, mac, args, pos):
         return utils.latex_error('could not read file ' + repr(file),
                                         pos, parser.latex, parser.parms)
     toks = parser.parser_work(latex)
-    return utils.filter_lang_toks(toks, pos)
+    return utils.filter_set_toks(toks, pos, defs.LanguageToken)
 
 #   read definitions for a LaTeX package
 #
 def h_load_module(prefix):
     def f(parser, buf, mac, args, pos):
-        options = []
+        options = parser.parse_keyvals_list(args[0])
+        options = parser.expand_keyvals(options)
         pack = parser.get_text_expanded(args[1])
         f = utils.get_module_handler(pack, prefix)
-        parser.init_package(pack, f, options)
-        return []
+        out = parser.init_package(pack, f, options)
+        return utils.filter_set_toks(out, pos, None)
     return f
 
