@@ -218,6 +218,7 @@ class Parameters:
 
         self.parser_lang_stack = [(settings[self.check_parser_lang(lang)],
                                         lang)]
+        self.lang_context = self.parser_lang_stack[-1][0]
 
     #   set misc collections
     #
@@ -433,9 +434,7 @@ class Parameters:
                 self.parser_lang_stack.append(
                 (self.parser_lang_settings[self.check_parser_lang(tok.lang)],
                         tok.lang))
-
-    def lang_context(self):
-        return self.parser_lang_stack[-1][0]
+        self.lang_context = self.parser_lang_stack[-1][0]
 
     def lang_context_lang(self):
         return self.parser_lang_stack[-1][1]

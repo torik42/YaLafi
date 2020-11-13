@@ -96,7 +96,7 @@ def run_as_server(options, latex, json):
                     + ' ' + options)
     server = subprocess.Popen(cmd.split(), stdout=subprocess.DEVNULL,
                                     stderr=subprocess.DEVNULL)
-    time.sleep(10)
+    time.sleep(5)
 
     cmd = 'python -m yalafi.shell --plain-input --server my ' + shell_in
     out = subprocess.run(cmd.split(), stdout=subprocess.PIPE)

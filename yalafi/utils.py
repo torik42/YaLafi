@@ -127,14 +127,14 @@ def get_module_handler(name, prefix):
         warning('could not load module ' + repr(mod))
         return [], lambda p, o: defs.InitModule()
 
-#   filter out LanguageTokens and set their position numbers
+#   filter out tokens and set their position numbers
 #
-def filter_lang_toks(toks, pos):
+def filter_set_toks(toks, pos, tok_typ):
     def f(t):
         t = copy.copy(t)
         t.pos = pos
         return t
-    return [f(t) for t in toks if type(t) is defs.LanguageToken]
+    return [f(t) for t in toks if tok_typ is None or type(t) is tok_typ]
 
 
 class LanguageSection:

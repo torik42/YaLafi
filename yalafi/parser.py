@@ -28,7 +28,7 @@ class Parser:
     def __init__(self, parms, packages=[], read_macros=None):
         self.parms = parms
         self.read_macros = read_macros
-        self.packages = []
+        self.packages = {}
         self.the_macros = {}
         self.the_environments = {}
         self.mathparser = mathparser.MathParser(self)
@@ -65,20 +65,24 @@ class Parser:
     #   - load other required packages
     #   - let package handler update parameter object
     #   - update local dictionaries for macros and environments
+    #   --> only do all that if package not yet loaded, or if options have
+    #       changed
     #
     def init_package(self, name, actions, options):
-        if name and name in self.packages:
-            return
+        out = []
+        if name and name in self.packages and self.packages[name] == options:
+            return out
         try:
             for requ in actions[0]:
-                if requ not in self.packages:
-                    self.init_package(requ, utils.get_module_handler(
+                if requ not in self.packages or self.packages[requ] == options:
+                    out += self.init_package(requ, utils.get_module_handler(
                                     requ, self.parms.package_modules), options)
             if name:
-                self.packages.append(name)
-            self.modify_parameters(actions[1], options)
+                self.packages[name] = options
+            out += self.modify_parameters(actions[1], options)
         except:
             utils.fatal('error loading module ' + repr(name))
+        return out
 
     #   modify local parameter object
     #   - used by package extension mechanism
@@ -92,6 +96,7 @@ class Parser:
             self.the_environments[e.name] = e
         if mods.macros_latex:
             self.parser_work(mods.macros_latex)
+        return mods.inject_tokens
 
     #   scan and parse (expand) LaTeX string to tokens
     #   - here also skip LaTeX text enclosed in special comments
@@ -141,7 +146,7 @@ class Parser:
         main = []
         if define:
             toks = self.parser_work(define)
-            main = utils.filter_lang_toks(toks, 0)
+            main = utils.filter_set_toks(toks, 0, defs.LanguageToken)
         main += self.parser_work(latex)
 
         if extract:
@@ -249,7 +254,7 @@ class Parser:
                 if self.parms.multi_language:
                     self.parms.change_parser_lang(tok)
                     out.append(tok)
-            elif tok.txt in self.parms.lang_context().active_chars:
+            elif tok.txt in self.parms.lang_context.active_chars:
                 out.append(self.expand_short_macro(buf, tok))
                 continue
             elif type(tok) is defs.CommentToken:
@@ -588,11 +593,11 @@ class Parser:
     def expand_short_macro(self, buf, tok):
         cur = buf.next()
         if (not cur or tok.txt + cur.txt
-                    not in self.parms.lang_context().short_macros):
+                    not in self.parms.lang_context.short_macros):
             return tok
         buf.next()
         return defs.TextToken(tok.pos,
-                    self.parms.lang_context().short_macros[tok.txt + cur.txt],
+                    self.parms.lang_context.short_macros[tok.txt + cur.txt],
                     pos_fix=True)
 
     #   parse a key-value list of the form 'a=b,a4paper,x={ hoho }'
@@ -600,9 +605,13 @@ class Parser:
     #   - values are token lists, except if no '=' given: value then is None
     #   XXX: parsing of key name is not really robust
     #
-    def parse_keyval_list(self, tokens):
+    def parse_keyvals_dict(self, tokens):
+        as_list = self.parse_keyvals_list(tokens)
+        return {k: v for (k, v) in as_list}
+
+    def parse_keyvals_list(self, tokens):
         buf = scanner.Buffer(tokens)
-        values = {}
+        values = []
         while True:
             tok = buf.skip_space()
             if not tok:
@@ -616,7 +625,7 @@ class Parser:
             if not tok or tok.txt == ',':
                 # no value given with = ...
                 tok = buf.next()
-                values[key] = None
+                values.append((key, None))
                 continue
             buf.next()                  # skip '='
             tok = buf.skip_space()      # skip leading space of value
@@ -640,7 +649,16 @@ class Parser:
             if val and type(val[-1]) is defs.SpaceToken:
                 # skip trailing space of value
                 val.pop()
-            values[key] = val
+            values.append((key, val))
             buf.next()                  # skip ','
         return values
+
+    #   expand keyval list to text form (None if no '=' given)
+    #
+    def expand_keyvals(self, keyvals):
+        def f(kv):
+            if kv[1] is None:
+                return kv
+            return (kv[0], self.get_text_expanded(kv[1]))
+        return [f(kv) for kv in keyvals]
 

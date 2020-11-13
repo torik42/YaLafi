@@ -21,7 +21,7 @@ def test_shell():
     # start "LT server"
     subprocess.Popen(server_cmd.split(), stdout=subprocess.DEVNULL,
                         stderr=subprocess.DEVNULL)
-    time.sleep(10)
+    time.sleep(5)
 
     # run shell.py
     out = subprocess.run(shell_cmd.split(), stdout=subprocess.PIPE,

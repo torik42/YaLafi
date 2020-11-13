@@ -72,8 +72,14 @@ def init_module(parser, options):
 
     environments = []
 
+    inject_tokens = []
+    if options:
+        # set current language to the last in option list
+        inject_tokens = [LanguageToken(0, lang=translate_lang(options[-1][0]),
+                                                hard=True)]
+
     return InitModule(macros_latex=macros_latex, macros_python=macros_python,
-                        environments=environments)
+                        environments=environments, inject_tokens=inject_tokens)
 
 def modify_language_map(babel, lt):
     language_map[babel] = lt

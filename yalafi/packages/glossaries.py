@@ -118,7 +118,7 @@ def h_newacronym(parser, buf, mac, args, pos):
     return modify_description(parser, args[2])
 
 def h_newglossaryentry(parser, buf, mac, args, pos):
-    descr = parser.parse_keyval_list(args[1]).get('description', [])
+    descr = parser.parse_keyvals_dict(args[1]).get('description', [])
     return modify_description(parser, descr)
 
 the_glossary = {}
@@ -127,7 +127,7 @@ the_glossary = {}
 #
 def h_parse_glsdefs(parser, buf, mac, args, pos):
     label = parser.get_text_expanded(args[0])
-    the_glossary[label] = parser.parse_keyval_list(args[1])
+    the_glossary[label] = parser.parse_keyvals_dict(args[1])
     return []
 
 #   get token list for a key, database label given as token list

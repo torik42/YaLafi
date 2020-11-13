@@ -32,7 +32,7 @@ def h_proof(parser, buf, mac, args, pos):
     if args[0]:
         ret = args[0]
     else:
-        ret = [TextToken(pos, parser.parms.lang_context().proof_name,
+        ret = [TextToken(pos, parser.parms.lang_context.proof_name,
                         pos_fix=True)]
     return ret + [TextToken(ret[-1].pos, '.', pos_fix=True),
                         SpaceToken(ret[-1].pos, '\n', pos_fix=True)]
