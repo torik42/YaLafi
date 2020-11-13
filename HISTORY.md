@@ -9,7 +9,7 @@ Work in progress
     classes (issue [#110](../../issues/110)).
     Entry point is now function init\_module() with two arguments: parser and
     list of package options.
-    See for instance file yalafi/packages/amsmath.py.
+    See for instance yalafi/packages/amsmath.py and yalafi/packages/babel.py.
   - added support for multi-language documents (issue [#98](../../issues/98));
     including fixed issues [#104](../../issues/104), [#108](../../issues/108),
     [#109](../../issues/109)
