@@ -1331,7 +1331,7 @@ The LaTeX filter can be integrated in shell scripts, compare the examples in
 ```
 python -m yalafi [--nums file] [--repl file] [--defs file] [--dcls class]
                  [--pack modules] [--extr macros] [--lang xy] [--ienc enc]
-                 [--seqs] [--unkn] [latexfile]
+                 [--seqs] [--unkn] [--mula file] [latexfile]
 ```
 Without positional argument `latexfile`, standard input is read.
 
@@ -1361,7 +1361,11 @@ Without positional argument `latexfile`, standard input is read.
 - `--unkn`<br>
   As option --list-unknown in section
   [Example application](#example-application).
-
+- `--mula file`<br>
+  Turn on multi-language processing.
+  The different text parts are stored in files `<file>.<part>.<language>`.
+  If --nums has been specified, the position maps are written to files with
+  similar naming scheme.
 
 [Back to contents](#contents)
 
@@ -1381,6 +1385,7 @@ Invocation of `python -m yalafi ...` differs as follows from
 - Added options --dcls and --pack allow modification of predefined LaTeX
   macros and environments at Python level.
 - Added option --seqs.
+- Added option --mula.
 - Option --defs expects a file containing macro definitions as LaTeX code.
 - Option --ienc is also effective for file from --defs.
 - Option --char (position tracking for single characters) is always activated.
