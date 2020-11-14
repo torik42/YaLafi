@@ -5,7 +5,7 @@ Work in progress
   - new options --multi-language, --ml-continue-threshold, --ml-rule-threshold,
     --ml-disable, --ml-disablecategories
 - yalafi core
-  - **Changed interface** to extension modules for packages and document
+  - **changed interface** to extension modules for packages and document
     classes (issue [#110](../../issues/110)).
     Entry point is now function init\_module() with two arguments: parser and
     list of package options.
@@ -13,6 +13,7 @@ Work in progress
   - added support for multi-language documents (issue [#98](../../issues/98));
     including fixed issues [#104](../../issues/104), [#108](../../issues/108),
     [#109](../../issues/109)
+  - added CLI option '--mula file' for multi-language output
 - README.md: updated, added section for multi-language support
 
 Version 1.1.7 (2020/11/04)

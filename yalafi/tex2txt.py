@@ -251,6 +251,7 @@ def main():
     parser.add_argument('--ienc')
     parser.add_argument('--seqs', action='store_true')
     parser.add_argument('--unkn', action='store_true')
+    parser.add_argument('--mula')
     cmdline = parser.parse_args()
 
     if not cmdline.ienc:
@@ -275,6 +276,21 @@ def main():
     else:
         # reopen stdin in text mode: handling of '\r', proper decoding
         txt = open(sys.stdin.fileno(), encoding=cmdline.ienc).read()
+
+    if cmdline.mula:
+        # multi-language: write text sections to files
+        ml = tex2txt(txt, options, multi_language=True)
+        for lang in ml:
+            for nr, txt_pos in enumerate(ml[lang]):
+                with myopen(cmdline.mula + '.' + str(nr + 1) + '.' + lang,
+                                    mode='w', encoding='utf-8') as f:
+                    f.write(txt_pos[0])
+                if not cmdline.nums:
+                    continue
+                with myopen(cmdline.nums + '.' + str(nr + 1) + '.' + lang,
+                                    mode='w', encoding='utf-8') as f:
+                    write_output(txt_pos, None, f)
+        sys.exit()
 
     if cmdline.nums:
         cmdline.nums = myopen(cmdline.nums, encoding='utf-8', mode='w')
