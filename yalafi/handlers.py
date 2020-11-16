@@ -134,9 +134,13 @@ def h_load_module(prefix):
     def f(parser, buf, mac, args, pos):
         options = parser.parse_keyvals_list(args[0])
         options = parser.expand_keyvals(options)
-        pack = parser.get_text_expanded(args[1])
-        f = utils.get_module_handler(pack, prefix)
-        out = parser.init_package(pack, f, options)
+        packs = parser.get_text_expanded(args[1])
+        out = []
+        for p in packs.split(','):
+            p = p.strip()
+            if p:
+                f = utils.get_module_handler(p, prefix)
+                out += parser.init_package(p, f, options)
         return utils.filter_set_toks(out, pos, None)
     return f
 
