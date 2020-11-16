@@ -18,7 +18,11 @@ def get_ml(latex, lang='de-DE'):
 
     p = parser.Parser(parms)
     toks = p.parse(prefix + latex)
-    return utils.get_txt_pos_ml(toks, lang, parms)
+    ml = utils.get_txt_pos_ml(toks, lang, parms)
+    for lang in ml:
+        for part in ml[lang]:
+            assert len(part[0]) == len(part[1])
+    return ml
 
 def get_ml_txt(latex, lang='de-DE'):
     ml = get_ml(latex, lang)

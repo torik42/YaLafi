@@ -9,6 +9,7 @@ def get_plain(latex):
     parms = parameters.Parameters()
     p = parser.Parser(parms)
     plain, nums = utils.get_txt_pos(p.parse(preamble + latex))
+    assert len(plain) == len(nums)
     return plain
 
 latex_1 = r"""

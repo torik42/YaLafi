@@ -16,6 +16,7 @@ def get_plain(latex):
     parms = parameters.Parameters()
     p = parser.Parser(parms, read_macros=read)
     plain, nums = utils.get_txt_pos(p.parse(preamble + latex))
+    assert len(plain) == len(nums)
     return plain
 
 #   we first repeat tests from package glossaries, since the format of
