@@ -198,7 +198,7 @@ Default option values are set at the Python script beginning.
   Mode is one of 'plain', 'html', 'xml', 'xml-b', 'json'
   (default: 'plain' for text report).
   Variant 'html' generates an HTML report, see below for further details.
-  Modes 'xml' and 'xml-b' are intended for Vim plugins, compare section
+  Modes 'xml', 'xml-b' and 'json' are intended for Vim plugins, compare section
   [Interfaces to Vim](#interfaces-to-vim).
 - `--link`<br>
   In an HTML report, left-click on a highlighted text part opens a
@@ -998,7 +998,7 @@ in yalafi/parameters.py.
 
 ### Definition of environments
 
-`Environ(parms, name, args='', repl='', defaults=[], remove=False, add_pars=True, items=None)`
+`Environ(parms, name, args='', repl='', defaults=[], remove=False, add_pars=True, items=None, end_func=None)`
 
 Parameters `parms` to `defaults` are the same as for `Macro()`, where
 `name` does not start with a backslash.
@@ -1013,6 +1013,8 @@ in `args` and `repl`.
 - `items`: for inclusion of specific \\item labels;
   a generator taking a nesting level argument has to be specified;
   compare declaration of environment enumerate in yalafi/parameters.py
+- `end_func`: optional function to be called at \\end{...};
+  for an example, see file yalafi/packages/babel.py
 
 ### Definition of equation environments
 
@@ -1331,7 +1333,7 @@ The LaTeX filter can be integrated in shell scripts, compare the examples in
 ```
 python -m yalafi [--nums file] [--repl file] [--defs file] [--dcls class]
                  [--pack modules] [--extr macros] [--lang xy] [--ienc enc]
-                 [--seqs] [--unkn] [--mula file] [latexfile]
+                 [--seqs] [--unkn] [--mula base] [latexfile]
 ```
 Without positional argument `latexfile`, standard input is read.
 
@@ -1361,9 +1363,9 @@ Without positional argument `latexfile`, standard input is read.
 - `--unkn`<br>
   As option --list-unknown in section
   [Example application](#example-application).
-- `--mula file`<br>
+- `--mula base`<br>
   Turn on multi-language processing.
-  The different text parts are stored in files `<file>.<part>.<language>`.
+  The different text parts are stored in files `<base>.<part>.<language>`.
   If --nums has been specified, the position maps are written to files with
   similar naming scheme.
 

@@ -1,5 +1,8 @@
 Work in progress
 ----------------
+- LaTeX macros / environments
+  - package babel: added environments otherlanguage\(\*\)
+    (issue [#114](../../issues/114))
 - yalafi.shell
   - added support for multi-language documents (issue [#98](../../issues/98))
   - new options --multi-language, --ml-continue-threshold, --ml-rule-threshold,
@@ -12,8 +15,9 @@ Work in progress
     See for instance yalafi/packages/amsmath.py and yalafi/packages/babel.py.
   - added support for multi-language documents (issue [#98](../../issues/98));
     including fixed issues [#104](../../issues/104), [#108](../../issues/108),
-    [#109](../../issues/109)
+    [#109](../../issues/109), [#117](../../issues/117)
   - added CLI option '--mula file' for multi-language output
+    (issue [#115](../../issues/115))
 - README.md: updated, added section for multi-language support
 
 Version 1.1.7 (2020/11/04)

@@ -264,3 +264,62 @@ def test_11():
     plain = get_ml_txt(latex_11, lang='en-GB')
     assert plain == plain_11
 
+#   issue #117: copy leading and trailing space to replacement
+#
+latex_12 = r"""
+A\foreignlanguage{german}{ G
+}B
+"""
+plain_12 = {
+'de-DE': [
+""" G
+"""
+],
+'en-GB': [
+"""
+A L-L-L
+B
+"""
+]
+}
+def test_12():
+    plain = get_ml_txt(latex_12, lang='en-GB')
+    assert plain == plain_12
+
+latex_13 = r"""
+A
+\begin{otherlanguage}{german}
+B
+\end{otherlanguage}
+C
+\begin{otherlanguage}{german}
+D%
+\end{otherlanguage}
+E
+\begin{otherlanguage*}{german}
+F%
+\end{otherlanguage*}
+G
+"""
+plain_13 = {
+'de-DE': [
+"""B
+""",
+"""D""",
+"""F"""
+],
+'en-GB': [
+"""
+A
+L-L-L
+C
+M-M-ME
+N-N-N
+G
+"""
+]
+}
+def test_13():
+    plain = get_ml_txt(latex_13, lang='en-GB')
+    assert plain == plain_13
+

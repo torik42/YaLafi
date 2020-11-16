@@ -100,11 +100,12 @@ class VoidToken(TextToken):
         super().__init__(pos, '')
 
 class LanguageToken(TextToken):
-    def __init__(self, pos, lang='', back=False, hard=False):
+    def __init__(self, pos, lang='', back=False, hard=False, brk=False):
         super().__init__(pos, '')
         self.lang = lang
-        self.back = back
-        self.hard = hard
+        self.back = back    # pop language from stack
+        self.hard = hard    # just replace top of stack
+        self.brk = brk      # enforce break of text flow
 
 class MathBeginToken(TextToken):
     def __init__(self, pos, text, env):
@@ -155,11 +156,13 @@ class Macro(Expandable):
 
 class Environ(Expandable):
     def __init__(self, parms, name, args='', repl='', defaults=[],
-                                    add_pars=True, remove=False, items=None):
+                                    add_pars=True, remove=False, items=None,
+                                    end_func=None):
         super().__init__(parms, name, args, repl, defaults)
         self.add_pars=add_pars
         self.remove=remove
         self.items=items
+        self.end_func=end_func
 
 class EquEnv(Environ):
     def __init__(self, parms, name, args='', repl='', defaults=[],
