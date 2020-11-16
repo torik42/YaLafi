@@ -10,6 +10,7 @@ def get_plain(latex):
     parms.multi_language = True
     p = parser.Parser(parms)
     plain, nums = utils.get_txt_pos(p.parse(preamble + latex))
+    assert len(plain) == len(nums)
     return plain
 
 
