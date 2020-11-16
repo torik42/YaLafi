@@ -17,6 +17,7 @@ data_test_macros_python = [
 
     (r'A\foreignlanguage{russian}{T}B', 'ATB'),
     (r'A\foreignlanguage[opt]{russian}{T}B', 'ATB'),
+    (r'A\foreignlanguage{german}{ T }B', 'A T B'),
     (r"""
 A
 \foreignlanguage{german}{ }
@@ -53,6 +54,50 @@ B
 
 
 Beweis.
+"""),
+    # otherlanguage: skip space behind environment
+    # otherlanguage*: do not do that
+    #
+    (r"""
+A
+\begin{otherlanguage}{german}
+B
+\end{otherlanguage} C
+""", """
+A
+B
+C
+"""),
+    (r"""
+A
+\begin{otherlanguage}{german}
+B%
+\end{otherlanguage}
+C
+""", """
+A
+BC
+"""),
+    (r"""
+A
+\begin{otherlanguage*}{german}
+B
+\end{otherlanguage*} C
+""", """
+A
+B
+ C
+"""),
+    (r"""
+A
+\begin{otherlanguage*}{german}
+B%
+\end{otherlanguage*}
+C
+""", """
+A
+B
+C
 """),
 
 ]

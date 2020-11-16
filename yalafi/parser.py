@@ -201,7 +201,7 @@ class Parser:
                 t, stop = self.end_environment(buf, tok, env_stop)
                 if stop:
                     return t
-                out += t
+                buf.back(t)
                 continue
             elif type(tok) is defs.ItemToken:
                 buf.back(self.expand_item(buf, tok, out))
@@ -358,7 +358,8 @@ class Parser:
 
         if mac.extract:
             toks = ([defs.LanguageToken(start,
-                            lang=self.parms.lang_context_lang(), hard=True)]
+                                    lang=self.parms.lang_context_lang(),
+                                    hard=True, brk=True)]
                         + self.generate_replacements(arguments_extr,
                                                         mac.extract, start))
             self.extracted.append(self.expand_sequence(scanner.Buffer(toks)))
@@ -458,6 +459,8 @@ class Parser:
                 self.item_lab_stack.pop()
             if env.add_pars:
                 out = [defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True)]
+            if env.end_func:
+                out += env.end_func(self, buf, env, [], tok.pos)
         return out, name == env_stop
 
     def get_environment_name(self, buf, tok):

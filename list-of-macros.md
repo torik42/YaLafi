@@ -171,6 +171,10 @@ tests: [tests/test\_packages/test\_babel.py](tests/test_packages/test_babel.py)
 \\foreignlanguage,
 \\selectlanguage
 
+**Environments**
+
+otherlanguage\(\*\)
+
 
 ## Package biblatex
 

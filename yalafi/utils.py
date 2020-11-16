@@ -138,10 +138,10 @@ def filter_set_toks(toks, pos, tok_typ):
 
 
 class LanguageSection:
-    def __init__(self, lang, back, hard, txt, pos):
+    def __init__(self, lang, back, brk, txt, pos):
         self.lang = lang
         self.back = back        # e.g., started by end of \foreignlanguage
-        self.hard = hard        # e.g., started by \selectlanguage
+        self.brk = brk          # e.g., started by \selectlanguage
         self.txt = txt
         self.pos = pos
 
@@ -153,7 +153,7 @@ def get_txt_pos_ml(toks, main_lang, parms):
 
     lang_stack = [main_lang]
     switch_back = False
-    switch_hard = False
+    switch_brk = False
 
     #   split into sections separated by language switches
     #
@@ -169,9 +169,9 @@ def get_txt_pos_ml(toks, main_lang, parms):
         cur_sec = []
         if txt:
             sections.append(LanguageSection(
-                        lang_stack[-1], switch_back, switch_hard, txt, pos))
+                        lang_stack[-1], switch_back, switch_brk, txt, pos))
         switch_back = t.back
-        switch_hard = t.hard
+        switch_brk = t.brk
         if t.back:
             if len(lang_stack) > 1:
                 lang_stack.pop()
@@ -183,7 +183,7 @@ def get_txt_pos_ml(toks, main_lang, parms):
     txt, pos = get_txt_pos(cur_sec)
     if txt:
         sections.append(LanguageSection(
-                        lang_stack[-1], switch_back, switch_hard, txt, pos))
+                        lang_stack[-1], switch_back, switch_brk, txt, pos))
 
     #   try to combine sections, if only interrupted by short change to
     #   another language
@@ -193,9 +193,9 @@ def get_txt_pos_ml(toks, main_lang, parms):
         if (len(sections) > 1
                     # HEURISTIC to connect sections:
                     # ==============================
-                    # - next section must not be switch_hard
+                    # - next section does not mandatorily break the text flow
                     #   (e.g., caused by \selectlanguage)
-                and not sections[1].hard
+                and not sections[1].brk
                     # - next section must not start with a switch_back
                     #   (e.g., section not after \foreignlanguage call)
                 and not sections[1].back
@@ -206,8 +206,9 @@ def get_txt_pos_ml(toks, main_lang, parms):
                 and ml_check_lang_section(sections[1], parms)):
 
             # we have a short inclusion with another language
-            out.append(sections.pop(1))
-            ml_append_placeholder(sections[0], parms)
+            incl = sections.pop(1)
+            out.append(incl)
+            ml_append_placeholder(sections[0], incl, parms)
             if len(sections) > 1:
                 # append following section with same language
                 sections[0].txt += sections[1].txt
@@ -228,13 +229,33 @@ def get_txt_pos_ml(toks, main_lang, parms):
 
 #   append placeholder for "short" language switch to current section
 #
-def ml_append_placeholder(sec, parms):
+def ml_append_placeholder(sec, incl, parms):
+    if not incl.txt.strip():
+        # inclusion is empty or only contains space
+        sec.txt += incl.txt
+        sec.pos += incl.pos
+        return
+
     lang = parms.check_parser_lang(sec.lang)
     repl = parms.parser_lang_settings[lang].lang_change_repl
     repl[:] = repl [1:] + repl[:1]
-    sec.txt += repl[0]
-    # XXX: pos+1: this seems save, as there was a LanguageToken
-    sec.pos += [sec.pos[-1] + 1] * len(repl[0])
+    txt = repl[0]
+
+    start = next((n for n in range(len(incl.txt))
+                            if not incl.txt[n].isspace()), 0)
+    pos = [incl.pos[start]] * len(repl[0])
+
+    # see issue #117
+    if incl.txt.strip():
+        if incl.txt[0].isspace():
+            txt = incl.txt[0] + txt
+            pos = [incl.pos[0]] + pos
+        if incl.txt[-1].isspace():
+            txt += incl.txt[-1]
+            pos.append(incl.pos[-1])
+
+    sec.txt += txt
+    sec.pos += pos
 
 #   heuristic to determine whether a (short) language section
 #   can be substituted with a placeholder, so that previous and
