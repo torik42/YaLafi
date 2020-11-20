@@ -83,6 +83,7 @@ def output_list_unknown(unkn, file, out):
 def generate_text_report(run_proofreader, out):
     if cmdline.server == 'lt':
         sys.stderr.write(msg_LT_server_txt)
+        sys.stderr.flush()
     for file in cmdline.file:
         (tex, plain, charmap, matches) = run_proofreader(file)
         if cmdline.list_unknown:

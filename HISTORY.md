@@ -9,6 +9,7 @@ Work in progress
   - added support for multi-language documents (issue [#98](../../issues/98))
   - new options --multi-language, --ml-continue-threshold, --ml-rule-threshold,
     --ml-disable, --ml-disablecategories
+  - added flushs for all messages to stderr (issue [#123](../../issues/123))
 - yalafi core
   - **changed interface** to extension modules for packages and document
     classes (issue [#110](../../issues/110)).
@@ -20,6 +21,7 @@ Work in progress
     [#109](../../issues/109), [#117](../../issues/117)
   - added CLI option '--mula file' for multi-language output
     (issue [#115](../../issues/115))
+  - added flushs for all messages to stderr (issue [#123](../../issues/123))
 - README.md: updated, added section for multi-language support
 
 Version 1.1.7 (2020/11/04)

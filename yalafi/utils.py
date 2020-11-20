@@ -31,6 +31,7 @@ def latex_error(err, pos, latex, parms):
     col = pos - nl + 1
     sys.stderr.write('*** LaTeX error: line ' + str(lin)
                         + ', column ' + str(col) + ':\n*** ' + err + '\n')
+    sys.stderr.flush()
     mark = ' ' + parms.mark_latex_error + ' '
     if parms.mark_latex_error_verbose:
         mark += '(' + err + ') '
@@ -48,6 +49,7 @@ def fatal(err):
 def warning(err):
     sys.stderr.write('*** ' + sys.argv[0] + ': warning:\n*** '
                         + err + '\n')
+    sys.stderr.flush()
 
 def get_txt_pos(toks):
     txt = ''
