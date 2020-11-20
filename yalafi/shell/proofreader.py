@@ -266,7 +266,7 @@ def start_local_lt_server(language):
         if check_server():
             sys.stderr.write('\n') and sys.stderr.flush()
             return
-    sys.stderr.write('\n')
+    sys.stderr.write('\n') and sys.stderr.flush()
     tex2txt.fatal('error starting server "' + server_cmd + '"')
 
 

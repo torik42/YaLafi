@@ -118,6 +118,7 @@ def raise_error(kind, msg, detail=None, xit=None):
     sys.stderr.write(err)
     if xit is not None:
         sys.exit(xit)
+    sys.stderr.flush()
 def strip_internal_marks(s):
     # will be redefined below
     return s
