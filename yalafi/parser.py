@@ -44,15 +44,6 @@ class Parser:
                 yield parms.item_default_label[0]
         self.item_lab_stack = [(labs_default(0), '')]
 
-        # for expansion of verbatim environment
-        self.verbatim_begin = [
-                    defs.BeginToken(0, '\\begin'),
-                    defs.SpecialToken(0, '{'),
-                    defs.TextToken(0, 'verbatim'),
-                    defs.SpecialToken(0, '}'),
-        ]
-        self.verbatim_end = parms.scanner.scan('\\end{verbatim}')
-
         # initialise and modify parameters, macros, etc.
         builtin = [], lambda p, o: defs.InitModule(
                                 macros_latex=parms.macro_defs_latex,
@@ -242,10 +233,8 @@ class Parser:
             elif type(tok) is defs.VerbatimToken:
                 if tok.environ:
                     # for Environ() entry in Parameters.environment_defs
-                    t = copy.copy(tok)
-                    t.environ = False
                     buf.next()
-                    buf.back(self.verbatim_begin + [t] + self.verbatim_end)
+                    buf.back(self.expand_verb_env_token(tok))
                     continue
                 else:
                     out.append(defs.ActionToken(tok.pos))
@@ -466,6 +455,25 @@ class Parser:
     def get_environment_name(self, buf, tok):
         buf.next()
         return self.get_text_expanded(self.arg_buffer(buf, tok.pos).all())
+
+    #   expand a single verbatim token delivered by the scanner
+    #   to a valid token sequence for an environment
+    #   --> can be treated like other environments, afterwards
+    #
+    def expand_verb_env_token(self, tok):
+        tok = copy.copy(tok)
+        tok.environ = False
+        return [
+                    defs.BeginToken(tok.pos, '\\begin'),
+                    defs.SpecialToken(tok.pos, '{'),
+                    defs.TextToken(tok.pos, 'verbatim'),
+                    defs.SpecialToken(tok.pos, '}'),
+                    tok,
+                    defs.EndToken(tok.pos + len(tok.txt), '\\end'),
+                    defs.SpecialToken(tok.pos + len(tok.txt), '{'),
+                    defs.TextToken(tok.pos + len(tok.txt), 'verbatim'),
+                    defs.SpecialToken(tok.pos + len(tok.txt), '}'),
+        ]
 
     #   parse (skip) optional [...] after \\
     #

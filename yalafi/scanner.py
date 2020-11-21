@@ -160,7 +160,7 @@ class Scanner:
             return utils.latex_error('missing end of verbatim',
                                             start, latex, self.parms)[0]
         self.pos = end + len('\\end{verbatim}')
-        return defs.VerbatimToken(start, latex[pos:end], environ=True)
+        return defs.VerbatimToken(pos, latex[pos:end], environ=True)
 
 
 #   token buffer that can push back tokens

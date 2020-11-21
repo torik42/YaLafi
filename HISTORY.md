@@ -22,6 +22,8 @@ Work in progress
   - added CLI option '--mula file' for multi-language output
     (issue [#115](../../issues/115))
   - added flushs for all messages to stderr (issue [#123](../../issues/123))
+  - corrected character position mapping in verbatim environment
+    (issue [#126](../../issues/126))
 - README.md: updated, added section for multi-language support
 
 Version 1.1.7 (2020/11/04)
