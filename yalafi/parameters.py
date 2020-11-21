@@ -49,6 +49,7 @@ class Parameters:
         \newcommand{\L}{Ł}
         \newcommand{\l}{ł}
         \newcommand{\label}[1]{}
+        \newcommand{\LaTeX}{LaTeX}
         \newcommand{\newline}{ }
         \newcommand{\O}{Ø}
         \newcommand{\o}{ø}
@@ -65,6 +66,7 @@ class Parameters:
         \newcommand{\ref}[1]{0}
         \newcommand{\S}{§}
         \newcommand{\ss}{ß}
+        \newcommand{\TeX}{TeX}
         \newcommand{\textasciicircum}{\verb?^?} % \^ is accent
         \newcommand{\textasciitilde}{\verb?~?}  % \~ is accent
         \newcommand{\textbackslash}{\verb?\?}   % \\ is line break
