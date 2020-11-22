@@ -1,5 +1,5 @@
-Work in progress
-----------------
+Version 1.2.0 (2020/11/22)
+--------------------------
 - LaTeX macros / environments
   - package babel: added environments otherlanguage\(\*\)
     (issue [#114](../../issues/114))
@@ -7,6 +7,8 @@ Work in progress
     - fixed \\usepackage, now accepts multiple package names
       (issue [#121](../../issues/121))
     - added macros \\LaTeX, \\TeX (issue [#124](../../issues/124))
+- Vim compiler scripts ltyc.vim and vlty.vim: small change for compatibility
+  with vim-dispatch
 - yalafi.shell
   - added support for multi-language documents (issue [#98](../../issues/98))
   - new options --multi-language, --ml-continue-threshold, --ml-rule-threshold,
