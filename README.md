@@ -397,6 +397,7 @@ let g:vimtex_grammar_vlty = {}
 let g:vimtex_grammar_vlty.lt_directory = '~/lib/LanguageTool-5.0'
 " let g:vimtex_grammar_vlty.lt_command = 'languagetool'
 let g:vimtex_grammar_vlty.server = 'my'
+let g:vimtex_grammar_vlty.show_suggestions = 1
 let g:vimtex_grammar_vlty.shell_options =
         \   ' --multi-language'
         \ . ' --packages "*"'
@@ -413,8 +414,10 @@ let g:vimtex_grammar_vlty.shell_options =
   not necessary.
 - The option `g:vimtex_grammar_vlty.server = 'my'` usually results in faster 
   checks for small to medium LaTeX files.
-  When one uses the LanguageTool server, speed also benefits from its internal
-  sentence caching.
+  Start-up time is saved, and speed benefits from the internal sentence caching
+  of the server.
+- Saying `let g:vimtex_grammar_vlty.show_suggestions = 1` causes display of
+  LanguageTool's replacement suggestions.
 - With option `--multi-language`, commands from LaTeX package 'babel' switch
   the language for the proofreading program.
   See section [Multi-language documents](#multi-language-documents).
@@ -470,6 +473,7 @@ map <F9> :w <bar> compiler ltyc <bar> make <bar> :cw <cr><esc>
 let g:ltyc_ltdirectory = '~/lib/LanguageTool-5.0'
 " let g:ltyc_ltcommand = 'languagetool'
 let g:ltyc_server = 'my'
+let g:ltyc_showsuggestions = 1
 let g:ltyc_language = 'de-DE'
 let g:ltyc_shelloptions =
         \   ' --multi-language'
