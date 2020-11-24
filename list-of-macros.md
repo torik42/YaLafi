@@ -53,6 +53,7 @@ tests: [tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_
 \\caption (separates text),
 \\chapter,
 \\cite,
+\\def (defines macro),
 \\documentclass (activates module),
 \\footnote (separates text),
 \\footnotemark,
