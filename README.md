@@ -6,7 +6,7 @@ The library of LaTeX macros, environments, document classes, and packages is
 still rather restricted, compare the [list of macros](list-of-macros.md).
 Please don't hesitate to
 [raise an Issue](../../issues),
-if you would like to see something added.
+if you would like to have added something.
 
 **Summary.**
 This Python (at least version 3.6) package extracts plain text from LaTeX
@@ -96,7 +96,7 @@ Happy TeXing!
 [Related projects](#related-projects)<br>
 <br>
 [Filter actions](#filter-actions)<br>
-[Principal limitations](#principal-limitations)<br>
+[Fundamental limitations](#fundamental-limitations)<br>
 [Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text)<br>
 [Extension modules for LaTeX packages](#extension-modules-for-latex-packages)<br>
 [Inclusion of own macros](#inclusion-of-own-macros)<br>
@@ -311,6 +311,8 @@ Default option values are set at the Python script beginning.
     [https://dev.languagetool.org/public-http-api](https://dev.languagetool.org/public-http-api).
   - Local server: If not yet running, then start it according to script
     variable 'ltserver\_local\_cmd'.
+    On option --lt-command, the specified command is invoked with option
+    --http.
     Additional server options can be passed with --lt-server-options.
     See also
     [https://dev.languagetool.org/http-server](https://dev.languagetool.org/http-server).
@@ -731,7 +733,8 @@ where the problem was detected.
   LaTeX packages.
   For other activation methods of these modules, see also section
   [Extension modules for LaTeX packages](#extension-modules-for-latex-packages).
-- Macro definitions with \\(re)newcommand in the input text are processed.
+- Macro definitions with \\(re)newcommand and \\def (the latter only roughly
+  approximated) in the input text are processed.
   Statement \\LTinput{file.tex} reads macro definitions from the given file.
   Further own macros with arbitrary arguments can be defined on Python level,
   see section [Inclusion of own macros](#inclusion-of-own-macros).
@@ -796,7 +799,7 @@ where the problem was detected.
 [Back to contents](#contents)
 
 
-## Principal limitations
+## Fundamental limitations
 
 The implemented parsing mechanism can only roughly approximate the behaviour
 of a real LaTeX system.
@@ -808,7 +811,7 @@ or be placed in a LaTeX file “hidden” for the filter
 (compare option --skip of yalafi.shell in section
 [Example application](#example-application)).
 With little additional work, it might be possible to include some plain-TeX
-features like processing of \\def or parsing of elastic length specifications.
+features like parsing of elastic length specifications.
 A list of remaining incompatibilities must contain at least the following
 points.
 
@@ -951,10 +954,11 @@ Unknown macros and environment frames are silently ignored.
 As all input files are processed independently, it may be necessary to
 provide project-specific definitions in advance.
 
-For macros, which may be declared with \\newcommand, you can apply
-`\LTinput{file.tex}` as a simple solution.
+For macros, which may be declared with \\newcommand or \\def (the latter is
+only roughly approximated), you can apply `\LTinput{file.tex}` as a simple
+solution.
 This adds the macros defined in the given file, skipping all other content.
-For the “real” LaTeX, the macro \\LTinput has to be defined as
+For the “real” LaTeX, macro \\LTinput has to be defined as
 `\newcommand{\LTinput}[1]{}` that is in turn ignored by the filter.
 
 If LaTeX files have to stay untouched, you can use options

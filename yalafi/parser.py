@@ -198,7 +198,10 @@ class Parser:
                 buf.back(self.expand_item(buf, tok, out))
                 continue
             elif type(tok) is defs.MacroToken:
-                buf.back(self.expand_macro(buf, tok, False))
+                if tok.txt == '\\def':
+                    out += self.parse_def_macro(buf, tok.pos)
+                else:
+                    buf.back(self.expand_macro(buf, tok, False))
                 continue
             elif tok.txt == '$' or tok.txt == '\\(':
                 out += self.mathparser.expand_inline_math(buf, tok)
@@ -672,4 +675,61 @@ class Parser:
                 return kv
             return (kv[0], self.get_text_expanded(kv[1]))
         return [f(kv) for kv in keyvals]
+
+    #   roughly approximated version of \def
+    #   - macro name must have form \xyz
+    #   - XXX:
+    #       - on expansion, absence of literal parameter tokens like '[' will
+    #         consume other tokens,
+    #       - these parameter tokens may mistakenly be enclosed in {} braces
+    #       - space in parameter text is not correctly treated
+    #
+    def parse_def_macro(self, buf, start):
+        buf.next()
+        tok = buf.skip_space()
+        if not tok:
+            return utils.latex_error('\\def: missing macro name', start,
+                                        self.latex, self.parms)
+        if type(tok) is not defs.MacroToken:
+            return utils.latex_error('\\def: illegal macro name "' + tok.txt
+                                        + '"', tok.pos, self.latex, self.parms)
+        name = tok.txt
+        args = []
+        while True:
+            buf.next()
+            tok = buf.skip_space()
+            if not tok:
+                return utils.latex_error('\\def: missing macro body', start,
+                                            self.latex, self.parms)
+            if tok.txt == '{':
+                break
+            args.append(tok)
+        repl = self.arg_buffer(buf, tok.pos).all()
+
+        n = 1
+        arg_pos_map = []
+        for k, t in enumerate(args, start=1):
+            if type(t) is defs.ArgumentToken:
+                if t.arg != n:
+                    return utils.latex_error('\\def: unexpected argument '
+                                                + repr(t.txt), t.pos,
+                                                self.latex, self.parms)
+                n += 1
+                arg_pos_map.append(k)
+
+        repl_mapped = []
+        for t in repl:
+            if type(t) is defs.ArgumentToken:
+                if t.arg < 1 or t.arg > len(arg_pos_map):
+                    return utils.latex_error(
+                            '\\def: illegal argument reference ' + repr(t.txt),
+                            t.pos, self.latex, self.parms)
+                t = copy.copy(t)
+                t.arg = arg_pos_map[t.arg - 1]
+            repl_mapped.append(t)
+        
+        self.the_macros[name] = defs.Macro(self.parms, name,
+                                        args='A'*len(args), repl=repl_mapped,
+                                        scanned=True)
+        return [defs.ActionToken(start)]
 

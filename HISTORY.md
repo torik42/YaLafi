@@ -1,3 +1,9 @@
+Work in progress
+----------------
+- yalafi core
+  - added approximation of macro \\def (issue [#125](../../issues/125))
+- README.md: updated
+
 Version 1.2.0 (2020/11/22)
 --------------------------
 - LaTeX macros / environments
