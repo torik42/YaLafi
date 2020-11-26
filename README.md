@@ -222,8 +222,6 @@ Default option values are set at the Python script beginning.
   maths parts.
 - `--language lang`<br>
   Language code as expected by LT (default: 'en-GB').
-  The first two letters are passed to function 'tex2txt()' from module
-  yalafi.tex2txt that uses 'en' in case of an unknown language.
 - `--encoding ienc`<br>
   Encoding for LaTeX input and files from options --define and --replace
   (default: UTF-8).
@@ -232,7 +230,7 @@ Default option values are set at the Python script beginning.
   plain text; see section
   [Phrase replacement in the plain text](#phrase-replacement-in-the-plain-text).
 - `--define file`<br>
-  Read macro definitions as LaTeX code (using \\newcommand).
+  Read macro definitions as LaTeX code (using \\newcommand or \\def).
   If the code invokes \\documentclass or \\usepackage, then the corresponding
   modules are loaded.
 - `--documentclass  class`<br>
