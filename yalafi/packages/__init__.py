@@ -7,6 +7,7 @@ load_table = {
         'amsthm',
         'babel',
         'biblatex',
+        'geometry',
         'glossaries',
         'glossaries-extra',
         'graphicx',

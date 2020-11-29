@@ -16,6 +16,7 @@ Please note that not everything has to be declared.
 [amsthm](#package-amsthm),
 [babel](#package-babel),
 [biblatex](#package-biblatex),
+[geometry](#package-geometry),
 [glossaries](#package-glossaries),
 [glossaries-extra](#package-glossaries-extra),
 [graphicx](#package-graphicx),
@@ -194,6 +195,16 @@ tests: [tests/test\_packages/test\_biblatex.py](tests/test_packages/test_biblate
 \\parencite,
 \\Parencite,
 \\printbibliography
+
+
+## Package geometry
+
+Source: [yalafi/packages/geometry.py](yalafi/packages/geometry.py),
+tests: [tests/test\_packages/test\_geometry.py](tests/test_packages/test_geometry.py)
+
+**Macros**
+
+\\geometry
 
 
 ## Package glossaries
