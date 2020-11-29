@@ -24,7 +24,8 @@ Please note that not everything has to be declared.
 [listings](#package-listings),
 [pgfplots](#package-pgfplots),
 [tikz](#package-tikz),
-[xcolor](#package-xcolor)
+[xcolor](#package-xcolor),
+[xspace](#package-xspace)
 
 **Document classes**
 
@@ -343,6 +344,16 @@ tests: [tests/test\_packages/test\_xcolor.py](tests/test_packages/test_xcolor.py
 \\definecolor,
 \\fcolorbox,
 \\textcolor
+
+
+## Package xspace
+
+Source: [yalafi/packages/xspace.py](yalafi/packages/xspace.py),
+tests: [tests/test\_packages/test\_xspace.py](tests/test_packages/test_xspace.py)
+
+**Macros**
+
+\\xspace
 
 
 ## Class article

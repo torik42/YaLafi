@@ -16,6 +16,7 @@ load_table = {
         'pgfplots',
         'tikz',
         'xcolor',
+        'xspace',
     ],
     '': [
     ],
