@@ -1,5 +1,8 @@
 Work in progress
 ----------------
+- LaTeX macros / environments
+  - new package geometry: macro \\geometry; **thanks to @blipp**
+    (PR [#133](../../pull/133))
 - yalafi core
   - added approximation of macro \\def (issue [#125](../../issues/125))
 - README.md: updated
