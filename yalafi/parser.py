@@ -341,7 +341,11 @@ class Parser:
                             t.pos = pos
                             t.pos_fix = True
             elif code == 'A':
-                arg_extr = arg = self.arg_buffer(buf, pos).all()
+                if tok and tok.txt == '}':
+                    # issue #135
+                    arg_extr = arg = [defs.VoidToken(pos)]
+                else:
+                    arg_extr = arg = self.arg_buffer(buf, pos).all()
             else:
                 utils.fatal('illegal arg code ' + repr(code)
                                 + ' of ' + repr(mac.name))
