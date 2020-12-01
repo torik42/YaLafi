@@ -13,8 +13,8 @@ def get_plain(latex):
     return plain
 
 
-footnote_right = r'A\xspace\footnote{This is a footnote.} B'
-footnote_left = r"""A B
+footnote_latex = r'A\xspace\footnote{This is a footnote.} B'
+footnote_plain = r"""A B
 
 
 This is a footnote.
@@ -23,10 +23,18 @@ This is a footnote.
 data_test_macros_latex = [
 
     (r'A\xspace B', 'A B'),
-    (r'$A\xspace$ B', 'C-C-C B'),
+    (r'A\xspace $x\xspace$ B', 'A C-C-C B'),
+    (r'A\xspace {}$x\xspace$B', 'AC-C-CB'),
     (r'A\xspace~B', 'A\N{NO-BREAK SPACE}B'),
     (r"A\xspace's B", "A's B"),
-    (footnote_right, footnote_left)
+    (r"A\xspace'' B", 'A” B'),
+    (r'A\xspace-- B', 'A\N{EN DASH} B'),
+    (r'A\xspace--- B', 'A\N{EM DASH} B'),
+    (footnote_latex, footnote_plain),
+    (r'A\xspace\footnotemark B', 'AB'),
+    (r'\def\x{X\xspace}\x A', 'X A'),
+    (r'\def\x{X\xspace}\x{}A', 'XA'),
+    (r'\def\x{X\xspace}{\x}A', 'XA'),
 
 ]
 
@@ -42,3 +50,4 @@ for i in xspace_excl:
 def test_macros_latex(latex, plain_expected):
     plain = get_plain(latex)
     assert plain == plain_expected
+
