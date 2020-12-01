@@ -3,6 +3,8 @@ Work in progress
 - LaTeX macros / environments
   - new package geometry: macro \\geometry; **thanks to @blipp**
     (PR [#133](../../pull/133))
+  - new package xspace: macro \\xspace; **thanks to @blipp**
+    (PR [#134](../../pull/134))
 - yalafi core
   - added approximation of macro \\def (issue [#125](../../issues/125))
   - fixed bug: macro could consume a closing \} as argument token
