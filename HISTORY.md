@@ -5,6 +5,8 @@ Work in progress
     (PR [#133](../../pull/133))
 - yalafi core
   - added approximation of macro \\def (issue [#125](../../issues/125))
+  - fixed bug: macro could consume a closing \} as argument token
+    (issue [#135](../../issues/135))
 - README.md: updated
 
 Version 1.2.0 (2020/11/22)
