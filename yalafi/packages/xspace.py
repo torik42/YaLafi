@@ -32,7 +32,7 @@ xspace_excl = ['.', ',', "'", "''", '/', '?', ';', ':', '!', '~',
                     '-', '--', '---', ')', '\\footnote', '\\footnotemark']
 
 
-def h_xspace(parser, buf, mac, args, pos):
+def h_xspace(parser, buf, mac, args, delim, pos):
     arg = args[0]
     if len(arg) == 1 and type(arg[0]) is defs.VoidToken:
         return []
