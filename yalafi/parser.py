@@ -320,9 +320,11 @@ class Parser:
     def expand_arguments(self, buf, mac, start):
         arguments = []
         arguments_extr = []
+        delimiters = []
         pos = start
         for n, code in enumerate(mac.args):
             arg_extr = arg = []
+            delim = False
             tok = buf.skip_space()
             if tok:
                 pos = tok.pos
@@ -332,6 +334,7 @@ class Parser:
                     buf.next()
             elif code == 'O':
                 if tok and tok.txt == '[':
+                    delim = True
                     arg_extr = arg = self.arg_buffer(buf, pos, end=']').all()
                 else:
                     if n < len(mac.defaults):
@@ -345,12 +348,15 @@ class Parser:
                     # issue #135
                     arg_extr = arg = [defs.VoidToken(pos)]
                 else:
+                    if tok and tok.txt == '{':
+                        delim = True
                     arg_extr = arg = self.arg_buffer(buf, pos).all()
             else:
                 utils.fatal('illegal arg code ' + repr(code)
                                 + ' of ' + repr(mac.name))
             arguments.append(arg)
             arguments_extr.append(arg_extr)
+            delimiters.append(delim)
 
         if mac.extract:
             toks = ([defs.LanguageToken(start,
@@ -361,7 +367,7 @@ class Parser:
             self.extracted.append(self.expand_sequence(scanner.Buffer(toks)))
         out = [defs.ActionToken(start)]
         if callable(mac.repl):
-            return out + mac.repl(self, buf, mac, arguments, start)
+            return out + mac.repl(self, buf, mac, arguments, delimiters, start)
         return out + self.generate_replacements(arguments, mac.repl, start)
 
     def generate_replacements(self, arguments, repls, start):
@@ -456,7 +462,7 @@ class Parser:
             if env.add_pars:
                 out = [defs.ParagraphToken(tok.pos, '\n\n', pos_fix=True)]
             if env.end_func:
-                out += env.end_func(self, buf, env, [], tok.pos)
+                out += env.end_func(self, buf, env, [], [], tok.pos)
         return out, name == env_stop
 
     def get_environment_name(self, buf, tok):

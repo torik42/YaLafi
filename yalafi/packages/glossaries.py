@@ -100,7 +100,7 @@ def init_module(parser, options):
 #   - set all token positions to beginning of \gls macro
 #
 def h_gls(key, mods):
-    def f(parser, buf, mac, args, pos):
+    def f(parser, buf, mac, args, delim, pos):
         toks = get_tokens(parser, args[1], key)
         if toks is None:
             return utils.latex_error('could not find label for \\gls...'
@@ -114,10 +114,10 @@ def h_gls(key, mods):
         return toks
     return f
 
-def h_newacronym(parser, buf, mac, args, pos):
+def h_newacronym(parser, buf, mac, args, delim, pos):
     return modify_description(parser, args[2])
 
-def h_newglossaryentry(parser, buf, mac, args, pos):
+def h_newglossaryentry(parser, buf, mac, args, delim, pos):
     descr = parser.parse_keyvals_dict(args[1]).get('description', [])
     return modify_description(parser, descr)
 
@@ -125,7 +125,7 @@ the_glossary = {}
 
 #   main task: parse 'key={...},key={...},...' in second macro argument
 #
-def h_parse_glsdefs(parser, buf, mac, args, pos):
+def h_parse_glsdefs(parser, buf, mac, args, delim, pos):
     label = parser.get_text_expanded(args[0])
     the_glossary[label] = parser.parse_keyvals_dict(args[1])
     return []

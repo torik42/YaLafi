@@ -28,7 +28,7 @@ def init_module(parser, options):
     return InitModule(macros_latex=macros_latex, macros_python=macros_python,
                         environments=environments)
 
-def h_proof(parser, buf, mac, args, pos):
+def h_proof(parser, buf, mac, args, delim, pos):
     if args[0]:
         ret = args[0]
     else:

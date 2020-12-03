@@ -29,7 +29,7 @@ from yalafi import defs, tex2txt
 require_packages = []
 def init_module(parser, options):
     parms = parser.parms
-    def add(parser, buf, mac, args, pos):
+    def add(parser, buf, mac, args, delim, pos):
         name = parser.get_text_expanded(args[1])
         if mac.name == '\\usepackage':
             packages.append(name)

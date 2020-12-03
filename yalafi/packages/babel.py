@@ -104,23 +104,23 @@ def modify_language_map(babel, lt):
 def translate_lang(lang):
     return language_map.get(lang, language_map['english'])
 
-def h_foreignlanguage(parser, buf, mac, args, pos):
+def h_foreignlanguage(parser, buf, mac, args, delim, pos):
     lang = translate_lang(parser.get_text_expanded(args[1]).strip())
     return ([LanguageToken(pos, lang=lang, brk=foreignlang_break)] + args[2]
                         + [LanguageToken(args[2][-1].pos, back=True)])
 
-def h_selectlanguage(parser, buf, mac, args, pos):
+def h_selectlanguage(parser, buf, mac, args, delim, pos):
     lang = translate_lang(parser.get_text_expanded(args[0]).strip())
     return [LanguageToken(pos, lang=lang, hard=True, brk=selectlang_break)]
 
-def h_begin_otherlang(parser, buf, mac, args, pos):
+def h_begin_otherlang(parser, buf, mac, args, delim, pos):
     lang = translate_lang(parser.get_text_expanded(args[0]).strip())
     return [LanguageToken(pos, lang=lang, brk=otherlang_break)]
 
-def h_end_otherlang(parser, buf, mac, args, pos):
+def h_end_otherlang(parser, buf, mac, args, delim, pos):
     return [LanguageToken(pos, back=True),
                 MacroToken(pos, '\\babel@skip@space')]
 
-def h_end_otherlang_star(parser, buf, mac, args, pos):
+def h_end_otherlang_star(parser, buf, mac, args, delim, pos):
     return [LanguageToken(pos, back=True)]
 

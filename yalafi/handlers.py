@@ -21,7 +21,7 @@ from . import utils
 
 #   macros \newcommand, \renewcommand
 #
-def h_newcommand(parser, buf, mac, args, pos):
+def h_newcommand(parser, buf, mac, args, delim, pos):
     name = parser.get_text_direct(args[1])
     if name in parser.parms.newcommand_ignore:
         return []
@@ -52,7 +52,7 @@ def h_newcommand(parser, buf, mac, args, pos):
 #   --> now only used by h_newtheorem()
 #
 def h_theorem(name):
-    def handler (parser, buf, mac, args, pos):
+    def handler (parser, buf, mac, args, delim, pos):
         out = [defs.TextToken(pos, name, pos_fix=True)]
         if args[0]:
             # there is a [.] option
@@ -73,7 +73,7 @@ def h_theorem(name):
 
 #   \newtheorem
 #
-def h_newtheorem(parser, buf, mac, args, pos):
+def h_newtheorem(parser, buf, mac, args, delim, pos):
     name = parser.get_text_expanded(args[0])
     title = parser.get_text_expanded(args[2])
     def f(parser, options):
@@ -85,7 +85,7 @@ def h_newtheorem(parser, buf, mac, args, pos):
 
 #   heading macros: append '.', unless last char in parms.heading_punct
 #
-def h_heading(parser, buf, mac, args, pos):
+def h_heading(parser, buf, mac, args, delim, pos):
     arg = args[2]
     txt = parser.get_text_expanded(arg).strip()
     if (txt and parser.parms.heading_punct
@@ -95,14 +95,14 @@ def h_heading(parser, buf, mac, args, pos):
 
 #   \phantom, \hphantom
 #
-def h_phantom(parser, buf, mac, args, pos):
+def h_phantom(parser, buf, mac, args, delim, pos):
     if len(parser.get_text_expanded(args[0])) > 0:
         return [defs.SpecialToken(pos, '\\;')]
     return []
 
 #   macro \cite[opt]
 #
-def h_cite(parser, buf, mac, args, pos):
+def h_cite(parser, buf, mac, args, delim, pos):
     if args[0]:
         out = [defs.TextToken(pos, '[0,', pos_fix=True),
                     defs.SpaceToken(pos, ' ', pos_fix=True)]
@@ -117,7 +117,7 @@ def h_cite(parser, buf, mac, args, pos):
 #   macro \LTinclude: read macro definitions from file
 #   - this also activates packages and switches languages
 #
-def h_load_defs(parser, buf, mac, args, pos):
+def h_load_defs(parser, buf, mac, args, delim, pos):
     if not parser.read_macros:
         return []
     file = parser.get_text_expanded(args[0])
@@ -131,7 +131,7 @@ def h_load_defs(parser, buf, mac, args, pos):
 #   read definitions for a LaTeX package
 #
 def h_load_module(prefix):
-    def f(parser, buf, mac, args, pos):
+    def f(parser, buf, mac, args, delim, pos):
         options = parser.parse_keyvals_list(args[0])
         options = parser.expand_keyvals(options)
         packs = parser.get_text_expanded(args[1])

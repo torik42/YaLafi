@@ -15,7 +15,7 @@ def init_module(parser, options):
     return defs.InitModule(macros_python=macros_python)
 
 
-def h_xyz(parser, buf, mac, args, pos):
+def h_xyz(parser, buf, mac, args, delim, pos):
     return [
         defs.TextToken(pos, str(len(args[0]))),
         defs.TextToken(pos, str(len(args[1]))),

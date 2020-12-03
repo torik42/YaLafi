@@ -38,7 +38,7 @@ def init_module(parser, options):
                         environments=environments)
 
 
-def h_cite(parser, buf, mac, args, pos):
+def h_cite(parser, buf, mac, args, delim, pos):
     opt1 = args[1]
     opt2 = args[2]
     if len(opt1) == 1 and type(opt1[0]) is defs.VoidToken:
@@ -67,10 +67,10 @@ def h_cite(parser, buf, mac, args, pos):
                 defs.ActionToken(out[-1].pos)]
     return out
 
-def h_footcite(parser, buf, mac, args, pos):
+def h_footcite(parser, buf, mac, args, delim, pos):
     out = [defs.MacroToken(pos, '\\footnote'),
                 defs.SpecialToken(pos, '{')]
-    out += h_cite(parser, buf, mac, args, pos)
+    out += h_cite(parser, buf, mac, args, delim, pos)
     out += [defs.TextToken(out[-1].pos, '.', pos_fix=True),
                     defs.SpecialToken(out[-1].pos, '}'),
                     defs.ActionToken(out[-1].pos)]

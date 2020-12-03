@@ -6,6 +6,8 @@ Work in progress
   - new package xspace: macro \\xspace; **thanks to @blipp**
     (PR [#134](../../pull/134))
 - yalafi core
+  - **changed interface** to macro handler functions: added argument 'delim'
+    (issue [#136](../../issues/136))
   - added approximation of macro \\def (issue [#125](../../issues/125))
   - fixed bug: macro could consume a closing \} as argument token
     (issue [#135](../../issues/135))

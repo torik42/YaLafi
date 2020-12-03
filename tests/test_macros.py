@@ -5,9 +5,11 @@
 #   - test of optional parameters for \cite, \begin{proof}
 #   - test of optional parameter for \footnotemark
 #   - treatment of unknown macros
+#   - passing of information on argument delimiters {}
 #
 
 from yalafi import tex2txt
+import pytest
 
 options = tex2txt.Options(lang='en', char=True)
 
@@ -111,4 +113,19 @@ def test_newthm():
 
     plain, nums = tex2txt.tex2txt(latex_newthm, options)
     assert plain == plain_newthm
+
+data_test_delimiters = [
+    (r'\delim', 'FalseFalseFalse'),
+    (r'\delim*{}', 'FalseFalseTrue'),
+    (r'\delim*[]', 'FalseTrueFalse'),
+    (r'\delim*[]{}', 'FalseTrueTrue'),
+    (r'\delim[o] x', 'FalseTrueFalse'),
+    (r'\delim {x}', 'FalseFalseTrue'),
+]
+
+@pytest.mark.parametrize('latex,plain_expected', data_test_delimiters)
+def test_delimiters(latex, plain_expected):
+    prefix = '\\usepackage{.tests.defs}\n'
+    plain, nums = tex2txt.tex2txt(prefix + latex, options)
+    assert plain == plain_expected
 
