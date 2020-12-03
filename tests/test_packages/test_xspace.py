@@ -35,6 +35,7 @@ data_test_macros_latex = [
     (r'\def\x{X\xspace}\x A', 'X A'),
     (r'\def\x{X\xspace}\x{}A', 'XA'),
     (r'\def\x{X\xspace}{\x}A', 'XA'),
+    (r'\def\x{X\xspace}\x {A}', 'XA'),
 
 ]
 
