@@ -4,7 +4,7 @@ Work in progress
   - new package geometry: macro \\geometry; **thanks to @blipp**
     (PR [#133](../../pull/133))
   - new package xspace: macro \\xspace; **thanks to @blipp**
-    (PR [#134](../../pull/134))
+    (PR [#134](../../pull/134), issue [#140](../../issues/140))
 - yalafi core
   - **changed interface** to macro handler functions: added argument 'delim'
     (issue [#136](../../issues/136))

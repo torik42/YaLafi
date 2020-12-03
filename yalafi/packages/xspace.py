@@ -15,7 +15,7 @@ def init_module(parser, options):
 
     macros_python = [
 
-        Macro(parms, '\\xspace', args='A', repl=h_xspace),
+        Macro(parms, '\\xspace', args='', repl=h_xspace),
 
     ]
 
@@ -29,14 +29,12 @@ def init_module(parser, options):
 #   line 243: \def\@xspace@exceptions@tlp{%
 #
 xspace_excl = ['.', ',', "'", "''", '/', '?', ';', ':', '!', '~',
-                    '-', '--', '---', ')', '\\footnote', '\\footnotemark']
+                '-', '--', '---', ')', '{', '}',
+                '\\footnote', '\\footnotemark']
 
 
 def h_xspace(parser, buf, mac, args, delim, pos):
-    arg = args[0]
-    if len(arg) == 1 and type(arg[0]) is defs.VoidToken:
-        return []
-    if not arg[0].txt in xspace_excl:
-        arg.insert(0, defs.SpaceToken(arg[0].pos, ' '))
-    return arg
-
+    tok = buf.cur()
+    if tok and tok.txt not in xspace_excl:
+        return [defs.SpaceToken(pos, ' ')]
+    return []
