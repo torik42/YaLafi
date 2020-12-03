@@ -12,6 +12,7 @@ Work in progress
   - fixed bug: macro could consume a closing \} as argument token
     (issue [#135](../../issues/135))
 - README.md: updated
+- CI tests: moved to GitHub Actions
 
 Version 1.2.0 (2020/11/22)
 --------------------------
