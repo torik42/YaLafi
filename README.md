@@ -128,6 +128,9 @@ Choose one of the following possibilities.
 **LanguageTool.**
 On most systems, you have to install the software “manually” (1).
 At least under Arch Linux, you can also use a package manager (2).
+Please note that, for example under Ubuntu,
+`sudo snap install languagetool` will *not* install the components required
+here.
 
 1. The LanguageTool zip archive, for example LanguageTool-5.0.zip, can be
 obtained from the
@@ -138,7 +141,7 @@ has to point to the directory created after uncompressing the archive
 at a suitable place.
 For instance, the directory has to contain file 'languagetool-server.jar'.
 
-2. Under Arch Linux, you can simply say `pacman -S languagetool`.
+2. Under Arch Linux, you can simply say `sudo pacman -S languagetool`.
 In this case, it is not necessary to set option --lt-directory from
 variant 1.
 Instead, you have to specify `--lt-command languagetool`.
