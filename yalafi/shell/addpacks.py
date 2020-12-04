@@ -30,9 +30,11 @@ require_packages = []
 def init_module(parser, options):
     parms = parser.parms
     def add(parser, buf, mac, args, delim, pos):
-        name = parser.get_text_expanded(args[1])
+        name = parser.get_text_expanded(args[1]).strip()
         if mac.name == '\\usepackage':
-            packages.append(name)
+            for p in name.split(','):
+                if p.strip():
+                    packages.append(p.strip())
         else:
             documentclass[0] = name
         return []

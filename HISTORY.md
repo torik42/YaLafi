@@ -11,6 +11,8 @@ Work in progress
   - added approximation of macro \\def (issue [#125](../../issues/125))
   - fixed bug: macro could consume a closing \} as argument token
     (issue [#135](../../issues/135))
+- yalafi.shell
+  - fixed problem with --add-modules (issue [#144](../../issues/144))
 - README.md: updated (issue [#137](../../issues/137))
 - CI tests: moved to GitHub Actions
 
