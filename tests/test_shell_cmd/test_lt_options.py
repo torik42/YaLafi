@@ -157,12 +157,13 @@ def test_4(options, lt_in_expected):
                                             latex_4, 'utf-8')
     assert lt_in == lt_in_expected
 
-#   test --add-modules
+#   test --add-modules, including issue #144
 #
 latex_5 = r"""
 \KOMAoption{koma}
 \selectlanguage{lang}
-A
+\textcolor{red}{A}
+\tikzset{opts}
 """
 lt_in_5 = """
 --json --encoding utf-8 --language en-GB --disable WHITESPACE_RULE -
