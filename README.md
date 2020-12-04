@@ -994,8 +994,8 @@ in yalafi/parameters.py.
     - 'O': optional argument in \[\] brackets
     - '\*': optional asterisk
 - `repl`: replacement string as for \\newcommand ('\*' does count as argument),
-  or a function (see file [yalafi/handlers.py](yalafi/handlers.py)
-  for examples)
+  or a function (see point [Macro handler functions](#macro-handler-functions)
+  below)
 - `defaults`: an optional list of replacement strings for absent optional
   arguments
 - `extract`: like `repl`, but the resulting text is appended to the main
@@ -1034,6 +1034,48 @@ Replacements in `repl` and `defaults` are still interpreted in text mode.
 - `remove`: if True, then a fixed replacement can be specified in `repl`,
 and trailing interpunction given by 'Parameters.math\_punctuation' in
 file yalafi/parameters.py is appended
+
+### Macro handler functions
+
+Parameter `repl` of class `Macro` may specify a function with the following
+arguments.
+
+`handler(parser, buf, mac, args, delim, pos)`
+
+It has to return a possibly empty list of tokens that are used as result of
+the macro expansion.
+The list may include tokens of class `VoidToken` (see argument `args`).
+- `parser`: The active parser object.
+  For instance, member `parser.parms` is the current `Parameter` object from
+  file [yalafi/parameters.py](yalafi/parameters.py).
+- `buf`: The token buffer we are reading from.
+  The macro token, subsequent space, and all declared macro arguments already
+  have been read.
+  For instance, you can check the next token with `buf.cur()`;
+  see file [yalafi/packages/xspace.py](yalafi/packages/xspace.py) for an
+  application.
+- `mac`: The object created with `Macro()`.
+- `args`: A list of token lists.
+  For each argument declared with `Macro()`, a possibly empty token list is
+  passed.
+  - `'*'`: If the asterisk was present, the token is given.
+    Otherwise, the list is empty.
+  - `'A'`: The argument tokens are given, excluding possibly surrounding curly
+    braces.
+    If the argument was empty (pure \{\}, paragraph break, or end of group or
+    text), the list consists of a single `VoidToken`.
+  - `'O'`: If the optional argument has not been specified, the list is empty.
+    Otherwise, the tokens excluding the surrounding square brackets are given.
+    If the option was a pure \[\], the list consists of a single `VoidToken`.
+- `delim`: A list of booleans, indicating the presence of delimiters around the
+  arguments.
+  - `'*'`: Always False.
+  - `'A'`: True, if the argument has been delimited by curly braces.
+  - `'O'`: True, if the argument is present.
+- `pos`: Character position of the leading backslash of the macro invocation,
+  counting from zero.
+
+For examples, see file [yalafi/handlers.py](yalafi/handlers.py).
 
 [Back to contents](#contents)
 
