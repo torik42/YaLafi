@@ -178,3 +178,25 @@ def test_5():
                                 + test_dir + 'modules.tex', latex_5, 'utf-8')
     assert lt_in == lt_in_5
 
+#   test --no-specials
+#
+latex_6 = r"""
+\LTadd{A}
+\LTskip{B}
+\LTalter CD
+%%% LT-SKIP-BEGIN
+X
+%%% LT-SKIP-END
+"""
+lt_in_6 = """
+--json --encoding utf-8 --language en-GB --disable WHITESPACE_RULE -
+
+B
+C
+X
+
+"""
+def test_6():
+    lt_in = run_shell.get_lt_in('--no-specials', latex_6, 'utf-8')
+    assert lt_in == lt_in_6
+
