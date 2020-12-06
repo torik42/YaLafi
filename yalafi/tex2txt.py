@@ -47,6 +47,8 @@ def tex2txt(latex, opts, multi_language=False, modify_parms=None):
         extr = []
     if opts.seqs:
         parms.math_displayed_simple = True
+    if opts.nosp:
+        parms.no_specials()
 
     if modify_parms:
         modify_parms(parms)
@@ -221,6 +223,7 @@ class Options:
             extr=None,      # or string: comma-separated macro list
             lang=None,      # or set to language code
             seqs=False,     # True: simple replacements for displayed equations
+            nosp=False,     # True: deactivate special macros and comments
             unkn=False):    # True: print unknowns
         self.ienc = ienc
         self.repl = repl
@@ -234,6 +237,7 @@ class Options:
         self.extr = extr
         self.lang = lang
         self.seqs = seqs
+        self.nosp = nosp
         self.unkn = unkn
 
 #   function to be called for stand-alone script
@@ -252,6 +256,7 @@ def main():
     parser.add_argument('--ienc')
     parser.add_argument('--seqs', action='store_true')
     parser.add_argument('--unkn', action='store_true')
+    parser.add_argument('--nosp', action='store_true')
     parser.add_argument('--mula')
     cmdline = parser.parse_args()
 
@@ -268,7 +273,8 @@ def main():
                 extr=cmdline.extr,
                 lang=cmdline.lang,
                 seqs=cmdline.seqs,
-                unkn=cmdline.unkn)
+                unkn=cmdline.unkn,
+                nosp=cmdline.nosp)
 
     if cmdline.file:
         f = myopen(cmdline.file, encoding=cmdline.ienc)

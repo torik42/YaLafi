@@ -121,3 +121,27 @@ def test_5():
     plain, pos = utils.get_txt_pos(toks)
     assert plain_5 == plain
 
+#   test option --nosp
+#
+latex_6 = r"""
+\LTadd{A}
+\LTskip{B}
+\LTalter CD
+%%% LT-SKIP-BEGIN
+X
+%%% LT-SKIP-END
+"""
+plain_6 = """
+B
+C
+X
+"""
+
+def test_6():
+    parms =parameters.Parameters()
+    parms.no_specials()
+    p = parser.Parser(parms)
+    toks = p.parse(latex_6)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_6 == plain
+

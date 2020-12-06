@@ -5,14 +5,16 @@ Work in progress
     (PR [#133](../../pull/133))
   - new package xspace: macro \\xspace; **thanks to @blipp**
     (PR [#134](../../pull/134), issue [#140](../../issues/140))
+- yalafi.shell
+  - added option --no-specials (issue [#131](../../issues/131))
+  - fixed problem with --add-modules (issue [#144](../../issues/144))
 - yalafi core
   - **changed interface** to macro handler functions: added argument 'delim'
     (issue [#136](../../issues/136))
   - added approximation of macro \\def (issue [#125](../../issues/125))
+  - added option --nosp (issue [#131](../../issues/131))
   - fixed bug: macro could consume a closing \} as argument token
     (issue [#135](../../issues/135))
-- yalafi.shell
-  - fixed problem with --add-modules (issue [#144](../../issues/144))
 - README.md: updated (issue [#137](../../issues/137))
 - CI tests: moved to GitHub Actions
 

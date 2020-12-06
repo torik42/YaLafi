@@ -441,6 +441,17 @@ class Parameters:
     def lang_context_lang(self):
         return self.parser_lang_stack[-1][1]
 
+    #   deactivate special macros and magic comments
+    #
+    def no_specials(self):
+        self.comment_skip_begin = 'x'
+        self.comment_skip_end = 'x'
+        self.macro_defs_python += [
+            Macro(self, self.macro_filter_add, args='A', repl=''),
+            Macro(self, self.macro_filter_alter, args='AA', repl='#1'),
+            Macro(self, self.macro_filter_skip, args='A', repl='#1'),
+        ]
+
     def __init__(self, language='en'):
         self.init_collections()
         self.init_math_collections()

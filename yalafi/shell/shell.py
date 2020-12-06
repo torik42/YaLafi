@@ -174,6 +174,7 @@ parser.add_argument('--ml-disable', default=default_option_ml_disable)
 parser.add_argument('--ml-disablecategories',
                         default=default_option_ml_disablecategories)
 parser.add_argument('--no-config', action='store_true')
+parser.add_argument('--no-specials', action='store_true')
 parser.add_argument('file', nargs='*')
 
 cmdline = parser.parse_args(sys.argv[1:])
@@ -263,7 +264,8 @@ if cmdline.include:
     sys.stderr.flush()
     opts = tex2txt.Options(extr=inclusion_macros, repl=cmdline.replace,
                             defs=cmdline.define, lang=cmdline.language[:2],
-                            dcls=cmdline.documentclass, pack=cmdline.packages)
+                            dcls=cmdline.documentclass, pack=cmdline.packages,
+                            nosp=cmdline.no_specials)
 
 def skip_file(fn):
     # does file name match regex from option --skip?

@@ -63,7 +63,8 @@ def run_proofreader_options(tex, language, disable, enable,
                             defs=cmdline.define, lang=language,
                             extr=cmdline.extract, unkn=cmdline.list_unknown,
                             seqs=cmdline.simple_equations,
-                            dcls=cmdline.documentclass, pack=cmdline.packages)
+                            dcls=cmdline.documentclass, pack=cmdline.packages,
+                            nosp=cmdline.no_specials)
 
     if cmdline.plain_input:
         plain_map = {language: [(tex, list(range(1, len(tex) + 1)))]}

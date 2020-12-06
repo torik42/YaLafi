@@ -260,6 +260,9 @@ Default option values are set at the Python script beginning.
   Replace a displayed equation only with a single placeholder from collection
   'math\_repl\_display' in file yalafi/parameters;
   append trailing interpunction, if present.
+- `--no-specials`<br>
+  Revert changes from special macros and magic comments described in section
+  [Modification of LaTeX text](#Modification-of-latex-text).
 - `--disable rules`<br>
   Comma-separated list of ignored LT rules, is passed as --disable to LT
   (default: 'WHITESPACE\_RULE').
@@ -834,6 +837,11 @@ You can do that in the LaTeX code, or after filtering in the plain text.
 
 ### Modification of LaTeX text
 
+The following operations can be deactivated with options --nosp and
+--no-specials of yalafi and yalafi.shell, respectively.
+For instance, macro \\LTadd will be defined, but it will *not* add its
+argument to the plain text.
+
 **Special macros.**
 Small modifications, for instance concerning interpunction, can be made
 with the predefined macros \\LTadd, \\LTalter and \\LTskip.
@@ -1384,7 +1392,7 @@ The LaTeX filter can be integrated in shell scripts, compare the examples in
 ```
 python -m yalafi [--nums file] [--repl file] [--defs file] [--dcls class]
                  [--pack modules] [--extr macros] [--lang xy] [--ienc enc]
-                 [--seqs] [--unkn] [--mula base] [latexfile]
+                 [--seqs] [--unkn] [--nosp] [--mula base] [latexfile]
 ```
 Without positional argument `latexfile`, standard input is read.
 
@@ -1414,6 +1422,9 @@ Without positional argument `latexfile`, standard input is read.
 - `--unkn`<br>
   As option --list-unknown in section
   [Example application](#example-application).
+- `--nosp`<br>
+  As option --no-specials in section
+  [Example application](#example-application).
 - `--mula base`<br>
   Turn on multi-language processing.
   The different text parts are stored in files `<base>.<part>.<language>`.
@@ -1438,6 +1449,7 @@ Invocation of `python -m yalafi ...` differs as follows from
 - Added options --dcls and --pack allow modification of predefined LaTeX
   macros and environments at Python level.
 - Added option --seqs.
+- Added option --nosp.
 - Added option --mula.
 - Option --defs expects a file containing macro definitions as LaTeX code.
 - Option --ienc is also effective for file from --defs.
