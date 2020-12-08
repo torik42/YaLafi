@@ -9,8 +9,7 @@ Please don't hesitate to
 if you would like to have added something.
 
 **Summary.**
-This Python (at least version 3.6) package extracts plain text from LaTeX
-documents.
+This Python package extracts plain text from LaTeX documents.
 The software may be integrated with a proofreading tool and an editor.
 It provides
 - mapping of character positions between LaTeX and plain text,
