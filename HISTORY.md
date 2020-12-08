@@ -5,6 +5,8 @@ Work in progress
     (PR [#133](../../pull/133))
   - new package xspace: macro \\xspace; **thanks to @blipp**
     (PR [#134](../../pull/134), issue [#140](../../issues/140))
+  - package babel: fixed a problem with parsing of package options
+    (issue [#147](../../issues/147))
 - yalafi.shell
   - added option --no-specials (issue [#131](../../issues/131))
   - fixed problem with --add-modules (issue [#144](../../issues/144))

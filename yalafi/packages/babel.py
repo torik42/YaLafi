@@ -21,6 +21,7 @@ language_map = {
 #   'ca-ES-valencia'
     'danish': 'da-DK',
     'german': 'de-DE',
+    'ngerman': 'de-DE',
     'german-at': 'de-AT',
     'german-ch': 'de-CH',
     'greek': 'el-GR',
@@ -87,11 +88,7 @@ def init_module(parser, options):
 
     ]
 
-    inject_tokens = []
-    if options:
-        # set current language to the last in option list
-        inject_tokens = [LanguageToken(0, lang=translate_lang(options[-1][0]),
-                                                hard=True, brk=True)]
+    inject_tokens = get_language_token(options)
 
     return InitModule(macros_latex=macros_latex, macros_python=macros_python,
                         environments=environments, inject_tokens=inject_tokens)
@@ -123,4 +120,15 @@ def h_end_otherlang(parser, buf, mac, args, delim, pos):
 
 def h_end_otherlang_star(parser, buf, mac, args, delim, pos):
     return [LanguageToken(pos, back=True)]
+
+#   return a list
+#   - with LanguageToken corresponding to given option
+#   - or empty, if no language option found
+#
+def get_language_token(options):
+    for opt in reversed(options):
+        if opt[1] is None and opt[0] in language_map:
+            return [LanguageToken(0, lang=translate_lang(opt[0]),
+                                                hard=True, brk=True)]
+    return []
 

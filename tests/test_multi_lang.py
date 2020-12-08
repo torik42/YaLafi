@@ -327,3 +327,25 @@ def test_13():
     plain = get_ml_txt(latex_13, lang='en-GB')
     assert plain == plain_13
 
+#   issues 147, 149
+#
+latex_14 = r"""
+"a
+\usepackage[english,ngerman,math=normal]{babel}
+"a
+"""
+plain_14 = {
+'de-DE': [
+"""ä
+"""
+],
+'en-GB': [
+"""
+"a
+"""
+]
+}
+def test_14():
+    plain = get_ml_txt(latex_14, lang='en-GB')
+    assert plain == plain_14
+
