@@ -88,7 +88,7 @@ def init_module(parser, options):
 
     ]
 
-    inject_tokens = get_language_token(options)
+    inject_tokens = get_language_token(parser.global_latex_options + options)
 
     return InitModule(macros_latex=macros_latex, macros_python=macros_python,
                         environments=environments, inject_tokens=inject_tokens)
