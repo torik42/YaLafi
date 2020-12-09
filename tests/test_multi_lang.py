@@ -349,3 +349,28 @@ def test_14():
     plain = get_ml_txt(latex_14, lang='en-GB')
     assert plain == plain_14
 
+
+#   read babel language from global options of \documentclass
+#
+latex_15 = r"""
+% somewhat odd, just for testing ...
+\documentclass[ngerman,a4paper]{article}
+"a
+\usepackage{babel}
+"a
+"""
+plain_15 = {
+'de-DE': [
+"""ä
+"""
+],
+'en-GB': [
+"""
+"a
+"""
+]
+}
+def test_15():
+    plain = get_ml_txt(latex_15, lang='en-GB')
+    assert plain == plain_15
+

@@ -29,6 +29,7 @@ class Parser:
         self.parms = parms
         self.read_macros = read_macros
         self.packages = {}
+        self.global_latex_options = []      # from \documentclass
         self.the_macros = {}
         self.the_environments = {}
         self.mathparser = mathparser.MathParser(self)
@@ -61,7 +62,8 @@ class Parser:
     #
     def init_package(self, name, actions, options):
         out = []
-        if name and name in self.packages and self.packages[name] == options:
+        if (name and name in self.packages and
+                self.packages[name] == self.global_latex_options + options):
             return out
         try:
             for requ in actions[0]:
@@ -69,7 +71,7 @@ class Parser:
                     out += self.init_package(requ, utils.get_module_handler(
                                     requ, self.parms.package_modules), options)
             if name:
-                self.packages[name] = options
+                self.packages[name] = self.global_latex_options + options
             out += self.modify_parameters(actions[1], options)
         except:
             utils.fatal('error loading module ' + repr(name))

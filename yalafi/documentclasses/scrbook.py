@@ -10,6 +10,8 @@ require_packages = []
 def init_module(parser, options):
     parms = parser.parms
 
+    parser.global_latex_options += options
+
     macros_latex = r"""
 
         \newcommand{\KOMAoption}[1]{}
