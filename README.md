@@ -256,7 +256,7 @@ Default option values are set at the Python script beginning.
   This is useful for check of foreign-language text, if marked accordingly.
   Internally used for detection of file inclusions on --include.
 - `--simple-equations`<br>
-  Replace a displayed equation only with a single placeholder from collection
+  Replace a displayed equation only with a single placeholder from collections
   'math\_repl\_display\*' in file yalafi/parameters;
   append trailing interpunction, if present.
 - `--no-specials`<br>
@@ -759,7 +759,7 @@ where the problem was detected.
   separated by blank lines.
   This preserves text flows.
 - Inline maths material $...$ and \\(...\\) is replaced with text from the
-  rotating collection in 'math\_repl\_inline\*' in file yalafi/parameters.py.
+  rotating collections 'math\_repl\_inline\*' in file yalafi/parameters.py.
   Trailing interpunction from 'Parameters.math\_punctuation' is appended.
 - Equation environments are resolved in a way suitable for check of
   interpunction and spacing.
@@ -1169,8 +1169,9 @@ Wir folgern
   W-W-W  gleich X-X-X.
 Daher ...
 ```
-The replacements like 'V-V-V' are taken from collection
-'math\_repl\_display\*' that depends on language setting, too.
+The replacements like 'V-V-V' are taken from collections
+'math\_repl\_display\*' in file yalafi/parameters.py that depend on
+language setting, too.
 Now, LT will additionally complain about repetition of 'W-W-W'.
 Finally, writing '= b,' and '= d.' in the equation leads to the output:
 ```
@@ -1217,8 +1218,8 @@ Therefore, one will get warnings from the proofreading program, if subsequent
 
 ### Equation replacements in English documents
 
-The replacement collection of 'math\_repl\_display\*' in file
-yalafi/parameters.py does not work well, if single letters are taken as
+The replacement collections 'math\_repl\_display\*' in file
+yalafi/parameters.py do not work well, if single letters are taken as
 replacements.
 For instance, 'V.' cannot be safely considered as end of a sentence.
 We now have chosen replacements as 'U-U-U' for German and English texts.
@@ -1278,8 +1279,8 @@ The following options for yalafi.shell can be used to adjust the behaviour.
   If a short inclusion, for instance via \\foreignlanguage, does not comprise
   more than `num` plain-text words (default: 2), then the main text flow is
   continued.
-  The inclusion is represented by a placeholder from collection
-  'lang\_change\_repl' in file yalafi/parameters.py.
+  The inclusion is represented by a placeholder from collections
+  'lang\_change\_repl\*' in file yalafi/parameters.py.
   Language changes with \\selectlanguage always break the text flow.
 - `--ml-rule-threshold num`<br>
   If an inserted foreign-language text part consists of at most `num` words
@@ -1538,7 +1539,7 @@ Displayed equations are parsed as follows.
   material separated by intermediate \\text{...} or \\mbox{...}
   ('Parameters.math\_text\_macros').
 - Arguments of \\text and \\mbox are directly copied.
-- A “maths part” is substituted with a placeholder from rotating collection
+- A “maths part” is substituted with a placeholder from rotating collections
   'math\_repl\_display\*', if it does not consist only of punctuation
   marks from 'Parameters.math\_punctuation' or of operators from
   'Parameters.math\_operators'.
