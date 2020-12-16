@@ -284,8 +284,8 @@ Default option values are set at the Python script beginning.
   separated by '\|'.
   Example: `--single-letters 'A|a|I|e.g.|i.e.||'` for an English text,
   where the trailing '\|\|' causes the addition of equation and language-change
-  replacements from script variables 'equation\_replacements' and
-  'language\_change\_replacements'.
+  replacements from variables 'math\_repl\_\*' and 'lang\_change\_repl\_\*'
+  in file yalafi/parameters.py.
   All characters except '\|' are taken verbatim, but '~' and '\\,' are
   interpreted as UTF-8 non-breaking space and narrow non-breaking space.
 - `--equation-punctuation mode`<br>
@@ -300,10 +300,8 @@ Default option values are set at the Python script beginning.
   terminated by a dot '.', and at the same time is not followed by a
   lower-case word or another equation element, both possibly separated by
   a punctuation mark from ',;:'.
-  Patterns for equation elements are given by script variables
-  'equation\_replacements\_display' and 'equation\_replacements\_inline',
-  corresponding to variables 'math\_repl\_display' and 'math\_repl\_inline'
-  in file yalafi/parameters.py.
+  Patterns for equation elements are given by variables 'math\_repl\_display\*'
+  and 'math\_repl\_inline\*' in file yalafi/parameters.py.
 - `--server mode`<br>
   Use LT's Web server (mode is 'lt') or a local LT server (mode is 'my')
   instead of LT's command-line tool.

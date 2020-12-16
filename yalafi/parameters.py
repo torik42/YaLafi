@@ -170,26 +170,32 @@ class Parameters:
             proof_name = 'Proof',
             math_repl_inline = ['B-B-B', 'C-C-C', 'D-D-D',
                                         'E-E-E', 'F-F-F', 'G-G-G'],
+            math_repl_inline_vowel = None,
             math_repl_display = ['U-U-U', 'V-V-V', 'W-W-W',
                                         'X-X-X', 'Y-Y-Y', 'Z-Z-Z'],
+            math_repl_display_vowel = None,
             math_op_text = {'+': 'plus', '-': 'minus',
                                     '\\cdot': 'times', '\\times': 'times',
                                     '/': 'over',
                                     None: 'equal'},     # default value
             lang_change_repl = ['K-K-K', 'L-L-L', 'M-M-M', 'N-N-N'],
+            lang_change_repl_vowel = None,
             short_macros = {}
         )
         settings['de'] = ParserLanguageSettings(
             proof_name = 'Beweis',
             math_repl_inline = ['B-B-B', 'C-C-C', 'D-D-D',
                                         'E-E-E', 'F-F-F', 'G-G-G'],
+            math_repl_inline_vowel = None,
             math_repl_display = ['U-U-U', 'V-V-V', 'W-W-W',
                                         'X-X-X', 'Y-Y-Y', 'Z-Z-Z'],
+            math_repl_display_vowel = None,
             math_op_text = {'+': 'plus', '-': 'minus',
                                     '\\cdot': 'mal', '\\times': 'mal',
                                     '/': 'durch',
                                     None: 'gleich'},    # default value
             lang_change_repl = ['K-K-K', 'L-L-L', 'M-M-M', 'N-N-N'],
+            lang_change_repl_vowel = None,
             short_macros = {
                 '"-': '',
                 '"=': '-',
@@ -208,13 +214,16 @@ class Parameters:
             proof_name = 'Доказательство',
             math_repl_inline = ['Б-Б-Б', 'В-В-В', 'Г-Г-Г',
                                         'Д-Д-Д', 'Е-Е-Е', 'Ж-Ж-Ж'],
+            math_repl_inline_vowel = None,
             math_repl_display = ['Ц-Ц-Ц', 'Ч-Ч-Ч', 'Ш-Ш-Ш',
                                         'Ы-Ы-Ы', 'Э-Э-Э', 'Ю-Ю-Ю'],
+            math_repl_display_vowel = None,
             math_op_text = {'+': 'плюс', '-': 'минус',
                                     '\\cdot': 'раз', '\\times': 'раз',
                                     '/': 'на',
                                     None: 'равно'},     # default value
             lang_change_repl = ['К-К-К', 'Л-Л-Л', 'М-М-М', 'Н-Н-Н'],
+            lang_change_repl_vowel = None,
             short_macros = {}
         )
 
@@ -464,13 +473,29 @@ class Parameters:
 
 
 class ParserLanguageSettings:
-    def __init__(self, proof_name, math_repl_inline, math_repl_display,
-                        math_op_text, lang_change_repl, short_macros):
+    def __init__(self, proof_name,
+                        math_repl_inline, math_repl_inline_vowel,
+                        math_repl_display, math_repl_display_vowel,
+                        math_op_text,
+                        lang_change_repl, lang_change_repl_vowel,
+                        short_macros):
         self.proof_name = proof_name
         self.math_repl_inline = math_repl_inline
+        if math_repl_inline_vowel is None:
+            self.math_repl_inline_vowel = math_repl_inline
+        else:
+            self.math_repl_inline_vowel = math_repl_inline_vowel
         self.math_repl_display = math_repl_display
+        if math_repl_display_vowel is None:
+            self.math_repl_display_vowel = math_repl_display
+        else:
+            self.math_repl_display_vowel = math_repl_display_vowel
         self.math_op_text = math_op_text
         self.lang_change_repl = lang_change_repl
+        if lang_change_repl_vowel is None:
+            self.lang_change_repl_vowel = lang_change_repl
+        else:
+            self.lang_change_repl_vowel = lang_change_repl_vowel
         self.short_macros = short_macros
         self.active_chars = set(k[0] for k in self.short_macros.keys())
 

@@ -74,16 +74,6 @@ default_option_ml_disablecategories = ''
 #
 inclusion_macros = 'include,input'
 
-# equation replacements used for option --equation-punctuation
-# - have to start and end with a letter for proper operation
-# - also used by option --single-letters
-#
-equation_replacements_display = r'U-U-U|V-V-V|W-W-W|X-X-X|Y-Y-Y|Z-Z-Z'
-equation_replacements_inline = r'B-B-B|C-C-C|D-D-D|E-E-E|F-F-F|G-G-G'
-equation_replacements = (equation_replacements_display
-                            + r'|' + equation_replacements_inline)
-language_change_replacements = r'K-K-K|L-L-L|M-M-M|N-N-N'
-
 # option --textgears
 #
 textgears_server = 'https://api.textgears.com/check.php'
@@ -128,7 +118,7 @@ import sys
 import argparse
 import json
 import signal
-from yalafi import tex2txt
+from yalafi import tex2txt, parameters
 
 # parse command line
 #
@@ -209,10 +199,22 @@ if not (cmdline.file or cmdline.as_server or cmdline.server == 'stop'):
 if cmdline.plain_input and (cmdline.include or cmdline.replace):
     tex2txt.fatal('cannot handle --plain-input together with'
                                         + ' --include or --replace')
+
+lc = parameters.Parameters(cmdline.language).lang_context
+equation_replacements_display = r'|'.join(set(
+                    lc.math_repl_display + lc.math_repl_display_vowel))
+equation_replacements_inline = r'|'.join(set(
+                    lc.math_repl_inline + lc.math_repl_inline_vowel))
+equation_replacements = r'|'.join(set(
+                    lc.math_repl_display + lc.math_repl_display_vowel
+                    + lc.math_repl_inline + lc.math_repl_inline_vowel))
 if cmdline.single_letters and cmdline.single_letters.endswith('||'):
-    cmdline.single_letters += equation_replacements
+    repls = (lc.math_repl_display + lc.math_repl_display_vowel
+                    + lc.math_repl_inline + lc.math_repl_inline_vowel)
     if cmdline.multi_language:
-        cmdline.single_letters += r'|' + language_change_replacements
+        repls += lc.lang_change_repl + lc.lang_change_repl_vowel
+    cmdline.single_letters += r'|'.join(set(repls))
+
 if cmdline.replace:
     cmdline.replace = tex2txt.read_replacements(cmdline.replace,
                                                 encoding=cmdline.encoding)
