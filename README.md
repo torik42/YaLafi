@@ -257,7 +257,7 @@ Default option values are set at the Python script beginning.
   Internally used for detection of file inclusions on --include.
 - `--simple-equations`<br>
   Replace a displayed equation only with a single placeholder from collection
-  'math\_repl\_display' in file yalafi/parameters;
+  'math\_repl\_display\*' in file yalafi/parameters;
   append trailing interpunction, if present.
 - `--no-specials`<br>
   Revert changes from special macros and magic comments described in section
@@ -284,7 +284,7 @@ Default option values are set at the Python script beginning.
   separated by '\|'.
   Example: `--single-letters 'A|a|I|e.g.|i.e.||'` for an English text,
   where the trailing '\|\|' causes the addition of equation and language-change
-  replacements from variables 'math\_repl\_\*' and 'lang\_change\_repl\_\*'
+  replacements from collections 'math\_repl\_\*' and 'lang\_change\_repl\_\*'
   in file yalafi/parameters.py.
   All characters except '\|' are taken verbatim, but '~' and '\\,' are
   interpreted as UTF-8 non-breaking space and narrow non-breaking space.
@@ -300,8 +300,9 @@ Default option values are set at the Python script beginning.
   terminated by a dot '.', and at the same time is not followed by a
   lower-case word or another equation element, both possibly separated by
   a punctuation mark from ',;:'.
-  Patterns for equation elements are given by variables 'math\_repl\_display\*'
-  and 'math\_repl\_inline\*' in file yalafi/parameters.py.
+  Patterns for equation elements are given by collections
+  'math\_repl\_display\*' and 'math\_repl\_inline\*' in
+  file yalafi/parameters.py.
 - `--server mode`<br>
   Use LT's Web server (mode is 'lt') or a local LT server (mode is 'my')
   instead of LT's command-line tool.
@@ -757,8 +758,8 @@ where the problem was detected.
 - Arguments of macros like \\footnote are appended to the main text,
   separated by blank lines.
   This preserves text flows.
-- Inline maths material $...$ and \\(...\\) is replaced with text from
-  the rotating collection in 'math\_repl\_inline' in file yalafi/parameters.py.
+- Inline maths material $...$ and \\(...\\) is replaced with text from the
+  rotating collection in 'math\_repl\_inline\*' in file yalafi/parameters.py.
   Trailing interpunction from 'Parameters.math\_punctuation' is appended.
 - Equation environments are resolved in a way suitable for check of
   interpunction and spacing.
@@ -1169,7 +1170,7 @@ Wir folgern
 Daher ...
 ```
 The replacements like 'V-V-V' are taken from collection
-'math\_repl\_display' that depends on language setting, too.
+'math\_repl\_display\*' that depends on language setting, too.
 Now, LT will additionally complain about repetition of 'W-W-W'.
 Finally, writing '= b,' and '= d.' in the equation leads to the output:
 ```
@@ -1216,7 +1217,7 @@ Therefore, one will get warnings from the proofreading program, if subsequent
 
 ### Equation replacements in English documents
 
-The replacement collection of 'math\_repl\_display' in file
+The replacement collection of 'math\_repl\_display\*' in file
 yalafi/parameters.py does not work well, if single letters are taken as
 replacements.
 For instance, 'V.' cannot be safely considered as end of a sentence.
@@ -1538,7 +1539,7 @@ Displayed equations are parsed as follows.
   ('Parameters.math\_text\_macros').
 - Arguments of \\text and \\mbox are directly copied.
 - A “maths part” is substituted with a placeholder from rotating collection
-  'math\_repl\_display', if it does not consist only of punctuation
+  'math\_repl\_display\*', if it does not consist only of punctuation
   marks from 'Parameters.math\_punctuation' or of operators from
   'Parameters.math\_operators'.
 - A leading maths operator is displayed using 'math\_op\_text'
@@ -1548,7 +1549,7 @@ Displayed equations are parsed as follows.
 - If the “maths part” includes leading or trailing maths space from
   'Parameters.math\_space', then white space is prepended or appended to the
   replacement.
-- Replacements from 'math\_repl\_display' are rotated
+- Replacements from 'math\_repl\_display\*' are rotated
     - if a non-blank \\text part is detected,
     - if a “maths part” starts with an operator and is first in “section”,
       but not on “line”,
