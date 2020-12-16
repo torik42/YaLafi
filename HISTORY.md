@@ -6,12 +6,15 @@ Work in progress
   - new package xspace: macro \\xspace; **thanks to @blipp**
     (PR [#134](../../pull/134), issue [#140](../../issues/140))
   - package babel
-    - fixed a problem with parsing of package options
-      (issue [#147](../../issues/147))
     - language now is also read from global options of \\documentclass
       (issue [#148](../../issues/148))
+    - fixed a problem with parsing of package options
+      (issue [#147](../../issues/147))
 - yalafi.shell
   - added option --no-specials (issue [#131](../../issues/131))
+  - options --single-letters and --equation-punctuation now use equation
+    replacements according to setting from option --language
+    (issue [#152](../../issues/152))
   - fixed problem with --add-modules (issue [#144](../../issues/144))
 - yalafi core
   - **changed interface** to macro handler functions: added argument 'delim'
