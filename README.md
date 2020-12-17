@@ -160,6 +160,10 @@ the LaTeX input and application of
 [LanguageTool](https://www.languagetool.org) (LT).
 It is best called as module as shown below, but can also be placed elsewhere
 and invoked as script.
+A simple invocation producing an HTML report could be:
+```
+python -m yalafi.shell --lt-directory ~/lib/LT --output html t.tex > t.html
+```
 On option '--server lt', LT's Web server is contacted.
 Otherwise, [Java](https://java.com) has to be present, and
 the path to LT has to be specified with --lt-directory or --lt-command.
@@ -167,8 +171,7 @@ Note that from version 4.8, LT does not fully support 32-bit systems any more.
 Both LT and the script will print some progress messages to stderr.
 They can be suppressed with `python ... 2>/dev/null`.
 ```
-python -m yalafi.shell [OPTIONS]
-                latex_file [latex_file ...] [> text_or_html_file]
+python -m yalafi.shell [OPTIONS] latex_file [latex_file ...] [> text_or_html_file]
 ```
 Option names may be abbreviated.
 If present, options are also read from a configuration file designated by
