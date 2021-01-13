@@ -1,5 +1,4 @@
 import setuptools
-from distutils.command.build_py import build_py
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -20,7 +19,6 @@ setuptools.setup(
         "Topic :: Text Processing :: Markup :: LaTeX",
         "Topic :: Text Processing :: Filters",
     ],
-    cmdclass = {"build_py": build_py},
     entry_points = {
         "console_scripts": [
             "yalafi = yalafi.shell.__main__:main",
