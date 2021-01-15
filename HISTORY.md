@@ -25,6 +25,7 @@ Work in progress
     (issue [#135](../../issues/135))
 - README.md: updated (issue [#137](../../issues/137))
 - CI tests: moved to GitHub Actions
+- added file .gitignore; **thanks to @mfbehrens99** (PR [#156](../../pull/156))
 
 Version 1.2.0 (2020/11/22)
 --------------------------
