@@ -437,3 +437,4 @@ tests: [tests/test\_documentclasses/test\_scrreprt.py](tests/test_documentclasse
 
 \\KOMAoption,
 \\KOMAoptions
+
