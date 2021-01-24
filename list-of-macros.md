@@ -351,7 +351,7 @@ tests: [tests/test\_packages/test\_unicode\_math.py](tests/test_packages/test_un
 **Macros**
 
 \\setmathfont,
-\unimathsetup
+\\unimathsetup
 
 
 ## Package xcolor
