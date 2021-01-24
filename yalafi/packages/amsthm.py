@@ -14,6 +14,7 @@ def init_module(parser, options):
 
         \newcommand{\qedhere}{}
         \newcommand{\theoremstyle}[1]{}
+        \newcommand{\newtheoremstyle}[9]{}
 
     """
 

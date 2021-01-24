@@ -18,6 +18,11 @@ data_test_macros_latex = [
     (r'A\[\qedhere\]B', 'A  B'),
             # the space is due to leading '  ' in displayed equations
     (r'A\theoremstyle{plain}B', 'AB'),
+    (r'''
+    \newtheoremstyle{break}%
+    {}{}%
+    {\itshape}{}%
+    {\bfseries}{}% % Note that final punctuation is omitted. {\newline}{}''','')
 
 ]
 
