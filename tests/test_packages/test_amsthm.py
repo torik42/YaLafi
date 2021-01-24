@@ -22,7 +22,8 @@ data_test_macros_latex = [
     \newtheoremstyle{break}%
     {}{}%
     {\itshape}{}%
-    {\bfseries}{}% % Note that final punctuation is omitted. {\newline}{}''','')
+    {\bfseries}{}%
+    {\newline}{}''','')
 
 ]
 
