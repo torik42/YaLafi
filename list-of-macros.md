@@ -343,6 +343,17 @@ We simply remove the picture in environment 'tikzpicture'.
 tikzpicture
 
 
+## Package unicode-math
+
+Source: [yalafi/packages/unicode\_math.py](yalafi/packages/unicode_math.py),
+tests: [tests/test\_packages/test\_unicode\_math.py](tests/test_packages/test_unicode_math.py)
+
+**Macros**
+
+\\setmathfont,
+\unimathsetup
+
+
 ## Package xcolor
 
 Source: [yalafi/packages/xcolor.py](yalafi/packages/xcolor.py),
