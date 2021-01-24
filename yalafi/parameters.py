@@ -393,9 +393,9 @@ class Parameters:
 
             '+', '-', '\\cdot', '\\times', '/',
             '=', '\\eq', '\\ne', '\\neq',
-            '<', '>', '\\le', '\\leq', '\\ge', '\\geq',
-            ':', ':=', '\\to', '\\cap', '\\cup',
-            '\\Leftrightarrow',
+            '<', '>', '≤', '≥', '\\le', '\\leq', '\\ge', '\\geq',
+            ':', ':=', '→', '\\to', '∩', '\\cap', '∪', '\\cup', '⇒', '\\Rightarrow', '⇐', '\\Leftarrow',
+            '⇔', '\\Leftrightarrow', '⊂',
             '\\subset', '\\subseteq', '\\supset', '\\supseteq',
             '\\stackrel',
 
