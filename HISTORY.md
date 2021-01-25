@@ -7,6 +7,10 @@ Work in progress
     (PR [#134](../../pull/134), issue [#140](../../issues/140))
   - new package mathtools: macro \\mathtoolsset; **thanks to @torik42**
     (PR [#160](../../pull/160))
+  - new package unicode-math, **thanks to @torik42**
+    (PR [#162](../../pull/162))
+    - macros \\setmathfont, \\unimathsetup
+    - unicode math operators
   - package amsthm: added macro \\newtheoremstyle; **thanks to @torik42**
     (PR [#164](../../pull/164))
   - package babel
