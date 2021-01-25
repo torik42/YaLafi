@@ -17,6 +17,7 @@ load_table = {
         'mathtools',
         'pgfplots',
         'tikz',
+        'unicode-math',
         'xcolor',
         'xspace',
     ],

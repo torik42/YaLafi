@@ -26,6 +26,7 @@ Please note that not everything has to be declared.
 [mathtools](#package-mathtools),
 [pgfplots](#package-pgfplots),
 [tikz](#package-tikz),
+[unicode-math](#package-unicode-math),
 [xcolor](#package-xcolor),
 [xspace](#package-xspace)
 
@@ -357,6 +358,17 @@ We simply remove the picture in environment 'tikzpicture'.
 **Environments**
 
 tikzpicture
+
+
+## Package unicode-math
+
+Source: [yalafi/packages/unicode\_math.py](yalafi/packages/unicode_math.py),
+tests: [tests/test\_packages/test\_unicode\_math.py](tests/test_packages/test_unicode_math.py)
+
+**Macros**
+
+\\setmathfont,
+\\unimathsetup
 
 
 ## Package xcolor

@@ -395,7 +395,7 @@ class Parameters:
             '=', '\\eq', '\\ne', '\\neq',
             '<', '>', '\\le', '\\leq', '\\ge', '\\geq',
             ':', ':=', '\\to', '\\cap', '\\cup',
-            '\\Leftrightarrow',
+            '\\Rightarrow', '\\Leftarrow', '\\Leftrightarrow',
             '\\subset', '\\subseteq', '\\supset', '\\supseteq',
             '\\stackrel',
 
