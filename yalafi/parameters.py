@@ -393,7 +393,6 @@ class Parameters:
 
             '+', '-', '\\cdot', '\\times', '/',
             '=', '\\eq', '\\ne', '\\neq',
-            '<', '>', '≤', '≥', '\\le', '\\leq', '\\ge', '\\geq',
             '<', '>', '\\le', '\\leq', '\\ge', '\\geq',
             ':', ':=', '\\to', '\\cap', '\\cup',
             '\\Rightarrow', '\\Leftarrow', '\\Leftrightarrow',
