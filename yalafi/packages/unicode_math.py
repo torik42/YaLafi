@@ -10,6 +10,12 @@ require_packages = []
 def init_module(parser, options):
     parms = parser.parms
 
+    math_operators = [
+        '≤', '≥', '→', '∩', '∪', '⇒', '⇐',  '⇔', '⊂',
+    ]
+
+    parms.math_operators.append(math_operators)
+
     macros_latex = r"""
 
         \newcommand{\unimathsetup}[1]{}
