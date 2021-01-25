@@ -159,6 +159,7 @@ tests: [tests/test\_packages/test\_amsthm.py](tests/test_packages/test_amsthm.py
 
 **Macros**
 
+\\newtheoremstyle,
 \\qedhere,
 \\theoremstyle
 
