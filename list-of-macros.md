@@ -16,6 +16,7 @@ Please note that not everything has to be declared.
 [amsthm](#package-amsthm),
 [babel](#package-babel),
 [biblatex](#package-biblatex),
+[circuitikz](#package-circuitikz),
 [geometry](#package-geometry),
 [glossaries](#package-glossaries),
 [glossaries-extra](#package-glossaries-extra),
@@ -199,6 +200,26 @@ tests: [tests/test\_packages/test\_biblatex.py](tests/test_packages/test_biblate
 \\parencite,
 \\Parencite,
 \\printbibliography
+
+
+## Package circuitikz
+
+Source: [yalafi/packages/circuitikz.py](yalafi/packages/circuitikz.py),
+tests: [tests/test\_packages/test\_circuitikz.py](tests/test_packages/test_circuitikz.py)
+
+We simply remove the circuit in environment 'circuitikz'.
+
+**Loaded packages**
+
+[tikz](#package-tikz)
+
+**Macros**
+
+\\ctikzset
+
+**Environments**
+
+circuitikz
 
 
 ## Package geometry
