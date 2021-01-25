@@ -16,7 +16,7 @@ load_table = {
         'listings',
         'pgfplots',
         'tikz',
-        'unicode-math'
+        'unicode-math',
         'xcolor',
         'xspace',
     ],
