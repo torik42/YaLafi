@@ -23,6 +23,7 @@ Please note that not everything has to be declared.
 [hyperref](#package-hyperref),
 [inputenc](#package-inputenc),
 [listings](#package-listings),
+[mathtools](#package-mathtools),
 [pgfplots](#package-pgfplots),
 [tikz](#package-tikz),
 [xcolor](#package-xcolor),
@@ -309,6 +310,20 @@ We simply remove the listings, inserting a paragraph break.
 **Environments**
 
 lstlisting
+
+
+## Package mathtools
+
+Source: [yalafi/packages/mathtools.py](yalafi/packages/mathtools.py),
+tests: [tests/test\_packages/test\_mathtools.py](tests/test_packages/test_mathtools.py)
+
+**Loaded packages**
+
+[amsmath](#package-amsmath)
+
+**Macros**
+
+\\mathtoolsset
 
 
 ## Package pgfplots
