@@ -11,6 +11,8 @@ Work in progress
     (PR [#162](../../pull/162))
     - macros \\setmathfont, \\unimathsetup
     - unicode math operators
+  - new package circuitikz: environment circuitikz
+    (issue [#158](../../issues/158))
   - package amsthm: added macro \\newtheoremstyle; **thanks to @torik42**
     (PR [#164](../../pull/164))
   - package babel
