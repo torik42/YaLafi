@@ -14,7 +14,7 @@ def init_module(parser, options):
         '≤', '≥', '→', '∩', '∪', '⇒', '⇐',  '⇔', '⊂',
     ]
 
-    parms.math_operators.append(math_operators)
+    parms.math_operators.extend(math_operators)
 
     macros_latex = r"""
 
