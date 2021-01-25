@@ -14,6 +14,7 @@ load_table = {
         'hyperref',
         'inputenc',
         'listings',
+        'mathtools',
         'pgfplots',
         'tikz',
         'xcolor',

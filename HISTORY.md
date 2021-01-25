@@ -10,6 +10,8 @@ Work in progress
       (issue [#148](../../issues/148))
     - fixed a problem with parsing of package options
       (issue [#147](../../issues/147))
+  - new package mathtools: macro \\mathtoolsset; **thanks to @torik42**
+    (PR [#160](../../pull/160))
 - yalafi.shell
   - added option --no-specials (issue [#131](../../issues/131))
   - options --single-letters and --equation-punctuation now use equation
