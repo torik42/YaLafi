@@ -5,13 +5,15 @@ Work in progress
     (PR [#133](../../pull/133))
   - new package xspace: macro \\xspace; **thanks to @blipp**
     (PR [#134](../../pull/134), issue [#140](../../issues/140))
+  - new package mathtools: macro \\mathtoolsset; **thanks to @torik42**
+    (PR [#160](../../pull/160))
+  - package amsthm: added macro \\newtheoremstyle; **thanks to @torik42**
+    (PR [#164](../../pull/164))
   - package babel
     - language now is also read from global options of \\documentclass
       (issue [#148](../../issues/148))
     - fixed a problem with parsing of package options
       (issue [#147](../../issues/147))
-  - new package mathtools: macro \\mathtoolsset; **thanks to @torik42**
-    (PR [#160](../../pull/160))
 - yalafi.shell
   - added option --no-specials (issue [#131](../../issues/131))
   - options --single-letters and --equation-punctuation now use equation
