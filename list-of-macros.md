@@ -25,6 +25,7 @@ Please note that not everything has to be declared.
 [listings](#package-listings),
 [pgfplots](#package-pgfplots),
 [tikz](#package-tikz),
+[unicode-math](#package-unicode-math),
 [xcolor](#package-xcolor),
 [xspace](#package-xspace)
 
