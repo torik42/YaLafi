@@ -91,6 +91,7 @@ Happy TeXing!
 [Example application](#example-application)<br>
 [Interfaces to Vim](#interfaces-to-vim)<br>
 [Interface to Emacs](#interface-to-emacs)<br>
+[Interface to Atom](#interface-to-atom)<br>
 [Usage under Windows](#usage-under-windows)<br>
 [Related projects](#related-projects)<br>
 <br>
@@ -663,6 +664,15 @@ export EMACSLOADPATH=~/.emacs.d/lisp:
 Here is the [introductory example](#example-html-report) from above:
 
 ![Emacs plugin Emacs-langtool](figs/emacs-langtool.png)
+
+[Back to contents](#contents)
+
+
+## Interface to Atom
+
+For the editor [\[Atom\]](https://atom.io), you can use the plugin
+[\[linter-yalafi\]](https://github.com/mfbehrens99/linter-yalafi).
+Please note that we have not yet tested this interface.
 
 [Back to contents](#contents)
 
