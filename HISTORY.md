@@ -33,7 +33,8 @@ Work in progress
   - added option --nosp (issue [#131](../../issues/131))
   - fixed bug: macro could consume a closing \} as argument token
     (issue [#135](../../issues/135))
-- README.md: updated (issue [#137](../../issues/137))
+- README.md: updated (issues [#137](../../issues/137),
+  [#159](../../issues/159))
 - CI tests: moved to GitHub Actions
 - added file .gitignore; **thanks to @mfbehrens99** (PR [#156](../../pull/156))
 
