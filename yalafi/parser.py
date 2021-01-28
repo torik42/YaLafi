@@ -745,3 +745,16 @@ class Parser:
                                         scanned=True)
         return [defs.ActionToken(start)]
 
+    # generate an iterator that walks over tokens and appends {} levels
+    #
+    def iter_token_levels(self, tokens):
+        lev = 0
+        for tok in tokens:
+            if not tok:
+                continue
+            if tok.txt == '{':
+                lev += 1
+            elif tok.txt == '}':
+                lev -= 1
+            yield tok, lev
+

@@ -13,8 +13,10 @@ Work in progress
     - unicode math operators
   - new package circuitikz: environment circuitikz
     (issue [#158](../../issues/158))
-  - package amsthm: added macro \\newtheoremstyle; **thanks to @torik42**
-    (PR [#164](../../pull/164))
+  - package amsthm
+    - added macro \\newtheoremstyle; **thanks to @torik42**
+      (PR [#164](../../pull/164))
+    - added macro \\substack (issue [#163](../../issues/163))
   - package babel
     - language now is also read from global options of \\documentclass
       (issue [#148](../../issues/148))
