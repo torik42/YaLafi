@@ -37,6 +37,10 @@ def test_macros_latex(latex, plain_expected):
 data_test_macros_python = [
 
     (r'A\DeclareMathOperator*xy B', 'A B'),
+    (r'\[a &= \sum_{\substack{i, j \in \NN \\ i > j}} b_{i,j}\]',
+                                '  V-V-V  equal W-W-W'),
+    (r'\[a &= \sum_{\substack{a \\ \text{test} \\ b}} 1\]',
+                                '  V-V-V  equal W-W-W test X-X-X'),
 
 ]
 

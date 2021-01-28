@@ -3,7 +3,7 @@
 #   YaLafi module for LaTeX package amsmath
 #
 
-from yalafi.defs import Macro, InitModule, EquEnv
+from yalafi.defs import Macro, InitModule, EquEnv, SpecialToken
 
 require_packages = []
 
@@ -37,6 +37,7 @@ def init_module(parser, options):
     macros_python = [
 
         Macro(parms, '\\DeclareMathOperator', args='*AA'),
+        Macro(parms, '\\substack', args='A', repl=h_substack),
 
     ]
 
@@ -59,4 +60,14 @@ def init_module(parser, options):
 
     return InitModule(macros_latex=macros_latex, macros_python=macros_python,
                         environments=environments)
+
+
+#   macro \substack: replace \\ tokens with space
+#
+def h_substack(parser, buf, mac, args, delim, pos):
+    def f(tok, lev):
+        if tok.txt == r'\\' and lev == 0:
+            return SpecialToken(tok.pos, r'\;')
+        return tok
+    return [f(tok, lev) for tok, lev in parser.iter_token_levels(args[0])]
 
