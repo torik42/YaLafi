@@ -58,8 +58,11 @@ def init_module(parser, options):
 
     ]
 
+    inject_tokens = []      # this list of tokens is used as replacement
+                            # for '\documentclass...' or '\usepackage...'
+
     return InitModule(macros_latex=macros_latex, macros_python=macros_python,
-                        environments=environments)
+                    environments=environments, inject_tokens=inject_tokens)
 
 
 #   macro \substack: replace \\ tokens with space
