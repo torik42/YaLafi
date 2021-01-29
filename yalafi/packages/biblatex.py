@@ -14,7 +14,7 @@ require_packages = []
 
 cite_text = '0'
 
-def init_module(parser, options):
+def init_module(parser, options, position):
     parms = parser.parms
 
     macros_latex = ''

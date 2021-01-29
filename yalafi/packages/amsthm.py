@@ -7,7 +7,7 @@ from yalafi.defs import InitModule, Environ, SpaceToken, TextToken
 
 require_packages = []
 
-def init_module(parser, options):
+def init_module(parser, options, position):
     parms = parser.parms
 
     macros_latex = r"""

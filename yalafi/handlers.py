@@ -76,11 +76,11 @@ def h_theorem(name):
 def h_newtheorem(parser, buf, mac, args, delim, pos):
     name = parser.get_text_expanded(args[0])
     title = parser.get_text_expanded(args[2])
-    def f(parser, options):
+    def f(parser, options, position):
         parms = parser.parms
         envs = [defs.Environ(parms, name, args='O', repl=h_theorem(title))]
         return defs.InitModule(environments=envs)
-    parser.modify_parameters(f, [])
+    parser.modify_parameters(f, [], pos)
     return []
 
 #   heading macros: append '.', unless last char in parms.heading_punct
@@ -140,7 +140,7 @@ def h_load_module(prefix):
             p = p.strip()
             if p:
                 f = utils.get_module_handler(p, prefix)
-                out += parser.init_package(p, f, options)
+                out += parser.init_package(p, f, options, pos)
         return utils.filter_set_toks(out, pos, None)
     return f
 

@@ -14,7 +14,7 @@ from yalafi.defs import Macro, InitModule
 
 require_packages = ['glossaries']
 
-def init_module(parser, options):
+def init_module(parser, options, position):
     parms = parser.parms
 
     macros_latex = ''
