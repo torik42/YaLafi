@@ -6,7 +6,6 @@
 from yalafi.defs import InitModule, Macro, VoidToken
 from yalafi import utils
 import re
-import sys
 
 
 require_packages = []
@@ -40,7 +39,6 @@ s/\\
     (.*)            # group 4: the replacement string
 /g
 ''', re.VERBOSE)
-# re_ref_range = re.compile(r's/\\(\\crefrange|\\Crefrange)(?:\\)?(\*?)\{([^\}\{]+)\}\{([^\}\{]+)\}/(.*)/g')
 re_command = re.compile(r'''
 s/\\
 (                   # group 1: command
@@ -79,9 +77,7 @@ def re_remove_escaped_symbols(string):
 
 macro_read_sed = '\\YYCleverefInput'
 
-msg_poorman_option = f'''
-*** LaTeX warning:
-*** To use cleveref with YaLafi, you need to use the 'poorman' option
+msg_poorman_option = f'''To use cleveref with YaLafi, you need to use the 'poorman' option
 *** and {macro_read_sed} to load the .sed file.
 '''
 
@@ -91,7 +87,7 @@ msg_sed_not_loaded = f'''To use cleveref with YaLafi, you should use {macro_read
 '''
 
 
-def init_module(parser, options):
+def init_module(parser, options, position):
     parms = parser.parms
     parms.newcommand_ignore.append(macro_read_sed)
 
@@ -119,10 +115,11 @@ def init_module(parser, options):
 
     # Warn the user, whenever cleveref is used
     # without the poorman option:
-    poorman_warning(options)
+    if not is_poorman_used(options):
+        someVariable = utils.latex_error(msg_poorman_option, position, parser.latex, parms)
 
     return InitModule(macros_latex=macros_latex, macros_python=macros_python,
-                        environments=environments)
+                      environments=environments)
 
 
 def h_read_sed(parser, buf, mac, args, delim, pos):
@@ -211,9 +208,8 @@ def h_cref_warning(parser, buf, mac, args, delim, pos):
     return utils.latex_error(msg_sed_not_loaded, pos, parser.latex, parser.parms)
 
 
-def poorman_warning(options):
+def is_poorman_used(options):
     for opt in reversed(options):
         if 'poorman' in opt:
-            return
-    sys.stderr.write(msg_poorman_option)
-    return
+            return True
+    return False

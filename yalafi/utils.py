@@ -127,7 +127,7 @@ def get_module_handler(name, prefix):
                         eval(mod + '.init_module'))
     except:
         warning('could not load module ' + repr(mod))
-        return [], lambda p, o: defs.InitModule()
+        return [], lambda p, o, n: defs.InitModule()
 
 #   filter out tokens and set their position numbers
 #

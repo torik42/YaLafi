@@ -141,6 +141,7 @@ tests: [tests/test\_packages/test\_amsmath.py](tests/test_packages/test_amsmath.
 \\negthinspace,
 \\notag,
 \\numberwithin,
+\\substack,
 \\text,
 \\thickspace,
 \\thinspace

@@ -46,12 +46,12 @@ class Parser:
         self.item_lab_stack = [(labs_default(0), '')]
 
         # initialise and modify parameters, macros, etc.
-        builtin = [], lambda p, o: defs.InitModule(
+        builtin = [], lambda p, o, n: defs.InitModule(
                                 macros_latex=parms.macro_defs_latex,
                                 macros_python=parms.macro_defs_python,
                                 environments=parms.environment_defs)
         for name, actions in [('', builtin)] + packages:
-            self.init_package(name, actions, [])
+            self.init_package(name, actions, [], 0)
 
     #   call handler of a package module:
     #   - load other required packages
@@ -60,7 +60,7 @@ class Parser:
     #   --> only do all that if package not yet loaded, or if options have
     #       changed
     #
-    def init_package(self, name, actions, options):
+    def init_package(self, name, actions, options, position):
         out = []
         if (name and name in self.packages and
                 self.packages[name] == self.global_latex_options + options):
@@ -69,10 +69,11 @@ class Parser:
             for requ in actions[0]:
                 if requ not in self.packages or self.packages[requ] == options:
                     out += self.init_package(requ, utils.get_module_handler(
-                                    requ, self.parms.package_modules), options)
+                                        requ, self.parms.package_modules),
+                                        options, position)
             if name:
                 self.packages[name] = self.global_latex_options + options
-            out += self.modify_parameters(actions[1], options)
+            out += self.modify_parameters(actions[1], options, position)
         except:
             utils.fatal('error loading module ' + repr(name))
         return out
@@ -81,8 +82,8 @@ class Parser:
     #   - used by package extension mechanism
     #   - used by handlers of LaTeX macros / environments
     #
-    def modify_parameters(self, f, options):
-        mods = f(self, options)
+    def modify_parameters(self, f, options, position):
+        mods = f(self, options, position)
         for m in mods.macros_python:
             self.the_macros[m.name] = m
         for e in mods.environs:
@@ -744,4 +745,17 @@ class Parser:
                                         args='A'*len(args), repl=repl_mapped,
                                         scanned=True)
         return [defs.ActionToken(start)]
+
+    # generate an iterator that walks over tokens and appends {} levels
+    #
+    def iter_token_levels(self, tokens):
+        lev = 0
+        for tok in tokens:
+            if not tok:
+                continue
+            if tok.txt == '{':
+                lev += 1
+            elif tok.txt == '}':
+                lev -= 1
+            yield tok, lev
 
