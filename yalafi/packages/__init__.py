@@ -7,7 +7,9 @@ load_table = {
         'amsthm',
         'babel',
         'biblatex',
-        'cleveref',
+        # 'cleveref',
+        # cleveref is not loaded by default because it throws
+        # a warning if loaded without the poorman option.
         'geometry',
         'glossaries',
         'glossaries-extra',

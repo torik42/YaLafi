@@ -147,7 +147,6 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
         # Match \cref,\cref*,\Cref and \Cref* and save the replacement string:
         m = re_ref.match(rep)
         if m:
-            print(m)
             refs[m.group(1)][m.group(2)][m.group(3)] = re_remove_escaped_symbols(m.group(4))
             continue
 
@@ -188,7 +187,6 @@ def h_make_cref(cref):
         rep = parser.get_text_direct(args[1])
         if rep in cref[star]:
             toks = parser.parms.scanner.scan(cref[star][rep])
-            print(parser.get_text_direct(toks))
             for t in toks:
                 t.pos = pos
             return toks
