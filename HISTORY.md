@@ -29,12 +29,18 @@ Work in progress
     (issue [#152](../../issues/152))
   - fixed problem with --add-modules (issue [#144](../../issues/144))
 - yalafi core
+  - **changed interface** to extension modules for packages and document
+    classes (issue [#172](../../issues/172)):
+    function init\_module() now has an additional argument 'position' that
+    gives the position of the \\documentclass or \\usepackage token
   - **changed interface** to macro handler functions: added argument 'delim'
     (issue [#136](../../issues/136))
   - added approximation of macro \\def (issue [#125](../../issues/125))
   - added option --nosp (issue [#131](../../issues/131))
   - fixed bug: macro could consume a closing \} as argument token
     (issue [#135](../../issues/135))
+  - added iterator for tokens and \{\} nesting levels (iter\_token\_levels()
+    in yalafi/parser.py, for issue [#163](../../issues/163))
 - README.md: updated (issues [#137](../../issues/137),
   [#159](../../issues/159))
 - CI tests: moved to GitHub Actions

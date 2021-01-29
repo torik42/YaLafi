@@ -15,7 +15,7 @@ require_packages = []
 #   - The spacing macros and \notag are imporant for correct parsing
 #     of maths material.
 #
-def init_module(parser, options):
+def init_module(parser, options, position):
     parms = parser.parms
 
     parms.math_text_macros.append('\\text')

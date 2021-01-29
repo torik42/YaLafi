@@ -3,7 +3,7 @@ from yalafi.defs import InitModule, Environ, EquEnv, Macro, TextToken
 
 require_packages = ['amsmath']  # for test_modules.py
 
-def init_module(parser, options):
+def init_module(parser, options, position):
     parms = parser.parms
 
     macros_python = [

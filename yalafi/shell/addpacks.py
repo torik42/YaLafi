@@ -27,7 +27,7 @@
 from yalafi import defs, tex2txt
 
 require_packages = []
-def init_module(parser, options):
+def init_module(parser, options, position):
     parms = parser.parms
     def add(parser, buf, mac, args, delim, pos):
         name = parser.get_text_expanded(args[1]).strip()
