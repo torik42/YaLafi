@@ -11,8 +11,36 @@ import sys
 
 require_packages = []
 
-re_ref = re.compile(r's/\\(\\cref|\\Cref)\{([^\}\{]+)\}/(.*)/g')
-re_ref_range = re.compile(r's/\\(\\crefrange|\\Crefrange)\{([^\}\{]+)\}\{([^\}\{]+)\}/(.*)/g')
+# Regular Expressions used to read sed file:
+re_ref = re.compile(r'''
+s/\\
+(                   # group 1: '\cref' or '\Cref'
+    \\cref|\\Cref
+)
+(?:\\)?             # non capturing group
+(\*?)               # group 2: '*' if present, '' else
+\{
+    ([^\}\{]+)      # group 3: the label of the reference
+\}
+/
+    (.*)            # group 4: the replacement string
+/g
+''', re.VERBOSE)
+re_ref_range = re.compile(r'''
+s/\\
+(                   # group 1: '\cref' or '\Cref'
+    \\crefrange|\\Crefrange
+)
+(?:\\)?             # non capturing group
+(\*?)               # group 2: '*' if present, '' else
+\{
+    ([^\}\{]+)      # group 3: the label of the reference
+\}
+/
+    (.*)            # group 4: the replacement string
+/g
+''', re.VERBOSE)
+# re_ref_range = re.compile(r's/\\(\\crefrange|\\Crefrange)(?:\\)?(\*?)\{([^\}\{]+)\}\{([^\}\{]+)\}/(.*)/g')
 re_command = re.compile(r'''
 s/\\
 (                   # group 1: command
@@ -31,10 +59,25 @@ s/\\
 /g
 ''', re.VERBOSE)
 re_cC = re.compile(r'(\[cC\])')
-re_dot = re.compile(r'\\\.')
-re_double_backslash = re.compile(r'\\\\')
+re_escaped_dot = re.compile(r'\\\.')
+re_escaped_backslash = re.compile(r'\\\\')
+re_escaped_star = re.compile(r'\\\*')
 
-macro_read_sed = '\\LTReadSed'
+
+def re_remove_escaped_symbols(string):
+    r"""
+    Replaces certain strings that are escaped in sed file:
+    '\\.' -> '.'
+    '\\\\' -> '\\'
+    '\*' -> ''
+    """
+    string = re_escaped_dot.sub('.', string)
+    string = re_escaped_star.sub('', string)
+    string = re_escaped_backslash.sub(r'\\', string)
+    return string
+
+
+macro_read_sed = '\\YYCleverefInput'
 
 msg_poorman_option = f'''
 *** LaTeX warning:
@@ -55,22 +98,27 @@ def init_module(parser, options):
     macros_latex = r'''
         \newcommand{\crefname}[3]{}
         \newcommand{\Crefname}[3]{}
-        \newcommand{\nobreakspace}{~}
     '''
 
     macros_python = [
 
         Macro(parms, macro_read_sed, args='A', repl=h_read_sed),
         Macro(parms, '\\label', args='OA', repl=''),
-        Macro(parms, '\\cref', args='A', repl=h_cref_warning),
-        Macro(parms, '\\Cref', args='A', repl=h_cref_warning),
-        Macro(parms, '\\crefrange', args='AA', repl=h_cref_warning),
-        Macro(parms, '\\Crefrange', args='AA', repl=h_cref_warning),
+
+        # Define functions which warn the User, whenever cleveref
+        # is used without invoking \YYCleverefInput. These will be overwritten
+        # by invoking \LTRreadSed.
+        Macro(parms, '\\cref', args='*A', repl=h_cref_warning),
+        Macro(parms, '\\Cref', args='*A', repl=h_cref_warning),
+        Macro(parms, '\\crefrange', args='*AA', repl=h_cref_warning),
+        Macro(parms, '\\Crefrange', args='*AA', repl=h_cref_warning),
 
     ]
 
     environments = []
 
+    # Warn the user, whenever cleveref is used
+    # without the poorman option:
     poorman_warning(options)
 
     return InitModule(macros_latex=macros_latex, macros_python=macros_python,
@@ -80,28 +128,41 @@ def init_module(parser, options):
 def h_read_sed(parser, buf, mac, args, delim, pos):
     if not parser.read_macros:
         return []
+
+    # Read sed file into sed:
     file = parser.get_text_expanded(args[0])
     ok, sed = parser.read_macros(file)
+
+    # Throw LaTeX error if the file could not be loaded:
     if not ok:
         return utils.latex_error('could not read file ' + repr(file), pos, parser.latex, parser.parms)
 
-    refs = {'\\cref': {}, '\\Cref': {}, '\\crefrange': {}, '\\Crefrange': {}}
+    refs = {'\\cref': {'':{}, '*': {}}, '\\Cref': {'':{}, '*': {}}, '\\crefrange': {'':{}, '*': {}}, '\\Crefrange': {'':{}, '*': {}}}
+
     for rep in sed.split('\n'):
+        # only consider non-empty lines:
         if rep == '':
             continue
+
+        # Match \cref,\cref*,\Cref and \Cref* and save the replacement string:
         m = re_ref.match(rep)
         if m:
-            refs[m.group(1)][m.group(2)] = re_double_backslash.sub('\\\\', m.group(3))
+            print(m)
+            refs[m.group(1)][m.group(2)][m.group(3)] = re_remove_escaped_symbols(m.group(4))
             continue
+
+        # Match \crefrange, \crefrange*, \Crefrange and \Crefrange* and
+        # save the replacement string:
         m = re_ref_range.match(rep)
         if m:
-            refs[m.group(1)][(m.group(2), m.group(3))] = re_double_backslash.sub('\\\\', m.group(4))
+            refs[m.group(1)][m.group(2)][(m.group(3), m.group(4))] = re_remove_escaped_symbols(m.group(5))
+
+        # Match any other command and create Macro objects for them.
+        # See definition of re_command for more details:
         m = re_command.match(rep)
         if m:
             args = 'A'*int((m.end(3)-m.start(3))/4)
-            string = m.group(4)
-            string = re_dot.sub('.', string)
-            string = re_double_backslash.sub('\\\\', string)
+            string = re_remove_escaped_symbols(m.group(4))
             if m.group(2):
                 name = re_cC.sub('c', m.group(1))
                 parser.the_macros[name] = Macro(parser.parms, name, args=args, repl=string)
@@ -110,18 +171,24 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
             else:
                 name = m.group(1)
                 parser.the_macros[name] = Macro(parser.parms, name, args=args, repl=string)
+
+    # Make the \cref, …, \Crefrange* Macro objects:
     for ref in ['\\cref','\\Cref']:
-        parser.the_macros[ref] = Macro(parser.parms, ref, args='A', repl=h_make_cref(refs[ref]))
+        parser.the_macros[ref] = Macro(parser.parms, ref, args='*A', repl=h_make_cref(refs[ref]))
     for ref in ['\\crefrange','\\Crefrange']:
-        parser.the_macros[ref] = Macro(parser.parms, ref, args='AA', repl=h_make_crefrange(refs[ref]))
+        parser.the_macros[ref] = Macro(parser.parms, ref, args='*AA', repl=h_make_crefrange(refs[ref]))
+
+    # \YYCleverefInput should not produce any output:
     return []
 
 
 def h_make_cref(cref):
     def f(parser, buf, mac, args, delim, pos):
-        rep = parser.get_text_direct(args[0])
-        if rep in cref:
-            toks = parser.parms.scanner.scan(cref[rep])
+        star = parser.get_text_direct(args[0])
+        rep = parser.get_text_direct(args[1])
+        if rep in cref[star]:
+            toks = parser.parms.scanner.scan(cref[star][rep])
+            print(parser.get_text_direct(toks))
             for t in toks:
                 t.pos = pos
             return toks
@@ -131,9 +198,10 @@ def h_make_cref(cref):
 
 def h_make_crefrange(cref):
     def f(parser, buf, mac, args, delim, pos):
-        rep = (parser.get_text_direct(args[0]), parser.get_text_direct(args[1]))
-        if rep in cref:
-            toks = parser.parms.scanner.scan(cref[rep])
+        star = parser.get_text_direct(args[0])
+        rep = (parser.get_text_direct(args[1]), parser.get_text_direct(args[2]))
+        if rep in cref[star]:
+            toks = parser.parms.scanner.scan(cref[star][rep])
             for t in toks:
                 t.pos = pos
             return toks

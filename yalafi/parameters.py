@@ -63,6 +63,7 @@ class Parameters:
 }
         \newcommand{\qquad}{\;}
         \newcommand{\quad}{\;}
+        \newcommand{\nobreakspace}{~}
         \newcommand{\ref}[1]{0}
         \newcommand{\S}{§}
         \newcommand{\ss}{ß}
