@@ -51,6 +51,7 @@ class Parameters:
         \newcommand{\label}[1]{}
         \newcommand{\LaTeX}{LaTeX}
         \newcommand{\newline}{ }
+        \newcommand{\nobreakspace}{~}
         \newcommand{\O}{Ø}
         \newcommand{\o}{ø}
         \newcommand{\OE}{Œ}

@@ -8,6 +8,9 @@ load_table = {
         'babel',
         'biblatex',
         'circuitikz',
+        # 'cleveref',
+        # cleveref is not loaded by default because it throws
+        # a warning if loaded without the poorman option.
         'geometry',
         'glossaries',
         'glossaries-extra',

@@ -114,7 +114,7 @@ def h_cite(parser, buf, mac, args, delim, pos):
                     defs.ActionToken(pos)]
     return out
 
-#   macro \LTinclude: read macro definitions from file
+#   macro \LTinput: read macro definitions from file
 #   - this also activates packages and switches languages
 #
 def h_load_defs(parser, buf, mac, args, delim, pos):
