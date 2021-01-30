@@ -13,6 +13,8 @@ Work in progress
     - unicode math operators
   - new package circuitikz: environment circuitikz
     (issue [#158](../../issues/158))
+  - new package celeveref, macros like \\cref and companions;
+    **thanks to @torik42** (PR [#171](../../pull/171))
   - package amsthm
     - added macro \\newtheoremstyle; **thanks to @torik42**
       (PR [#164](../../pull/164))
