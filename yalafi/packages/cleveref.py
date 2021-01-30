@@ -1,6 +1,7 @@
 
 #
 #   YaLafi module for LaTeX package cleveref
+#   Contributed by @torik42 (at GitHub) in pull request #171
 #
 
 from yalafi.defs import InitModule, Macro, VoidToken
@@ -9,6 +10,8 @@ import re
 
 
 require_packages = []
+
+macro_read_sed = '\\YYCleverefInput'
 
 # Regular Expressions used to read sed file:
 re_ref = re.compile(r'''
@@ -33,10 +36,13 @@ s/\\
 (?:\\)?             # non capturing group
 (\*?)               # group 2: '*' if present, '' else
 \{
-    ([^\}\{]+)      # group 3: the label of the reference
+    ([^\}\{]+)      # group 3: the label of the first reference
+\}
+\{
+    ([^\}\{]+)      # group 4: the label of the second reference
 \}
 /
-    (.*)            # group 4: the replacement string
+    (.*)            # group 5: the replacement string
 /g
 ''', re.VERBOSE)
 re_command = re.compile(r'''
@@ -75,15 +81,22 @@ def re_remove_escaped_symbols(string):
     return string
 
 
-macro_read_sed = '\\YYCleverefInput'
-
-msg_poorman_option = f'''To use cleveref with YaLafi, you need to use the 'poorman' option
-*** and {macro_read_sed} to load the .sed file.
+# Error messages
+msg_poorman_option = f'''To use cleveref with YaLafi, you need to use
+*** the 'poorman' option and {macro_read_sed}
+*** to load the sed file.
+'''
+msg_sed_not_loaded = f'''To use cleveref with YaLafi, you should use
+*** {macro_read_sed} to load the sed file, e.g.
+*** '{macro_read_sed}{{main.sed}}' if your LaTeX
+*** document is called 'main.tex'.
 '''
 
-msg_sed_not_loaded = f'''To use cleveref with YaLafi, you should use {macro_read_sed} to load
-*** the sed file, e.g. '{macro_read_sed}{{main.sed}}' if your LaTeX
-*** document is called 'main.tex'.
+msg_cref_undefined = r'''No replacement for {:}{{{:}}} known.
+*** Run LaTeX again to build a new sed file.
+'''
+msg_crefrange_undefined = r'''No replacement for {:}{{{:}}}{{{:}}} known.
+*** Run LaTeX again to build a new sed file.
 '''
 
 
@@ -103,7 +116,7 @@ def init_module(parser, options, position):
 
         # Define functions which warn the User, whenever cleveref
         # is used without invoking \YYCleverefInput. These will be overwritten
-        # by invoking \LTRreadSed.
+        # by invoking \YYCleverefInput.
         Macro(parms, '\\cref', args='*A', repl=h_cref_warning),
         Macro(parms, '\\Cref', args='*A', repl=h_cref_warning),
         Macro(parms, '\\crefrange', args='*AA', repl=h_cref_warning),
@@ -115,11 +128,13 @@ def init_module(parser, options, position):
 
     # Warn the user, whenever cleveref is used
     # without the poorman option:
+    inject_tokens = []
     if not is_poorman_used(options):
-        someVariable = utils.latex_error(msg_poorman_option, position, parser.latex, parms)
+        inject_tokens = utils.latex_error(msg_poorman_option,
+                                          position, parser.latex, parms)
 
     return InitModule(macros_latex=macros_latex, macros_python=macros_python,
-                      environments=environments)
+                      environments=environments, inject_tokens=inject_tokens)
 
 
 def h_read_sed(parser, buf, mac, args, delim, pos):
@@ -132,9 +147,13 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
 
     # Throw LaTeX error if the file could not be loaded:
     if not ok:
-        return utils.latex_error('could not read file ' + repr(file), pos, parser.latex, parser.parms)
+        return utils.latex_error('could not read file ' + repr(file),
+                                 pos, parser.latex, parser.parms)
 
-    refs = {'\\cref': {'':{}, '*': {}}, '\\Cref': {'':{}, '*': {}}, '\\crefrange': {'':{}, '*': {}}, '\\Crefrange': {'':{}, '*': {}}}
+    refs = {'\\cref': {'':{}, '*': {}},
+            '\\Cref': {'':{}, '*': {}},
+            '\\crefrange': {'':{}, '*': {}},
+            '\\Crefrange': {'':{}, '*': {}}}
 
     for rep in sed.split('\n'):
         # only consider non-empty lines:
@@ -144,14 +163,16 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
         # Match \cref,\cref*,\Cref and \Cref* and save the replacement string:
         m = re_ref.match(rep)
         if m:
-            refs[m.group(1)][m.group(2)][m.group(3)] = re_remove_escaped_symbols(m.group(4))
+            refs[m.group(1)][m.group(2)][m.group(3)] \
+                = re_remove_escaped_symbols(m.group(4))
             continue
 
         # Match \crefrange, \crefrange*, \Crefrange and \Crefrange* and
         # save the replacement string:
         m = re_ref_range.match(rep)
         if m:
-            refs[m.group(1)][m.group(2)][(m.group(3), m.group(4))] = re_remove_escaped_symbols(m.group(5))
+            refs[m.group(1)][m.group(2)][(m.group(3), m.group(4))] \
+                = re_remove_escaped_symbols(m.group(5))
 
         # Match any other command and create Macro objects for them.
         # See definition of re_command for more details:
@@ -161,18 +182,25 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
             string = re_remove_escaped_symbols(m.group(4))
             if m.group(2):
                 name = re_cC.sub('c', m.group(1))
-                parser.the_macros[name] = Macro(parser.parms, name, args=args, repl=string)
+                parser.the_macros[name] = Macro(parser.parms,
+                                                name, args=args, repl=string)
                 name = re_cC.sub('C', m.group(1))
-                parser.the_macros[name] = Macro(parser.parms, name, args=args, repl=string)
+                parser.the_macros[name] = Macro(parser.parms,
+                                                name, args=args, repl=string)
             else:
                 name = m.group(1)
-                parser.the_macros[name] = Macro(parser.parms, name, args=args, repl=string)
+                parser.the_macros[name] = Macro(parser.parms,
+                                                name, args=args, repl=string)
 
     # Make the \cref, …, \Crefrange* Macro objects:
     for ref in ['\\cref','\\Cref']:
-        parser.the_macros[ref] = Macro(parser.parms, ref, args='*A', repl=h_make_cref(refs[ref]))
+        parser.the_macros[ref] = Macro(parser.parms,
+                                       ref, args='*A',
+                                       repl=h_make_cref(refs[ref]))
     for ref in ['\\crefrange','\\Crefrange']:
-        parser.the_macros[ref] = Macro(parser.parms, ref, args='*AA', repl=h_make_crefrange(refs[ref]))
+        parser.the_macros[ref] = Macro(parser.parms,
+                                       ref, args='*AA',
+                                       repl=h_make_crefrange(refs[ref]))
 
     # \YYCleverefInput should not produce any output:
     return []
@@ -187,7 +215,8 @@ def h_make_cref(cref):
             for t in toks:
                 t.pos = pos
             return toks
-        return utils.latex_error(f'Reference {rep} for command {mac.name} undefined.\n*** Run LaTeX again to build a new .sed file', pos, parser.latex, parser.parms)
+        return utils.latex_error(msg_cref_undefined.format(mac.name,rep),
+                                 pos, parser.latex, parser.parms)
     return f
 
 
@@ -200,12 +229,14 @@ def h_make_crefrange(cref):
             for t in toks:
                 t.pos = pos
             return toks
-        return []
+        return utils.latex_error(msg_crefrange_undefined.format(mac.name,*rep),
+                                 pos, parser.latex, parser.parms)
     return f
 
 
 def h_cref_warning(parser, buf, mac, args, delim, pos):
-    return utils.latex_error(msg_sed_not_loaded, pos, parser.latex, parser.parms)
+    return utils.latex_error(msg_sed_not_loaded,
+                             pos, parser.latex, parser.parms)
 
 
 def is_poorman_used(options):

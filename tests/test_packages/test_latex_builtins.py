@@ -31,6 +31,7 @@ data_test_macros_latex = [
     (r'\l', 'ł'),
     (r'A\label{l}B', 'AB'),
     (r'A\LaTeX B', 'ALaTeXB'),
+    (r'A\nobreakspace B', 'A\N{NO-BREAK SPACE}B'),
     (r'A\newline B', 'A B'),
     (r'\O', 'Ø'),
     (r'\o', 'ø'),
