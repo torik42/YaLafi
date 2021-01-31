@@ -21,11 +21,11 @@ more techniques are demonstrated in
 Unfortunately, a complete documentation of the internal interfaces does not
 exist, yet.
 
-Please use indentation steps of 4 characters and at most 79 characters per
+Please use indentation shifts of 4 characters and at most 79 characters per
 line.
 
-Here is a summary of the necessary steps, courtesy of @torik42
-(issue [#167](../../issues/167)).
+Here is a summary of the necessary steps, taken from
+issue [#167](../../issues/167).
 
 - Add a file `yalafi/packages/package_name.py` implementing all the needed
   commands of the package.
