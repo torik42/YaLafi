@@ -1,3 +1,7 @@
+Work in progress
+----------------
+- added CONTRIBUTING.md (issue [#167](../../issues/167))
+
 Version 1.3.0 (2021/01/31)
 --------------------------
 - LaTeX macros / environments
