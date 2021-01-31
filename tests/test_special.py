@@ -145,3 +145,28 @@ def test_6():
     plain, pos = utils.get_txt_pos(toks)
     assert plain_6 == plain
 
+
+#   issue #169: catch infinite file recursion
+#
+latex_7 = r"""
+\LTinput{t.tex}
+"""
+stderr_7 = r"""*** Problem while executing "\LTinput{t.tex}".
+*** Is the file included recursively?
+"""
+def test_7(capsys):
+    capsys.readouterr()
+    def read(file):
+        return True, '\\LTinput{t.tex}\n'
+    try:
+        parms = parameters.Parameters()
+        p = parser.Parser(parms, read_macros=read)
+        toks = p.parse(latex_7)
+    except SystemExit:
+        # catch exit() in the error routine utils.fatal()
+        pass
+    captured = capsys.readouterr()
+    # remove first message line: it contains the name of Python
+    err = '\n'.join(captured.err.split('\n')[1:])
+    assert stderr_7 == err
+
