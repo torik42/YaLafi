@@ -1,5 +1,5 @@
-Work in progress
-----------------
+Version 1.3.0 (2021/01/31)
+--------------------------
 - LaTeX macros / environments
   - new package geometry: macro \\geometry; **thanks to @blipp**
     (PR [#133](../../pull/133))
