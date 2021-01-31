@@ -116,6 +116,7 @@ def h_cite(parser, buf, mac, args, delim, pos):
 
 #   macro \LTinput: read macro definitions from file
 #   - this also activates packages and switches languages
+#   - check for recursive inclusion of a file
 #
 def h_load_defs(parser, buf, mac, args, delim, pos):
     if not parser.read_macros:
@@ -125,7 +126,11 @@ def h_load_defs(parser, buf, mac, args, delim, pos):
     if not ok:
         return utils.latex_error('could not read file ' + repr(file),
                                         pos, parser.latex, parser.parms)
-    toks = parser.parser_work(latex)
+    try:
+        toks = parser.parser_work(latex)
+    except RecursionError:
+        utils.fatal('Problem while executing "' + mac.name + '{' + file
+                    + '}".\n' + '*** Is the file included recursively?')
     return utils.filter_set_toks(toks, pos, defs.LanguageToken)
 
 #   read definitions for a LaTeX package

@@ -14,7 +14,8 @@ Work in progress
   - new package circuitikz: environment circuitikz
     (issue [#158](../../issues/158))
   - new package celeveref, macros like \\cref and companions;
-    **thanks to @torik42** (PR [#171](../../pull/171))
+    **thanks to @torik42** (issue [#161](../../issues/161),
+    PR [#171](../../pull/171))
   - package amsthm
     - added macro \\newtheoremstyle; **thanks to @torik42**
       (PR [#164](../../pull/164))
@@ -43,6 +44,8 @@ Work in progress
     (issue [#135](../../issues/135))
   - added iterator for tokens and \{\} nesting levels (iter\_token\_levels()
     in yalafi/parser.py, for issue [#163](../../issues/163))
+  - improved error message on recursive \\LTinput
+    (issue [#169](../../issues/169))
 - README.md: updated (issues [#137](../../issues/137),
   [#159](../../issues/159))
 - CI tests: moved to GitHub Actions
