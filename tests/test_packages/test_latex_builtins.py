@@ -77,6 +77,7 @@ data_test_macros_python = [
     (r'A\hspace{0cm}B', 'AB'),
     (r'A\hspace{0.2pt}B', 'A B'),
     (r'A\hspace{0,2cm}B', 'A B'),
+    (r'A\hspace{1.2,3cm}B', 'A B'),
     (r'A\newcommand{\xxx}{X}B', 'AB'),
     (r'A\newcommand*{\xxx}[1][x]{X}B', 'AB'),
     (r'A\newtheorem{xxx}{XYZ} B', 'AB'),

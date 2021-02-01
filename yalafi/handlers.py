@@ -103,12 +103,12 @@ def h_phantom(parser, buf, mac, args, delim, pos):
 
 #   \hspace
 #
-numbers = re.compile(r'[\d.,]+')
+numbers = re.compile(r'(\d+[.,]?\d*)\D')
 
 def h_hspace(parser, buf, mac, args, delim, pos):
     arg = parser.get_text_expanded(args[1])
     match = numbers.match(arg)
-    if match and float(match.group().replace(',', '.')) == 0:
+    if match and float(match.group(1).replace(',', '.')) == 0:
         return []
     return [defs.TextToken(pos, ' ')]
 
