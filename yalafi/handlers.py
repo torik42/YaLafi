@@ -102,8 +102,9 @@ def h_phantom(parser, buf, mac, args, delim, pos):
     return []
 
 #   \hspace
+#   at least, we detect lentghs that are explicitely zero
 #
-numbers = re.compile(r'(\d+[.,]?\d*)\D')
+numbers = re.compile(r'\s*(\d+[.,]?\d*|[.,]\d+)\D')
 
 def h_hspace(parser, buf, mac, args, delim, pos):
     arg = parser.get_text_expanded(args[1])
