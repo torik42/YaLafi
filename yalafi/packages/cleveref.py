@@ -63,22 +63,15 @@ s/\\
 /g
 ''', re.VERBOSE)
 re_cC = re.compile(r'(\[cC\])')
-re_escaped_dot = re.compile(r'\\\.')
-re_escaped_backslash = re.compile(r'\\\\')
-re_escaped_star = re.compile(r'\\\*')
+re_escaped_symbols = re.compile(r'\\([\[\]*\^$.\\])')
 
 
-def re_remove_escaped_symbols(string):
+def unescape_sed(string):
     r"""
-    Replaces certain strings that are escaped in sed file:
-    '\\.' -> '.'
-    '\\\\' -> '\\'
-    '\*' -> ''
+    Replaces certain strings that are escaped in sed file.
+    Escaped are: . \ [ ] * ^ $
     """
-    string = re_escaped_dot.sub('.', string)
-    string = re_escaped_star.sub('', string)
-    string = re_escaped_backslash.sub(r'\\', string)
-    return string
+    return re_escaped_symbols.sub(r'\1', string)
 
 
 # Error messages
@@ -163,23 +156,24 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
         # Match \cref,\cref*,\Cref and \Cref* and save the replacement string:
         m = re_ref.match(rep)
         if m:
-            refs[m.group(1)][m.group(2)][m.group(3)] \
-                = re_remove_escaped_symbols(m.group(4))
+            refs[m.group(1)][m.group(2)][unescape_sed(m.group(3))] \
+                = unescape_sed(m.group(4))
             continue
 
         # Match \crefrange, \crefrange*, \Crefrange and \Crefrange* and
         # save the replacement string:
         m = re_ref_range.match(rep)
         if m:
-            refs[m.group(1)][m.group(2)][(m.group(3), m.group(4))] \
-                = re_remove_escaped_symbols(m.group(5))
+            key = (unescape_sed(m.group(3)), unescape_sed(m.group(4)))
+            refs[m.group(1)][m.group(2)][key] \
+                = unescape_sed(m.group(5))
 
         # Match any other command and create Macro objects for them.
         # See definition of re_command for more details:
         m = re_command.match(rep)
         if m:
             args = 'A'*int((m.end(3)-m.start(3))/4)
-            string = re_remove_escaped_symbols(m.group(4))
+            string = unescape_sed(m.group(4))
             if m.group(2):
                 name = re_cC.sub('c', m.group(1))
                 parser.the_macros[name] = Macro(parser.parms,
