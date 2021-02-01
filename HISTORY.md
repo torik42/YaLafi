@@ -1,10 +1,10 @@
 Work in progress
 ----------------
-- added CONTRIBUTING.md (issue [#167](../../issues/167))
 - LaTeX macros / environments
   - builtins
     - fixed \\hspace, only add space if argument is not of zero length;
-      **thanks to @torik42** (issue [#181](../../issues/181))
+      **thanks to @torik42** (PR [#182](../../pull/182))
+- added CONTRIBUTING.md (issue [#167](../../issues/167))
 
 Version 1.3.0 (2021/01/31)
 --------------------------
