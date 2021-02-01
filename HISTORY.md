@@ -20,10 +20,9 @@ Version 1.3.0 (2021/01/31)
   - new package celeveref, macros like \\cref and companions;
     **thanks to @torik42** (issue [#161](../../issues/161),
     PR [#171](../../pull/171))
-  - package amsthm
-    - added macro \\newtheoremstyle; **thanks to @torik42**
-      (PR [#164](../../pull/164))
-    - added macro \\substack (issue [#163](../../issues/163))
+  - package amsthm: added macro \\newtheoremstyle; **thanks to @torik42**
+    (PR [#164](../../pull/164))
+  - package amsmath: added macro \\substack (issue [#163](../../issues/163))
   - package babel
     - language now is also read from global options of \\documentclass
       (issue [#148](../../issues/148))
