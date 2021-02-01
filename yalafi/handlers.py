@@ -18,6 +18,7 @@
 
 from . import defs
 from . import utils
+import re
 
 #   macros \newcommand, \renewcommand
 #
@@ -67,7 +68,7 @@ def h_theorem(name):
             out.append(defs.TextToken(pos, '.', pos_fix=True))
             out.append(defs.SpaceToken(pos, '\n', pos_fix=True))
         return out
-            
+
     # this creates a closure
     return handler
 
@@ -99,6 +100,17 @@ def h_phantom(parser, buf, mac, args, delim, pos):
     if len(parser.get_text_expanded(args[0])) > 0:
         return [defs.SpecialToken(pos, '\\;')]
     return []
+
+#   \hspace
+#
+numbers = re.compile(r'[\d.,]+')
+
+def h_hspace(parser, buf, mac, args, delim, pos):
+    arg = parser.get_text_expanded(args[1])
+    match = numbers.match(arg)
+    if match and float(match.group().replace(',', '.')) == 0:
+        return []
+    return [defs.TextToken(pos, ' ')]
 
 #   macro \cite[opt]
 #

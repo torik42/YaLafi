@@ -89,7 +89,7 @@ class Parameters:
         Macro(self, '\\footnotetext', args='OA', extract='#2'),
         Macro(self, '\\framebox', args='OOA', repl='#3'),
         Macro(self, '\\hphantom', args='A', repl=hs.h_phantom),
-        Macro(self, '\\hspace', args='*A', repl=' '),
+        Macro(self, '\\hspace', args='*A', repl=hs.h_hspace),
         Macro(self, '\\newcommand', args='*AOOA', repl=hs.h_newcommand),
         Macro(self, '\\newtheorem', args='AOAO', repl=hs.h_newtheorem),
         Macro(self, '\\part', args='*OA', repl=hs.h_heading),
