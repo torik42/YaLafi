@@ -22,7 +22,7 @@ s/\\
 (?:\\)?             # non capturing group
 (\*?)               # group 2: '*' if present, '' else
 \{
-    ([^\}\{]+)      # group 3: the label of the reference
+    ([^}{]+)        # group 3: the label of the reference
 \}
 /
     (.*)            # group 4: the replacement string
@@ -36,10 +36,10 @@ s/\\
 (?:\\)?             # non capturing group
 (\*?)               # group 2: '*' if present, '' else
 \{
-    ([^\}\{]+)      # group 3: the label of the first reference
+    ([^}{]+)        # group 3: the label of the first reference
 \}
 \{
-    ([^\}\{]+)      # group 4: the label of the second reference
+    ([^}{]+)        # group 4: the label of the second reference
 \}
 /
     (.*)            # group 5: the replacement string
