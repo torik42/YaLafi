@@ -104,14 +104,14 @@ def h_phantom(parser, buf, mac, args, delim, pos):
 #   \hspace
 #   at least, we detect lentghs that are explicitely zero
 #
-numbers = re.compile(r'\s*(\d+[.,]?\d*|[.,]\d+)\D')
+numbers = re.compile(r'\s*(\d+[.,]?\d*|[.,]\d+)')
 
 def h_hspace(parser, buf, mac, args, delim, pos):
     arg = parser.get_text_expanded(args[1])
     match = numbers.match(arg)
     if match and float(match.group(1).replace(',', '.')) == 0:
         return []
-    return [defs.TextToken(pos, ' ')]
+    return [defs.SpaceToken(pos, ' ')]
 
 #   macro \cite[opt]
 #
