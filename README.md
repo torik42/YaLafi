@@ -226,6 +226,7 @@ Default option values are set at the Python script beginning.
 - `--list-unknown`<br>
   Only print a list of unknown macros and environments seen outside of
   maths parts.
+  Compare, for instance, [Issue #183](../../issues/183).
 - `--language lang`<br>
   Language code as expected by LT (default: 'en-GB').
 - `--encoding ienc`<br>
@@ -836,6 +837,8 @@ points.
 - Parsing does not cross file boundaries.
   Tracking of file inclusions is possible though.
 - Macros depending on (spacing) lengths may be treated incorrectly.
+- Character '\@' always has category 'letter'.
+  See [Issue #183](../../issues/183).
 
 [Back to contents](#contents)
 
