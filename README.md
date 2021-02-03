@@ -101,6 +101,7 @@ Happy TeXing!
 [Extension modules for LaTeX packages](#extension-modules-for-latex-packages)<br>
 [Inclusion of own macros](#inclusion-of-own-macros)<br>
 <br>
+[Multi-file projects](#multi-file-projects)<br>
 [Handling of displayed equations](#handling-of-displayed-equations)<br>
 [Multi-language documents](#multi-language-documents)<br>
 [Python package interface](#python-package-interface)<br>
@@ -1101,6 +1102,57 @@ The list may include tokens of class `VoidToken` (see argument `args`).
   counting from zero.
 
 For examples, see file [yalafi/handlers.py](yalafi/handlers.py).
+
+[Back to contents](#contents)
+
+
+## Multi-file projects
+
+Here, we present one of several possibilities to cope with multiple files.
+The main point is that the base LaTeX filter currently cannot directly
+follow file inclusions like \\input{...}.
+Assume you have the following file main.tex.
+```
+% (load document class and packages)
+% possibly: load own macro definitions etc.
+\input{defs.tex}
+% the previous command is ignored by the filter, thus:
+\LTinput{defs.tex}
+\begin{document}
+Test text.
+\input{ch1/intro.tex}
+\end{document}
+```
+Please provide the definition of \\LTinput as in section
+[Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text),
+and note the shortcoming named in [Issue #169](../../issues/169).
+
+In order to check the “normal text” only in file main.tex, you say
+```
+python -m yalafi.shell [...] main.tex
+```
+Macros like \\input are ignored, in this case.
+
+The check of file ch1/intro.tex may look like
+```
+python -m yalafi.shell [...] --define main.tex ch1/intro.tex
+```
+Option '--define main.tex' ensures that all settings and definitions from
+file main.tex are available.
+“Normal text” from that file is ignored.
+Alternatively, you can add '\\LTinput{main.tex}' at the beginning of
+file ch1/intro.tex.
+
+A recursive check of all files is initiated by
+```
+python -m yalafi.shell [...] --include --define main.tex main.tex
+```
+During a first phase, all file names are collected by evaluation of \\input
+and \\include commands.
+Then, each file is processed on its own.
+If you want to exclude certain files, for instance figures given in TeX code,
+you can use option --skip from section
+[Example application](#example-application).
 
 [Back to contents](#contents)
 
