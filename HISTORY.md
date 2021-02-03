@@ -8,6 +8,7 @@ Work in progress
   - package tikz: added macro \\graphicspath
     (issue [#186](../../issues/186))
 - added CONTRIBUTING.md (issue [#167](../../issues/167))
+- README.md: added section on multi-file projects
 
 Version 1.3.0 (2021/01/31)
 --------------------------
