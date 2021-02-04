@@ -1,12 +1,14 @@
 Work in progress
 ----------------
 - LaTeX macros / environments
+  - new package subfiles: macros \\subfile, \\subfileinclude
+    (issue [#185](../../issues/185))
   - builtins: fixed \\hspace, only add space if argument is not of zero length;
     **thanks to @torik42** (PR [#182](../../pull/182))
   - package graphicx: added macro \\graphicspath
     (issue [#186](../../issues/186))
-  - package tikz: added macro \\graphicspath
-    (issue [#186](../../issues/186))
+  - package tikz: now loads package graphicx (issue [#186](../../issues/186))
+- yalafi.shell: on --include, also respect \\subfile, \\subfileinclude
 - added CONTRIBUTING.md (issue [#167](../../issues/167))
 - README.md: added section on multi-file projects
 

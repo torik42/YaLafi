@@ -72,7 +72,7 @@ default_option_ml_disablecategories = ''
 
 # option --include: inclusion macros
 #
-inclusion_macros = 'include,input'
+inclusion_macros = 'include,input,subfile,subfileinclude'
 
 # option --textgears
 #

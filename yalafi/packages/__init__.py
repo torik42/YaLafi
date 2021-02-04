@@ -20,6 +20,7 @@ load_table = {
         'listings',
         'mathtools',
         'pgfplots',
+        'subfiles',
         'tikz',
         'unicode-math',
         'xcolor',
