@@ -1129,13 +1129,15 @@ and note the shortcoming named in [Issue #169](../../issues/169).
 
 In order to check the “normal text” only in file main.tex, you say
 ```
-python -m yalafi.shell [...] main.tex
+python -m yalafi.shell [...] --packages "" main.tex
 ```
 Macros like \\input are ignored, in this case.
+With the optional '--packages ""', default loading of all packages known
+to the filter is suppressed.
 
 The check of file ch1/intro.tex may look like
 ```
-python -m yalafi.shell [...] --define main.tex ch1/intro.tex
+python -m yalafi.shell [...] --packages "" --define main.tex ch1/intro.tex
 ```
 Option '--define main.tex' ensures that all settings and definitions from
 file main.tex are available.
@@ -1145,7 +1147,7 @@ file ch1/intro.tex.
 
 A recursive check of all files is initiated by
 ```
-python -m yalafi.shell [...] --include --define main.tex main.tex
+python -m yalafi.shell [...] --packages "" --include --define main.tex main.tex
 ```
 During a first phase, all file names are collected by evaluation of \\input
 and \\include commands.
