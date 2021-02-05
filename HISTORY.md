@@ -3,8 +3,10 @@ Work in progress
 - LaTeX macros / environments
   - new package subfiles: macros \\subfile, \\subfileinclude
     (issue [#185](../../issues/185))
-  - builtins: fixed \\hspace, only add space if argument is not of zero length;
-    **thanks to @torik42** (PR [#182](../../pull/182))
+  - builtins
+    - fixed \\hspace, only add space if argument is not of zero length;
+      **thanks to @torik42** (PR [#182](../../pull/182))
+    - added macro \\paragraph(\*) (issue [#192](../../issues/192))
   - package graphicx: added macro \\graphicspath
     (issue [#186](../../issues/186))
   - package tikz: now loads package graphicx (issue [#186](../../issues/186))
