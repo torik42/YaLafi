@@ -1149,12 +1149,18 @@ A recursive check of all files is initiated by
 ```
 python -m yalafi.shell [...] --packages "" --include --define main.tex main.tex
 ```
-During a first phase, all file names are collected by evaluation of \\input
-and \\include commands.
+During a first phase, all file names are collected by evaluation of \\include,
+\\input, \\subfile and \\subfileinclude commands.
 Then, each file is processed on its own.
 If you want to exclude certain files, for instance figures given in TeX code,
 you can use option --skip from section
 [Example application](#example-application).
+
+**Remark.**
+An alternative version is as follows.
+Write all commands that YaLafi needs in an own file, say yy-defs.tex.
+Then use option '--define yy-defs.tex', or place '\\LTinput{yy-defs.tex}' in
+all sources.
 
 [Back to contents](#contents)
 
