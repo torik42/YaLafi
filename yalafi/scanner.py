@@ -36,8 +36,9 @@ class Scanner:
 
     #   scan the given LaTeX string, return token list
     #
-    def scan(self, latex):
+    def scan(self, latex, source='<unknown>'):
         self.latex = latex
+        self.source = source
         self.max_pos = len(latex)
         self.pos = 0
         tokens = []
@@ -130,8 +131,7 @@ class Scanner:
     #
     def scan_verb(self, latex, start):
         def verb_err():
-            return utils.latex_error('bad \\verb argument',
-                                        start, latex, self.parms)[0]
+            return self.latex_error('bad \\verb argument', start)[0]
         start_arg = start + len('\\verb')
         if start_arg >= self.max_pos:
             return verb_err()
@@ -157,10 +157,20 @@ class Scanner:
         pos += len('{verbatim}')
         end = latex.find('\\end{verbatim}', pos)
         if end < 0:
-            return utils.latex_error('missing end of verbatim',
-                                            start, latex, self.parms)[0]
+            return self.latex_error('missing end of verbatim', start)[0]
         self.pos = end + len('\\end{verbatim}')
         return defs.VerbatimToken(pos, latex[pos:end], environ=True)
+
+    #   wrapper for utils.latex_error()
+    #   HACK: we us a "fake parser"
+    #
+    def latex_error(self, msg, pos):
+        class FP:
+            def __init__(self, sc):
+                self.latex = sc.latex
+                self.source = sc.source
+                self.parms = sc.parms
+        return utils.latex_error(FP(self), msg, pos)
 
 
 #   token buffer that can push back tokens

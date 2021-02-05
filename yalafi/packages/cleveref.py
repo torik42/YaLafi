@@ -130,8 +130,7 @@ def init_module(parser, options, position):
     # without the poorman option:
     inject_tokens = []
     if not is_poorman_used(options):
-        inject_tokens = utils.latex_error(msg_poorman_option,
-                                          position, parser.latex, parms)
+        inject_tokens = utils.latex_error(parser, msg_poorman_option, position)
 
     return InitModule(macros_latex=macros_latex, macros_python=macros_python,
                       environments=environments, inject_tokens=inject_tokens)
@@ -147,8 +146,8 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
 
     # Throw LaTeX error if the file could not be loaded:
     if not ok:
-        return utils.latex_error('could not read file ' + repr(file),
-                                 pos, parser.latex, parser.parms)
+        return utils.latex_error(parser, 'could not read file ' + repr(file),
+                                 pos)
 
     refs = {'\\cref': {'':{}, '*': {}},
             '\\Cref': {'':{}, '*': {}},
@@ -215,8 +214,8 @@ def h_make_cref(cref):
             for t in toks:
                 t.pos = pos
             return toks
-        return utils.latex_error(msg_cref_undefined.format(mac.name,rep),
-                                 pos, parser.latex, parser.parms)
+        return utils.latex_error(parser,
+                                msg_cref_undefined.format(mac.name,rep), pos)
     return f
 
 
@@ -229,14 +228,14 @@ def h_make_crefrange(cref):
             for t in toks:
                 t.pos = pos
             return toks
-        return utils.latex_error(msg_crefrange_undefined.format(mac.name,*rep),
-                                 pos, parser.latex, parser.parms)
+        return utils.latex_error(parser,
+                                msg_crefrange_undefined.format(mac.name,*rep),
+                                pos)
     return f
 
 
 def h_cref_warning(parser, buf, mac, args, delim, pos):
-    return utils.latex_error(msg_sed_not_loaded,
-                             pos, parser.latex, parser.parms)
+    return utils.latex_error(parser, msg_sed_not_loaded, pos)
 
 
 def is_poorman_used(options):

@@ -9,6 +9,8 @@ Work in progress
     (issue [#186](../../issues/186))
   - package tikz: now loads package graphicx (issue [#186](../../issues/186))
 - yalafi.shell: on --include, also respect \\subfile, \\subfileinclude
+- yalafi core: added file names in LaTeX-related error messages to stderr
+  (issue [#169](../../issues/169))
 - added CONTRIBUTING.md (issue [#167](../../issues/167))
 - README.md: added section on multi-file projects
 

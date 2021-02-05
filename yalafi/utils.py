@@ -25,11 +25,14 @@ import sys
 #   print error message to stderr,
 #   return token sequence suitable to be inserted into filter output
 #
-def latex_error(err, pos, latex, parms):
+def latex_error(parser, err, pos):
+    latex = parser.latex
+    parms = parser.parms
     lin = latex.count('\n', 0, pos) + 1
     nl = latex.rfind('\n', 0, pos) + 1
     col = pos - nl + 1
-    sys.stderr.write('*** LaTeX error: line ' + str(lin)
+    sys.stderr.write('*** LaTeX error: code in ' + repr(parser.source)
+                        + ', line ' + str(lin)
                         + ', column ' + str(col) + ':\n*** ' + err + '\n')
     sys.stderr.flush()
     mark = ' ' + parms.mark_latex_error + ' '

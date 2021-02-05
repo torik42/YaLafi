@@ -103,9 +103,10 @@ def h_gls(key, mods):
     def f(parser, buf, mac, args, delim, pos):
         toks = get_tokens(parser, args[1], key)
         if toks is None:
-            return utils.latex_error('could not find label for \\gls...'
+            return utils.latex_error(parser,
+                    'could not find label for \\gls...'
                     + ' - did you include "\\LTinput{<main file>.glsdefs}"?',
-                    pos, parser.latex, parser.parms)
+                    pos)
         for f in mods:
             toks = f(toks)
         for t in toks:

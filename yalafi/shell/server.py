@@ -71,7 +71,9 @@ class Handler(BaseHTTPRequestHandler):
                 # --> remove
                 old_opts[pos:pos+1+option_map[f][1]] = []
         latex, plain, charmap, matches = self.server.my_proofreader(
-                                        latex, language, disable, enable,
+                                        latex,
+                                        '<HTTP request>', '<HTTP request>',
+                                        language, disable, enable,
                                         disablecategories, enablecategories,
                                         old_opts + new_opts)
         return {'matches': [utils.map_match_position(m, latex, charmap)

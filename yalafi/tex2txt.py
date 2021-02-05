@@ -28,7 +28,8 @@
 
 from . import parameters, parser, utils
 
-def tex2txt(latex, opts, multi_language=False, modify_parms=None):
+def tex2txt(latex, opts, source='<unknown>', source_defs='<unknown>',
+                    multi_language=False, modify_parms=None):
     def read(file):
         try:
             with open(file, encoding=opts.ienc) as f:
@@ -53,7 +54,8 @@ def tex2txt(latex, opts, multi_language=False, modify_parms=None):
     if modify_parms:
         modify_parms(parms)
     p = parser.Parser(parms, packages, read_macros=read)
-    toks = p.parse(latex, define=opts.defs, extract=extr)
+    toks = p.parse(latex, source=source, define=opts.defs,
+                            source_defs=source_defs, extract=extr)
 
     if not multi_language:
         txt, pos = utils.get_txt_pos(toks)
@@ -277,12 +279,16 @@ def main():
                 nosp=cmdline.nosp)
 
     if cmdline.file:
+        source = cmdline.file
         f = myopen(cmdline.file, encoding=cmdline.ienc)
         txt = f.read()
         f.close()
     else:
+        source = '<stdin>'
         # reopen stdin in text mode: handling of '\r', proper decoding
         txt = open(sys.stdin.fileno(), encoding=cmdline.ienc).read()
+
+    source_defs = cmdline.defs or ''
 
     if cmdline.mula:
         # multi-language: write text sections to files
@@ -304,7 +310,7 @@ def main():
 
     # ensure UTF-8 output under Windows, too
     sout = open(sys.stdout.fileno(), mode='w', encoding='utf-8')
-    text = tex2txt(txt, options)
+    text = tex2txt(txt, options, source=source, source_defs=source_defs)
     write_output(text, sout, cmdline.nums)
     if cmdline.nums:
         cmdline.nums.close()

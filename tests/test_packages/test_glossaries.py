@@ -15,7 +15,7 @@ def get_plain(latex):
             return False, ''
     parms = parameters.Parameters()
     p = parser.Parser(parms, read_macros=read)
-    plain, nums = utils.get_txt_pos(p.parse(preamble + latex))
+    plain, nums = utils.get_txt_pos(p.parse(preamble + latex, source='t.tex'))
     assert len(plain) == len(nums)
     return plain
 
@@ -23,7 +23,6 @@ def get_plain(latex):
 data_test_macros_latex = [
 
     (r'\gls{pp}', 'ppm'),
-    (r'\gls{XXX}', ' LATEXXXERROR '),
     (r'\gls[OOO]{pp}', 'ppm'),
     (r'\glspl{pp}', 'ppms'),
     (r'\Gls{pp}', 'Ppm'),
@@ -67,4 +66,20 @@ data_test_macros_latex = [
 def test_macros_latex(latex, plain_expected):
     plain = get_plain(latex)
     assert plain == plain_expected
+
+latex_1 = r"""
+\gls{XXX}
+"""
+plain_1 = """
+ LATEXXXERROR 
+"""
+stderr_1 = r"""*** LaTeX error: code in 't.tex', line 4, column 1:
+*** could not find label for \gls... - did you include "\LTinput{<main file>.glsdefs}"?
+"""
+def test_1(capsys):
+    capsys.readouterr()
+    plain = get_plain(latex_1)
+    cap = capsys.readouterr()
+    assert plain == plain_1
+    assert cap.err == stderr_1
 
