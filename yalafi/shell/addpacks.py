@@ -46,7 +46,7 @@ def init_module(parser, options, position):
 
 documentclass = ['']
 packages = []
-def addpacks(cmdline):
+def addpacks(cmdline, source_defs):
     packs = '.yalafi.shell.addpacks'
     if cmdline.packages.strip(','):
         packs = cmdline.packages.strip(',') + ',' + packs
@@ -55,6 +55,7 @@ def addpacks(cmdline):
     f = tex2txt.myopen(cmdline.add_modules, encoding=cmdline.encoding)
     latex = f.read()
     f.close()
-    tex2txt.tex2txt(latex, opts)
+    tex2txt.tex2txt(latex, opts, source=cmdline.add_modules,
+                                            source_defs=source_defs)
     return documentclass[0], packages
 

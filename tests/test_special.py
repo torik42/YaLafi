@@ -92,11 +92,17 @@ plain_4 = r"""
 A
  LATEXXXERROR B
 """
-def test_4():
+stderr_4 = r"""*** LaTeX error: code in 't.tex', line 3, column 1:
+*** cannot find closing LaTeX comment '%%% LT-SKIP-END'
+"""
+def test_4(capsys):
+    capsys.readouterr()
     p = parser.Parser(parameters.Parameters())
-    toks = p.parse(latex_4)
+    toks = p.parse(latex_4, source='t.tex')
     plain, pos = utils.get_txt_pos(toks)
+    cap = capsys.readouterr()
     assert plain_4 == plain
+    assert cap.err == stderr_4
 
 #   test %%% LT-SKIP in math mode
 #
@@ -169,4 +175,52 @@ def test_7(capsys):
     # remove first message line: it contains the name of Python
     err = '\n'.join(captured.err.split('\n')[1:])
     assert stderr_7 == err
+
+
+latex_8 = r"""
+A\LTinput{t.tex}B
+"""
+plain_8 = r"""
+A LATEXXXERROR B
+"""
+stderr_8 = r"""*** LaTeX error: code in 't.tex', line 2, column 2:
+*** could not read file 't.tex'
+"""
+def test_8(capsys):
+    capsys.readouterr()
+    def read(file):
+        return False, ''
+    parms = parameters.Parameters()
+    p = parser.Parser(parms, read_macros=read)
+    toks = p.parse(latex_8, source='t.tex')
+    plain, pos = utils.get_txt_pos(toks)
+    captured = capsys.readouterr()
+    assert plain_8 == plain
+    assert stderr_8 == captured.err
+
+
+latex_9 = r"""
+\LTinput{s.tex}
+A\label
+{B
+"""
+plain_9 = r"""
+A LATEXXXERROR B
+"""
+stderr_9 = r"""*** LaTeX error: code in 's.tex', line 1, column 1:
+*** missing end of maths
+*** LaTeX error: code in 't.tex', line 4, column 1:
+*** cannot find closing "}"
+"""
+def test_9(capsys):
+    capsys.readouterr()
+    def read(file):
+        return True, r'$'
+    parms = parameters.Parameters()
+    p = parser.Parser(parms, read_macros=read)
+    toks = p.parse(latex_9, source='t.tex')
+    plain, pos = utils.get_txt_pos(toks)
+    captured = capsys.readouterr()
+    assert plain_9 == plain
+    assert stderr_9 == captured.err
 

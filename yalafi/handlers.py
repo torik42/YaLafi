@@ -30,14 +30,13 @@ def h_newcommand(parser, buf, mac, args, delim, pos):
     nargs = int(nargs) if nargs.isdecimal() else 0
     for a in [b for b in args[4] if type(b) is defs.ArgumentToken]:
         if a.arg < 1 or a.arg > nargs:
-            return utils.latex_error('illegal argument #' + str(a.arg)
-                                + ' in definition of macro ' + name,
-                                        a.pos, parser.latex, parser.parms)
+            return utils.latex_error(parser, 'illegal argument #' + str(a.arg)
+                                + ' in definition of macro ' + name, a.pos)
     if args[3]:
         if nargs < 1:
-            return utils.latex_error(
+            return utils.latex_error(parser,
                     'illegal default value in definition of macro ' + name,
-                            args[1][0].pos, parser.latex, parser.parms)
+                    args[1][0].pos)
         parser.the_macros[name] = defs.Macro(parser.parms,
                                 name, args='O' + 'A' * (nargs - 1),
                                 repl=args[4], defaults=[args[3]], scanned=True)
@@ -81,7 +80,7 @@ def h_newtheorem(parser, buf, mac, args, delim, pos):
         parms = parser.parms
         envs = [defs.Environ(parms, name, args='O', repl=h_theorem(title))]
         return defs.InitModule(environments=envs)
-    parser.modify_parameters(f, [], pos)
+    parser.modify_parameters('<h_newtheorem>', f, [], pos)
     return []
 
 #   heading macros: append '.', unless last char in parms.heading_punct
@@ -137,10 +136,10 @@ def h_load_defs(parser, buf, mac, args, delim, pos):
     file = parser.get_text_expanded(args[0])
     ok, latex = parser.read_macros(file)
     if not ok:
-        return utils.latex_error('could not read file ' + repr(file),
-                                        pos, parser.latex, parser.parms)
+        return utils.latex_error(parser, 'could not read file ' + repr(file),
+                                        pos)
     try:
-        toks = parser.parser_work(latex)
+        toks = parser.parser_work(latex, file)
     except RecursionError:
         utils.fatal('Problem while executing "' + mac.name + '{' + file
                     + '}".\n' + '*** Is the file included recursively?')
