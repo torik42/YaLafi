@@ -92,6 +92,7 @@ class Parameters:
         Macro(self, '\\hspace', args='*A', repl=hs.h_hspace),
         Macro(self, '\\newcommand', args='*AOOA', repl=hs.h_newcommand),
         Macro(self, '\\newtheorem', args='AOAO', repl=hs.h_newtheorem),
+        Macro(self, '\\paragraph', args='*OA', repl=hs.h_heading),
         Macro(self, '\\part', args='*OA', repl=hs.h_heading),
         Macro(self, '\\phantom', args='A', repl=hs.h_phantom),
         Macro(self, '\\renewcommand', args='*AOOA', repl=hs.h_newcommand),
