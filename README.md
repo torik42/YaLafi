@@ -29,7 +29,7 @@ and generates results in different formats.
 You may easily
 - create a proofreading report in text or HTML format for a complete
   document tree,
-- check LaTeX texts in the editors Emacs and Vim via several plugins,
+- check LaTeX texts in the editors Vim, Emacs and Atom via several plugins,
 - run the script as emulation of a LanguageTool server with integrated
   LaTeX filtering.
 
@@ -1124,8 +1124,7 @@ Test text.
 \end{document}
 ```
 Please provide the definition of \\LTinput as in section
-[Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text),
-and note the shortcoming named in [Issue #169](../../issues/169).
+[Adaptation of LaTeX and plain text](#adaptation-of-latex-and-plain-text).
 
 In order to check the “normal text” only in file main.tex, you say
 ```
