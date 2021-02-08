@@ -3,7 +3,7 @@
 #   YaLafi module for LaTeX package hyperref
 #
 
-from yalafi.defs import InitModule
+from yalafi.defs import InitModule, Macro
 
 require_packages = []
 
@@ -18,7 +18,11 @@ def init_module(parser, options, position):
 
     """
 
-    macros_python = []
+    macros_python = [
+
+        Macro(parms, '\\ref', args='*A', repl='0'),
+        
+    ]
 
     environments = []
 
