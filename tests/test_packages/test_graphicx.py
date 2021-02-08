@@ -15,6 +15,7 @@ def get_plain(latex):
 
 data_test_macros_latex = [
 
+    (r'A\graphicspath{X}B', 'AB'),
     (r'A\includegraphics[width=\textwidth]{xxx.png}B', 'AB'),
 
 ]

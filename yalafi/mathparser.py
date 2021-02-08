@@ -142,8 +142,8 @@ class MathParser:
             tok = buf.skip_space()
             if not tok or type(tok) is defs.ParagraphToken:
                 buf.next()
-                out = (utils.latex_error('missing end of maths', start,
-                                self.parser.latex, self.parser.parms) + out)
+                out = (utils.latex_error(parser, 'missing end of maths', start)
+                                                    + out)
                 break
             elif tok.txt in toks_stop:
                 buf.next()

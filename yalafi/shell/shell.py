@@ -72,7 +72,7 @@ default_option_ml_disablecategories = ''
 
 # option --include: inclusion macros
 #
-inclusion_macros = 'include,input'
+inclusion_macros = 'include,input,subfile,subfileinclude'
 
 # option --textgears
 #
@@ -219,8 +219,11 @@ if cmdline.replace:
     cmdline.replace = tex2txt.read_replacements(cmdline.replace,
                                                 encoding=cmdline.encoding)
 if cmdline.define:
+    source_defs = cmdline.define
     cmdline.define = tex2txt.read_definitions(cmdline.define,
                                                 encoding=cmdline.encoding)
+else:
+    source_defs = '<unknown>'
 
 # only stop local LT server?
 #
@@ -251,7 +254,7 @@ if cmdline.server == 'stop':
 #
 if cmdline.add_modules:
     from yalafi.shell import addpacks
-    dcls, packs = addpacks.addpacks(cmdline)
+    dcls, packs = addpacks.addpacks(cmdline, source_defs)
     if dcls:
         cmdline.documentclass = dcls
     if cmdline.packages:
@@ -285,7 +288,7 @@ while todo:
     fp = tex2txt.myopen(f, encoding=cmdline.encoding)
     tex = fp.read()
     fp.close()
-    (plain, _) = tex2txt.tex2txt(tex, opts)
+    (plain, _) = tex2txt.tex2txt(tex, opts, source=f, source_defs=source_defs)
     for f in plain.split():
         if not f.endswith('.tex'):
             f += '.tex'
@@ -345,6 +348,7 @@ vars.msg_LT_server_html = msg_LT_server_html
 vars.highlight_style = highlight_style 
 vars.number_style = number_style 
 vars.lt_option_map = lt_option_map 
+vars.source_defs = source_defs 
 
 # import functions for calling proofreader
 #

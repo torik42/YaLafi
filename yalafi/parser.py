@@ -35,6 +35,7 @@ class Parser:
         self.mathparser = mathparser.MathParser(self)
         self.unknowns = []
         self.latex = ''
+        self.source = self.source_main = '<none>'
 
         # used by expand_item():
         self.item_macro = defs.Macro(parms, '\\item', args='O', repl='#1')
@@ -50,7 +51,7 @@ class Parser:
                                 macros_latex=parms.macro_defs_latex,
                                 macros_python=parms.macro_defs_python,
                                 environments=parms.environment_defs)
-        for name, actions in [('', builtin)] + packages:
+        for name, actions in [('<builtins>', builtin)] + packages:
             self.init_package(name, actions, [], 0)
 
     #   call handler of a package module:
@@ -62,7 +63,7 @@ class Parser:
     #
     def init_package(self, name, actions, options, position):
         out = []
-        if (name and name in self.packages and
+        if (name in self.packages and
                 self.packages[name] == self.global_latex_options + options):
             return out
         try:
@@ -71,9 +72,8 @@ class Parser:
                     out += self.init_package(requ, utils.get_module_handler(
                                         requ, self.parms.package_modules),
                                         options, position)
-            if name:
-                self.packages[name] = self.global_latex_options + options
-            out += self.modify_parameters(actions[1], options, position)
+            self.packages[name] = self.global_latex_options + options
+            out += self.modify_parameters(name, actions[1], options, position)
         except:
             utils.fatal('error loading module ' + repr(name))
         return out
@@ -82,24 +82,27 @@ class Parser:
     #   - used by package extension mechanism
     #   - used by handlers of LaTeX macros / environments
     #
-    def modify_parameters(self, f, options, position):
+    def modify_parameters(self, name, f, options, position):
         mods = f(self, options, position)
         for m in mods.macros_python:
             self.the_macros[m.name] = m
         for e in mods.environs:
             self.the_environments[e.name] = e
         if mods.macros_latex:
-            self.parser_work(mods.macros_latex)
+            self.parser_work(mods.macros_latex, name)
         return mods.inject_tokens
 
     #   scan and parse (expand) LaTeX string to tokens
     #   - here also skip LaTeX text enclosed in special comments
     #
-    def parser_work(self, latex):
+    def parser_work(self, latex, source):
         # save self.latex for nested calls, e.g. \LTinput{}
         latex_sav = self.latex
         self.latex = latex
-        toks = self.parms.scanner.scan(latex)
+        source_sav = self.source
+        self.source = source
+
+        toks = self.parms.scanner.scan(latex, source)
 
         # treat special comments for skipping LaTeX text
         out = []
@@ -117,9 +120,10 @@ class Parser:
                     toks[i].txt.startswith(self.parms.comment_skip_end)),
                                     len(toks))
             if end == len(toks):
-                out += utils.latex_error('cannot find closing LaTeX comment '
+                out += utils.latex_error(self,
+                                    'cannot find closing LaTeX comment '
                                     + repr(self.parms.comment_skip_end),
-                                    toks[beg].pos, latex, self.parms)
+                                    toks[beg].pos)
                 out += toks[beg+1:]
                 break
             last = end + 1
@@ -127,21 +131,24 @@ class Parser:
 
         toks = self.expand_sequence(scanner.Buffer(toks))
         self.latex = latex_sav
+        self.source = source_sav
         return toks
 
     #   main entry point
     #
-    def parse(self, latex, define='', extract=None):
+    def parse(self, latex, source='<unknown>',
+                    define='', source_defs='<unknown>', extract=None):
         if extract:
             self.init_extractions(extract)
         self.extracted = []
         self.unknowns = []
+        self.source = self.source_main = source
 
         main = []
         if define:
-            toks = self.parser_work(define)
+            toks = self.parser_work(define, source_defs)
             main = utils.filter_set_toks(toks, 0, defs.LanguageToken)
-        main += self.parser_work(latex)
+        main += self.parser_work(latex, source)
 
         if extract:
             main = []
@@ -299,8 +306,8 @@ class Parser:
         # error message.
         # To the caller, we return a buffer only yielding an error mark.
         buf.back([opening_tok]
-                    + utils.latex_error('cannot find closing "' + end + '"',
-                                        pos, self.latex, self.parms) + out)
+                + utils.latex_error(self, 'cannot find closing "' + end + '"',
+                                                pos) + out)
         return scanner.Buffer([defs.TextToken(opening_tok.pos,
                                     ' ' + self.parms.mark_latex_error + ' ',
                                     pos_fix=True)])
@@ -417,16 +424,16 @@ class Parser:
             c = ' '.join(self.parms.accent_macros[tok.txt])
         else:
             if not ('a' <= c <= 'z' or 'A' <= c <= 'Z'):
-                return utils.latex_error('text-mode accent for non-letter',
-                                            tok.pos, self.latex, self.parms)
+                return utils.latex_error(self,
+                                'text-mode accent for non-letter', tok.pos)
             c = ('LATIN ' + ('SMALL' if c.islower() else 'CAPITAL')
                         + ' LETTER ' + c.upper() + ' WITH ' 
                         + self.parms.accent_macros[tok.txt][0])
         try:
             u = unicodedata.lookup(c)
         except:
-            return utils.latex_error('could not find UTF-8 character "' + c
-                                    + '"', tok.pos, self.latex, self.parms)
+            return utils.latex_error(self, 'could not find UTF-8 character "'
+                                            + c + '"', tok.pos)
         return [defs.TextToken(tok.pos, u)] + args
 
     #   open an environment
@@ -701,19 +708,18 @@ class Parser:
         buf.next()
         tok = buf.skip_space()
         if not tok:
-            return utils.latex_error('\\def: missing macro name', start,
-                                        self.latex, self.parms)
+            return utils.latex_error(self, '\\def: missing macro name', start)
         if type(tok) is not defs.MacroToken:
-            return utils.latex_error('\\def: illegal macro name "' + tok.txt
-                                        + '"', tok.pos, self.latex, self.parms)
+            return utils.latex_error(self, '\\def: illegal macro name "'
+                                        + tok.txt + '"', tok.pos)
         name = tok.txt
         args = []
         while True:
             buf.next()
             tok = buf.skip_space()
             if not tok:
-                return utils.latex_error('\\def: missing macro body', start,
-                                            self.latex, self.parms)
+                return utils.latex_error(self, '\\def: missing macro body',
+                                        start)
             if tok.txt == '{':
                 break
             args.append(tok)
@@ -724,9 +730,9 @@ class Parser:
         for k, t in enumerate(args, start=1):
             if type(t) is defs.ArgumentToken:
                 if t.arg != n:
-                    return utils.latex_error('\\def: unexpected argument '
-                                                + repr(t.txt), t.pos,
-                                                self.latex, self.parms)
+                    return utils.latex_error(self,
+                                                '\\def: unexpected argument '
+                                                + repr(t.txt), t.pos)
                 n += 1
                 arg_pos_map.append(k)
 
@@ -734,9 +740,9 @@ class Parser:
         for t in repl:
             if type(t) is defs.ArgumentToken:
                 if t.arg < 1 or t.arg > len(arg_pos_map):
-                    return utils.latex_error(
+                    return utils.latex_error(self,
                             '\\def: illegal argument reference ' + repr(t.txt),
-                            t.pos, self.latex, self.parms)
+                            t.pos)
                 t = copy.copy(t)
                 t.arg = arg_pos_map[t.arg - 1]
             repl_mapped.append(t)

@@ -76,3 +76,84 @@ def test_5():
     plain, pos = utils.get_txt_pos(toks)
     assert plain == plain_5
 
+latex_6 = r"""
+\def
+"""
+plain_6 = """
+ LATEXXXERROR """
+stderr_6 = r"""*** LaTeX error: code in 't.tex', line 2, column 1:
+*** \def: missing macro name
+"""
+def test_6(capsys):
+    capsys.readouterr()
+    toks = p.parse(latex_6, source='t.tex')
+    plain, pos = utils.get_txt_pos(toks)
+    cap = capsys.readouterr()
+    assert plain == plain_6
+    assert cap.err == stderr_6
+
+latex_7 = r"""
+\def \;"""
+plain_7 = """
+ LATEXXXERROR  """
+stderr_7 = r"""*** LaTeX error: code in 't.tex', line 2, column 6:
+*** \def: illegal macro name "\;"
+"""
+def test_7(capsys):
+    capsys.readouterr()
+    toks = p.parse(latex_7, source='t.tex')
+    plain, pos = utils.get_txt_pos(toks)
+    cap = capsys.readouterr()
+    assert plain == plain_7
+    assert cap.err == stderr_7
+
+latex_8 = r"""
+\def\xxx
+"""
+plain_8 = """
+ LATEXXXERROR """
+stderr_8 = r"""*** LaTeX error: code in 't.tex', line 2, column 1:
+*** \def: missing macro body
+"""
+def test_8(capsys):
+    capsys.readouterr()
+    toks = p.parse(latex_8, source='t.tex')
+    plain, pos = utils.get_txt_pos(toks)
+    cap = capsys.readouterr()
+    assert plain == plain_8
+    assert cap.err == stderr_8
+
+latex_9 = r"""
+\def\xxx#1#3{}
+"""
+plain_9 = """
+ LATEXXXERROR 
+"""
+stderr_9 = r"""*** LaTeX error: code in 't.tex', line 2, column 11:
+*** \def: unexpected argument '#3'
+"""
+def test_9(capsys):
+    capsys.readouterr()
+    toks = p.parse(latex_9, source='t.tex')
+    plain, pos = utils.get_txt_pos(toks)
+    cap = capsys.readouterr()
+    assert plain == plain_9
+    assert cap.err == stderr_9
+
+latex_10 = r"""
+\def\xxx#1{#3}
+"""
+plain_10 = """
+ LATEXXXERROR 
+"""
+stderr_10 = r"""*** LaTeX error: code in 't.tex', line 2, column 12:
+*** \def: illegal argument reference '#3'
+"""
+def test_10(capsys):
+    capsys.readouterr()
+    toks = p.parse(latex_10, source='t.tex')
+    plain, pos = utils.get_txt_pos(toks)
+    cap = capsys.readouterr()
+    assert plain == plain_10
+    assert cap.err == stderr_10
+

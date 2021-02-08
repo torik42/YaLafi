@@ -3,7 +3,7 @@
 import pytest
 from yalafi import parameters, parser, utils
 
-preamble = '\\usepackage{tikz}\n'
+preamble = '\\usepackage{subfiles}\n'
 
 def get_plain(latex):
     parms = parameters.Parameters()
@@ -15,24 +15,8 @@ def get_plain(latex):
 
 data_test_macros_latex = [
 
-    (r'A\graphicspath{X}B', 'AB'),
-    (r'A\tikzset{X}B', 'AB'),
-    (r'A\usetikzlibrary XB', 'AB'),
-    (
-r"""
-A
-\begin{tikzpicture}
-
-\draw (0,0) -- (2, 2);
-
-\end{tikzpicture}
-B
-""",
-r"""
-A
-B
-"""
-    ),
+    (r'A\subfile{X}B', 'AB'),
+    (r'A\subfileinclude{X}B', 'AB'),
 
 ]
 

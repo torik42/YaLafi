@@ -12,6 +12,7 @@ def init_module(parser, options, position):
 
     macros_latex = r"""
 
+        \newcommand{\graphicspath}[1]{}
         \newcommand{\includegraphics}[2][]{}
 
     """

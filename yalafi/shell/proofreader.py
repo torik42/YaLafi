@@ -48,7 +48,7 @@ def run_proofreader(file):
     f.close()
     if not tex.endswith('\n'):
         tex += '\n'
-    return run_proofreader_options(tex,
+    return run_proofreader_options(tex, file, source_defs,
                         cmdline.language, cmdline.disable, cmdline.enable,
                         cmdline.disablecategories, cmdline.enablecategories,
                         cmdline.lt_options[1:].split())
@@ -56,7 +56,8 @@ def run_proofreader(file):
 #   this can be used, if the shell is run as an HTTP server
 #   - for that: overwrite CLI options from from fields of HTML request
 #
-def run_proofreader_options(tex, language, disable, enable,
+def run_proofreader_options(tex, source, source_defs, language,
+                            disable, enable,
                             disablecategories, enablecategories, lt_options):
 
     t2t_options = tex2txt.Options(char=True, repl=cmdline.replace,
@@ -71,15 +72,18 @@ def run_proofreader_options(tex, language, disable, enable,
     else:
         if cmdline.list_unknown:
             # only look for unknown macros and environemnts
-            plain, charmap = tex2txt.tex2txt(tex, t2t_options)
+            plain, charmap = tex2txt.tex2txt(tex, t2t_options, source=source,
+                                                source_defs=source_defs)
             return (tex, plain, charmap, [])
         if cmdline.multi_language:
             def mod_parms(parms):
                 parms.ml_continue_thresh = cmdline.ml_continue_threshold
             plain_map = tex2txt.tex2txt(tex, t2t_options, multi_language=True,
-                                            modify_parms=mod_parms)
+                                    modify_parms=mod_parms,
+                                    source=source, source_defs=source_defs)
         else:
-            plain, charmap = tex2txt.tex2txt(tex, t2t_options)
+            plain, charmap = tex2txt.tex2txt(tex, t2t_options, source=source,
+                                                source_defs=source_defs)
             plain_map = {language: [(plain, charmap)]}
 
     disa_thresh = disable
@@ -337,4 +341,6 @@ def init(vars):
     equation_replacements = vars.equation_replacements
     global lt_option_map 
     lt_option_map = vars.lt_option_map 
+    global source_defs
+    source_defs = vars.source_defs
 
