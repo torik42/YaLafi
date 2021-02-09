@@ -85,13 +85,17 @@ def h_newtheorem(parser, buf, mac, args, delim, pos):
 
 #   heading macros: append '.', unless last char in parms.heading_punct
 #
+
 def h_heading(parser, buf, mac, args, delim, pos):
-    arg = args[2]
-    txt = parser.get_text_expanded(arg).strip()
-    if (txt and parser.parms.heading_punct
-                and txt[-1] not in parser.parms.heading_punct):
-        arg.append(defs.TextToken(arg[-1].pos, '.'))
-    return arg
+    int_args = args[1:3]
+    for arg in int_args:
+        txt = parser.get_text_expanded(arg).strip()
+        if (txt and parser.parms.heading_punct
+                    and txt[-1] not in parser.parms.heading_punct):
+            arg.append(defs.TextToken(arg[-1].pos, '.'))
+        if arg:
+            arg.append(defs.SpaceToken(arg[-1].pos, ' '))
+    return int_args[0] + int_args[1]
 
 #   \phantom, \hphantom
 #
