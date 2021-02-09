@@ -28,6 +28,7 @@ def test_1():
 
 latex_2 = r"""
 \usepackage[poorman]{cleveref}
+\usepackage{hyperref}
 \YYCleverefInput{latex.sed}
 \Cref*{eq:1}
 """
@@ -89,6 +90,7 @@ stderr_4 = r"""*** LaTeX error: code in 't.tex', line 3, column 2:
 
 """
 
+
 def test_4(capsys):
     capsys.readouterr()
     parms = parameters.Parameters()
@@ -117,6 +119,7 @@ stderr_5 = r"""*** LaTeX error: code in 't.tex', line 4, column 2:
 *** Run LaTeX again to build a new sed file.
 
 """
+
 
 def test_5(capsys):
     def read(file):
@@ -149,6 +152,7 @@ stderr_6 = r"""*** LaTeX error: code in 't.tex', line 2, column 2:
 
 """
 
+
 def test_6(capsys):
     def read(file):
         return True, sed_6
@@ -160,3 +164,27 @@ def test_6(capsys):
     captured = capsys.readouterr()
     assert plain_6 == plain
     assert stderr_6 == captured.err
+
+
+latex_7 = r"""
+\usepackage[poorman]{cleveref}
+\YYCleverefInput{latex.sed}
+\cref{eq: S^n $ [ . ] a*b}
+"""
+sed_7 = r"""
+s/\\cref{eq: S\^n \$ \[ \. \] a\*b}/\\cref@equation@name \\nobreakspace \\textup {(\\ref {eq: S\^n \$ \[ \. \] a\*b})}/g
+s/\\cref@equation@name /eq\./g
+"""
+plain_7 = """
+eq.\N{NO-BREAK SPACE}(0)
+"""
+
+
+def test_7():
+    def read(file):
+        return True, sed_7
+    parms = parameters.Parameters()
+    p = parser.Parser(parms, read_macros=read)
+    toks = p.parse(latex_7)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_7 == plain

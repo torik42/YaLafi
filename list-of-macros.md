@@ -352,6 +352,7 @@ tests: [tests/test\_packages/test\_hyperref.py](tests/test_packages/test_hyperre
 **Macros**
 
 \\href,
+\\ref\*,
 \\texorpdfstring,
 \\url
 
