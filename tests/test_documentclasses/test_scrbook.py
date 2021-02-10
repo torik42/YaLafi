@@ -25,3 +25,9 @@ def test_macros_latex(latex, plain_expected):
     plain = get_plain(latex)
     assert plain == plain_expected
 
+
+def test_package_loaded():
+    parms = parameters.Parameters()
+    p = parser.Parser(parms)
+    p.parse(preamble)
+    assert 'koma-script' in p.packages
