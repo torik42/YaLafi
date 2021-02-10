@@ -27,4 +27,3 @@ data_test_macros_latex = [
 def test_macros_latex(latex, plain_expected):
     plain = get_plain(latex)
     assert plain == plain_expected
-
