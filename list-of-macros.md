@@ -24,6 +24,7 @@ Please note that not everything has to be declared.
 [graphicx](#package-graphicx),
 [hyperref](#package-hyperref),
 [inputenc](#package-inputenc),
+[koma-script](#package-koma-script),
 [listings](#package-listings),
 [mathtools](#package-mathtools),
 [pgfplots](#package-pgfplots),
@@ -366,6 +367,25 @@ tests: [tests/test\_packages/test\_inputenc.py](tests/test_packages/test_inputen
 \\inputencoding
 
 
+## Package koma-script
+
+Source: [yalafi/packages/koma\_script.py](yalafi/packages/koma_script.py),
+tests: [tests/test\_packages/test\_koma\_script.py](tests/test_packages/test_koma_script.py)
+
+This is a helper package only available in YaLafi to implement commands used
+by the KOMA classes
+[scrartcl](#class-scrartcl),
+[scrbook](#class-scrbook) and
+[scrreprt](#class-scrreprt).
+
+**Macros**
+
+\\extratitle,
+\\KOMAoption,
+\\KOMAoptions,
+\\subject,
+\\subtitle
+
 ## Package listings
 
 Source: [yalafi/packages/listings.py](yalafi/packages/listings.py),
@@ -495,8 +515,8 @@ tests: [tests/test\_documentclasses/test\_scrartcl.py](tests/test_documentclasse
 
 **Macros**
 
-\\KOMAoption,
-\\KOMAoptions
+For macros available in all KOMA classes see package
+[koma-script](#package-koma-script).
 
 
 ## Class scrbook
@@ -506,8 +526,8 @@ tests: [tests/test\_documentclasses/test\_scrbook.py](tests/test_documentclasses
 
 **Macros**
 
-\\KOMAoption,
-\\KOMAoptions
+For macros available in all KOMA classes see package
+[koma-script](#package-koma-script).
 
 
 ## Class scrreprt
@@ -517,6 +537,6 @@ tests: [tests/test\_documentclasses/test\_scrreprt.py](tests/test_documentclasse
 
 **Macros**
 
-\\KOMAoption,
-\\KOMAoptions
+For macros available in all KOMA classes see package
+[koma-script](#package-koma-script).
 
