@@ -36,7 +36,6 @@ Please note that not everything has to be declared.
 **Document classes**
 
 [article](#class-article),
-[beamer](#class-beamer),
 [book](#class-book),
 [report](#class-report),
 [scrartcl](#class-scrartcl),
@@ -492,61 +491,6 @@ Source: [yalafi/documentclasses/article.py](yalafi/documentclasses/article.py),
 tests: [tests/test\_documentclasses/test\_article.py](tests/test_documentclasses/test_article.py)
 
 &mdash;
-
-
-## Class beamer
-
-Source: [yalafi/documentclasses/beamer.py](yalafi/documentclasses/beamer.py),
-tests: [tests/test\_documentclasses/test\_beamer.py](tests/test_documentclasses/test_beamer.py)
-
-
-
-**Macros**
-
-\\alert,
-\\framesubtitle,
-\\frametitle,
-\\hyperlink,
-\\hypertarget,
-\\invisible,
-\\note,
-\\only,
-\\onslide,
-\\setbeamercolor,
-\\setbeamerfont,
-\\setbeameroption,
-\\setbeamertemplate,
-\\tableofcontents,
-\\temporal,
-\\uncover,
-\\usecolortheme,
-\\usefonttheme,
-\\useinnertheme,
-\\useoutertheme,
-\\usetheme,
-\\visible
-
-Add overlay specification (<…>) to:
-
-\\color,
-\\emph,
-\\item,
-\\label,
-\\part,
-\\section,
-\\subsection,
-\\subsubsection,
-\\textbf,
-\\textcolor,
-\\textit,
-\\textmd,
-\\textnormal,
-\\textrm,
-\\textsc,
-\\textsf,
-\\textsl,
-\\texttt,
-\\textup
 
 
 ## Class book
