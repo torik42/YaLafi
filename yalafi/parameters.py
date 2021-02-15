@@ -38,7 +38,9 @@ class Parameters:
         \newcommand{\AA}{Å}
         \newcommand{\aa}{å}
         \newcommand{\AE}{Æ}
+        \newcommand{\addtocounter}[2]{}
         \newcommand{\ae}{æ}
+        \newcommand{\author}[1]{#1.}
         \newcommand{\bibitem}[1]{\item}
         \newcommand{\bibliographystyle}[1]{}
         \newcommand{\footnotemark}[1][]{}
@@ -50,6 +52,7 @@ class Parameters:
         \newcommand{\l}{ł}
         \newcommand{\label}[1]{}
         \newcommand{\LaTeX}{LaTeX}
+        \newcommand{\newcounter}[1]{}
         \newcommand{\newline}{ }
         \newcommand{\nobreakspace}{~}
         \newcommand{\O}{Ø}
@@ -65,8 +68,11 @@ class Parameters:
         \newcommand{\qquad}{\;}
         \newcommand{\quad}{\;}
         \newcommand{\ref}[1]{0}
+        \newcommand{\refstepcounter}[1]{}
         \newcommand{\S}{§}
+        \newcommand{\setcounter}[2]{}
         \newcommand{\ss}{ß}
+        \newcommand{\stepcounter}[1]{}
         \newcommand{\TeX}{TeX}
         \newcommand{\textasciicircum}{\verb?^?} % \^ is accent
         \newcommand{\textasciitilde}{\verb?~?}  % \~ is accent
