@@ -168,7 +168,7 @@ def h_makeLowercase(parser, buf, mac, args, delim, pos):
     return [defs.TextToken(pos, string.lower())]
 
 
-# \h_makeUppercase
+# \MakeUppercase
 def h_makeUppercase(parser, buf, mac, args, delim, pos):
     string = parser.get_text_expanded(args[0])
     return [defs.TextToken(pos, string.upper())]
