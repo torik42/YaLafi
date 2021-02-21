@@ -8,10 +8,10 @@ Work in progress
       **thanks to @torik42** (PR [#182](../../pull/182))
     - added macro \\paragraph(\*) (issue [#192](../../issues/192))
     - added macros \\MakeLowercase, \\MakeUppercase;
-      **thanks to @torik42** (PR …)
+      **thanks to @torik42** (PR [#199](../../pull/199))
   - package cleveref: added macro \\crefalias and more reference
     commands like \\cpageref;
-    **thanks to @torik42** (PR …)
+    **thanks to @torik42** (PR [#199](../../pull/199))
   - package graphicx: added macro \\graphicspath
     (issue [#186](../../issues/186))
   - package tikz: now loads package graphicx (issue [#186](../../issues/186))
