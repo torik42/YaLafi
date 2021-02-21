@@ -79,6 +79,8 @@ tests: [tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_
 \\LTalter,
 \\LTinput (executes code in file),
 \\LTskip,
+\\MakeLowercase,
+\\MakeUppercase,
 \\newcommand (defines macro),
 \\newline,
 \\newtheorem (defines environment),

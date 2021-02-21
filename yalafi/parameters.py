@@ -90,6 +90,8 @@ class Parameters:
         Macro(self, '\\framebox', args='OOA', repl='#3'),
         Macro(self, '\\hphantom', args='A', repl=hs.h_phantom),
         Macro(self, '\\hspace', args='*A', repl=hs.h_hspace),
+        Macro(self, '\\MakeLowercase', args='A', repl=hs.h_makeLowercase),
+        Macro(self, '\\MakeUppercase', args='A', repl=hs.h_makeUppercase),
         Macro(self, '\\newcommand', args='*AOOA', repl=hs.h_newcommand),
         Macro(self, '\\newtheorem', args='AOAO', repl=hs.h_newtheorem),
         Macro(self, '\\paragraph', args='*OA', repl=hs.h_heading),

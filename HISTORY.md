@@ -7,6 +7,8 @@ Work in progress
     - fixed \\hspace, only add space if argument is not of zero length;
       **thanks to @torik42** (PR [#182](../../pull/182))
     - added macro \\paragraph(\*) (issue [#192](../../issues/192))
+    - added macros \\MakeLowercase, \\MakeUppercase;
+      **thanks to @torik42** (PR …)
   - package graphicx: added macro \\graphicspath
     (issue [#186](../../issues/186))
   - package tikz: now loads package graphicx (issue [#186](../../issues/186))
