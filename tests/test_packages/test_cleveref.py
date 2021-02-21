@@ -49,8 +49,8 @@ data_test_macros_sed = [
 
     (r'\cref{a}', 'equation\N{NO-BREAK SPACE}(0)'),
     (r'\Cref{a}', 'Equation\N{NO-BREAK SPACE}(0)'),
-    # (r'\crefrange{a}', ''),
-    # (r'\Crefrange{a}', ''),
+    # (r'\crefrange{a}{b}', ''),
+    # (r'\Crefrange{a}{b}', ''),
     (r'\cpageref{a}', 'page\N{NO-BREAK SPACE}0'),
     (r'\Cpageref{a}', 'Page\N{NO-BREAK SPACE}0'),
     (r'\cpagerefrange{a}{b}', 'pages\N{NO-BREAK SPACE}0 to\N{NO-BREAK SPACE}0'),
