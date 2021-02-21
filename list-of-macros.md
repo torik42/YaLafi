@@ -256,18 +256,25 @@ These issues should be handled within the `cleveref` LaTeX package:
 
 **Macros**
 
-\\YYCleverefInput,
+\\cpageref,
+\\Cpageref,
+\\cpagerefrange,
+\\Cpagerefrange,
+\\cref(\*),
+\\Cref(\*),
+\\crefalias,
 \\crefname,
 \\Crefname,
-\\cref,
-\\Cref,
-\\crefrange,
-\\Crefrange,
-\\cref\*,
-\\Cref\*,
-\\crefrange\*,
-\\Crefrange\*,
+\\crefrange(\*),
+\\Crefrange(\*),
 \\label,
+\\lcnamecref,
+\\lcnamecrefs,
+\\namecref,
+\\nameCref,
+\\namecrefs,
+\\nameCrefs,
+\\YYCleverefInput,
 all commands that would be replaced with the `sed` file
 (e.g. \\crefrangeconjunction)
 

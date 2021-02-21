@@ -1,4 +1,74 @@
+import pytest
 from yalafi import parameters, parser, utils
+
+preamble = r'\usepackage[poorman]{cleveref}'
+
+
+def get_plain(latex):
+    parms = parameters.Parameters()
+    p = parser.Parser(parms)
+    plain, nums = utils.get_txt_pos(p.parse(preamble + latex))
+    assert len(plain) == len(nums)
+    return plain
+
+
+data_test_macros_latex = [
+
+    (r'A\crefname{type}{singular}{plural}B', 'AB'),
+    (r'A\Crefname{type}{singular}{plural}B', 'AB'),
+    (r'A\crefalias{counter}{type}B', 'AB'),
+
+]
+
+
+@pytest.mark.parametrize('latex,plain_expected', data_test_macros_latex)
+def test_macros_latex(latex, plain_expected):
+    plain = get_plain(latex)
+    assert plain == plain_expected
+
+
+preamble_sed = r'''\usepackage[poorman]{cleveref}
+\YYCleverefInput{tests/test_packages/cleveref.sed}'''
+
+
+def get_plain_sed(latex):
+    def read(file):
+        try:
+            with open(file) as f:
+                return True, f.read()
+        except:
+            return False, ''
+    parms = parameters.Parameters()
+    p = parser.Parser(parms, read_macros=read)
+    plain, nums = utils.get_txt_pos(p.parse(preamble_sed + latex))
+    assert len(plain) == len(nums)
+    return plain
+
+
+data_test_macros_sed = [
+
+    (r'\cref{a}', 'equation\N{NO-BREAK SPACE}(0)'),
+    (r'\Cref{a}', 'Equation\N{NO-BREAK SPACE}(0)'),
+    # (r'\crefrange{a}', ''),
+    # (r'\Crefrange{a}', ''),
+    (r'\cpageref{a}', 'page\N{NO-BREAK SPACE}0'),
+    (r'\Cpageref{a}', 'Page\N{NO-BREAK SPACE}0'),
+    (r'\cpagerefrange{a}{b}', 'pages\N{NO-BREAK SPACE}0 to\N{NO-BREAK SPACE}0'),
+    (r'\Cpagerefrange{a}{b}', 'Pages\N{NO-BREAK SPACE}0 to\N{NO-BREAK SPACE}0'),
+    (r'\namecref{a}', 'equation'),
+    (r'\nameCref{a}', 'Equation'),
+    (r'\namecrefs{a}', 'equations'),
+    (r'\nameCrefs{a}', 'Equations'),
+    (r'\lcnamecref{a}', 'equation'),
+    (r'\lcnamecrefs{a}', 'equations'),
+
+]
+
+
+@pytest.mark.parametrize('latex,plain_expected', data_test_macros_sed)
+def test_macros_sed(latex, plain_expected):
+    plain = get_plain_sed(latex)
+    assert plain == plain_expected
 
 
 latex_1 = r"""

@@ -13,11 +13,39 @@ require_packages = []
 
 macro_read_sed = '\\YYCleverefInput'
 
+# Commands whose replacements are read from sed file based on given arguments.
+# The boolean value indicates, whether it is a usual command taking only one
+# argument or a range command taking two arguments.
+reference_commands = [
+    ('\\cref', False),
+    ('\\Cref', False),
+    ('\\crefrange', True),
+    ('\\Crefrange', True),
+    ('\\cpageref', False),
+    ('\\Cpageref', False),
+    ('\\cpagerefrange', True),
+    ('\\Cpagerefrange', True),
+    ('\\namecref', False),
+    ('\\nameCref', False),
+    ('\\namecrefs', False),
+    ('\\nameCrefs', False),
+    ('\\lcnamecref', False),
+    ('\\lcnamecrefs', False),
+]
+
+usual_commands = []
+range_commands = []
+for name, isRange in reference_commands:
+    if isRange:
+        range_commands.append('\\' + name)
+    else:
+        usual_commands.append('\\' + name)
+
 # Regular Expressions used to read sed file:
 re_ref = re.compile(r'''
 s/\\
-(                   # group 1: '\cref' or '\Cref'
-    \\cref|\\Cref
+(                   # group 1: match usual commands
+''' + '|'.join(usual_commands) + r'''
 )
 (?:\\)?             # non capturing group
 (\*?)               # group 2: '*' if present, '' else
@@ -28,10 +56,11 @@ s/\\
     (.*)            # group 4: the replacement string
 /g
 ''', re.VERBOSE)
+
 re_ref_range = re.compile(r'''
 s/\\
-(                   # group 1: '\cref' or '\Cref'
-    \\crefrange|\\Crefrange
+(                   # group 1: match range commands
+''' + '|'.join(range_commands) + r'''
 )
 (?:\\)?             # non capturing group
 (\*?)               # group 2: '*' if present, '' else
@@ -45,6 +74,7 @@ s/\\
     (.*)            # group 5: the replacement string
 /g
 ''', re.VERBOSE)
+
 re_command = re.compile(r'''
 s/\\
 (                   # group 1: command
@@ -62,6 +92,7 @@ s/\\
     (.*)            # group 4: replacement
 /g
 ''', re.VERBOSE)
+
 re_cC = re.compile(r'(\[cC\])')
 re_escaped_symbols = re.compile(r'\\([\[\]*\^$.\\])')
 
@@ -84,7 +115,6 @@ msg_sed_not_loaded = f'''To use cleveref with YaLafi, you should use
 *** '{macro_read_sed}{{main.sed}}' if your LaTeX
 *** document is called 'main.tex'.
 '''
-
 msg_cref_undefined = r'''No replacement for {:}{{{:}}} known.
 *** Run LaTeX again to build a new sed file.
 '''
@@ -99,7 +129,9 @@ def init_module(parser, options, position):
 
     macros_latex = r'''
         \newcommand{\crefname}[3]{}
+        % \crefname is wrongly replaced by sed file!
         \newcommand{\Crefname}[3]{}
+        \newcommand{\crefalias}[2]{}
     '''
 
     macros_python = [
@@ -107,15 +139,15 @@ def init_module(parser, options, position):
         Macro(parms, macro_read_sed, args='A', repl=h_read_sed),
         Macro(parms, '\\label', args='OA', repl=''),
 
-        # Define functions which warn the User, whenever cleveref
-        # is used without invoking \YYCleverefInput. These will be overwritten
-        # by invoking \YYCleverefInput.
-        Macro(parms, '\\cref', args='*A', repl=h_cref_warning),
-        Macro(parms, '\\Cref', args='*A', repl=h_cref_warning),
-        Macro(parms, '\\crefrange', args='*AA', repl=h_cref_warning),
-        Macro(parms, '\\Crefrange', args='*AA', repl=h_cref_warning),
-
     ]
+
+    # Define functions which warn the User, whenever cleveref
+    # is used without invoking \YYCleverefInput. These will be overwritten
+    # by invoking \YYCleverefInput.
+    for name, isRange in reference_commands:
+        args = '*A' + 'A'*isRange
+        macro = Macro(parms, name, args=args, repl=h_cref_warning)
+        macros_python.append(macro)
 
     environments = []
 
@@ -142,24 +174,39 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
         return utils.latex_error(parser, 'could not read file ' + repr(file),
                                  pos)
 
-    refs = {'\\cref': {'':{}, '*': {}},
-            '\\Cref': {'':{}, '*': {}},
-            '\\crefrange': {'':{}, '*': {}},
-            '\\Crefrange': {'':{}, '*': {}}}
+    # Nested Dictionary in which all arguments and replacements are stored.
+    # The structure is as follows
+    #     '<command name>':
+    #         '*':
+    #             '<argument>' or ('<first argument>', '<second argument>'):
+    #                 '<replacement>'
+    #         '':
+    #             '<argument>' or ('<first argument>', '<second argument>'):
+    #                 '<replacement>'
+    # The command name is any of the commands in reference_commands. The '*' or
+    # '' says, whether a certain command is given with or without a star. The
+    # argument is one particular argument given to the command. If the command
+    # is a \…range command which takes to arguments a tuple of arguments is
+    # given. The replacement is the string with which the particular command
+    # should be replaced.
+    refs = {}
+    for name, isRange in reference_commands:
+        refs[name] = {'': {}, '*': {}}
 
     for rep in sed.split('\n'):
         # only consider non-empty lines:
         if rep == '':
             continue
 
-        # Match \cref,\cref*,\Cref and \Cref* and save the replacement string:
+        # Match usual reference commands (e.g. \cref) and
+        # save the replacement string:
         m = re_ref.match(rep)
         if m:
             refs[m.group(1)][m.group(2)][unescape_sed(m.group(3))] \
                 = unescape_sed(m.group(4))
             continue
 
-        # Match \crefrange, \crefrange*, \Crefrange and \Crefrange* and
+        # Match range reference command (e.g. \crefrange) and
         # save the replacement string:
         m = re_ref_range.match(rep)
         if m:
@@ -185,15 +232,16 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
                 parser.the_macros[name] = Macro(parser.parms,
                                                 name, args=args, repl=string)
 
-    # Make the \cref, …, \Crefrange* Macro objects:
-    for ref in ['\\cref','\\Cref']:
-        parser.the_macros[ref] = Macro(parser.parms,
-                                       ref, args='*A',
-                                       repl=h_make_cref(refs[ref]))
-    for ref in ['\\crefrange','\\Crefrange']:
-        parser.the_macros[ref] = Macro(parser.parms,
-                                       ref, args='*AA',
-                                       repl=h_make_crefrange(refs[ref]))
+    # Make the Macro objects for all commands in reference_commands:
+    for name, isRange in reference_commands:
+        if isRange:
+            parser.the_macros[name] = Macro(parser.parms,
+                                            name, args='*AA',
+                                            repl=h_make_crefrange(refs[name]))
+        else:
+            parser.the_macros[name] = Macro(parser.parms,
+                                            name, args='*A',
+                                            repl=h_make_cref(refs[name]))
 
     # \YYCleverefInput should not produce any output:
     return []
@@ -209,7 +257,7 @@ def h_make_cref(cref):
                 t.pos = pos
             return toks
         return utils.latex_error(parser,
-                                msg_cref_undefined.format(mac.name,rep), pos)
+                                 msg_cref_undefined.format(mac.name,rep), pos)
     return f
 
 
@@ -223,8 +271,8 @@ def h_make_crefrange(cref):
                 t.pos = pos
             return toks
         return utils.latex_error(parser,
-                                msg_crefrange_undefined.format(mac.name,*rep),
-                                pos)
+                                 msg_crefrange_undefined.format(mac.name,*rep),
+                                 pos)
     return f
 
 
