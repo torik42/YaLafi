@@ -213,6 +213,7 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
             key = (unescape_sed(m.group(3)), unescape_sed(m.group(4)))
             refs[m.group(1)][m.group(2)][key] \
                 = unescape_sed(m.group(5))
+            continue
 
         # Match any other command and create Macro objects for them.
         # See definition of re_command for more details:
