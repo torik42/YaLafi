@@ -71,6 +71,7 @@ tests: [tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_
 \\hphantom,
 \\hspace,
 \\include,
+\\includeonly,
 \\index,
 \\input,
 \\L,

@@ -46,6 +46,7 @@ class Parameters:
         \newcommand{\footnotemark}[1][]{}
         \newcommand{\hfill}{ }
         \newcommand{\include}[1]{}
+        \newcommand{\includeonly}[1]{}
         \newcommand{\index}[1]{}
         \newcommand{\input}[1]{}
         \newcommand{\L}{Ł}
