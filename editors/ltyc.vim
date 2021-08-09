@@ -22,10 +22,6 @@ if !exists("g:ltyc_ltdirectory")
     " home of LT software
     let g:ltyc_ltdirectory = '~/lib/LanguageTool'
 endif
-if !exists("g:ltyc_ltcommand")
-    " alternative LT command
-    let g:ltyc_ltcommand = ''
-endif
 if !exists("g:ltyc_server")
     " use an LT server?
     let g:ltyc_server = 'my'
@@ -33,10 +29,6 @@ endif
 if !exists("g:ltyc_encoding")
     " encoding of LaTeX source
     let g:ltyc_encoding = 'auto'
-endif
-if !exists("g:ltyc_language")
-    " language code for LT
-    let g:ltyc_language = 'en-GB'
 endif
 if !exists("g:ltyc_disable")
     " LT option --disable
@@ -75,6 +67,11 @@ if v:shell_error != 0
     echoerr s:pref . 'install the Python module YaLafi.'
     finish
 endif
+if !exists("g:ltyc_ltcommand")
+    " alternative LT command
+    let g:ltyc_ltcommand = ''
+endif
+let s:ltyc_ltcommand = ''
 if g:ltyc_server != 'lt'
     if !executable('java')
         echoerr s:pref . 'install Java.'
@@ -84,15 +81,49 @@ if g:ltyc_server != 'lt'
         if !executable(g:ltyc_ltcommand)
             echoerr s:pref . 'set g:ltyc_ltcommand correctly.'
             finish
+        else
+            let s:ltyc_ltcommand = g:ltyc_ltcommand
         endif
     else
-        if !filereadable(fnamemodify(g:ltyc_ltdirectory
-                                \ . '/languagetool-commandline.jar', ':p'))
+        if !filereadable(fnamemodify(g:ltyc_ltdirectory . '/languagetool-commandline.jar', ':p'))
             echoerr s:pref . 'set g:ltyc_ltdirectory to the'
                         \ . ' path of LanguageTool.'
             finish
+        else
+            let s:ltyc_ltcommand = 'java -jar ' . fnamemodify(g:ltyc_ltdirectory . '/languagetool-commandline.jar', ':p:S')
         endif
     endif
+endif
+" guess language
+"
+if !exists("g:ltyc_language")
+    let spelllangs = split(&spelllang, ',')
+    if len(spelllangs) > 1
+        echohl WarningMsg | echo 'Please select one of the &spelllang language codes numbered 0,1,...' | echohl None
+        let spelllang = spelllangs[inputlist(spelllangs)]
+    else
+        let spelllang = &spelllang
+    endif
+    let g:ltyc_language = substitute(spelllang, '_', '-', 'g')
+endif
+if !exists('s:list')
+    silent let s:list = split(system(s:ltyc_ltcommand . ' --list'), '[[:space:]]')
+endif
+if !empty(s:list)
+    if match(s:list, '\c^' . g:ltyc_language . '$') == -1
+        echohl WarningMsg | echomsg "Language '" . g:ltyc_language . "' not listed in output of " . s:ltyc_ltcommand . " --list!" | echohl None
+        let g:ltyc_language = matchstr(g:ltyc_language, '\v^[^-]+')
+        echohl WarningMsg | echomsg "Trying '" . g:ltyc_language . "' instead." | echohl None
+        if match(s:list, '\c^' . g:ltyc_language . '$') == -1
+            echoerr "Language '" . g:ltyc_language . "' not listed in output of " . s:ltyc_ltcommand . " --list; trying anyway!"
+        endif
+    endif
+endif
+if empty(g:ltyc_language)
+    echohl WarningMsg | echomsg 'Please set g:ltyc_language for more accurate check by LanguageTool; using autodetection instead.' | echohl None
+    let s:ltyc_language = ' --autoDetect'
+else
+    let s:ltyc_language = ' --language ' . g:ltyc_language
 endif
 
 let &l:makeprg =
@@ -105,7 +136,7 @@ let &l:makeprg =
         \ . ' --encoding ' . (g:ltyc_encoding ==# 'auto'
         \    ? (empty(&l:fileencoding) ? &l:encoding : &l:fileencoding)
         \    : g:ltyc_encoding)
-        \ . ' --language ' . g:ltyc_language
+        \ . s:ltyc_language
         \ . ' --disable "' . g:ltyc_disable . '"'
         \ . ' --enable "' . g:ltyc_enable . '"'
         \ . ' --disablecategories "' . g:ltyc_disablecategories . '"'
