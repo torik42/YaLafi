@@ -104,3 +104,36 @@ def test_4():
     plain, pos = utils.get_txt_pos(toks)
     assert plain_4 == plain
 
+latex_5 = r"""
+\begin{itemize}[topsep=1pt]
+\item B
+\end{itemize}
+"""
+plain_5 = r"""
+ * B
+"""
+def test_itemize_optional_arg():
+    parms = parameters.Parameters()
+    parms.item_default_label = ['*', '-']
+    p = parser.Parser(parms)
+    toks = p.parse(latex_5)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_5 == plain
+
+latex_6 = r"""
+\begin{enumerate}[topsep=1pt]
+\item B
+\end{enumerate}
+"""
+plain_6 = r"""
+ 1. B
+"""
+def test_itemize_optional_arg():
+    parms = parameters.Parameters()
+    parms.item_default_label = ['*']
+    parms.item_punctuation = []
+    p = parser.Parser(parms)
+    toks = p.parse(latex_6)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_6 == plain
+
