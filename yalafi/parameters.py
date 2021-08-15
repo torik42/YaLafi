@@ -52,6 +52,8 @@ class Parameters:
         \newcommand{\LaTeX}{LaTeX}
         \newcommand{\newline}{ }
         \newcommand{\nobreakspace}{~}
+        \newcommand{\linebreak}[1][]{
+}
         \newcommand{\O}{Ø}
         \newcommand{\o}{ø}
         \newcommand{\OE}{Œ}

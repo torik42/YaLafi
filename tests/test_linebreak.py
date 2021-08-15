@@ -68,3 +68,18 @@ def test_3():
     plain, pos = utils.get_txt_pos(toks)
     assert plain_3 == plain
 
+latex_4 = r"""
+A\linebreak[0] B\linebreak C\linebreak.
+"""
+plain_4 = r"""
+A
+ B
+C
+.
+"""
+def test_linebreak():
+    p = parser.Parser(parameters.Parameters())
+    toks = p.parse(latex_4)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_4 == plain
+
