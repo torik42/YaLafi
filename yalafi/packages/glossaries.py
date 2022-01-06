@@ -85,7 +85,8 @@ def init_module(parser, options, position):
         # this is for reading the .glsdefs database
         Macro(parms, '\\gls@defglossaryentry', args='AA',
                                                     repl=h_parse_glsdefs),
-
+        Macro(parms, '\\glsdefs@newdocentry', args='AA',
+                                                    repl=h_parse_glsdefs),
     ]
 
     environments = []
