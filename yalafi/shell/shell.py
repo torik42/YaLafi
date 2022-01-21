@@ -152,7 +152,7 @@ parser.add_argument('--enablecategories',
 parser.add_argument('--lt-options', default='')
 parser.add_argument('--single-letters')
 parser.add_argument('--equation-punctuation')
-parser.add_argument('--server', choices=['my', 'lt', 'stop'], default='')
+parser.add_argument('--server', default='')
 parser.add_argument('--lt-server-options', default='')
 parser.add_argument('--textgears')
 parser.add_argument('--multi-language', action='store_true')
@@ -246,7 +246,9 @@ if cmdline.server == 'stop':
                                     + ltserver_local_cmd + '"\n')
         sys.exit()
     tex2txt.fatal('could not kill LT server "' + ltserver_local_cmd + '"')
-
+elif cmdline.server not in ['lt', 'my', 'stop']:
+    ltserver = cmdline.server
+    cmdline.server = 'lt'
 
 # option --add-modules: read declarations from root document
 # - prepend packages to list from option --packages
