@@ -217,21 +217,28 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
 
         # Match any other command and create Macro objects for them.
         # See definition of re_command for more details:
-        m = re_command.match(rep)
+        m = re_command.search(rep)
+        # We need regexp.search here, because cleveref adds ranges
+        # `<begin>,<end> s/…` to these sed commands in multi-language
+        # documents. We only parse the first occurence to get the versions
+        # for the main language.
         if m:
             args = 'A'*int((m.end(3)-m.start(3))/4)
             string = unescape_sed(m.group(4))
             if m.group(2):
                 name = re_cC.sub('c', m.group(1))
-                parser.the_macros[name] = Macro(parser.parms,
-                                                name, args=args, repl=string)
+                if name not in parser.the_macros:
+                    parser.the_macros[name] = Macro(parser.parms, name,
+                                                    args=args, repl=string)
                 name = re_cC.sub('C', m.group(1))
-                parser.the_macros[name] = Macro(parser.parms,
-                                                name, args=args, repl=string)
+                if name not in parser.the_macros:
+                    parser.the_macros[name] = Macro(parser.parms, name,
+                                                    args=args, repl=string)
             else:
                 name = m.group(1)
-                parser.the_macros[name] = Macro(parser.parms,
-                                                name, args=args, repl=string)
+                if name not in parser.the_macros:
+                    parser.the_macros[name] = Macro(parser.parms, name,
+                                                    args=args, repl=string)
 
     # Make the Macro objects for all commands in reference_commands:
     for name, isRange in reference_commands:

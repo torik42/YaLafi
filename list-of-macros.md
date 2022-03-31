@@ -251,6 +251,8 @@ This should be fixed within the `cleveref` LaTeX package.
 without loading `hyperref` to create the `sed` script.
 Only add the `hyperref` package if you don’t need the created `sed` file.
 
+In multi-language documents, YaLafi uses the main language for all references.
+
 **Macros**
 
 \\cpageref,
