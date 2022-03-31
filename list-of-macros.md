@@ -250,6 +250,21 @@ This should be fixed within the `cleveref` LaTeX package.
 **Workaround:** Don’t use the starred variants and compile your document
 without loading `hyperref` to create the `sed` script.
 Only add the `hyperref` package if you don’t need the created `sed` file.
+You can use
+```latex
+%%% LT-SKIP-BEGIN
+% \usepackage{hyperref}
+\makeatletter
+\@ifpackageloaded{hyperref}{
+    \usepackage{cleveref}
+}{
+    \usepackage[poorman]{cleveref}
+}
+\makeatother
+%%% LT-SKIP-END
+\LTadd{\usepackage[poorman]{cleveref}}
+```
+to automatically load `cleveref` with the `poorman` option, when `hyperref` is disabled. Uncommenting the `\usepackage{hyperref}` line will load `cleveref` without the `poorman` option so that the `sed` file is not overwritten and can still be loaded by YaLafi.
 
 In multi-language documents, YaLafi uses the main language for all references.
 
