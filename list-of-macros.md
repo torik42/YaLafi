@@ -26,6 +26,7 @@ Please note that not everything has to be declared.
 [inputenc](#package-inputenc),
 [listings](#package-listings),
 [mathtools](#package-mathtools),
+[minted](#package-minted),
 [pgfplots](#package-pgfplots),
 [tikz](#package-tikz),
 [unicode-math](#package-unicode-math),
@@ -397,6 +398,19 @@ tests: [tests/test\_packages/test\_mathtools.py](tests/test_packages/test_mathto
 
 \\mathtoolsset
 
+## Package minted
+
+Source: [yalafi/packages/minted.py](yalafi/packages/minted.py),
+tests: [tests/test\_packages/test\_minted.py](tests/test_packages/test_minted.py)
+
+**Macros**
+
+\\setminted
+\\mintinline
+
+**Environments**
+
+minted
 
 ## Package pgfplots
 
