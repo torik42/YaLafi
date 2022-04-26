@@ -22,6 +22,7 @@ def init_module(parser, options, position):
     macros_python = [
 
         Macro(parms, '\\addbibresource', args='OA', repl=''),
+        Macro(parms, '\\bibliography', args='OA', repl=''),
         Macro(parms, '\\cite', args='*OOA', repl=h_cite),
         Macro(parms, '\\Cite', args='*OOA', repl=h_cite),
         Macro(parms, '\\footcite', args='*OOA', repl=h_footcite),

@@ -16,6 +16,7 @@ def get_plain(latex):
 data_test_macros_python = [
 
     (r'A\addbibresource{xxx}B', 'AB'),
+    (r'A\bibliography{xxx}B', 'AB'),
     (r'A\addbibresource[o]{xxx}B', 'AB'),
     (r'A\cite*{x}B', 'A[0]B'),
     (r'A\cite[p. 15]{x}B', 'A[0, p. 15]B'),
