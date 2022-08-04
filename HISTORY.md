@@ -1,5 +1,5 @@
-Work in progress
-----------------
+Version 1.3.1 (2022/08/04)
+--------------------------
 - LaTeX macros / environments
   - new package subfiles: macros \\subfile, \\subfileinclude
     (issue [#185](../../issues/185))
