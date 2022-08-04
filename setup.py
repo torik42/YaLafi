@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="yalafi",
-    version="1.3.0",
+    version="1.3.1",
     author="Matthias Baumann",
     description="Yet another LaTeX filter",
     long_description=long_description,
