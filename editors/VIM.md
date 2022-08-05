@@ -7,7 +7,7 @@ We use the Vim compiler interface, [see README](../README.md#plain-vim). The com
   [editors/ltyc.vim#116](../editors/ltyc.vim#L116)
   - test of this text output format: [tests/test\_shell/test\_shell.py](../tests/test_shell/test_shell.py), assertion
     at the end `assert out_txt == expect_txt`
-- by default, ltyc.vim passes some options to yalafi.shell, starting at [editors/ltyc.vim#93](../editors/ltyc.vim#L93)
+- by default, ltyc.vim passes some options to yalafi.shell, starting at [editors/ltyc.vim#98](../editors/ltyc.vim#L98)
    - --lt-command: no automatic test, as far as I can see
    - --lt-server: no test
    - --encoding: [tests/test\_shell\_cmd/test\_lt\_options.py](../tests/test_shell_cmd/test_lt_options.py)
