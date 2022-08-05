@@ -30,8 +30,8 @@ This interface uses the same mechanism as described under ["Plain Vim"](#plain-v
 - Vim's errorformat variable again is set near the end of the script vlty.vim
 - by default, two additional options are passed to yalafi.shell (VimTeX includes mechanisms to
   extract documentclass and loaded packages from the document's root file)
-  - --documentclass: apparently no test (???)
-  - --packages: apparently no test (???)
+  - --documentclass: apparently no test
+  - --packages: apparently no test
 - user can again specify more options to be passed to yalafi.shell, see the example vimrc in [README](../README.md#plugin-vimtex),
   variable `g:vimtex_grammar_vlty.shell_options`
 
