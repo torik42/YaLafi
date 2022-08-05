@@ -12,13 +12,35 @@ We use the Vim compiler interface, [see README](../README.md#plain-vim). The com
 - by default, ltyc.vim passes some options to yalafi.shell, starting at [editors/ltyc.vim#98](../editors/ltyc.vim#L98)
    - --lt-command: no automatic test, as far as I can see
    - --lt-server: no test
-   - --encoding: [tests/test\_shell\_cmd/test\_lt\_options.py](../tests/test_shell_cmd/test_lt_options.py)
+   - --encoding: [tests/test\_shell\_cmd/test\_lt\_options.py](../tests/test_shell_cmd/test_lt_options.py),
+     [tests/test\_shell\_cmd/test\_shell\_encoding.py](../tests/test_shell_cmd/test_shell_encoding.py)
    - --language: [tests/test\_shell\_cmd/test\_lt\_options.py](../tests/test_shell_cmd/test_lt_options.py)
    - --disable: [tests/test\_shell\_cmd/test\_lt\_options.py](../tests/test_shell_cmd/test_lt_options.py)
    - --disablecategories: [tests/test\_shell\_cmd/test\_lt\_options.py](../tests/test_shell_cmd/test_lt_options.py)
  - user can specify more options to be passed to yalafi.shell, see the example vimrc in [README](../README.md#plain-vim),
    variable `g:ltyc_shelloptions`, some of them are tested in the above test test\_lt\_options.py, too
    
- ## VimTeX
+ ## Plugin VimTeX
    
- TBC
+This interface uses the same mechanism as described under ["Plain Vim"](#plain-vim), the Vim interface file
+[vimtex/compiler/vlty.vim](https://github.com/lervag/vimtex/blob/master/compiler/vlty.vim) is maintained by
+[VimTeX](https://github.com/lervag/vimtex), and our copy under editors/ is only for documentation purposes.
+- Vim's errorformat variable again is set near the end of the script vlty.vim
+- by default, two additional options are passed to yalafi.shell (VimTeX includes mechanisms to
+  extract documentclass and loaded packages from the document's root file)
+   - --documentclass: apparently no test (???)
+   - --packages: apparently no test (???)
+- user can again specify more options to be passed to yalafi.shell, see the example vimrc in [README](../README.md#plugin-vimtex),
+  variable `g:vimtex_grammar_vlty.shell_options`
+
+## Plugin vim-grammarous
+
+TBD
+
+## Plugin vim-LanguageTool
+
+TBD
+
+## Plugin ALE
+
+TBD
