@@ -1,10 +1,13 @@
-We shortly describe important points of the different interfaces to Vim.
+# Interfaces to Vim
+
+We describe some points of the different interfaces to Vim.
 Most important are "Plain Vim", VimTeX, and ALE.
 Plugins vim-grammarous and vim-LanguageTool might be less significant.
 
 ## "Plain Vim"
-We use the Vim compiler interface, [see README](../README.md#plain-vim). The compiler file for Vim is
-[editors/ltyc.vim](../editors/ltyc.vim).
+We use the Vim compiler interface, [see README](../README.md#plain-vim).
+After activating ltyc as compiler, Vim starts yalafi.shell, when the user invokes the command :make.
+The compiler file for Vim is [editors/ltyc.vim](../editors/ltyc.vim).
 - expects report in plain text format from yalafi.shell, this is parsed by Vim using the errorformat variable that is set
   starting at [editors/ltyc.vim#116](../editors/ltyc.vim#L116)
   - change of the output format would require adaptation of the errorformat specification, which unfortunately requires
