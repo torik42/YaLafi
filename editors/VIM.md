@@ -53,7 +53,7 @@ Corresponding messages from LanguageTool are displayed in the status line, when 
 the marked text part.
 
 The interface file to be inserted in the ALE distribution is [editors/lty.vim](../editors/lty.vim).
-- expects report in JSON format
+- expects report in JSON format from yalafi.shell
   - uses --output json: currently no automatic test
 - passes default options like "Plain Vim" to yalafi.shell
 - more options can be specified by user, see the example vimrc in [README](../README.md#plugin-ale),
