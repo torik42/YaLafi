@@ -1,4 +1,6 @@
 We shortly describe important points of the different interfaces to Vim.
+Most important are "Plain Vim", VimTeX, and ALE.
+Plugins vim-grammarous and vim-LanguageTool might be less significant.
 
 ## "Plain Vim"
 We use the Vim compiler interface, [see README](../README.md#plain-vim). The compiler file for Vim is
@@ -28,8 +30,8 @@ This interface uses the same mechanism as described under ["Plain Vim"](#plain-v
 - Vim's errorformat variable again is set near the end of the script vlty.vim
 - by default, two additional options are passed to yalafi.shell (VimTeX includes mechanisms to
   extract documentclass and loaded packages from the document's root file)
-   - --documentclass: apparently no test (???)
-   - --packages: apparently no test (???)
+  - --documentclass: apparently no test (???)
+  - --packages: apparently no test (???)
 - user can again specify more options to be passed to yalafi.shell, see the example vimrc in [README](../README.md#plugin-vimtex),
   variable `g:vimtex_grammar_vlty.shell_options`
 
@@ -43,4 +45,18 @@ TBD
 
 ## Plugin ALE
 
-TBD
+This is a different ball game.
+During editing, the plugin asynchronously calls yalafi.shell and marks text parts with problems,
+just like in an editor as LibreOffice.
+(When using Vim with GUI, then we see the normal underlining for errors.)
+Corresponding messages from LanguageTool are displayed in the status line, when the cursur hits
+the marked text part.
+
+The interface file to be inserted in the ALE distribution is [editors/lty.vim](../editors/lty.vim).
+- expects report in JSON format
+  - uses --output json: currently no automatic test
+- passes default options like "Plain Vim" to yalafi.shell
+- more options can be specified by user, see the example vimrc in [README](../README.md#plugin-ale),
+  variable `g:ale_tex_lty_shelloptions`
+
+
