@@ -70,5 +70,12 @@ The interface file to be inserted in the ALE distribution is [editors/lty.vim](.
 - passes default options like "Plain Vim" to yalafi.shell
 - more options can be specified by user, see the example vimrc in [README#plugin-ale](../README.md#plugin-ale),
   variable `g:ale_tex_lty_shelloptions`
+  
+Script lty.vim is registered at the ALE plugin with line `let g:ale_linters = { 'plaintex': ['lty'], 'tex': ['lty'] }`
+in vimrc.
+Whenever ALE wants to run the "linter", it writes the current version of the edited file in a temporary file.
+Then, it invokes yalafi.shell with the data returned by function
+`ale_linters#tex#lty#GetCommand()` in lty.vim. It places the output from stdout in a buffer and calls function `ale_linters#tex#lty#Handle()`. Here, we parse the JSON output and build a list of structures each containing
+information about one proofreading item. This list is returned to the plugin.
 
-
+TBD: check whether this still works with the current ALE version
