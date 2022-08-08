@@ -67,7 +67,8 @@ the marked text part.
 The interface file to be inserted in the ALE distribution is [editors/lty.vim](../editors/lty.vim).
 - expects report in JSON format from yalafi.shell
   - uses --output json: currently no automatic test
-- passes default options like "Plain Vim" to yalafi.shell
+- passes default options like "Plain Vim" to yalafi.shell, they are defined starting at
+  [editors/lty.vim#L32](../editors/lty.vim#L32)
 - more options can be specified by user, see the example vimrc in [README#plugin-ale](../README.md#plugin-ale),
   variable `g:ale_tex_lty_shelloptions`
   
