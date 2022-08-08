@@ -7,6 +7,7 @@ Version 1.3.1 (2022/08/04)
     - fixed \\hspace, only add space if argument is not of zero length;
       **thanks to @torik42** (PR [#182](../../pull/182))
     - added macro \\paragraph(\*) (issue [#192](../../issues/192))
+    - added macros \\addtocounter, \\author, \\includeonly, \\newcounter, \\refstepcounter, \\setcounter, \\stepcounter
   - package graphicx: added macro \\graphicspath
     (issue [#186](../../issues/186))
   - package tikz: now loads package graphicx (issue [#186](../../issues/186))
