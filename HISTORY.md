@@ -7,6 +7,11 @@ Version 1.3.1 (2022/08/04)
     - fixed \\hspace, only add space if argument is not of zero length;
       **thanks to @torik42** (PR [#182](../../pull/182))
     - added macro \\paragraph(\*) (issue [#192](../../issues/192))
+    - added macros \\MakeLowercase, \\MakeUppercase;
+      **thanks to @torik42** (PR [#199](../../pull/199))
+  - package cleveref: added macro \\crefalias and more reference
+    commands like \\cpageref;
+    **thanks to @torik42** (PR [#199](../../pull/199))
   - package graphicx: added macro \\graphicspath
     (issue [#186](../../issues/186))
   - package tikz: now loads package graphicx (issue [#186](../../issues/186))
@@ -31,7 +36,7 @@ Version 1.3.0 (2021/01/31)
     - unicode math operators
   - new package circuitikz: environment circuitikz
     (issue [#158](../../issues/158))
-  - new package celeveref, macros like \\cref and companions;
+  - new package cleveref, macros like \\cref and companions;
     **thanks to @torik42** (issue [#161](../../issues/161),
     PR [#171](../../pull/171))
   - package amsthm: added macro \\newtheoremstyle; **thanks to @torik42**
