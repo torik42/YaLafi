@@ -42,7 +42,13 @@ This interface uses the same mechanism as described under ["Plain Vim"](#plain-v
 
 ## Plugin vim-grammarous
 
-TBD
+This plugin expects specification of an executable, in our case it is the Bash script
+[editors/yalafi-grammarous](../editors/yalafi-grammarous), see the example vimrc in
+[README#plugin-vim-grammarous](../README.md#plugin-vim-grammarous), variable `g:grammarous#languagetool_cmd`.
+- plugin needs a modified XML report (XML output has been supported by LanguageTool)
+  - uses option --output xml-b: currently no automatic test
+- all options passed to yalafi.shell are set at the end of the Bash script yalafi-grammarous, additional LT options
+  passed by the plugin are collected in script variable \$opts and passed using --lt-options
 
 ## Plugin vim-LanguageTool
 
@@ -51,9 +57,9 @@ TBD
 ## Plugin ALE
 
 This is a different ball game.
-During editing, the plugin asynchronously calls yalafi.shell and marks text parts with problems,
-just like in an editor as LibreOffice.
-(When using Vim with GUI, then we see the normal underlining for errors.)
+During editing, the plugin repeatedly and asynchronously calls yalafi.shell and marks text parts with problems,
+just like in an editor as LibreOffice / OpenOffice.
+(When using Vim with GUI, then we see the usual underlining of errors.)
 Corresponding messages from LanguageTool are displayed in the status line, when the cursur hits
 the marked text part.
 
