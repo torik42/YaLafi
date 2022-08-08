@@ -73,9 +73,12 @@ The interface file to be inserted in the ALE distribution is [editors/lty.vim](.
   
 Script lty.vim is registered at the ALE plugin with line `let g:ale_linters = { 'plaintex': ['lty'], 'tex': ['lty'] }`
 in vimrc.
-Whenever ALE wants to run the "linter", it writes the current version of the edited file in a temporary file.
+Whenever ALE wants to run the "linter", it writes the current version of the edited file to a temporary file.
 Then, it invokes yalafi.shell with the data returned by function
 `ale_linters#tex#lty#GetCommand()` in lty.vim. It places the output from stdout in a buffer and calls function `ale_linters#tex#lty#Handle()`. Here, we parse the JSON output and build a list of structures each containing
 information about one proofreading item. This list is returned to the plugin.
 
-TBD: check whether this still works with the current ALE version
+The detailed interface documentation is available in Vim (with ALE loaded) via `:help ale#linter#Define` or
+directly in the [ALE documentation file](https://github.com/dense-analysis/ale/blob/master/doc/ale.txt)
+in Section 9: API (search for `*ale#linter#Define()*`). In particular, the format of the structures describing
+the proofreading results for ALE is given following the label `*ale-loclist-format*`.
