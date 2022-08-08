@@ -52,7 +52,8 @@ This plugin expects specification of an executable, in our case it is the Bash s
 
 ## Plugin vim-LanguageTool
 
-TBD
+Almost the same as plugin vim-grammarous.
+- uses option --output xml: no test
 
 ## Plugin ALE
 
