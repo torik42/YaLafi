@@ -14,7 +14,7 @@ It provides
 - support of multi-language documents (experimental).
 
 A complete description is available at the
-[GitHub page](https://github.com/matze-dd/YaLafi).
+[GitHub page](https://github.com/torik42/YaLafi).
 
 The sample Python application script yalafi/shell/shell.py
 integrates the LaTeX filter with the proofreading software
@@ -51,5 +51,5 @@ Only few people is lazy.    We use redx colour.
 ```
 This is the corresponding HTML report:
 
-![HTML report](https://raw.githubusercontent.com/matze-dd/YaLafi/master/figs/shell.png)
+![HTML report](https://raw.githubusercontent.com/torik42/YaLafi/master/figs/shell.png)
 

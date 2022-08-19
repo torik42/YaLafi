@@ -1,3 +1,8 @@
+Work in progress
+----------------
+- Maintainer change @matze-dd → @torik42
+  - change URLs and add info in README
+
 Version 1.3.1 (2022/08/04)
 --------------------------
 - LaTeX macros / environments

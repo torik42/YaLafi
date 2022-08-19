@@ -1,6 +1,27 @@
 
 # YaLafi: Yet another LaTeX filter
 
+**Important: Maintainer change.**
+This program was developed by [matze-dd](https://github.com/matze-dd) until version 1.3.1 and is now maintained by torik42.
+
+If you have a local copy of this repository, GitHub will automatically redirect your `git fetch` and `git pull` commands and all links to the GitHub repository.
+Updating the URL is nevertheless recommended.
+If you run `git remote -v` in your local repository and see something like
+```
+name-of-remote  git@github.com:matze-dd/YaLafi.git (fetch)
+name-of-remote  git@github.com:matze-dd/YaLafi.git (push)
+```
+where `name-of-remote` is the name of the remote, you should update the URL with
+```
+git remote set-url name-of-remote git@github.com:torik42/YaLafi.git
+```
+if you use ssh, or
+```
+git remote set-url name-of-remote https://github.com/torik42/YaLafi.git
+```
+if you use https.
+You may also update existing links to `https://github.com/matze-dd/YaLafi`.
+
 **Notice.**
 The library of LaTeX macros, environments, document classes, and packages is
 still rather restricted, compare the [list of macros](list-of-macros.md).
@@ -88,6 +109,7 @@ Happy TeXing!
 ## Contents
 
 [Installation](#installation)<br>
+[Authors and Maintainers](#authors-and-maintainers)<br>
 [Example application](#example-application)<br>
 [Interfaces to Vim](#interfaces-to-vim)<br>
 [Interface to Emacs](#interface-to-emacs)<br>
@@ -118,7 +140,7 @@ Choose one of the following possibilities.
 - Use `python -m pip install [--user] yalafi`.
   This installs the last version uploaded to [PyPI](https://www.pypi.org).
   Module pip itself can be installed with `python -m ensurepip`.
-- Say `python -m pip install [--user] git+https://github.com/matze-dd/YaLafi.git@master`.
+- Say `python -m pip install [--user] git+https://github.com/torik42/YaLafi.git@master`.
   This installs the current snapshot from here.
 - Download the archive from here and unpack it.
   Place yalafi/ in the working directory, or in a standard directory like
@@ -148,6 +170,11 @@ variant 1.
 Instead, you have to specify `--lt-command languagetool`.
 
 [Back to contents](#contents)
+
+## Authors and Maintainers
+
+- [matze-dd](https://github.com/matze-dd) (author till [version 1.3.1](https://github.com/matze-dd/YaLafi-1.3.1) in 2022)
+- [torik42](https://github.com/torik42) (maintainer since 2022)
 
 
 ## Example application

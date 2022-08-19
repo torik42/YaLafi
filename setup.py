@@ -10,7 +10,7 @@ setuptools.setup(
     description="Yet another LaTeX filter",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/matze-dd/YaLafi",
+    url="https://github.com/torik42/YaLafi",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
