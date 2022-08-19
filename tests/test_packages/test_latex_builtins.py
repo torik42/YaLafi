@@ -155,6 +155,8 @@ data_test_specials = [
     (r'\_', '_'),
     (r'\%', '%'),
 
+    (r'A\/B', 'AB'),
+
 ]
 
 @pytest.mark.parametrize('latex,plain_expected', data_test_specials)

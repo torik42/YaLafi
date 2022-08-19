@@ -5,6 +5,7 @@ Work in progress
 - LaTeX macros / environments
   - builtins
     - added macros \\addtocounter, \\author, \\includeonly, \\newcounter, \\refstepcounter, \\setcounter, \\stepcounter (PR [#230](../../pull/230))
+  - add special token \\/ for italic correction **thanks to @symphorien** (PR [#215](../../pull/215))
 
 Version 1.3.1 (2022/08/04)
 --------------------------

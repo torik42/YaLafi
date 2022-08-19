@@ -356,6 +356,8 @@ class Parameters:
             '\\_': '_',
             '\\%': '%',
 
+            '\\/': '',
+
         }
 
     #   set math collections
