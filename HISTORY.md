@@ -2,6 +2,9 @@ Work in progress
 ----------------
 - Maintainer change @matze-dd → @torik42
   - change URLs and add info in README
+- LaTeX macros / environments
+  - builtins
+    - added macros \\addtocounter, \\author, \\includeonly, \\newcounter, \\refstepcounter, \\setcounter, \\stepcounter (PR [#230](../../pull/230))
 
 Version 1.3.1 (2022/08/04)
 --------------------------
