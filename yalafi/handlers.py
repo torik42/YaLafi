@@ -112,6 +112,28 @@ def h_hspace(parser, buf, mac, args, delim, pos):
         return []
     return [defs.SpaceToken(pos, ' ')]
 
+
+def h_linebreak(parser, buf, mac, args, delim, pos):
+    """
+    Handler for macro `\linebreak` taking one optional argument.
+
+    Adds no additional space for optional argument '0','1','2','3'.
+    Adds one SpaceToken for argument '4', or no argument.
+    Adds Latexerror for other arguments, we allow additional whitespace.
+    """
+    if len(args[0]) == 0:
+        return [defs.SpaceToken(pos, ' ')]
+    else:
+        arg = parser.get_text_expanded(args[0]).strip()
+        if arg == '4':
+            return [defs.SpaceToken(pos, ' ')]
+        elif arg in ['0','1','2','3']:
+            # There is no line break for arguments 0,1,2,3
+            return []
+    # For all other arguments, return an error
+    return utils.latex_error(parser, '`\linebreak` only takes values 0,1,2,3 or 4', pos)
+
+
 #   macro \cite[opt]
 #
 def h_cite(parser, buf, mac, args, delim, pos):
