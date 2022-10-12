@@ -1,6 +1,3 @@
-
-# YaLafi: Yet another LaTeX filter
-
 This Python package extracts plain text from LaTeX documents.
 The software may be integrated with a proofreading tool and an editor.
 It provides
