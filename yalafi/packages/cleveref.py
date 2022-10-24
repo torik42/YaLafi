@@ -1,21 +1,18 @@
+"""
+YaLafi module for LaTeX package cleveref
+Contributed by @torik42 (at GitHub) in pull request #171
+"""
 
-#
-#   YaLafi module for LaTeX package cleveref
-#   Contributed by @torik42 (at GitHub) in pull request #171
-#
-
-from yalafi.defs import InitModule, Macro, VoidToken
-from yalafi import utils
 import re
+from yalafi.defs import InitModule, Macro
+from yalafi import utils
 
 
 require_packages = []
 
-macro_read_sed = '\\YYCleverefInput'
+MACRO_READ_SED = '\\YYCleverefInput'
 
-# Commands whose replacements are read from sed file based on given arguments.
-# The boolean value indicates, whether it is a usual command taking only one
-# argument or a range command taking two arguments.
+
 reference_commands = [
     ('\\cref', False),
     ('\\Cref', False),
@@ -32,11 +29,16 @@ reference_commands = [
     ('\\lcnamecref', False),
     ('\\lcnamecrefs', False),
 ]
+"""
+Commands whose replacements are read from sed file based on given arguments.
+The boolean value indicates, whether it is a usual command taking only one
+argument or a range command taking two arguments.
+"""
 
 usual_commands = []
 range_commands = []
-for name, isRange in reference_commands:
-    if isRange:
+for name, is_range in reference_commands:
+    if is_range:
         range_commands.append('\\' + name)
     else:
         usual_commands.append('\\' + name)
@@ -56,6 +58,11 @@ s/\\
     (.*)            # group 4: the replacement string
 /g
 ''', re.VERBOSE)
+r"""
+Regular expression capturing cleverefs single reference commands.
+Only the commands taking one argument are included. Others taking two
+arguments like \crefrange are captured by `re_ref_range`.
+"""
 
 re_ref_range = re.compile(r'''
 s/\\
@@ -74,6 +81,11 @@ s/\\
     (.*)            # group 5: the replacement string
 /g
 ''', re.VERBOSE)
+r"""
+Regular expression capturing cleverefs range reference commands.
+Only the commands taking two arguments are included. The standard
+commands taking two arguments, like \cref, are captured by `re_ref`.
+"""
 
 re_command = re.compile(r'''
 s/\\
@@ -106,26 +118,26 @@ def unescape_sed(string):
 
 
 # Error messages
-msg_poorman_option = f'''To use cleveref with YaLafi, you need to use
-*** the 'poorman' option and {macro_read_sed}
+MSG_POORMAN_OPTION = f'''To use cleveref with YaLafi, you need to use
+*** the 'poorman' option and {MACRO_READ_SED}
 *** to load the sed file.
 '''
-msg_sed_not_loaded = f'''To use cleveref with YaLafi, you should use
-*** {macro_read_sed} to load the sed file, e.g.
-*** '{macro_read_sed}{{main.sed}}' if your LaTeX
+MSG_SED_NOT_LOADED = f'''To use cleveref with YaLafi, you should use
+*** {MACRO_READ_SED} to load the sed file, e.g.
+*** '{MACRO_READ_SED}{{main.sed}}' if your LaTeX
 *** document is called 'main.tex'.
 '''
-msg_cref_undefined = r'''No replacement for {:}{{{:}}} known.
+MSG_CREF_UNDEFINED = r'''No replacement for {:}{{{:}}} known.
 *** Run LaTeX again to build a new sed file.
 '''
-msg_crefrange_undefined = r'''No replacement for {:}{{{:}}}{{{:}}} known.
+MSG_CREFRANGE_UNDEFINED = r'''No replacement for {:}{{{:}}}{{{:}}} known.
 *** Run LaTeX again to build a new sed file.
 '''
 
 
 def init_module(parser, options, position):
     parms = parser.parms
-    parms.newcommand_ignore.append(macro_read_sed)
+    parms.newcommand_ignore.append(MACRO_READ_SED)
 
     macros_latex = r'''
         \newcommand{\crefname}[3]{}
@@ -136,7 +148,7 @@ def init_module(parser, options, position):
 
     macros_python = [
 
-        Macro(parms, macro_read_sed, args='A', repl=h_read_sed),
+        Macro(parms, MACRO_READ_SED, args='A', repl=h_read_sed),
         Macro(parms, '\\label', args='OA', repl=''),
 
     ]
@@ -144,8 +156,8 @@ def init_module(parser, options, position):
     # Define functions which warn the User, whenever cleveref
     # is used without invoking \YYCleverefInput. These will be overwritten
     # by invoking \YYCleverefInput.
-    for name, isRange in reference_commands:
-        args = '*A' + 'A'*isRange
+    for name, is_range in reference_commands:
+        args = '*A' + 'A'*is_range
         macro = Macro(parms, name, args=args, repl=h_cref_warning)
         macros_python.append(macro)
 
@@ -155,13 +167,19 @@ def init_module(parser, options, position):
     # without the poorman option:
     inject_tokens = []
     if not is_poorman_used(options):
-        inject_tokens = utils.latex_error(parser, msg_poorman_option, position)
+        inject_tokens = utils.latex_error(parser, MSG_POORMAN_OPTION, position)
 
     return InitModule(macros_latex=macros_latex, macros_python=macros_python,
                       environments=environments, inject_tokens=inject_tokens)
 
 
 def h_read_sed(parser, buf, mac, args, delim, pos):
+    r"""
+    Macro handler function for `\YYcleverefinput`.
+
+    Load the given sed file, generate all necessary replacements and recreate
+    all cleveref reference commands.
+    """
     if not parser.read_macros:
         return []
 
@@ -190,7 +208,7 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
     # given. The replacement is the string with which the particular command
     # should be replaced.
     refs = {}
-    for name, isRange in reference_commands:
+    for name, is_range in reference_commands:
         refs[name] = {'': {}, '*': {}}
 
     for rep in sed.split('\n'):
@@ -220,7 +238,7 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
         m = re_command.search(rep)
         # We need regexp.search here, because cleveref adds ranges
         # `<begin>,<end> s/…` to these sed commands in multi-language
-        # documents. We only parse the first occurence to get the versions
+        # documents. We only parse the first occurrence to get the versions
         # for the main language.
         if m:
             args = 'A'*int((m.end(3)-m.start(3))/4)
@@ -241,8 +259,8 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
                                                     args=args, repl=string)
 
     # Make the Macro objects for all commands in reference_commands:
-    for name, isRange in reference_commands:
-        if isRange:
+    for name, is_range in reference_commands:
+        if is_range:
             parser.the_macros[name] = Macro(parser.parms,
                                             name, args='*AA',
                                             repl=h_make_crefrange(refs[name]))
@@ -256,6 +274,7 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
 
 
 def h_make_cref(cref):
+    "Create a Macro handler function for cleverefs single reference commands."
     def f(parser, buf, mac, args, delim, pos):
         star = parser.get_text_direct(args[0])
         rep = parser.get_text_direct(args[1])
@@ -265,11 +284,12 @@ def h_make_cref(cref):
                 t.pos = pos
             return toks
         return utils.latex_error(parser,
-                                 msg_cref_undefined.format(mac.name,rep), pos)
+                                 MSG_CREF_UNDEFINED.format(mac.name,rep), pos)
     return f
 
 
 def h_make_crefrange(cref):
+    "Create a Macro handler function for cleverefs range reference commands."
     def f(parser, buf, mac, args, delim, pos):
         star = parser.get_text_direct(args[0])
         rep = (parser.get_text_direct(args[1]), parser.get_text_direct(args[2]))
@@ -279,16 +299,22 @@ def h_make_crefrange(cref):
                 t.pos = pos
             return toks
         return utils.latex_error(parser,
-                                 msg_crefrange_undefined.format(mac.name,*rep),
+                                 MSG_CREFRANGE_UNDEFINED.format(mac.name,*rep),
                                  pos)
     return f
 
 
 def h_cref_warning(parser, buf, mac, args, delim, pos):
-    return utils.latex_error(parser, msg_sed_not_loaded, pos)
+    r"""
+    Macro handler function for all cleveref commands before sed file is loaded.
+    These will be replaced, as soon as `\YYcleveref` is found in the file.
+    See `h_read_sed`.
+    """
+    return utils.latex_error(parser, MSG_SED_NOT_LOADED, pos)
 
 
 def is_poorman_used(options):
+    r"Check whether `'poorman'` is contained in the given list of options."
     for opt in reversed(options):
         if 'poorman' in opt:
             return True
