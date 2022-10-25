@@ -5,7 +5,16 @@ Work in progress
 - LaTeX macros / environments
   - builtins
     - added macros \\addtocounter, \\author, \\includeonly, \\newcounter, \\refstepcounter, \\setcounter, \\stepcounter (PR [#230](../../pull/230))
+    - added macros \\MakeLowercase, \\MakeUppercase
+      (PR [#229](../../pull/229))
   - add special token \\/ for italic correction **thanks to @symphorien** (PR [#215](../../pull/215))
+  - package cleveref
+    (PR [#229](../../pull/229))
+    - added macro \\crefalias and more reference commands like
+      \\cpageref
+    - fixed handling of multi-language sed files
+    - extended documentation
+    - fixed minor problems
 
 Version 1.3.1 (2022/08/04)
 --------------------------
@@ -40,7 +49,7 @@ Version 1.3.0 (2021/01/31)
     - unicode math operators
   - new package circuitikz: environment circuitikz
     (issue [#158](../../issues/158))
-  - new package celeveref, macros like \\cref and companions;
+  - new package cleveref, macros like \\cref and companions;
     **thanks to @torik42** (issue [#161](../../issues/161),
     PR [#171](../../pull/171))
   - package amsthm: added macro \\newtheoremstyle; **thanks to @torik42**
