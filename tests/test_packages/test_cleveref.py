@@ -67,6 +67,7 @@ data_test_macros_sed = [
 
 @pytest.mark.parametrize('latex,plain_expected', data_test_macros_sed)
 def test_macros_sed(latex, plain_expected):
+    "Test different cleveref reference commands."
     plain = get_plain_sed(latex)
     assert plain == plain_expected
 
@@ -87,6 +88,7 @@ eq.\N{NO-BREAK SPACE}(0)
 
 
 def test_1():
+    r"Test that `\newcommand{\YYCleverefInput}…` is ignored."
     def read(file):
         return True, sed_1
     parms = parameters.Parameters()
@@ -113,6 +115,7 @@ Equation\N{NO-BREAK SPACE}(0)
 
 
 def test_2():
+    "Test starred reference commands with hyperref."
     def read(file):
         return True, sed_2
     parms = parameters.Parameters()
@@ -162,6 +165,7 @@ stderr_4 = r"""*** LaTeX error: code in 't.tex', line 3, column 2:
 
 
 def test_4(capsys):
+    r"Test error creation for missing `\YYCleverefInput`."
     capsys.readouterr()
     parms = parameters.Parameters()
     p = parser.Parser(parms)
@@ -192,6 +196,7 @@ stderr_5 = r"""*** LaTeX error: code in 't.tex', line 4, column 2:
 
 
 def test_5(capsys):
+    "Test error creation for missing label in sed file."
     def read(file):
         return True, sed_5
     capsys.readouterr()
@@ -224,6 +229,7 @@ stderr_6 = r"""*** LaTeX error: code in 't.tex', line 2, column 2:
 
 
 def test_6(capsys):
+    "Test error creation for missing `poorman` option."
     def read(file):
         return True, sed_6
     capsys.readouterr()
@@ -251,6 +257,7 @@ eq.\N{NO-BREAK SPACE}(0)
 
 
 def test_7():
+    "Test special characters in equation label."
     def read(file):
         return True, sed_7
     parms = parameters.Parameters()
@@ -258,3 +265,36 @@ def test_7():
     toks = p.parse(latex_7)
     plain, pos = utils.get_txt_pos(toks)
     assert plain_7 == plain
+
+
+latex_8 = r"""
+\documentclass{book}
+\usepackage[german,main=british]{babel}
+\usepackage[poorman]{cleveref}
+\YYCleverefInput{latex.sed}
+\begin{document}
+    \begin{equation}
+        \label{eq1}
+        A=B
+    \end{equation}
+    \Cref{eq1}.
+\end{document}
+"""
+sed_8 = r"""
+5,6 s/\\Cref@equation@name /Equation/g 
+s/\\Cref{eq1}/\\Cref@equation@name \\nobreakspace \\textup {(\\ref {eq1})}/g 
+"""
+plain_8 = """
+      V-V-V\n    Equation\N{NO-BREAK SPACE}(0).
+"""
+
+
+def test_8():
+    "Test sed file for multi-language document."
+    def read(file):
+        return True, sed_8
+    parms = parameters.Parameters()
+    p = parser.Parser(parms, read_macros=read)
+    toks = p.parse(latex_8)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_8 == plain
