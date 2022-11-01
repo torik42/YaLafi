@@ -83,7 +83,11 @@ def init_module(parser, options, position):
         Macro(parms, '\\newglossaryentry', args='AA', repl=h_newglossaryentry),
 
         # this is for reading the .glsdefs database
+        # for glossaries < 4.47
         Macro(parms, '\\gls@defglossaryentry', args='AA',
+                                                    repl=h_parse_glsdefs),
+        # for newer glossaries
+        Macro(parms, '\\glsdefs@newdocentry', args='AA',
                                                     repl=h_parse_glsdefs),
 
     ]
