@@ -11,18 +11,30 @@
 #
 
 from yalafi.defs import Macro, InitModule
+from yalafi.packages.glossaries import h_gls, cap_first
 
 require_packages = ['glossaries']
 
 def init_module(parser, options, position):
     parms = parser.parms
 
-    macros_latex = ''
+    macros_latex = r"""
+
+        \newcommand{\glsxtrfull}[1]{\glsxtrshort{#1} (\glsxtrlong{#1})}
+        \newcommand{\Glsxtrfull}[1]{\glsxtrshort{#1} (\Glsxtrlong{#1})}
+
+    """
 
     macros_python = [
 
         Macro(parms, '\\newabbreviation', args='AAA',
                                             repl=r'\newacronym{#1}{#2}{#3}'),
+        Macro(parms, '\\glsxtrshort', args='OA', repl=h_gls('short', [])),
+        Macro(parms, '\\Glsxtrshort', args='OA',
+              repl=h_gls('short', [cap_first])),
+        Macro(parms, '\\glsxtrlong', args='OA', repl=h_gls('long', [])),
+        Macro(parms, '\\Glsxtrlong', args='OA',
+              repl=h_gls('long', [cap_first])),
 
     ]
 

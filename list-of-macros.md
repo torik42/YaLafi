@@ -361,7 +361,13 @@ With `docdef=true`, all glossary entries have to be defined inside of
 
 **Macros**
 
-\\newabbreviation
+\\newabbreviation,
+\\Glsxtrfull,
+\\glsxtrfull,
+\\Glsxtrlong,
+\\glsxtrlong,
+\\Glsxtrshort,
+\\glsxtrshort
 
 
 ## Package graphicx
