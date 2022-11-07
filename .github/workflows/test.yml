@@ -29,4 +29,33 @@ jobs:
     - name: Test with module pytest
       run: |
         python -m pytest tests
-
+  test-install:
+    name: Test import of packages after local install
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10']
+    steps:
+      - uses: actions/checkout@master
+        with:
+          path: YaLafi
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Update pip
+        run: python -m pip install --upgrade pip
+      - name: Install pytest
+        run: python -m pip install pytest
+      - name: Install YaLafi
+        run: |
+          cd YaLafi
+          pip install .
+      - name: Check if yalafi is installed and accessible
+        run: python -c "import yalafi"
+      - name: Check if yalafi.shell is installed and accessible
+        run: python -c "import yalafi.shell"
+      - name: Execute the tests (without adding the pwd to pythonpath)
+        run: |
+          cd YaLafi
+          pytest tests/test_shell/test_shell.py
