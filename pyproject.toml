@@ -22,5 +22,5 @@ classifiers = [
 "Documentation" = "https://github.com/torik42/YaLafi#contents"
 "Issue Tracker" = "https://github.com/torik42/YaLafi/issues"
 
-[tool.setuptools]
-packages = ["yalafi", "yalafi.shell"]
+[tool.setuptools.packages.find]
+include = ["yalafi*"]
