@@ -23,4 +23,4 @@ classifiers = [
 "Issue Tracker" = "https://github.com/torik42/YaLafi/issues"
 
 [tool.setuptools]
-package-dir = {"" = "yalafi"}
+packages = ["yalafi", "yalafi.shell"]
