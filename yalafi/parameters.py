@@ -96,6 +96,7 @@ class Parameters:
         Macro(self, '\\footnotetext', args='OA', extract='#2'),
         Macro(self, '\\framebox', args='OOA', repl='#3'),
         Macro(self, '\\hphantom', args='A', repl=hs.h_phantom),
+        Macro(self, '\\linebreak', args='O', repl=hs.h_linebreak),
         Macro(self, '\\hspace', args='*A', repl=hs.h_hspace),
         Macro(self, '\\MakeLowercase', args='A', repl=hs.h_makeLowercase),
         Macro(self, '\\MakeUppercase', args='A', repl=hs.h_makeUppercase),

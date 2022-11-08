@@ -7,6 +7,7 @@ Work in progress
     - added macros \\addtocounter, \\author, \\includeonly, \\newcounter, \\refstepcounter, \\setcounter, \\stepcounter (PR [#230](../../pull/230))
     - added macros \\MakeLowercase, \\MakeUppercase
       (PR [#229](../../pull/229))
+    - added macro \\linebreak (see PR [#214](../../pull/214))
   - add special token \\/ for italic correction **thanks to @symphorien** (PR [#215](../../pull/215))
   - package cleveref
     (PR [#229](../../pull/229))

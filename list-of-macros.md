@@ -78,6 +78,7 @@ tests: [tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_
 \\l,
 \\label,
 \\LaTeX,
+\\linebreak,
 \\LTadd,
 \\LTalter,
 \\LTinput (executes code in file),
