@@ -15,6 +15,7 @@ Work in progress
     - fixed handling of multi-language sed files
     - extended documentation
     - fixed minor problems
+- CI tests: add test for successful local installation **thanks to @JulianGoeltz** (PR [#236](../../pull/236))
 
 Version 1.3.1 (2022/08/04)
 --------------------------
