@@ -323,9 +323,13 @@ all definitions of glossary entries inside of
 
 **Macros**
 
+\\acrpluralsuffix
 \\GLS,
 \\Gls,
 \\gls,
+\\glspluralsuffix
+\\glsacrpluralsuffix
+\\glsupacrpluralsuffix
 \\GLSpl,
 \\Glspl,
 \\glspl,

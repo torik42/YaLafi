@@ -45,7 +45,7 @@
 #
 
 import copy
-from yalafi import defs, utils
+from yalafi import defs, utils, scanner
 from yalafi.defs import Macro, InitModule
 
 require_packages = []
@@ -53,7 +53,15 @@ require_packages = []
 def init_module(parser, options, position):
     parms = parser.parms
 
-    macros_latex = ''
+    macros_latex = r"""
+
+        \renewcommand*[1]{\glstextup}{#1}
+        \renewcommand*{\glspluralsuffix}{s}
+        \renewcommand*{\glsacrpluralsuffix}{\glspluralsuffix}
+        \renewcommand*{\glsupacrpluralsuffix}{\glstextup{\glspluralsuffix}}
+        \renewcommand*{\acrpluralsuffix}{\glsacrpluralsuffix}
+
+    """
 
     macros_python = [
 
@@ -108,6 +116,8 @@ def h_gls(key, mods):
                     'could not find label for \\gls...'
                     + ' - did you include "\\LTinput{<main file>.glsdefs}"?',
                     pos)
+        # Expand all macros before possible capitalization
+        toks = parser.expand_sequence(scanner.Buffer(toks.copy()))
         for f in mods:
             toks = f(toks)
         for t in toks:
