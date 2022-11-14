@@ -1,0 +1,19 @@
+\documentclass{article}
+
+\usepackage{glossaries}
+\makeglossaries
+
+\newcommand{\LTinput}[1]{}
+\LTinput{glossaries_post_4_47.glsdefs}
+
+\begin{document}
+
+\newacronym{pp}{ppm}{parts per million}
+\newglossaryentry{ex}{name=example, description={a sample}}
+
+\gls{pp}
+\GLSpl{pp}
+
+\printglossaries
+
+\end{document}

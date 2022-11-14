@@ -16,6 +16,9 @@ Work in progress
     - fixed handling of multi-language sed files
     - extended documentation
     - fixed minor problems
+  - package glossaries
+    - update for new `.glsdef` format introduced in glossaries 4.47; **draft thanks to @mstmob** (PR [#238](../../pull/238), PR [#220](../../pull/220), issue [#219](../../issues/219))
+    - added macros \\acrpluralsuffix, \\glspluralsuffix, \\glsacrpluralsuffix, \\glsupacrpluralsuffix
 - CI tests: add test for successful local installation **thanks to @JulianGoeltz** (PR [#236](../../pull/236))
 
 Version 1.3.1 (2022/08/04)
