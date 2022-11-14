@@ -4,7 +4,7 @@ on:
   release:
     types: [published]
   push:
-    tags: ['[0-9]+.[0-9]+.[0-9]+']
+    tags: ['\d+.\d+.\d+((a|b|rc)(\d+)?)?']
 
 jobs:
   build-n-publish:
@@ -30,26 +30,59 @@ jobs:
         --wheel
         --outdir dist/
         .
+    - name: Compare git tag to pyproject version
+      if: github.event_name == 'push'
+      run: |
+        version_pyproject=$(grep -Po 'version = "\K[^"]*' pyproject.toml)
+        version_gittag=${{github.ref_name}}
+        if [[ "${version_pyproject}" != "${version_gittag}" ]]; then
+          echo "Version from pyproject '${version_pyproject}' is not equal to git tag '${version_gittag}'";
+          exit 1;
+        fi
+        echo "version=$version_gittag" >> $GITHUB_ENV
     - name: Publish distribution to Test PyPI
       if: github.event_name == 'push'
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.TEST_PYPI_API_TOKEN }}
         repository_url: https://test.pypi.org/legacy/
-    - name : Test install from test.pypi.org
+    - name: Create Draft Release
       if: github.event_name == 'push'
-      run: |
-        version=$(grep -Po 'version = "\K[0-9.]*' pyproject.toml)
-        pip install -i https://test.pypi.org/simple/ yalafi==${version}
-    - name : Test after removing local yalafi folder
-      if: github.event_name == 'push'
-      run: |
-        rm -rf yalafi
-        python -c "import yalafi"
-        python -c "import yalafi.shell"
+      id: create_release
+      uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        artifacts:
+          - dist/yalafi*.whl
+          - dist/yalafi*.tar.gz
+        draft: true
+        name: Draft Release ${{ env.version }}
+        prerelease: false
+        token: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
 
     - name: Publish distribution to PyPI
       if: github.event_name == 'release'
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
+
+  testPyPi-install:
+    if: github.event_name == 'push'
+    needs: build-n-publish
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10']
+    steps:
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Test install from test.PyPI
+        run: |
+          version_gittag=${{github.ref_name}}
+          pip install -i https://test.pypi.org/simple/ yalafi==${version_gittag}
+      - name : Test after removing local yalafi folder
+        run: |
+          python -c "import yalafi"
+          python -c "import yalafi.shell"
