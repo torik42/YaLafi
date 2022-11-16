@@ -32,6 +32,12 @@ def test_macros_latex_glossaries(latex, plain_expected):
 data_test_macros_latex = [
 
     (r'\newabbreviation{pp}{ppm}{parts per million}', 'Parts per million.'),
+    (r'\glsxtrshort{pp}', 'ppm'),
+    (r'\Glsxtrshort{pp}', 'Ppm'),
+    (r'\glsxtrlong{pp}', 'parts per million'),
+    (r'\Glsxtrlong{pp}', 'Parts per million'),
+    (r'\glsxtrfull{pp}', 'ppm (parts per million)'),
+    (r'\Glsxtrfull{pp}', 'ppm (Parts per million)'),
 
 ]
 

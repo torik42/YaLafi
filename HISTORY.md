@@ -19,6 +19,9 @@ Work in progress
   - package glossaries
     - update for new `.glsdef` format introduced in glossaries 4.47; **draft thanks to @mstmob** (PR [#238](../../pull/238), PR [#220](../../pull/220), issue [#219](../../issues/219))
     - added macros \\acrpluralsuffix, \\glspluralsuffix, \\glsacrpluralsuffix, \\glsupacrpluralsuffix
+  - package glossaries-extra
+    - added macros \\Glsxtrfull, \\glsxtrfull, \\Glsxtrlong, \\glsxtrlong, \\Glsxtrshort, \\glsxtrshort;
+      **thanks to @JulianGoeltz** (PR [#234](../../pull/234))
 - CI tests: add test for successful local installation **thanks to @JulianGoeltz** (PR [#236](../../pull/236))
 
 Version 1.3.1 (2022/08/04)
