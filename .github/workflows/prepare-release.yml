@@ -1,0 +1,95 @@
+name: Build and prepare release
+
+on:
+  push:
+    tags:
+    - '[1-9]+.[0-9]+.[0-9]+'
+    - '[1-9]+.[0-9]+.[0-9]+a[0-9]+'
+    - '[1-9]+.[0-9]+.[0-9]+b[0-9]+'
+    - '[1-9]+.[0-9]+.[0-9]+rc[0-9]+'
+
+jobs:
+  build-n-publish:
+    name: Build and prepare release
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Compare git tag to pyproject version
+      run: |
+        version_pyproject=$(grep -Po 'version = "\K[^"]*' pyproject.toml)
+        version_gittag=${{github.ref_name}}
+        if [[ "${version_pyproject}" != "${version_gittag}" ]]; then
+          echo "Version from pyproject '${version_pyproject}' is not equal to git tag '${version_gittag}'";
+          exit 1;
+        fi
+        echo "version=$version_gittag" >> $GITHUB_ENV
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+    - name: Install pypa/build
+      run: >-
+        python -m
+        pip install
+        build
+    - name: Build a binary wheel and a source tarball
+      run: >-
+        python -m
+        build
+        --sdist
+        --wheel
+        --outdir dist/
+        .
+    - name: Create Draft Release
+      id: create_release
+      uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        artifacts: 'dist/yalafi*.whl,dist/yalafi*.tar.gz'
+        draft: true
+        name: Version ${{ env.version }}
+        prerelease: false
+        token: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+    - name: Publish distribution to Test PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        repository_url: https://test.pypi.org/legacy/
+
+  sleep:
+    name: Wait two minutes for PyPI to be available
+    needs: build-n-publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait two minutes for PyPI to be available
+        run: sleep 120
+
+  testPyPI-install:
+    name: Test PyPI package
+    needs: [build-n-publish, sleep]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10']
+    steps:
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pytest
+        run: python -m pip install pytest
+      - name: Test install from test.PyPI
+        run: |
+          version_gittag=${{github.ref_name}}
+          pip install -i https://test.pypi.org/simple/ yalafi==${version_gittag}
+      - name: Test import of packages
+        run: |
+          python -c "import yalafi"
+          python -c "import yalafi.shell"
+      - name: Checkout YaLafi
+        uses: actions/checkout@v3
+      - name: Test with module pytest
+        run: |
+          rm -rf yalafi
+          python -m pytest tests
