@@ -11,8 +11,9 @@ on:
 jobs:
   build-n-publish:
     name: Build and prepare release
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: Compare git tag to pyproject version
@@ -49,6 +50,7 @@ jobs:
         artifacts: 'dist/yalafi*.whl,dist/yalafi*.tar.gz'
         draft: true
         name: Version ${{ env.version }}
+        body: "<!---\nUpdate and test the Link to the correct section!\nAdd release info if necessary.\n--->\nFor a complete changelog see [HISTORY.md](https://github.com/torik42/YaLafi/blob/master/HISTORY.md#version-)."
         prerelease: false
         token: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
     - name: Publish distribution to Test PyPI
