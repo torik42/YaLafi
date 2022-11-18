@@ -4,7 +4,7 @@
 Please note that not everything has to be declared.
 
 - Unknown macros are ignored with arguments kept, {} braces are removed.
-- Unknwon environment frames \\begin, \\end are removed.
+- Unknown environment frames \\begin, \\end are removed.
   If \\begin accepts arguments, the environment should be declared.
 - Math mode macros only need to be declared, if they should not leave
   output that constitutes a part of a term or operator.
@@ -48,14 +48,14 @@ Source: [yalafi/parameters.py](yalafi/parameters.py),
 tests: [tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_latex_builtins.py)
 
 **Macros**
-(Major side-effects for the filter are noted in parantheses.)
+(Major side effects for the filter are noted in parentheses.)
 
 \\AA,
 \\aa,
 \\AE,
 \\addtocounter,
-\\author,
 \\ae,
+\\author,
 \\bibitem,
 \\bibliographystyle,
 \\caption (separates text),
@@ -74,6 +74,7 @@ tests: [tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_
 \\includeonly,
 \\index,
 \\input,
+\\item,
 \\L,
 \\l,
 \\label,
@@ -89,6 +90,7 @@ tests: [tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_
 \\newcounter,
 \\newline,
 \\newtheorem (defines environment),
+\\nobreakspace
 \\O,
 \\o,
 \\OE,
@@ -318,8 +320,8 @@ tests: [tests/test\_packages/test\_glossaries.py](tests/test_packages/test_gloss
 
 Please note the comments at the beginning of file
 [yalafi/packages/glossaries.py](yalafi/packages/glossaries.py).
-You have to load the `.glsdefs` file into each LaTeX source, and to place
-all definitions of glossary entries inside of
+You have to load the `.glsdefs` file into each LaTeX source and to place
+all definitions of glossary entries inside
 `\begin{document} ... \end{document}`.
 
 **Macros**
@@ -354,10 +356,10 @@ tests: [tests/test\_packages/test\_glossaries\_extra.py](tests/test_packages/tes
 
 Please note the comments at the beginning of file
 [yalafi/packages/glossaries\_extra.py](yalafi/packages/glossaries_extra.py).
-You have to load the `.glsdefs` file into each LaTeX source, and to say
+You have to load the `.glsdefs` file into each LaTeX source and to say
 something like `\usepackage[docdef=true]{glossaries-extra}`
 or `\usepackage[docdef=atom]{glossaries-extra}` in the preamble.
-With `docdef=true`, all glossary entries have to be defined inside of
+With `docdef=true`, all glossary entries have to be defined inside
 `\begin{document} ... \end{document}`.
 
 **Loaded packages**
@@ -382,6 +384,7 @@ tests: [tests/test\_packages/test\_graphicx.py](tests/test_packages/test_graphic
 
 **Macros**
 
+\\graphicspath
 \\includegraphics
 
 
@@ -454,6 +457,17 @@ tests: [tests/test\_packages/test\_pgfplots.py](tests/test_packages/test_pgfplot
 \\pgfplotsset
 
 
+## Package subfiles
+
+Source: [yalafi/packages/subfiles.py](yalafi/packages/subfiles.py),
+tests: [tests/test\_packages/test\_subfiles.py](tests/test_packages/test_subfiles.py)
+
+**Macros**
+
+\\subfile,
+\\subfileinclude
+
+
 ## Package tikz
 
 Source: [yalafi/packages/tikz.py](yalafi/packages/tikz.py),
@@ -475,6 +489,8 @@ tikzpicture
 
 Source: [yalafi/packages/unicode\_math.py](yalafi/packages/unicode_math.py),
 tests: [tests/test\_packages/test\_unicode\_math.py](tests/test_packages/test_unicode_math.py)
+
+Adds unicode ‘math operators’, i.e. also `≤` and similar are recognized in equations.
 
 **Macros**
 

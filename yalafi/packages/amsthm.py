@@ -12,9 +12,9 @@ def init_module(parser, options, position):
 
     macros_latex = r"""
 
+        \newcommand{\newtheoremstyle}[9]{}
         \newcommand{\qedhere}{}
         \newcommand{\theoremstyle}[1]{}
-        \newcommand{\newtheoremstyle}[9]{}
 
     """
 
