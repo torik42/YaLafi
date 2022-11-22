@@ -23,6 +23,9 @@ Work in progress
     - added macros \\Glsxtrfull, \\glsxtrfull, \\Glsxtrlong, \\glsxtrlong, \\Glsxtrshort, \\glsxtrshort;
       **thanks to @JulianGoeltz** (PR [#234](../../pull/234))
 - CI tests: add test for successful local installation **thanks to @JulianGoeltz** (PR [#236](../../pull/236))
+- CD: add GitHub action for CD **together with @JulianGoeltz** (PR [#237](../../pull/237))
+  - on new version tags: create draft releases, publish to `test.pypi`, and test installation from `test.pypi`
+  - on releases: publish the assets to PyPI
 
 Version 1.3.1 (2022/08/04)
 --------------------------
