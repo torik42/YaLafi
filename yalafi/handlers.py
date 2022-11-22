@@ -114,7 +114,7 @@ def h_hspace(parser, buf, mac, args, delim, pos):
 
 
 def h_linebreak(parser, buf, mac, args, delim, pos):
-    """
+    r"""
     Handler for macro `\linebreak` taking one optional argument.
 
     Adds no additional space for optional argument '0','1','2','3'.
@@ -131,7 +131,7 @@ def h_linebreak(parser, buf, mac, args, delim, pos):
             # There is no line break for arguments 0,1,2,3
             return []
     # For all other arguments, return an error
-    return utils.latex_error(parser, '`\linebreak` only takes values 0,1,2,3 or 4', pos)
+    return utils.latex_error(parser, r'`\linebreak` only takes values 0,1,2,3 or 4', pos)
 
 
 #   macro \cite[opt]
