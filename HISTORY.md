@@ -1,14 +1,14 @@
 Work in progress
 ----------------
 - Maintainer change @matze-dd → @torik42
-  - change URLs and add info in README
+  - changed URLs and add info in README.md
 - LaTeX macros / environments
   - builtins
     - added macros \\addtocounter, \\author, \\includeonly, \\newcounter, \\refstepcounter, \\setcounter, \\stepcounter (PR [#230](../../pull/230))
     - added macros \\MakeLowercase, \\MakeUppercase
       (PR [#229](../../pull/229))
     - added macro \\linebreak (see PR [#214](../../pull/214))
-  - add special token \\/ for italic correction **thanks to @symphorien** (PR [#215](../../pull/215))
+  - added special token \\/ for italic correction **thanks to @symphorien** (PR [#215](../../pull/215))
   - package cleveref
     (PR [#229](../../pull/229))
     - added macro \\crefalias and more reference commands like
@@ -17,15 +17,16 @@ Work in progress
     - extended documentation
     - fixed minor problems
   - package glossaries
-    - update for new `.glsdef` format introduced in glossaries 4.47; **draft thanks to @mstmob** (PR [#238](../../pull/238), PR [#220](../../pull/220), issue [#219](../../issues/219))
+    - updated for new `.glsdef` format introduced in glossaries 4.47; **draft thanks to @mstmob** (PR [#238](../../pull/238), PR [#220](../../pull/220), issue [#219](../../issues/219))
     - added macros \\acrpluralsuffix, \\glspluralsuffix, \\glsacrpluralsuffix, \\glsupacrpluralsuffix
   - package glossaries-extra
     - added macros \\Glsxtrfull, \\glsxtrfull, \\Glsxtrlong, \\glsxtrlong, \\Glsxtrshort, \\glsxtrshort;
       **thanks to @JulianGoeltz** (PR [#234](../../pull/234))
-- CI tests: add test for successful local installation **thanks to @JulianGoeltz** (PR [#236](../../pull/236))
-- CD: add GitHub action for CD **together with @JulianGoeltz** (PR [#237](../../pull/237))
+- CI tests: added test for successful local installation **thanks to @JulianGoeltz** (PR [#236](../../pull/236))
+- CD: added GitHub action for CD **together with @JulianGoeltz** (PR [#237](../../pull/237))
   - on new version tags: create draft releases, publish to `test.pypi`, and test installation from `test.pypi`
   - on releases: publish the assets to PyPI
+- moved build configuration to `pyproject.toml`
 
 Version 1.3.1 (2022/08/04)
 --------------------------
