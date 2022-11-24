@@ -5,13 +5,19 @@ from yalafi import parameters, parser, utils
 
 preamble = ''
 
-def get_plain(latex):
+def get_plain_pos(latex):
     parms = parameters.Parameters()
     p = parser.Parser(parms)
-    plain, nums = utils.get_txt_pos(p.parse(preamble + latex))
-    assert len(plain) == len(nums)
+    plain, pos = utils.get_txt_pos(p.parse(preamble + latex))
+    assert len(plain) == len(pos)
+    return plain, pos
+
+def get_plain(latex):
+    plain, pos = get_plain_pos(latex)
     return plain
 
+def pos_range(start, length):
+    return [i for i in range(start, start+length)]
 
 data_test_macros_latex = [
 
@@ -100,9 +106,10 @@ data_test_macros_python = [
     (r'A\linebreak[10]B', 'A LATEXXXERROR B'),
     (r'A\linebreak[ 3]B', 'AB'),
     (r'\newcommand{\test}{4}A\linebreak[ \test{} ]B', 'A B'),
-    (r'\MakeLowercase{TeSt}', 'test'),
-    (r'\MakeUppercase{TeSt}', 'TEST'),
+    (r'\MakeLowercase{TeSt}', 'test', pos_range(15, 4)),
+    (r'\MakeUppercase{TeSt}', 'TEST', pos_range(15, 4)),
     (r'\MakeUppercase{3 apples}', '3 APPLES'),
+    (r'\newcommand{\test}{tesst}\MakeUppercase{A\test B}', 'ATESSTB', [40]+5*[41]+[47]),
     (r'A\newcommand{\xxx}{X}B', 'AB'),
     (r'A\newcommand*{\xxx}[1][x]{X}B', 'AB'),
     (r'A\newtheorem{xxx}{XYZ} B', 'AB'),
@@ -140,10 +147,17 @@ data_test_macros_python = [
 
 ]
 
-@pytest.mark.parametrize('latex,plain_expected', data_test_macros_python)
+@pytest.mark.parametrize('latex,plain_expected', filter(lambda x: len(x)!=3,data_test_macros_python))
 def test_macros_python(latex, plain_expected):
     plain = get_plain(latex)
     assert plain == plain_expected
+
+
+@pytest.mark.parametrize('latex,plain_expected,pos_expected', filter(lambda x: len(x)==3, data_test_macros_python))
+def test_macros_python_pos(latex, plain_expected, pos_expected):
+    plain, pos = get_plain_pos(latex)
+    assert plain == plain_expected
+    assert pos == pos_expected
 
 
 data_test_specials = [

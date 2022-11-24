@@ -16,8 +16,10 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import copy
 from . import defs
 from . import utils
+from . import scanner
 import re
 
 #   macros \newcommand, \renewcommand
@@ -186,11 +188,19 @@ def h_load_module(prefix):
 
 # \MakeLowercase
 def h_makeLowercase(parser, buf, mac, args, delim, pos):
-    string = parser.get_text_expanded(args[0])
-    return [defs.TextToken(pos, string.lower())]
+    toks = parser.expand_sequence(scanner.Buffer(args[0].copy()))
+    def f(t):
+        if type(t) is defs.TextToken:
+            t.txt = t.txt.lower()
+        return t
+    return [f(t) for t in toks]
 
 
 # \MakeUppercase
 def h_makeUppercase(parser, buf, mac, args, delim, pos):
-    string = parser.get_text_expanded(args[0])
-    return [defs.TextToken(pos, string.upper())]
+    toks = parser.expand_sequence(scanner.Buffer(args[0].copy()))
+    def f(t):
+        if type(t) is defs.TextToken:
+            t.txt = t.txt.upper()
+        return t
+    return [f(t) for t in toks]
