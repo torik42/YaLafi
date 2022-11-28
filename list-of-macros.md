@@ -292,6 +292,8 @@ In multi-language documents, YaLafi uses the main language for all references.
 \\crefrange(\*),
 \\Crefrange(\*),
 \\label,
+\\labelcpageref,
+\\labelcref,
 \\lcnamecref,
 \\lcnamecrefs,
 \\namecref,

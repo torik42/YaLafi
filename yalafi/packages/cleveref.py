@@ -22,6 +22,8 @@ reference_commands = [
     ('\\Cpageref', False),
     ('\\cpagerefrange', True),
     ('\\Cpagerefrange', True),
+    ('\\labelcref', False),
+    ('\\labelcpageref', False),
     ('\\namecref', False),
     ('\\nameCref', False),
     ('\\namecrefs', False),

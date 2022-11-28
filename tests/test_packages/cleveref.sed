@@ -6,6 +6,8 @@ s/\\cpageref{a}/\\cref@page@name \\nobreakspace \\pageref {a}/g
 s/\\Cpageref{a}/\\Cref@page@name \\nobreakspace \\pageref {a}/g 
 s/\\cpagerefrange{a}{b}/\\cref@page@name@plural \\nobreakspace \\crefrangepreconjunction \\pageref {a}\\crefrangeconjunction \\pageref {b}\\crefrangepostconjunction /g 
 s/\\Cpagerefrange{a}{b}/\\Cref@page@name@plural \\nobreakspace \\crefrangepreconjunction \\pageref {a}\\crefrangeconjunction \\pageref {b}\\crefrangepostconjunction /g 
+s/\\labelcref{a}/\\textup {(\\ref {a})}/g 
+s/\\labelcpageref{a}/\\pageref {a}/g 
 s/\\namecref{a}/equation/g 
 s/\\nameCref{a}/Equation/g 
 s/\\namecrefs{a}/equations/g 

@@ -55,6 +55,8 @@ data_test_macros_sed = [
     (r'\Cpageref{a}', 'Page\N{NO-BREAK SPACE}0'),
     (r'\cpagerefrange{a}{b}', 'pages\N{NO-BREAK SPACE}0 to\N{NO-BREAK SPACE}0'),
     (r'\Cpagerefrange{a}{b}', 'Pages\N{NO-BREAK SPACE}0 to\N{NO-BREAK SPACE}0'),
+    (r'\labelcref{a}', '(0)'),
+    (r'\labelcpageref{a}', '0'),
     (r'\namecref{a}', 'equation'),
     (r'\nameCref{a}', 'Equation'),
     (r'\namecrefs{a}', 'equations'),

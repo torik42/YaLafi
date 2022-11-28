@@ -1,3 +1,8 @@
+Work in progress
+----------------
+- LaTeX macros / environments
+  - package cleveref: added macros \\labelcref and \\labelcpageref
+
 Version 1.4.0 (2022/11/24)
 --------------------------
 - Maintainer change @matze-dd → @torik42
