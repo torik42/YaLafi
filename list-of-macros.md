@@ -242,26 +242,75 @@ circuitikz
 Source: [yalafi/packages/cleveref.py](yalafi/packages/cleveref.py),
 tests: [tests/test\_packages/test\_cleveref.py](tests/test_packages/test_cleveref.py)
 
-For YaLafi to support the `cleveref` package you must load it
-with the `poorman` option in your LaTeX document.
-It will then produce a `sed` file whenever you compile your document.
+The LaTeX package `cleveref` allows to automatically insert the type of a
+reference, e.g. expand `\cref{sec:one}` to `section 1` if it indeed references
+the first section.
+The `cleveref` output is also highly customizable, and we do not intend to
+replicate its functionality within YaLafi.
+Luckily, `cleveref` has a `poorman` option with the following intention:
+If you have written a document using `cleveref`, but a publisher does not
+accept `cleveref`, you can use that option to create a `sed` file (during the
+LaTeX run) which allows replacing all `cleveref` commands.
 See the `cleveref` documentation for more details.
+YaLafi makes use of that and reads this `sed` file to replace all `cleveref`
+commands with their correct replacement.
+As explained above, this requires that you load `cleveref` with the `poorman`
+option, run LaTeX before YaLafi and passing the `sed` file to YaLafi via
+`\YYCleverefInput`.
+A sample file could look like
+```latex
+% file `main.tex`
+\documentclass{scrartcl}
+\newcommand{\YYCleverefInput}[1]{} % make the command known to LaTeX
+\usepackage[poorman]{cleveref}
+% See below for an example with hyperref!
+\YYCleverefInput{main.sed} % tell YaLafi which sed file to use
+
+\begin{document}
+
+    \section{One}\label{sec:one}
+    \Cref{sec:one}
+
+\end{document}
+```
+As written above, you need to first run LaTeX to produce the file `main.sed`
+and then use YaLafi.
+
 The `sed` file is loaded to YaLafi via `\YYCleverefInput`.
 The usage is similar to `\LTinput` and you should also define
 `\newcommand{\YYCleverefInput}[1]{}` in your document.
 
-**Known limitations**
-
+**Known limitation (1):**
 Unfortunately, the `cleveref` package does not always
 create the `sed` file as expected.
 Whenever you load the `hyperref` package as well, only the starred commands,
 e.g. `\cref*{equation1}`, are written to the `sed` file.
 This should be fixed within the `cleveref` LaTeX package.
-**Workaround:** Don’t use the starred variants and compile your document
-without loading `hyperref` to create the `sed` script.
+
+**Workaround (1):**
+Don’t use the starred variants and compile your document without loading
+`hyperref` to create the `sed` script.
 Only add the `hyperref` package if you don’t need the created `sed` file.
-You can use
+Unfortunately, `cleveref` will overwrite the `sed` file each time it is called
+together with `hyperref` and the `poorman` option.
+Hence, one need to remove the `poorman` option in this case.
+
+To simplify the process of loading `cleveref` in a document where you also use
+`hyperref`, one can use the following LaTeX code.
+The idea is that one can comment or uncomment loading the `hyperref` package.
+If the `hyperref` package is not loaded, `cleveref` is loaded with the
+`poorman` option and produces a valid `sed` file on the next LaTeX run.
+And if you load the `hyperref` package, `cleveref` is loaded without the
+`poorman` option such that subsequent LaTeX calls don’t change the `sed` file.
+All this is hidden from YaLafi within an `%%% LT-SKIP` block to avoid warnings.
+Instead, the usage of `cleveref` with the `poorman` option is passed to YaLafi.
+
 ```latex
+% file `main.tex`
+\documentclass{scrartcl}
+\newcommand{\YYCleverefInput}[1]{} % make the command known to LaTeX
+\newcommand{\LTadd}[1]{} % make the command known to LaTeX
+
 %%% LT-SKIP-BEGIN
 % \usepackage{hyperref}
 \makeatletter
@@ -272,10 +321,25 @@ You can use
 }
 \makeatother
 %%% LT-SKIP-END
-\LTadd{\usepackage[poorman]{cleveref}}
-```
-to automatically load `cleveref` with the `poorman` option, when `hyperref` is disabled. Uncommenting the `\usepackage{hyperref}` line will load `cleveref` without the `poorman` option so that the `sed` file is not overwritten and can still be loaded by YaLafi.
 
+\LTadd{\usepackage[poorman]{cleveref}} % tell YaLafi to use cleveref
+\YYCleverefInput{main.sed} % tell YaLafi which sed file to use
+
+\begin{document}
+
+    \section{One}\label{sec:one}
+    \Cref{sec:one}
+
+\end{document}
+```
+
+You only need to disable loading `hyperref`, whenever you use a new label (or
+a different combination of labels).
+But YaLafi will tell you, if it does not know a label yet.
+After enabling `hyperref` again, you might need to run LaTeX twice to update
+the auxiliary files.
+
+**Known limitation (2):**
 In multi-language documents, YaLafi uses the main language for all references.
 
 **Macros**
