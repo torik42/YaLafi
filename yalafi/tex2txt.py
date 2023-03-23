@@ -26,7 +26,7 @@
 #   - option '--pack mods' calls functions init_module() from packages
 #
 
-from . import parameters, parser, utils
+from yalafi import parameters, parser, utils
 
 def tex2txt(latex, opts, source='<unknown>', source_defs='<unknown>',
                     multi_language=False, modify_parms=None):

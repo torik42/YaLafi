@@ -18,7 +18,7 @@
 #
 
 from yalafi import tex2txt
-from . import utils
+from yalafi.shell import utils
 import re
 
 #####################################################################

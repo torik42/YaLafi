@@ -16,7 +16,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from . import utils
+from yalafi import utils
 
 class InitModule:
     def __init__(self, macros_latex='', macros_python=[], environments=[],

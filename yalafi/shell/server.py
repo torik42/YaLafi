@@ -23,7 +23,7 @@
 #
 ##################################################################
 
-from . import utils
+from yalafi.shell import utils
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 from urllib.parse import parse_qs

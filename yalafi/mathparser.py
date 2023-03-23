@@ -21,8 +21,8 @@
 #   "Handling of displayed equations"
 #
 
-from . import defs
-from . import utils
+from yalafi import defs
+from yalafi import utils
 
 
 #   object that represents a sequence consisting only of math tokens

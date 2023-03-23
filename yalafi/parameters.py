@@ -20,9 +20,9 @@
 #   default parameters for scanner and parser
 #
 
-from .defs import Environ, EquEnv, Macro
-from . import handlers as hs
-from . import scanner
+from yalafi.defs import Environ, EquEnv, Macro
+from yalafi import handlers as hs
+from yalafi import scanner
 
 
 class Parameters:

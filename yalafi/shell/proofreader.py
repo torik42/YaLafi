@@ -18,7 +18,7 @@
 #
 
 from yalafi import tex2txt
-from . import checks
+from yalafi.shell import checks
 import subprocess
 import sys
 import time

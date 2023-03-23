@@ -16,13 +16,13 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from . import defs
-from . import mathparser
-from . import scanner
-from . import utils
 import copy
 import unicodedata
 
+from yalafi import defs
+from yalafi import mathparser
+from yalafi import scanner
+from yalafi import utils
 
 class Parser:
     def __init__(self, parms, packages=[], read_macros=None):

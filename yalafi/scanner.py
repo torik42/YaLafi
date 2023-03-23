@@ -22,8 +22,8 @@
 #   - space is divided into "normal" space and paragraph-breaking space
 #
 
-from . import defs
-from . import utils
+from yalafi import defs
+from yalafi import utils
 
 
 class Scanner:

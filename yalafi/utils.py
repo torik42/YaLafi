@@ -16,10 +16,10 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from . import defs, parameters
 import copy
 import re
 import sys
+from yalafi import defs
 
 
 #   print error message to stderr,

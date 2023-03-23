@@ -16,11 +16,10 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import copy
-from . import defs
-from . import utils
-from . import scanner
 import re
+from yalafi import defs
+from yalafi import utils
+from yalafi import scanner
 
 #   macros \newcommand, \renewcommand
 #
