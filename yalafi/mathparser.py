@@ -40,7 +40,8 @@ class MathPartToken(defs.TextToken):
     def __init__(self, toks):
         super().__init__(toks[0].pos, toks[0].txt)
         self.toks = toks
-    def __repr__(sellf):
+
+    def __repr__(self):
         # XXX: why that?
         return 'MathPartToken()'
 

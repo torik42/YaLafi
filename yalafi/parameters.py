@@ -181,7 +181,6 @@ class Parameters:
 
         Environ(self, 'figure', args='O', add_pars=False),
         Environ(self, 'minipage', args='A'),
-#       Environ(self, 'table', repl='[Tabelle]', remove=True),
         Environ(self, 'table', args='O', add_pars=False),
         Environ(self, 'tabular', args='A', add_pars=False),
         Environ(self, 'thebibliography', args='A', add_pars=True),
@@ -445,14 +444,12 @@ class Parameters:
         """
 
         self.math_ignore = [
-
             '{',
             '}',
             '\\!',
             '\\label',
             '\\mathrlap',
             '\\nonumber',
-
         ]
         """
         List of things to be ignored in math mode.
@@ -462,7 +459,6 @@ class Parameters:
         """
 
         self.math_space = [
-
             '~',
             '\\ ',
             '\\\t',
@@ -470,7 +466,6 @@ class Parameters:
             '\\:',
             '\\,',
             '\\;',
-
         ]
         """List of things that generate space even in math mode."""
 
@@ -608,4 +603,3 @@ class ParserLanguageSettings:
             self.lang_change_repl_vowel = lang_change_repl_vowel
         self.short_macros = short_macros
         self.active_chars = set(k[0] for k in self.short_macros.keys())
-

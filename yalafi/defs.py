@@ -34,8 +34,14 @@ class InitModule:
     Object to be returned by :func:`init_module` function of Python modules for
     LaTeX packages and document classes.
     """
-    def __init__(self, macros_latex='', macros_python=[], environments=[],
-                                        inject_tokens=[]):
+    def __init__(self, macros_latex='', macros_python=None, environments=None,
+                       inject_tokens=None):
+        if macros_python is None:
+            macros_python = []
+        if environments is None:
+            environments = []
+        if inject_tokens is None:
+            inject_tokens = []
         self.macros_latex = macros_latex
         self.macros_python = macros_python
         self.environs = environments
@@ -48,16 +54,17 @@ class Printable:
     tokens to the console.
     """
     def __repr__(self):
-        vars = list(v for v in dir(self) if not v.startswith('_'))
-        vars.sort()
+        variables = list(v for v in dir(self) if not v.startswith('_'))
+        variables.sort()
         def get(v):
             return self.__getattribute__(v)
-        is_not_list = list(v + '=' + repr(get(v)) for v in vars
+        is_not_list = list(v + '=' + repr(get(v)) for v in variables
                                     if type(get(v)) is not list)
-        is_list = list(v + '=' + repr(get(v)) for v in vars
+        is_list = list(v + '=' + repr(get(v)) for v in variables
                                     if type(get(v)) is list)
-        cls = self.__class__.__name__
-        return cls + '(' + ', '.join(is_not_list + is_list) + ')'
+        class_name = self.__class__.__name__
+        return class_name + '(' + ', '.join(is_not_list + is_list) + ')'
+
 
 class TextToken(Printable):
     r"""
@@ -365,15 +372,18 @@ class Macro(Expandable):
           Used for macros like ``\footnote``. Defaults to ``''``.
     """
 
-    def __init__(self, parms, name, args='', repl='', defaults=[],
-                                    scanned=False, extract=''):
+    def __init__(self, parms, name, args='', repl='', defaults=None,
+                       scanned=False, extract=''):
+        if defaults is None:
+            defaults = []
         super().__init__(parms, name, args, repl, defaults, scanned, extract)
 
 
 class Environ(Expandable):
-    def __init__(self, parms, name, args='', repl='', defaults=[],
-                                    add_pars=True, remove=False, items=None,
-                                    end_func=None):
+    def __init__(self, parms, name, args='', repl='', defaults=None,
+                       add_pars=True, remove=False, items=None, end_func=None):
+        if defaults is None:
+            defaults = []
         super().__init__(parms, name, args, repl, defaults)
         self.add_pars=add_pars
         self.remove=remove
@@ -382,8 +392,9 @@ class Environ(Expandable):
 
 
 class EquEnv(Environ):
-    def __init__(self, parms, name, args='', repl='', defaults=[],
-                                    remove=False):
+    def __init__(self, parms, name, args='', repl='', defaults=None,
+                       remove=False):
+        if defaults is None:
+            defaults = []
         super().__init__(parms, name, args, repl, defaults,
-                                    add_pars=False, remove=remove)
-
+                         add_pars=False, remove=remove)

@@ -28,12 +28,15 @@ from yalafi import mathparser
 from yalafi import scanner
 from yalafi import utils
 
+
 class Parser:
     """
     LaTeX parser with advanced macro expansion.
     """
 
-    def __init__(self, parms, packages=[], read_macros=None):
+    def __init__(self, parms, packages=None, read_macros=None):
+        if packages is None:
+            packages = []
         self.parms = parms
         """:class:`yalafi.parameters.Parameters` object with Parser settings."""
         self.read_macros = read_macros
@@ -53,6 +56,7 @@ class Parser:
         The values are of type :class:`yalafi.defs.Environ`.
         """
         self.mathparser = mathparser.MathParser(self)
+        self.extracted = []
         self.unknowns = []
         self.latex = ''
         self.source = self.source_main = '<none>'
@@ -60,8 +64,8 @@ class Parser:
         # used by expand_item():
         self.item_macro = defs.Macro(parms, '\\item', args='O', repl='#1')
 
-        def labs_default(level):
         # for safety: \item labels outside of any environment
+        def labs_default(_):
             while True:
                 yield parms.item_default_label[0]
         self.item_lab_stack = [(labs_default(0), '')]
@@ -261,8 +265,7 @@ class Parser:
         Args:
             extracts: List of macro names whose arguments shall be extracted.
         """
-        for name in self.the_macros:
-            mac = self.the_macros[name]
+        for name, mac in self.the_macros.items():
             if name in extracts:
                 pos = next((i for i in range(len(mac.args))
                                 if mac.args[i] == 'A'), len(mac.args))
@@ -550,14 +553,15 @@ class Parser:
             if not ('a' <= c <= 'z' or 'A' <= c <= 'Z'):
                 return utils.latex_error(self,
                                 'text-mode accent for non-letter', tok.pos)
-            c = ('LATIN ' + ('SMALL' if c.islower() else 'CAPITAL')
-                        + ' LETTER ' + c.upper() + ' WITH ' 
-                        + self.parms.accent_macros[tok.txt][0])
+            size = 'SMALL' if c.islower() else 'CAPITAL'
+            accent = self.parms.accent_macros[tok.txt][0]
+            c = f"LATIN {size} LETTER {c.upper()} WITH {accent}"
         try:
             u = unicodedata.lookup(c)
         except:
-            return utils.latex_error(self, 'could not find UTF-8 character "'
-                                            + c + '"', tok.pos)
+            return utils.latex_error(self,
+                f'could not find UTF-8 character "{c}"',
+                tok.pos)
         return [defs.TextToken(tok.pos, u)] + args
 
     #   open an environment
@@ -655,6 +659,7 @@ class Parser:
         return ''.join(t.txt for t in toks
                             if type(t) is not defs.CommentToken)
 
+
     def get_text_expanded(self, toks):
         """
         Generate string from token sequence, with macro expansion.
@@ -663,6 +668,31 @@ class Parser:
         """
         toks = self.expand_sequence(scanner.Buffer(toks.copy()))
         return self.get_text_direct(toks)
+
+
+    def _classify_token(self, tok):
+        r"""
+        Classify token according to its ability to start or end a blank
+        section which can be removed. Three boolean attributes are added
+        to the token:
+          is_blank: Set `True`, when the token contains only space, but
+            no `\n`.
+          can_start: Set `True` if `tok` contains `\n` and only space
+            afterwards.
+          can_end: Set `True` if `tok` contains `\n` and only space
+            before.
+        """
+        if isinstance(tok, defs.ActionToken):
+            tok.is_blank = True
+            tok.can_start = False
+            tok.can_end = False
+        else:
+            txt = tok.txt
+            tok.is_blank = '\n' not in txt and not txt.strip()
+            tok.can_start = '\n' in txt and not txt[txt.rfind('\n'):].strip()
+            tok.can_end = '\n' in txt and not txt[:txt.find('\n')].strip()
+        return tok
+
 
     def remove_pure_action_lines(self, tokens):
         """
@@ -675,17 +705,6 @@ class Parser:
         Returns:
             List of tokens with removed line breaks.
         """
-        def eval(t):
-            if type(t) is defs.ActionToken:
-                t.is_blank = True
-                t.can_start = False
-                t.can_end = False
-            else:
-                txt = t.txt
-                t.is_blank = '\n' not in txt and not txt.strip()
-                t.can_start = '\n' in txt and not txt[txt.rfind('\n'):].strip()
-                t.can_end = '\n' in txt and not txt[:txt.find('\n')].strip()
-            return t
         # Only keep tokens which have text, or are of type ActionToken
         # or LanguageToken. Classify them (see self._classify_token),
         # and put tokens which can start or end a blank section at the
@@ -693,15 +712,16 @@ class Parser:
         # removed).
         tokens = [t for t in tokens if t.txt or
                         type(t) in (defs.ActionToken, defs.LanguageToken)]
-        tokens = [eval(t) for t in tokens]
-        tok = eval(defs.TextToken(0, ''))
+        tokens = [self._classify_token(t) for t in tokens]
+        tok = self._classify_token(defs.TextToken(0, ''))
         tok.can_start = True
         tokens.insert(0, tok)
-        tok = eval(defs.TextToken(tokens[-1].pos, ''))
+        tok = self._classify_token(defs.TextToken(tokens[-1].pos, ''))
         tok.can_end = True
         tokens.append(tok)
 
         # avoid modifications at list begin (expensive for long lists)
+        # TODO: use `scanner.Buffer` instead.
         tokens = list(reversed(tokens))
         out = []
         while tokens:
@@ -740,13 +760,13 @@ class Parser:
                     t2.txt = ''
                     t2.pos += len(txt)
                 buf = [t1] + lang_toks
-                tokens.append(eval(t2))
+                tokens.append(self._classify_token(t2))
                 # NB: we deleted a line break
-                tok = eval(defs.TextToken(t2.pos, ''))
+                tok = self._classify_token(defs.TextToken(t2.pos, ''))
                 tok.can_start = True
                 tokens.append(tok)
             elif len(buf) > 1:
-                tokens.append(eval(buf.pop()))
+                tokens.append(self._classify_token(buf.pop()))
             out += buf
 
         return [t for t in out if t.txt or type(t) is defs.LanguageToken]
@@ -941,7 +961,7 @@ class Parser:
                 t = copy.copy(t)
                 t.arg = arg_pos_map[t.arg - 1]
             repl_mapped.append(t)
-        
+
         self.the_macros[name] = defs.Macro(self.parms, name,
                                         args='A'*len(args), repl=repl_mapped,
                                         scanned=True)
@@ -962,4 +982,3 @@ class Parser:
             elif tok.txt == '}':
                 lev -= 1
             yield tok, lev
-

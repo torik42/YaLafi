@@ -281,7 +281,7 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
 #   reflecting that it generates a macro handler function `handler`.
 def h_make_cref(cref):
     "Create a Macro handler function for cleverefs single reference commands."
-    def f(parser, buf, mac, args, delim, pos):
+    def handler(parser, buf, mac, args, delim, pos):
         star = parser.get_text_direct(args[0])
         rep = parser.get_text_direct(args[1])
         if rep in cref[star]:
@@ -291,14 +291,14 @@ def h_make_cref(cref):
             return toks
         return utils.latex_error(parser,
                                  MSG_CREF_UNDEFINED.format(mac.name,rep), pos)
-    return f
+    return handler
 
 
 # TODO: Rename in next major release to g_make_crefrange
 #   reflecting that it generates a macro handler function `handler`.
 def h_make_crefrange(cref):
     "Create a Macro handler function for cleverefs range reference commands."
-    def f(parser, buf, mac, args, delim, pos):
+    def handler(parser, buf, mac, args, delim, pos):
         star = parser.get_text_direct(args[0])
         rep = (parser.get_text_direct(args[1]), parser.get_text_direct(args[2]))
         if rep in cref[star]:
@@ -309,7 +309,7 @@ def h_make_crefrange(cref):
         return utils.latex_error(parser,
                                  MSG_CREFRANGE_UNDEFINED.format(mac.name,*rep),
                                  pos)
-    return f
+    return handler
 
 
 def h_cref_warning(parser, buf, mac, args, delim, pos):

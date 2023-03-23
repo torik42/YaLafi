@@ -343,12 +343,12 @@ vars.json_fatal = json_fatal
 vars.equation_replacements_display = equation_replacements_display
 vars.equation_replacements_inline = equation_replacements_inline
 vars.equation_replacements = equation_replacements
-vars.msg_LT_server_txt = msg_LT_server_txt 
-vars.msg_LT_server_html = msg_LT_server_html 
-vars.highlight_style = highlight_style 
-vars.number_style = number_style 
-vars.lt_option_map = lt_option_map 
-vars.source_defs = source_defs 
+vars.msg_LT_server_txt = msg_LT_server_txt
+vars.msg_LT_server_html = msg_LT_server_html
+vars.highlight_style = highlight_style
+vars.number_style = number_style
+vars.lt_option_map = lt_option_map
+vars.source_defs = source_defs
 
 # import functions for calling proofreader
 #

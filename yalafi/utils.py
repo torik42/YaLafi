@@ -110,17 +110,18 @@ def replace_phrases(txt, pos, lines):
     Returns:
         Modified ``txt`` and ``pos``, where all replacements have been applied.
     """
-    for lin in lines:
-        i = lin.find('#')
+
+    for line in lines:
+        i = line.find('#')
         if i >= 0:
-            lin = lin[:i]
-        lin = lin.split()
+            line = line[:i]
+        line = line.split()
 
         t = s = ''
-        for i in range(len(lin)):
-            if lin[i] == '&':
+        for i, word in enumerate(line):
+            if word == '&':
                 break
-            t += s + re.escape(lin[i])
+            t += s + re.escape(word)
                     # protect e.g. '.' and '$'
             s = r'(?:[ \t]*\n[ \t]*|[ \t]+)'
                     # at least one space character, but stay in paragraph
@@ -131,11 +132,12 @@ def replace_phrases(txt, pos, lines):
         if t[-1].isalpha():
             t = t + r'\b'
 
-        r = ' '.join(lin[i+1:])
+        r = ' '.join(line[i+1:])
         txt, pos = substitute(txt, pos, t, r)
     return txt, pos
 
-def substitute(i_txt, i_pos, expr, repl):
+
+def substitute(txt, pos, expr, repl):
     """
     Substitute all occurrences of ``expr`` in ``txt`` and update ``pos``.
 
@@ -150,24 +152,24 @@ def substitute(i_txt, i_pos, expr, repl):
         are replaced with ``repl`` and an accordingly updated list of
         positions from ``pos``.
     """
-    o_txt = ''
-    o_pos = []
+    out_txt = ''
+    out_pos = []
     r_len = len(repl)
     last = 0
-    for m in re.finditer(expr, i_txt):
+    for m in re.finditer(expr, txt):
         m_len = len(m.group(0))
         if not m_len:
             continue
         cur = m.start(0)
-        o_txt += i_txt[last:cur] + repl
-        o_pos += i_pos[last:cur]
+        out_txt += txt[last:cur] + repl
+        out_pos += pos[last:cur]
         if r_len <= m_len:
-            o_pos += i_pos[cur:cur+r_len]
+            out_pos += pos[cur:cur+r_len]
         else:
-            o_pos += (i_pos[cur:cur+m_len]
-                        + [i_pos[cur+m_len-1]] * (r_len - m_len))
+            out_pos += (pos[cur:cur+m_len]
+                        + [pos[cur+m_len-1]] * (r_len - m_len))
         last = m.end(0)
-    return o_txt + i_txt[last:], o_pos + i_pos[last:]
+    return out_txt + txt[last:], out_pos + pos[last:]
 
 
 def get_module_handler(name, prefix):

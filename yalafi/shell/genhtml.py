@@ -56,7 +56,7 @@ def begin_match(m, lin, unsure):
                         + ': >>>' + txt[beg:end] + '<<<')
     rule_id = json_get(rule, 'id', str)
     if 'subId' in rule:
-            rule_id += '[' + json_get(rule, 'subId', str) + ']'
+        rule_id += '[' + json_get(rule, 'subId', str) + ']'
     msg += protect_html('    (Rule ID: ' + rule_id + ')') + '\n'
 
     repls = '; '.join(json_get(r, 'value', str)

@@ -38,6 +38,15 @@ class Scanner:
         self.special_tokens_sorted = list(parms.special_tokens.keys())
         self.special_tokens_sorted.sort(key=(lambda s: -len(s)))
 
+        self.latex = None
+        """LaTeX string loaded in the scanner."""
+        self.source = None
+        """Name of the source of :attr:`latex`, usually the filename."""
+        self.pos = None
+        """Current position of the scanner in :attr:`latex`."""
+        self.max_pos = None
+
+
     def scan(self, latex, source='<unknown>'):
         """
         Scan a LaTeX string into tokens.
@@ -199,13 +208,13 @@ class Scanner:
     #   HACK: we us a "fake parser"
     def latex_error(self, msg, pos):
         """Wrapper for :func:`yalafi.utils.latex_error`"""
-        class FP:
+        class FakeParser:
             """Fake parser for using :func:`yalafi.utils.latex_error`."""
             def __init__(self, sc):
                 self.latex = sc.latex
                 self.source = sc.source
                 self.parms = sc.parms
-        return utils.latex_error(FP(self), msg, pos)
+        return utils.latex_error(FakeParser(self), msg, pos)
 
 
 class Buffer:
@@ -297,4 +306,3 @@ class Buffer:
         """
         return type(tok) in (defs.SpaceToken, defs.CommentToken,
                         defs.ActionToken, defs.VoidToken, defs.LanguageToken)
-

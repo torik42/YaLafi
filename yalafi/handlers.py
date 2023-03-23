@@ -70,7 +70,7 @@ def h_theorem(name):
     """
     # TODO: Rename in next major release to g_theorem
     #   reflecting that it generates a macro handler function `handler`.
-    def handler (parser, buf, mac, args, delim, pos):
+    def handler(parser, buf, mac, args, delim, pos):
         out = [defs.TextToken(pos, name, pos_fix=True)]
         if args[0]:
             # named theorem
@@ -234,7 +234,7 @@ def h_load_module(prefix):
     """
     # TODO: Rename in next major release to g_load_module
     #   reflecting that it generates a macro handler function `handler`.
-    def f(parser, buf, mac, args, delim, pos):
+    def handler(parser, buf, mac, args, delim, pos):
         options = parser.parse_keyvals_list(args[0])
         options = parser.expand_keyvals(options)
         packs = parser.get_text_expanded(args[1])
@@ -245,7 +245,7 @@ def h_load_module(prefix):
                 f = utils.get_module_handler(p, prefix)
                 out += parser.init_package(p, f, options, pos)
         return utils.filter_set_toks(out, pos, None)
-    return f
+    return handler
 
 
 def h_makeLowercase(parser, buf, mac, args, delim, pos):
