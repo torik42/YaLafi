@@ -28,7 +28,7 @@ import urllib.error
 
 ##################################################################
 #
-#   functions for runnning proofreading tool,
+#   functions for running proofreading tool,
 #   application of additional rules (e.g., from --equation-punctuation)
 #
 ##################################################################
@@ -71,7 +71,7 @@ def run_proofreader_options(tex, source, source_defs, language,
         plain_map = {language: [(tex, list(range(1, len(tex) + 1)))]}
     else:
         if cmdline.list_unknown:
-            # only look for unknown macros and environemnts
+            # only look for unknown macros and environments
             plain, charmap = tex2txt.tex2txt(tex, t2t_options, source=source,
                                                 source_defs=source_defs)
             return (tex, plain, charmap, [])

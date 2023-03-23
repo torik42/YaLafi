@@ -16,14 +16,20 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+r"""
+Collection of macro handlers for various LaTeX commands.
+"""
+
 import re
 from yalafi import defs
 from yalafi import utils
 from yalafi import scanner
 
-#   macros \newcommand, \renewcommand
-#
+
 def h_newcommand(parser, buf, mac, args, delim, pos):
+    r"""
+    Macro handler for `\newcommand` and `\renewcommand`.
+    """
     name = parser.get_text_direct(args[1])
     if name in parser.parms.newcommand_ignore:
         return []
@@ -47,16 +53,27 @@ def h_newcommand(parser, buf, mac, args, delim, pos):
                                 repl=args[4], scanned=True)
     return []
 
-#   \begin{theorem}[opt]
-#   - if present, add content of option opt in () parantheses
-#   - add '.'
-#   --> now only used by h_newtheorem()
-#
+
 def h_theorem(name):
+    r"""
+    Generator for macro handler for theorem like environments.
+
+    The returned handler will output the `name` followed by a period.
+    For named theorems, the optional argument will be inserted in
+    parenthesis before the period.
+
+    Args:
+        name: name of the theorem like environment.
+
+    Returns:
+        A macro handler for the theorem like environment `name`.
+    """
+    # TODO: Rename in next major release to g_theorem
+    #   reflecting that it generates a macro handler function `handler`.
     def handler (parser, buf, mac, args, delim, pos):
         out = [defs.TextToken(pos, name, pos_fix=True)]
         if args[0]:
-            # there is a [.] option
+            # named theorem
             out.append(defs.SpaceToken(pos, ' ', pos_fix=True))
             out.append(defs.TextToken(pos, '(', pos_fix=True))
             out += args[0]
@@ -65,16 +82,17 @@ def h_theorem(name):
             out.append(defs.SpaceToken(args[0][-1].pos,
                                         '\n', pos_fix=True))
         else:
+            # unnamed theorem
             out.append(defs.TextToken(pos, '.', pos_fix=True))
             out.append(defs.SpaceToken(pos, '\n', pos_fix=True))
         return out
-
-    # this creates a closure
     return handler
 
-#   \newtheorem
-#
+
 def h_newtheorem(parser, buf, mac, args, delim, pos):
+    r"""
+    Macro handler for `\newtheorem`.
+    """
     name = parser.get_text_expanded(args[0])
     title = parser.get_text_expanded(args[2])
     def f(parser, options, position):
@@ -84,9 +102,13 @@ def h_newtheorem(parser, buf, mac, args, delim, pos):
     parser.modify_parameters('<h_newtheorem>', f, [], pos)
     return []
 
-#   heading macros: append '.', unless last char in parms.heading_punct
-#
+
 def h_heading(parser, buf, mac, args, delim, pos):
+    r"""
+    Macro handler for heading commands like ``\section``. It appends a
+    period to the heading unless the heading ends with a character in
+    :attr:`yalafi.parameters.Parameters.heading_punct`.
+    """
     arg = args[2]
     txt = parser.get_text_expanded(arg).strip()
     if (txt and parser.parms.heading_punct
@@ -94,19 +116,27 @@ def h_heading(parser, buf, mac, args, delim, pos):
         arg.append(defs.TextToken(arg[-1].pos, '.'))
     return arg
 
-#   \phantom, \hphantom
-#
+
 def h_phantom(parser, buf, mac, args, delim, pos):
+    r"""
+    Macro handler for `\phantom` and `\hphantom` replacing them with
+    small space, if they contain text.
+    """
     if len(parser.get_text_expanded(args[0])) > 0:
         return [defs.SpecialToken(pos, '\\;')]
     return []
 
-#   \hspace
-#   at least, we detect lentghs that are explicitely zero
-#
+
 numbers = re.compile(r'\s*(\d+[.,]?\d*|[.,]\d+)')
+r"Regex for matching numbers in `\hspace` arguments."
 
 def h_hspace(parser, buf, mac, args, delim, pos):
+    r"""
+    Macro handler for `\hspace` replacing it with space, unless the
+    argument is (explicitly) zero length.
+
+    Additions and subtractions of lengths are currently not supported.
+    """
     arg = parser.get_text_expanded(args[1])
     match = numbers.match(arg)
     if match and float(match.group(1).replace(',', '.')) == 0:
@@ -116,11 +146,12 @@ def h_hspace(parser, buf, mac, args, delim, pos):
 
 def h_linebreak(parser, buf, mac, args, delim, pos):
     r"""
-    Handler for macro `\linebreak` taking one optional argument.
+    Handler for macro ``\linebreak`` taking one optional argument.
 
     Adds no additional space for optional argument '0','1','2','3'.
-    Adds one SpaceToken for argument '4', or no argument.
-    Adds Latexerror for other arguments, we allow additional whitespace.
+    Adds one SpaceToken for argument '4', or no argument.  Adds output
+    from :func:`utils.latex_error` for other arguments, we allow
+    additional white space.
     """
     if len(args[0]) == 0:
         return [defs.SpaceToken(pos, ' ')]
@@ -135,9 +166,13 @@ def h_linebreak(parser, buf, mac, args, delim, pos):
     return utils.latex_error(parser, r'`\linebreak` only takes values 0,1,2,3 or 4', pos)
 
 
-#   macro \cite[opt]
-#
 def h_cite(parser, buf, mac, args, delim, pos):
+    r"""
+    Macro handler for the default LaTeX `\cite` command.
+
+    See :func:`yalafi.packages.biblatex.h_cite` for the corresponding
+    handler after loading BibLaTeX.
+    """
     if args[0]:
         out = [defs.TextToken(pos, '[0,', pos_fix=True),
                     defs.SpaceToken(pos, ' ', pos_fix=True)]
@@ -149,11 +184,20 @@ def h_cite(parser, buf, mac, args, delim, pos):
                     defs.ActionToken(pos)]
     return out
 
-#   macro \LTinput: read macro definitions from file
-#   - this also activates packages and switches languages
-#   - check for recursive inclusion of a file
-#
+
 def h_load_defs(parser, buf, mac, args, delim, pos):
+    r"""
+    Macro handler for ``\LTinput``.
+
+    It updates the parser by reading the provided file. Hence, it
+    updates macro definitions and activates loaded packages. It only
+    returns the Language Tokens from the loaded file such that switching
+    languages also works.
+
+    If the file could not be found, a LaTeX error is added to the
+    output. If the file is included recursively, the error is printed to
+    stderr and the program stops.
+    """
     if not parser.read_macros:
         return []
     file = parser.get_text_expanded(args[0])
@@ -171,6 +215,25 @@ def h_load_defs(parser, buf, mac, args, delim, pos):
 #   read definitions for a LaTeX package
 #
 def h_load_module(prefix):
+    r"""
+    Generator for a macro handler function for `\documentclass` and
+    `\usepackage`.
+
+    The returned handler will try to load the package definition from
+    the python module `prefix.my_package` when using
+    `\usepackage{my-package}`.
+
+    Args:
+        prefix: Name of the python (sub)package which contains the
+          modules corresponding to LaTeX packages.
+
+    Returns:
+        A macro handler function for `\documentclass` and `\usepackage`.
+
+    See also `yalafi.utils.get_module_handler`.
+    """
+    # TODO: Rename in next major release to g_load_module
+    #   reflecting that it generates a macro handler function `handler`.
     def f(parser, buf, mac, args, delim, pos):
         options = parser.parse_keyvals_list(args[0])
         options = parser.expand_keyvals(options)
@@ -185,8 +248,13 @@ def h_load_module(prefix):
     return f
 
 
-# \MakeLowercase
 def h_makeLowercase(parser, buf, mac, args, delim, pos):
+    r"""
+    Macro handler for `\MakeLowercase`.
+
+    The argument is expanded first, then all text is replaced with a
+    lower case variant.
+    """
     toks = parser.expand_sequence(scanner.Buffer(args[0].copy()))
     def f(t):
         if type(t) is defs.TextToken:
@@ -195,8 +263,13 @@ def h_makeLowercase(parser, buf, mac, args, delim, pos):
     return [f(t) for t in toks]
 
 
-# \MakeUppercase
 def h_makeUppercase(parser, buf, mac, args, delim, pos):
+    r"""
+    Macro handler for `\MakeUppercase`.
+
+    The argument is expanded first, then all text is replaced with a
+    upper case variant.
+    """
     toks = parser.expand_sequence(scanner.Buffer(args[0].copy()))
     def f(t):
         if type(t) is defs.TextToken:

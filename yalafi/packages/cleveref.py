@@ -62,8 +62,9 @@ s/\\
 ''', re.VERBOSE)
 r"""
 Regular expression capturing cleverefs single reference commands.
+
 Only the commands taking one argument are included. Others taking two
-arguments like \crefrange are captured by `re_ref_range`.
+arguments like ``\crefrange`` are captured by :obj:`re_ref_range`.
 """
 
 re_ref_range = re.compile(r'''
@@ -83,10 +84,11 @@ s/\\
     (.*)            # group 5: the replacement string
 /g
 ''', re.VERBOSE)
-r"""
-Regular expression capturing cleverefs range reference commands.
+r""" Regular expression capturing cleverefs range reference commands.
+
 Only the commands taking two arguments are included. The standard
-commands taking two arguments, like \cref, are captured by `re_ref`.
+commands taking one arguments, like ``\cref``, are captured by
+:obj:`re_ref`.
 """
 
 re_command = re.compile(r'''
@@ -114,7 +116,7 @@ re_escaped_symbols = re.compile(r'\\([\[\]*\^$.\\])')
 def unescape_sed(string):
     r"""
     Replaces certain strings that are escaped in sed file.
-    Escaped are: . \ [ ] * ^ $
+    Escaped are: ``. \ [ ] * ^ $``
     """
     return re_escaped_symbols.sub(r'\1', string)
 
@@ -177,10 +179,10 @@ def init_module(parser, options, position):
 
 def h_read_sed(parser, buf, mac, args, delim, pos):
     r"""
-    Macro handler function for `\YYcleverefinput`.
+    Macro handler function for ``\YYCleverefInput``.
 
-    Load the given sed file, generate all necessary replacements and recreate
-    all cleveref reference commands.
+    Load the given sed file, generate all necessary replacements and
+    recreate all cleveref reference commands.
     """
     if not parser.read_macros:
         return []
@@ -275,6 +277,8 @@ def h_read_sed(parser, buf, mac, args, delim, pos):
     return []
 
 
+# TODO: Rename in next major release to g_make_cref
+#   reflecting that it generates a macro handler function `handler`.
 def h_make_cref(cref):
     "Create a Macro handler function for cleverefs single reference commands."
     def f(parser, buf, mac, args, delim, pos):
@@ -290,6 +294,8 @@ def h_make_cref(cref):
     return f
 
 
+# TODO: Rename in next major release to g_make_crefrange
+#   reflecting that it generates a macro handler function `handler`.
 def h_make_crefrange(cref):
     "Create a Macro handler function for cleverefs range reference commands."
     def f(parser, buf, mac, args, delim, pos):
@@ -308,15 +314,15 @@ def h_make_crefrange(cref):
 
 def h_cref_warning(parser, buf, mac, args, delim, pos):
     r"""
-    Macro handler function for all cleveref commands before sed file is loaded.
-    These will be replaced, as soon as `\YYcleveref` is found in the file.
-    See `h_read_sed`.
+    Macro handler function for all cleveref commands before sed file is
+    loaded.  These will be replaced, as soon as ``\YYCleverefInput`` is
+    found in the file.  See :func:`h_read_sed`.
     """
     return utils.latex_error(parser, MSG_SED_NOT_LOADED, pos)
 
 
 def is_poorman_used(options):
-    r"Check whether `'poorman'` is contained in the given list of options."
+    r"Check whether ``'poorman'`` is contained in the given list of options."
     for opt in reversed(options):
         if 'poorman' in opt:
             return True

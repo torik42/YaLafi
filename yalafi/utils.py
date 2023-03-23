@@ -16,16 +16,28 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+"""
+Collection of functions and classes used within yalafi.
+"""
+
 import copy
 import re
 import sys
 from yalafi import defs
 
 
-#   print error message to stderr,
-#   return token sequence suitable to be inserted into filter output
-#
 def latex_error(parser, err, pos):
+    r"""
+    Print error message to stderr and return error token sequence.
+
+    Args:
+        parser: Current parser.
+        err: Error message.
+        pos: Position where the error occurred in LaTeX source.
+
+    Returns:
+        List of tokens suitable to be inserted into the filter output.
+    """
     latex = parser.latex
     parms = parser.parms
     lin = latex.count('\n', 0, pos) + 1
@@ -44,17 +56,35 @@ def latex_error(parser, err, pos):
         out.append(defs.TextToken(pos + mx -1, mark[mx:], pos_fix=True))
     return out
 
+
 def fatal(err):
+    """
+    Write error to stderr and exit program.
+    """
     sys.stderr.write('*** ' + sys.argv[0] + ': internal error:\n*** '
                         + err + '\n')
     sys.exit(1)
 
+
 def warning(err):
+    """
+    Write warning to stderr and continue program.
+    """
     sys.stderr.write('*** ' + sys.argv[0] + ': warning:\n*** '
                         + err + '\n')
     sys.stderr.flush()
 
+
 def get_txt_pos(toks):
+    """
+    Get text and position mapping from list of tokens.
+
+    Returns:
+        A tuple ``(txt, pos)`` where ``txt`` is a string representation
+        of ``toks``. And ``pos`` is a list of integers, with the same
+        length as ``txt``, such that ``txt[n]`` comes from the
+        ``pos[n]``-th character in the original LaTeX source.
+    """
     txt = ''
     pos = []
     for t in toks:
@@ -65,7 +95,21 @@ def get_txt_pos(toks):
             pos += list(range(t.pos, t.pos + len(t.txt)))
     return txt, pos
 
+
+
 def replace_phrases(txt, pos, lines):
+    """
+    _summary_
+
+    Args:
+        txt: (parsed) string with removed markup.
+        pos: List of positions for all characters in ``txt``.
+        lines: List of replacements given as strings like ``old & new #
+          optional comment``. See ???.
+
+    Returns:
+        Modified ``txt`` and ``pos``, where all replacements have been applied.
+    """
     for lin in lines:
         i = lin.find('#')
         if i >= 0:
@@ -92,6 +136,20 @@ def replace_phrases(txt, pos, lines):
     return txt, pos
 
 def substitute(i_txt, i_pos, expr, repl):
+    """
+    Substitute all occurrences of ``expr`` in ``txt`` and update ``pos``.
+
+    Args:
+        txt: (Parsed) string with removed markup.
+        pos: List of positions for all characters in ``txt``.
+        expr: String to be replaced in ``txt``.
+        repl: Replacement for all occurrences of ``expr``.
+
+    Returns:
+        A tuple consisting of ``txt``, where all occurrences of ``expr``
+        are replaced with ``repl`` and an accordingly updated list of
+        positions from ``pos``.
+    """
     o_txt = ''
     o_pos = []
     r_len = len(repl)
@@ -111,14 +169,34 @@ def substitute(i_txt, i_pos, expr, repl):
         last = m.end(0)
     return o_txt + i_txt[last:], o_pos + i_pos[last:]
 
-#   get handler for importing a module:
-#   - replace non-alphanumeric characters (except '.') in LaTeX package name
-#     by '_'
-#   - if module name starts with '.': remove that dot
-#   - else: prepend given prefix
-#   return handler, dummy on error
-#
+
 def get_module_handler(name, prefix):
+    """
+    Get handler for importing a Python module corresponding to a LaTeX package.
+
+    Replace non-alphanumeric characters except `.` in LaTeX package name
+    `name` by `_`. If `name` starts with `.`, remove that dot and try to
+    `import name`, i.e. load the Python module from the current python
+    path.  If `name` does not starts with `.`, try to `import
+    prefix.name`.
+
+    As an example, the `amsmath` LaTeX package included within YaLafi
+    will be loaded with `name='amsmath'` and `prefix='yalafi.packages'`
+    by `import yalafi.packages.amsmath`.  If `yalafi` is called with
+    `--pack .custom`, this function will be called with `name='.custom'`
+    and `prefix=''` and YaLafi will try to `import custom`.
+
+    Args:
+        name: Name of the LaTeX package. Maybe proceeded by a `.`, see
+          above.
+        prefix: Name of Python package, from which to load the module
+          `name`.
+
+    Returns:
+        Tuple `(require_packages, init_module)` loaded from Python
+        module `name` if it could be successfully loaded. Otherwise, it
+        returns a dummy and prints a warning to stderr.
+    """
     name = ''.join((c if c.isalnum() or c == '.' else '_') for c in name)
     if name.startswith('.'):
         mod = name[1:]
@@ -132,9 +210,25 @@ def get_module_handler(name, prefix):
         warning('could not load module ' + repr(mod))
         return [], lambda p, o, n: defs.InitModule()
 
-#   filter out tokens and set their position numbers
-#
+
 def filter_set_toks(toks, pos, tok_typ):
+    """
+    Filter tokens based on type and set their position.
+
+    First, if ``tok_type`` is not `None`, ``toks`` is filtered for
+    tokens of type ``tok_type``.  Then their positions are set to
+    ``pos`` and they are returned.  The returned tokens are actually
+    copies such that the original tokens are not modified.
+
+    Args:
+        toks: List of tokens.
+        pos: The new position written to all returned tokens.
+        tok_typ: The class for which to filter ``toks`` or ``None``.
+
+    Returns:
+        A list with all tokens from ``toks`` which are of type
+        ``tok_typ`` with position set to ``pos``.
+    """
     def f(t):
         t = copy.copy(t)
         t.pos = pos
@@ -143,6 +237,17 @@ def filter_set_toks(toks, pos, tok_typ):
 
 
 class LanguageSection:
+    """
+    Language Section of parsed text.
+
+    Attributes:
+        lang: See :attr:`yalafi.defs.LanguageToken.lang`.
+        back: See :attr:`yalafi.defs.LanguageToken.back`.
+        brk: See :attr:`yalafi.defs.LanguageToken.brk`.
+        txt: Text of the section.
+        pos: Position list of the section.
+          See :func:`yalafi.utils.get_txt_pos`.
+    """
     def __init__(self, lang, back, brk, txt, pos):
         self.lang = lang
         self.back = back        # e.g., started by end of \foreignlanguage
@@ -150,11 +255,29 @@ class LanguageSection:
         self.txt = txt
         self.pos = pos
 
-#   transform a token list into text strings and position lists
-#   - seperate into different languages
-#   - heuristic: see comments below marked with HEURISTIC
-#
+
 def get_txt_pos_ml(toks, main_lang, parms):
+    """
+    Get text and position mapping from list of tokens split by language.
+
+    The list of tokens is split at :class:`yalafi.defs.LanguageToken`,
+    which indicate a language change.  The individual parts are then
+    separately handled as in :func:`get_txt_pos`, such that each part
+    can be passed to a proofreader separately.
+
+    Args:
+        toks: List of tokens
+        main_lang: String specifying main language for toks.  See
+          :attr:`yalafi.defs.LanguageToken.lang`.  This is the language
+          used before any language switching happens.
+        parms: :class:`yalafi.parameters.Parameters` object for handling
+          current settings.
+
+    Returns:
+        Dictionary where the keys correspond to different languages,
+        e.g. ``en-GB``, and the values are lists of lists ``[txt, pos]``
+        corresponding to the output of :func:`get_txt_pos`.
+    """
 
     lang_stack = [main_lang]
     switch_back = False
@@ -232,9 +355,17 @@ def get_txt_pos_ml(toks, main_lang, parms):
             ret[sec.lang] = [[sec.txt, sec.pos]]
     return ret
 
-#   append placeholder for "short" language switch to current section
-#
+
 def ml_append_placeholder(sec, incl, parms):
+    """
+    Append placeholder for “short” language switch to current section.
+
+    Args:
+        sec: Current section.
+        incl: Section to be included.
+        parms: :class:`yalafi.parameters.Parameters` object for handling
+          current settings.
+    """
     if not incl.txt.strip():
         # inclusion is empty or only contains space
         sec.txt += incl.txt
@@ -262,11 +393,21 @@ def ml_append_placeholder(sec, incl, parms):
     sec.txt += txt
     sec.pos += pos
 
-#   heuristic to determine whether a (short) language section
-#   can be substituted with a placeholder, so that previous and
-#   subsequent sections can be glued together
-#
+
 def ml_check_lang_section(sec, parms):
+    """
+    Heuristic to determine whether a (short) language section can be
+    substituted with a placeholder, so that previous and subsequent
+    sections can be glued together
+
+    Args:
+        sec: _description_
+        parms: :class:`yalafi.parameters.Parameters` object for handling
+          current settings.
+
+    Returns:
+        `True`, if the language section can be substituted, else
+        `False`.
+    """
     # accept, if less than 4 words
     return len(sec.txt.split()) <= parms.ml_continue_thresh
-

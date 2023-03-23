@@ -21,13 +21,21 @@
 #   "Handling of displayed equations"
 #
 
+"""
+Parsing LaTeX math parts.
+"""
+
 from yalafi import defs
 from yalafi import utils
 
 
-#   object that represents a sequence consisting only of math tokens
-#
 class MathPartToken(defs.TextToken):
+    """
+    Token representing a sequence consisting only of math tokens.
+
+    Attributes:
+        toks: List of contained tokens.
+    """
 
     def __init__(self, toks):
         super().__init__(toks[0].pos, toks[0].txt)
@@ -35,31 +43,91 @@ class MathPartToken(defs.TextToken):
     def __repr__(sellf):
         # XXX: why that?
         return 'MathPartToken()'
+
     def start_space(self):
+        """
+        Check if first token is a :class:`yalafi.defs.MathSpaceToken`.
+        """
         return type(self.toks[0]) is defs.MathSpaceToken
+
     def end_space(self):
+        """
+        Check if last token is a :class:`yalafi.defs.MathSpaceToken`.
+        """
         return type(self.toks[-1]) is defs.MathSpaceToken
+
     def only_space(self):
+        """
+        Check if all tokens are :class:`yalafi.defs.MathSpaceToken`.
+        """
         return all(type(t) is defs.MathSpaceToken for t in self.toks)
+
     def has_elem(self, parms):
+        """
+        Get first math element.
+
+        Args:
+            parms: :class:`yalafi.parameters.Parameters` object for handling
+              current settings.
+
+        Returns:
+            The first :class:`yalafi.defs.MathElemToken` not in
+            :obj:`parms.math_punctuation` or `None`.
+        """
         return next((t for t in self.toks if type(t) is defs.MathElemToken
                         and t.txt not in parms.math_punctuation), None)
+
     def leading_op(self):
+        """
+        Check if the leading token is :class:`yalafi.defs.MathOperToken`
+        and return it.
+
+        Returns:
+            The leading :class:`yalafi.defs.MathOperToken` if only
+            preceded by space or `None`.
+        """
         tok = next((t for t in self.toks
                         if type(t) is not defs.MathSpaceToken), None)
         return tok if type(tok) is defs.MathOperToken else None
+
     def last_char(self, parser):
+        """
+        Get the last character from the math part.
+
+        Used to check for punctuation.
+
+        Returns:
+            A possibly empty string with the last character.
+        """
         txt = parser.get_text_direct(self.toks)
         txt = txt.strip()
         return txt[-1] if txt else ''
 
 
 class MathParser:
+    """
+    Parser for math material.
+    """
 
     def __init__(self, parser):
         self.parser = parser
 
     def expand_display_math(self, buf, tok, env):
+        r"""
+        Expand display math material
+
+        Args:
+            buf: Current buffer to read math from.  The math material
+              will be removed from the buffer.
+            tok: Token marking the beginning of the math material. Typically
+              :class:`yalafi.defs.MathBeginToken` or
+              :class:`yalafi.defs.SpecialToken`.
+            env: :class:`yalafi.defs.EquEnv` of the math environment to parse.
+              Can be `displaymath`, if the environment starts with ``\[``.
+
+        Returns:
+            List of tokens replacing the parsed math material.
+        """
         buf.next()
         start_simple = start = tok.pos
         first_section = True
@@ -106,9 +174,21 @@ class MathParser:
             out.append(defs.ActionToken(out[-1].pos))
         return out
 
-    #   "expand" inline maths
-    #
+
     def expand_inline_math(self, buf, tok):
+        r"""
+        Expand inline math material.
+
+        Args:
+            buf: Current buffer to read math from.  The math material
+              will be removed from the buffer.
+            tok: :class:`yalafi.defs.TextToken` marking the beginning of
+              the math material, i.e. ``tok.txt`` is either ``$`` or
+              ``\(``.
+
+        Returns:
+            List of tokens replacing the parsed math material.
+        """
         buf.next()
         tokens, x = self.expand_math_section(buf, tok.pos, ['$', '\\)'], None)
         tokens = self.detect_math_parts(tokens)
@@ -119,15 +199,34 @@ class MathParser:
         out.append(defs.ActionToken(out[-1].pos))
         return out
 
-    #   expand a piece of math material
-    #   - group tokens into types MathElem, MathOper, MathSpace
-    #   - unknown macros generate a MathElem, if not on the
-    #     blacklist in parms.math_ignore
-    #     --> macros like \alpha need not be declared
-    #   - embedded \text{...} parts are included with "normal"
-    #     non-Math tokens
-    #
+
     def expand_math_section(self, buf, start, toks_stop, env_stop):
+        r"""
+        Expand a piece of math material.
+
+        Group tokens into types :class:`yalafi.defs.MathElemToken`,
+        :class:`yalafi.defs.MathOperToken` and
+        :class:`yalafi.defs.MathSpaceToken`.  Unknown macros generate a
+        :class:`yalafi.defs.MathElemToken`, unless listed in
+        :attr:`parser.parms.math_ignore`.  Thus macros like `\alpha`
+        need not be declared.  Embedded ``\text{…}`` parts are included
+        with normal :class:`yalafi.defs.TextToken`.
+
+        Args:
+            buf: Current buffer to read math from.  The math material
+              will be removed from the buffer.
+            start: Original starting position of the math material in
+              the LaTeX source.  Used only for error generation.
+            toks_stop: List of strings, which end current math section,
+              or None.  Can be used to break sections of math material
+              at ``&`` and ``\\``.
+            env_stop: Name of the LaTeX math environment at which end
+              the expansion should stop, or None.
+
+        Returns:
+            A tuple containing a list of groped tokens and the token
+            stopping the expansion.
+        """
         def special(t):
             if type(t) is defs.SpecialToken:
                 txt = parms.special_tokens[t.txt]
@@ -192,13 +291,35 @@ class MathParser:
                     if type(t) not in (defs.VoidToken, defs.ActionToken)]
         return out, tok
 
-    #   given a token sequence, find parts of math tokens
-    #   not interrupted by other token types
-    #   - subsequent math tokens are condensed into single token MathPartToken
-    #   - other tokens are just copied
-    #   
+
     def detect_math_parts(self, toks):
+        """
+        Detect uninterrupted math parts.
+
+        Given a token sequence, find parts of math tokens not
+        interrupted by other tokens and condense them into a single
+        :class:`MathPartToken` token.  Other tokens are just copied.
+
+        Args:
+            toks: List of :class:`yalafi.defs.TextToken`.
+
+        Returns:
+            List of tokens.
+        """
+
+
         def ismath(t):
+            """
+            Check whether the token is a math token.
+
+            Args:
+                t: A token
+
+            Returns:
+                True, if ``t`` is a :class:`yalafi.defs.MathElemToken`,
+                :class:`yalafi.defs.MathOperatorToken` or
+                :class:`yalafi.defs.MathSpaceToken`.  False otherwise.
+            """
             return type(t) in (defs.MathElemToken, defs.MathOperToken,
                                     defs.MathSpaceToken)
         out = []
@@ -215,13 +336,34 @@ class MathParser:
             toks = toks[pos:]
         return out
 
-    #   replace math parts in a section by text placeholders
-    #   - add trailing punctuation if present in a math part
-    #   - insert placeholder for leading math operator if first in part
-    #     and not first in current equation
-    #
+
     def replace_section(self, inline, tokens, first_section,
                                 next_repl, repls):
+        """
+        Replace math parts in a section by placeholders.
+
+        Add trailing punctuation if present in a math part. And insert
+        a placeholder for leading math operators if first in part, but
+        not first in current section.
+
+        For more details see the implementation details in ???.
+
+        Args:
+            inline: Boolean indicating whether the tokens are from
+              inline math.
+            tokens: List of tokens describing one math section.  The
+              only reasonable math token is :class:`MathPartToken`.
+            first_section: Boolean indicating whether the section is the
+              first in a line.
+            next_repl: Boolean indicating, whether the next replacement
+              shall be used for the first token.
+            repls: A list of replacement strings.  It will be cycled
+              in place.
+
+        Returns:
+            A tuple consisting of a list of replacement tokens and the
+            Boolean ``next_repl`` for the next section.
+        """
         first_part = not first_section
         parms = self.parser.parms
         out = []
@@ -262,4 +404,3 @@ class MathParser:
             if tok.end_space():
                 out.append(defs.SpaceToken(tok.pos, ' ', pos_fix=True))
         return out, next_repl
-
