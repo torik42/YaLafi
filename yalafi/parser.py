@@ -110,7 +110,7 @@ class Parser:
                                         options, position)
             self.packages[name] = self.global_latex_options + options
             out += self.modify_parameters(name, actions[1], options, position)
-        except:
+        except Exception:
             utils.fatal('error loading module ' + repr(name))
         return out
 
@@ -558,7 +558,7 @@ class Parser:
             c = f"LATIN {size} LETTER {c.upper()} WITH {accent}"
         try:
             u = unicodedata.lookup(c)
-        except:
+        except KeyError:
             return utils.latex_error(self,
                 f'could not find UTF-8 character "{c}"',
                 tok.pos)

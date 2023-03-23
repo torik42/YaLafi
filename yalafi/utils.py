@@ -208,7 +208,7 @@ def get_module_handler(name, prefix):
         exec('import ' + mod)
         return (eval(mod + '.require_packages'),
                         eval(mod + '.init_module'))
-    except:
+    except Exception:
         warning('could not load module ' + repr(mod))
         return [], lambda p, o, n: defs.InitModule()
 
