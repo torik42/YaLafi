@@ -2,6 +2,7 @@ Work in progress
 ----------------
 - LaTeX macros / environments
   - package cleveref: added macros \\labelcref and \\labelcpageref
+- improve codebase (remove relative imports, remove bare `except:`, add docstrings, refactor variable names, change space) (see PR [#249](../../pull/249))
 
 Version 1.4.0 (2022/11/24)
 --------------------------

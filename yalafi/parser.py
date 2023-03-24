@@ -16,23 +16,47 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from . import defs
-from . import mathparser
-from . import scanner
-from . import utils
+r"""
+Parsing LaTeX source with advanced macro expansion.
+"""
+
 import copy
 import unicodedata
 
+from yalafi import defs
+from yalafi import mathparser
+from yalafi import scanner
+from yalafi import utils
+
 
 class Parser:
-    def __init__(self, parms, packages=[], read_macros=None):
+    """
+    LaTeX parser with advanced macro expansion.
+    """
+
+    def __init__(self, parms, packages=None, read_macros=None):
+        if packages is None:
+            packages = []
         self.parms = parms
+        """:class:`yalafi.parameters.Parameters` object with Parser settings."""
         self.read_macros = read_macros
         self.packages = {}
-        self.global_latex_options = []      # from \documentclass
+        self.global_latex_options = []
+        """Global options passed to document class."""
         self.the_macros = {}
+        r"""Dictionary of all registered LaTeX macros.
+
+        The keys are the macro names with preceding ``\``.
+        The values are of type :class:`yalafi.defs.Macro`.
+        """
         self.the_environments = {}
+        """Dictionary of all registered LaTeX environment.
+
+        The keys are the environment names.
+        The values are of type :class:`yalafi.defs.Environ`.
+        """
         self.mathparser = mathparser.MathParser(self)
+        self.extracted = []
         self.unknowns = []
         self.latex = ''
         self.source = self.source_main = '<none>'
@@ -40,8 +64,8 @@ class Parser:
         # used by expand_item():
         self.item_macro = defs.Macro(parms, '\\item', args='O', repl='#1')
 
-        # for savety: \item labels outside of any environment
-        def labs_default(level):
+        # for safety: \item labels outside of any environment
+        def labs_default(_):
             while True:
                 yield parms.item_default_label[0]
         self.item_lab_stack = [(labs_default(0), '')]
@@ -54,14 +78,26 @@ class Parser:
         for name, actions in [('<builtins>', builtin)] + packages:
             self.init_package(name, actions, [], 0)
 
-    #   call handler of a package module:
-    #   - load other required packages
-    #   - let package handler update parameter object
-    #   - update local dictionaries for macros and environments
-    #   --> only do all that if package not yet loaded, or if options have
-    #       changed
-    #
+
     def init_package(self, name, actions, options, position):
+        """
+        Load a *package* module `name` into parser.
+
+        If the package `name` is not already loaded to the parser or the
+        `options` have changed, load all required packages by recursive
+        calls. Then load the package itself and update parameter object
+        `self.parms`.
+
+        Args:
+            name: LaTeX package name.
+            actions: Tuple of :obj:`require_packages` and :func:`init_module`) as defined
+              in Python modules for LaTeX packages.
+            options: LaTeX package options.
+            position: Position in source, where the package is loaded.
+
+        Returns:
+            List of tokens to be inserted.
+        """
         out = []
         if (name in self.packages and
                 self.packages[name] == self.global_latex_options + options):
@@ -74,15 +110,39 @@ class Parser:
                                         options, position)
             self.packages[name] = self.global_latex_options + options
             out += self.modify_parameters(name, actions[1], options, position)
-        except:
+        except Exception:
             utils.fatal('error loading module ' + repr(name))
         return out
 
-    #   modify local parameter object
-    #   - used by package extension mechanism
-    #   - used by handlers of LaTeX macros / environments
-    #
+
     def modify_parameters(self, name, f, options, position):
+        r"""
+        Modify :attr:`parms` and add new macros and
+        environments to :attr:`the_macros` and :attr:`the_environments`,
+        respectively.
+
+        Used by package extension mechanism and handlers of LaTeX macro
+        and environment definitions.
+
+        Args:
+            name: ???
+            f: An :func:`init_module` function to initialize a module
+              corresponding to a LaTeX package. It should have the following style
+
+              .. function:: init_module(parser, options, position)
+
+                 :param parser.Parser parser: Current parser
+                 :param position: Position of the function call, usually
+                                  the ``\usepackage[option]{package}``
+                                  statement.
+                 :return: A :class:`yalafi.defs.InitModule` object.
+
+            options: LaTeX options for module ``name``.
+            position: Position in source, where the package is loaded.
+
+        Returns:
+            List of tokens to be inserted.
+        """
         mods = f(self, options, position)
         for m in mods.macros_python:
             self.the_macros[m.name] = m
@@ -92,10 +152,23 @@ class Parser:
             self.parser_work(mods.macros_latex, name)
         return mods.inject_tokens
 
-    #   scan and parse (expand) LaTeX string to tokens
-    #   - here also skip LaTeX text enclosed in special comments
-    #
+
     def parser_work(self, latex, source):
+        """
+        Scan and parse (expand) LateX string to tokens.
+
+        Skip text enclosed in special comments
+        :attr:`yalafi.parameters.Parameters.comment_skip_begin` and
+        :attr:`yalafi.parameters.Parameters.comment_skip_end` of
+        :attr:`parms`.
+
+        Args:
+            latex: String with LaTeX source code to be parsed.
+            source: Name of the source for debug messages.
+
+        Returns:
+            Expanded sequence of tokens generated from the LaTeX source.
+        """
         # save self.latex for nested calls, e.g. \LTinput{}
         latex_sav = self.latex
         self.latex = latex
@@ -134,11 +207,31 @@ class Parser:
         self.source = source_sav
         return toks
 
-    #   main entry point
-    #
+
     def parse(self, latex, source='<unknown>',
                     define='', source_defs='<unknown>', extract=None):
+        r"""
+        Parse LaTeX source.
+
+        Args:
+            latex: String with LaTeX source code to be parsed.
+            source: Name of the source for debug messages. Defaults to
+              '<unknown>'.
+            define: _description_. Defaults to ''.
+            source_defs: _description_. Defaults to '<unknown>'.
+            extract: List of macro names whose first argument should be
+              extracted. If provided, only these macros are handled by
+              YaLafi. No other parsing is happening. Defaults to None.
+
+        Returns:
+            List of parsed tokens. First part contains expansion
+            following the `repl` of each Macro, followed by all
+            extracted parts using the `extract` of each Macro separated
+            by paragraph breaks. If `extract` is given, the first part
+            is removed from the output.
+        """
         if extract:
+            # Redefine all macros, if only extracted parts are requested.
             self.init_extractions(extract)
         self.extracted = []
         self.unknowns = []
@@ -151,6 +244,7 @@ class Parser:
         main += self.parser_work(latex, source)
 
         if extract:
+            # Clear `main` again, if only extracted parts are requested.
             main = []
         for extr in self.extracted:
             if not extr:
@@ -161,11 +255,17 @@ class Parser:
             main.append(defs.SpaceToken(extr[-1].pos, '\n', pos_fix=True))
         return main
 
-    #   modify macro definitions for argument extraction
-    #
+
     def init_extractions(self, extracts):
-        for name in self.the_macros:
-            mac = self.the_macros[name]
+        """
+        Modify macro definitions such that only the first argument of
+        all given macros will be extracted. All other macro definitions
+        are discarded.
+
+        Args:
+            extracts: List of macro names whose arguments shall be extracted.
+        """
+        for name, mac in self.the_macros.items():
             if name in extracts:
                 pos = next((i for i in range(len(mac.args))
                                 if mac.args[i] == 'A'), len(mac.args))
@@ -182,14 +282,25 @@ class Parser:
                 self.the_macros[name] = defs.Macro(self.parms,
                             name, args='A', repl='', extract='#1')
 
+
     def get_unknowns(self):
+        """Return unknown macro names."""
         return self.unknowns
 
-    #   expand token sequence in text mode from current buffer
-    #   - env_stop: stop reading on \end for this environment
-    #   Return: expanded token sequence
-    #
+
     def expand_sequence(self, buf, env_stop=None):
+        """
+        Expand token sequence in text mode from buffer `buf` until end
+        of environment `env_stop`.
+
+        Args:
+            buf: Buffer with tokens to be expanded.
+            env_stop: Name of the environment at which end the expansion
+              stops. Can be `None`, then the expansion will not end.
+
+        Returns:
+            Expanded token sequence.
+        """
         out = []
         while True:
             tok = buf.cur()
@@ -266,12 +377,20 @@ class Parser:
             buf.next()
         return self.remove_pure_action_lines(out)
 
-    #   read block (till } or ]) or single token from current buffer buf
-    #   Return: new buffer for reading these tokens
-    #   - buffer will contain at least one token for position tracking
-    #   - this also ensures that an empty option [] will be "something"
-    #
+
     def arg_buffer(self, buf, start, end='}'):
+        """
+        Read block (till ``end``) or single token from current buffer
+        ``buf``.
+
+        Args:
+            buf: A :class:`yalafi.scanner.Buffer` instance.
+        Return:
+            New :class:`yalafi.scanner.Buffer` for reading these tokens,
+            it will contain at least one token for position tracking.
+            This ensures that also an empty option ``[]`` will be
+            tracked.
+        """
         tok = buf.skip_space()
         if not tok:
             return scanner.Buffer([defs.VoidToken(start)])
@@ -299,12 +418,11 @@ class Parser:
             out.append(tok)
             tok = buf.next()
 
-        # HACK, see Issue 23:
-        # We have read till end of text, and the collected tokens might be
-        # skipped by the caller.
-        # Thus, we push back the tokens to the input, together with an
-        # error message.
-        # To the caller, we return a buffer only yielding an error mark.
+        # HACK: see Issue 23
+        # We have read till end of text, and the collected tokens might
+        # be skipped by the caller. Thus, we push back the tokens to the
+        # input, together with an error message. To the caller, we
+        # return a buffer only yielding an error mark.
         buf.back([opening_tok]
                 + utils.latex_error(self, 'cannot find closing "' + end + '"',
                                                 pos) + out)
@@ -312,22 +430,30 @@ class Parser:
                                     ' ' + self.parms.mark_latex_error + ' ',
                                     pos_fix=True)])
 
-    #   expand a "normal" macro
-    #   Return: tokens to be inserted
-    #
+
     def expand_macro(self, buf, tok, math):
+        """
+        Expand a normal macro.
+
+        Return:
+            List of tokens to be inserted.
+        """
         buf.next()
-        buf.skip_space()    # for macros without arguments, even if known
+        buf.skip_space()  # for macros without arguments, even if known
         if tok.txt not in self.the_macros:
             if not (math or tok.txt in self.unknowns):
                 self.unknowns.append(tok.txt)
             return [defs.ActionToken(tok.pos)]
         return self.expand_arguments(buf, self.the_macros[tok.txt], tok.pos)
 
-    #   expand arguments for "normal" macro or \begin of environment
-    #   Return: tokens to be inserted
-    #
+
     def expand_arguments(self, buf, mac, start):
+        """
+        Expand arguments of a normal macro or environment.
+
+        Returns:
+            List of tokens to be inserted.
+        """
         arguments = []
         arguments_extr = []
         delimiters = []
@@ -380,6 +506,7 @@ class Parser:
             return out + mac.repl(self, buf, mac, arguments, delimiters, start)
         return out + self.generate_replacements(arguments, mac.repl, start)
 
+
     def generate_replacements(self, arguments, repls, start):
         out = []
         # preparation for position tracking
@@ -426,14 +553,15 @@ class Parser:
             if not ('a' <= c <= 'z' or 'A' <= c <= 'Z'):
                 return utils.latex_error(self,
                                 'text-mode accent for non-letter', tok.pos)
-            c = ('LATIN ' + ('SMALL' if c.islower() else 'CAPITAL')
-                        + ' LETTER ' + c.upper() + ' WITH ' 
-                        + self.parms.accent_macros[tok.txt][0])
+            size = 'SMALL' if c.islower() else 'CAPITAL'
+            accent = self.parms.accent_macros[tok.txt][0]
+            c = f"LATIN {size} LETTER {c.upper()} WITH {accent}"
         try:
             u = unicodedata.lookup(c)
-        except:
-            return utils.latex_error(self, 'could not find UTF-8 character "'
-                                            + c + '"', tok.pos)
+        except KeyError:
+            return utils.latex_error(self,
+                f'could not find UTF-8 character "{c}"',
+                tok.pos)
         return [defs.TextToken(tok.pos, u)] + args
 
     #   open an environment
@@ -479,11 +607,26 @@ class Parser:
         buf.next()
         return self.get_text_expanded(self.arg_buffer(buf, tok.pos).all())
 
-    #   expand a single verbatim token delivered by the scanner
-    #   to a valid token sequence for an environment
-    #   --> can be treated like other environments, afterwards
-    #
+
     def expand_verb_env_token(self, tok):
+        r"""
+        Expand a single verbatim token delivered by the scanner to a
+        valid token sequence for an environment which can be treated
+        like any other environment afterwards.
+
+        The scanner :class:`yalafi.scanner.Scanner` returns the whole content of a
+        verbatim environment as a single :class:yalafi.defs.VerbatimToken` ``tok`` with
+        ``tok.environ=True``. This function replaces this single token by
+        a sequence of tokens which will later be replaced using
+        :class:`Environ('verbatim', …)<yalafi.defs.Environ>` from :attr:`self.parms.environment_defs`.
+
+        Args:
+            tok: A single VerbatimToken.
+
+        Returns:
+            A list of tokens representing `tok` with `tok.environ` set
+            to `False` within a `verbatim` environment.
+        """
         tok = copy.copy(tok)
         tok.environ = False
         return [
@@ -510,44 +653,75 @@ class Parser:
         if tok and tok.txt == '[':
             self.arg_buffer(buf, tok.pos, end=']')
 
-    #   generate string from token sequence, without macro expansion
-    #
+
     def get_text_direct(self, toks):
+        """Generate string from token sequence, without macro expansion."""
         return ''.join(t.txt for t in toks
                             if type(t) is not defs.CommentToken)
 
-    #   generate string from token sequence, with macro expansion
-    #
+
     def get_text_expanded(self, toks):
+        """
+        Generate string from token sequence, with macro expansion.
+
+        Expand all macros in `toks` and return the resulting text.
+        """
         toks = self.expand_sequence(scanner.Buffer(toks.copy()))
         return self.get_text_direct(toks)
 
-    #   remove all blank text lines, which contain at least one ActionToken
-    #
-    def remove_pure_action_lines(self, tokens):
-        def eval(t):
-            if type(t) is defs.ActionToken:
-                t.is_blank = True
-                t.can_start = False
-                t.can_end = False
-            else:
-                txt = t.txt
-                t.is_blank = '\n' not in txt and not txt.strip()
-                t.can_start = '\n' in txt and not txt[txt.rfind('\n'):].strip()
-                t.can_end = '\n' in txt and not txt[:txt.find('\n')].strip()
-            return t
 
+    def _classify_token(self, tok):
+        r"""
+        Classify token according to its ability to start or end a blank
+        section which can be removed. Three boolean attributes are added
+        to the token:
+          is_blank: Set `True`, when the token contains only space, but
+            no `\n`.
+          can_start: Set `True` if `tok` contains `\n` and only space
+            afterwards.
+          can_end: Set `True` if `tok` contains `\n` and only space
+            before.
+        """
+        if isinstance(tok, defs.ActionToken):
+            tok.is_blank = True
+            tok.can_start = False
+            tok.can_end = False
+        else:
+            txt = tok.txt
+            tok.is_blank = '\n' not in txt and not txt.strip()
+            tok.can_start = '\n' in txt and not txt[txt.rfind('\n'):].strip()
+            tok.can_end = '\n' in txt and not txt[:txt.find('\n')].strip()
+        return tok
+
+
+    def remove_pure_action_lines(self, tokens):
+        """
+        Remove all blank text lines in :obj:`tokens`, which contain at least
+        one :class:`yalafi.defs.ActionToken`.
+
+        Args:
+            tokens: list of :class:`yalafi.defs.TextToken`.
+
+        Returns:
+            List of tokens with removed line breaks.
+        """
+        # Only keep tokens which have text, or are of type ActionToken
+        # or LanguageToken. Classify them (see self._classify_token),
+        # and put tokens which can start or end a blank section at the
+        # start and end of the list (so that all tokens could be
+        # removed).
         tokens = [t for t in tokens if t.txt or
                         type(t) in (defs.ActionToken, defs.LanguageToken)]
-        tokens = [eval(t) for t in tokens]
-        tok = eval(defs.TextToken(0, ''))
+        tokens = [self._classify_token(t) for t in tokens]
+        tok = self._classify_token(defs.TextToken(0, ''))
         tok.can_start = True
         tokens.insert(0, tok)
-        tok = eval(defs.TextToken(tokens[-1].pos, ''))
+        tok = self._classify_token(defs.TextToken(tokens[-1].pos, ''))
         tok.can_end = True
         tokens.append(tok)
 
         # avoid modifications at list begin (expensive for long lists)
+        # TODO: use `scanner.Buffer` instead.
         tokens = list(reversed(tokens))
         out = []
         while tokens:
@@ -586,13 +760,13 @@ class Parser:
                     t2.txt = ''
                     t2.pos += len(txt)
                 buf = [t1] + lang_toks
-                tokens.append(eval(t2))
+                tokens.append(self._classify_token(t2))
                 # NB: we deleted a line break
-                tok = eval(defs.TextToken(t2.pos, ''))
+                tok = self._classify_token(defs.TextToken(t2.pos, ''))
                 tok.can_start = True
                 tokens.append(tok)
             elif len(buf) > 1:
-                tokens.append(eval(buf.pop()))
+                tokens.append(self._classify_token(buf.pop()))
             out += buf
 
         return [t for t in out if t.txt or type(t) is defs.LanguageToken]
@@ -622,9 +796,12 @@ class Parser:
         out.insert(0, Space(start))
         return out
 
-    #   expand a short macro like "` for German documents
-    #
+
     def expand_short_macro(self, buf, tok):
+        """
+        Expand a short macro as introduced by babel for language German,
+         e.g. ``"A`` → ``Ä``.
+        """
         cur = buf.next()
         if (not cur or tok.txt + cur.txt
                     not in self.parms.lang_context.short_macros):
@@ -634,16 +811,43 @@ class Parser:
                     self.parms.lang_context.short_macros[tok.txt + cur.txt],
                     pos_fix=True)
 
-    #   parse a key-value list of the form 'a=b,a4paper,x={ hoho }'
-    #   - return a dictionary
-    #   - values are token lists, except if no '=' given: value then is None
-    #   XXX: parsing of key name is not really robust
-    #
+
     def parse_keyvals_dict(self, tokens):
+        """
+        Parse LaTeX key-value list as dictionary.
+
+        Args:
+            List of tokens representing a LaTeX key-value list often
+            used for options, e.g. `a=b,a4paper,x={ hoho }`.
+
+        Returns:
+            Python dictionary representing the LaTeX key-value list. The
+            keys are strings, but the values are lists of tokens for the
+            LaTeX values. For entries without `=` in the LaTeX list, the
+            value is `None`.
+        """
         as_list = self.parse_keyvals_list(tokens)
         return {k: v for (k, v) in as_list}
 
+
     def parse_keyvals_list(self, tokens):
+        """
+        Parse LaTeX key-value list as list of tuples.
+        
+        Args:
+            List of tokens representing a LaTeX key-value list often
+            used for options, e.g. `a=b,a4paper,x={ hoho }`.
+        
+        Returns:
+            Python list of tuples representing the LaTeX key-value list.
+            The first entries of the tuples are the keys as strings. The
+            second entries of the tuples are the values as lists of
+            tokens. For entries without `=` in the LaTeX list, the
+            second entry is `None`.
+        
+        See also `Parser.parse_keyvals_dict`.
+        """
+        # FIXME: Parsing of the key name is not really robust.
         buf = scanner.Buffer(tokens)
         values = []
         while True:
@@ -657,22 +861,22 @@ class Parser:
             key = self.get_text_expanded(key)
             tok = buf.skip_space()
             if not tok or tok.txt == ',':
-                # no value given with = ...
+                # no value given with `key=value`
                 tok = buf.next()
                 values.append((key, None))
                 continue
-            buf.next()                  # skip '='
+            buf.next()                  # skip `=`
             tok = buf.skip_space()      # skip leading space of value
             val = []
             while tok and tok.txt != ',':
                 if tok.txt == '{':
-                    # {...} protects space and ','
+                    # `{...}` protects space and `,`
                     seq = self.arg_buffer(buf, 0).all()
                     if len(seq) == 1 and type(seq[0]) is defs.VoidToken:
-                        # this was an empty {}
+                        # this was an empty `{}`
                         seq = []
                     else:
-                        # {} braces have been removed by arg_buffer()
+                        # braces `{}` have been removed by arg_buffer()
                         seq = ([defs.SpecialToken(tok.pos, '{')] + seq
                                     + [defs.SpecialToken(seq[-1].pos, '}')])
                     val += seq
@@ -684,12 +888,23 @@ class Parser:
                 # skip trailing space of value
                 val.pop()
             values.append((key, val))
-            buf.next()                  # skip ','
+            buf.next()  # skip ','
         return values
 
-    #   expand keyval list to text form (None if no '=' given)
-    #
+
     def expand_keyvals(self, keyvals):
+        """
+        Expand key-value list to text form.
+
+        Args:
+            keyvals: List of tuples `(key, value)` as returned by
+              `Parser.parse_keyvals_list` where `value` is a list of
+              tokens or None.
+
+        Returns:
+            The same list, but with the list of tokens expanded to
+            strings.
+        """
         def f(kv):
             if kv[1] is None:
                 return kv
@@ -746,15 +961,18 @@ class Parser:
                 t = copy.copy(t)
                 t.arg = arg_pos_map[t.arg - 1]
             repl_mapped.append(t)
-        
+
         self.the_macros[name] = defs.Macro(self.parms, name,
                                         args='A'*len(args), repl=repl_mapped,
                                         scanned=True)
         return [defs.ActionToken(start)]
 
-    # generate an iterator that walks over tokens and appends {} levels
-    #
+
     def iter_token_levels(self, tokens):
+        """
+        Generate an iterator that walks over tokens and appends the
+        nesting levels of brackets `{}`.
+        """
         lev = 0
         for tok in tokens:
             if not tok:
@@ -764,4 +982,3 @@ class Parser:
             elif tok.txt == '}':
                 lev -= 1
             yield tok, lev
-

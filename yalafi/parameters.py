@@ -16,23 +16,73 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-#
-#   default parameters for scanner and parser
-#
+"""
+   Default parameters for scanner and parser.
 
-from .defs import Environ, EquEnv, Macro
-from . import handlers as hs
-from . import scanner
+   Includes: standard LaTeX macros and environments, language settings,
+   math material settings.
+"""
+
+from yalafi.defs import Environ, EquEnv, Macro
+from yalafi import handlers as hs
+from yalafi import scanner
 
 
 class Parameters:
+    """
+    Default settings for parser.
 
-    #   pre-defined macros
-    #
+    Attributes:
+        macro_defs_latex: 
+        macro_defs_python: 
+        environment_defs: 
+        parser_lang_settings: Dictionary with language settings.
+          The keys are language codes like ``en`` or ``de``. And the
+          values are :class:`ParserLanguageSetting` objects.
+        parser_lang_stack: 
+        lang_context: 
+        heading_punct: 
+        item_default_label: 
+        item_punctuation: 
+        mark_latex_error: 
+        mark_latex_error_verbose: 
+        macro_filter_add: 
+        macro_filter_alter: 
+        macro_filter_skip: 
+        macro_load_defs: 
+        newcommand_ignore: 
+        comment_skip_begin: 
+        comment_skip_end: 
+        class_modules: 
+        package_modules: 
+        accent_macros: 
+        special_tokens: 
+        math_displayed_simple: 
+        math_ignore: 
+        math_space: 
+        math_operators: 
+        math_text_macros: 
+        math_default_env: 
+        math_punctuation: 
+        multi_language: 
+        ml_continue_thresh: 
+        scanner: 
+        proof_name: 
+        math_repl_inline: 
+        math_repl_inline_vowel: 
+        math_repl_display: 
+        math_repl_display_vowel: 
+        math_op_text: 
+        lang_change_repl: 
+        lang_change_repl_vowel: 
+        short_macros: 
+        active_chars: 
+    """
+
     def init_macros(self):
+        """Initialize standard, default LaTeX macros."""
 
-        #   definition of macros, LaTeX code
-        #
+        # LaTeX macro definition as LaTeX code
         self.macro_defs_latex = r"""
 
         \newcommand{\AA}{Å}
@@ -83,7 +133,7 @@ class Parameters:
 
         """
 
-        #   definition of macros, Python code
+        # LaTeX macro definition as Python code
         #
         self.macro_defs_python = [
 
@@ -123,15 +173,14 @@ class Parameters:
 
         ]
 
-    #   pre-defined environments
-    #
+
     def init_environments(self):
+        """Initialize default LaTeX environments."""
 
         self.environment_defs = [
 
         Environ(self, 'figure', args='O', add_pars=False),
         Environ(self, 'minipage', args='A'),
-#       Environ(self, 'table', repl='[Tabelle]', remove=True),
         Environ(self, 'table', args='O', add_pars=False),
         Environ(self, 'tabular', args='A', add_pars=False),
         Environ(self, 'thebibliography', args='A', add_pars=True),
@@ -172,10 +221,18 @@ class Parameters:
 
         ]
 
-    #   set language-dependent parser parameters
-    #   - settings for 'en' are taken as fall back
-    #
+
     def init_parser_languages(self, lang):
+        """
+        Initialize language-dependent parser parameters.
+
+        Args:
+            lang: Key for :attr:`parser_lang_settings` with which the
+              :attr:`parser_lang_stack` is initialized.
+
+        Settings for ``en`` are taken as fall back.
+        """
+
         settings = self.parser_lang_settings = {}
 
         settings['en'] = ParserLanguageSettings(
@@ -241,11 +298,22 @@ class Parameters:
 
         self.parser_lang_stack = [(settings[self.check_parser_lang(lang)],
                                         lang)]
+        """
+        List of tuples `(settings, lang)` where `settings` are the
+        `ParserLanguageSettings` for the language `lang`. The last list
+        item is the current language. The previous items are languages
+        used before.
+        """
         self.lang_context = self.parser_lang_stack[-1][0]
 
-    #   set misc collections
-    #
+
     def init_collections(self):
+        """
+        Initialize more special settings.
+
+        This includes punctuation convention, special YaLafi commands,
+        accent macros, special tokens.
+        """
 
         #   add dot to heading unless last heading char in ...
         #   (turn off: set to [])
@@ -363,33 +431,34 @@ class Parameters:
 
         }
 
-    #   set math collections
-    #
+
     def init_math_collections(self):
+        """
+        Initialize settings for parsing math material.
+        """
 
-        #   simple replacement for displayed equations?
-        #
         self.math_displayed_simple = False
+        """
+        Boolean indicating whether to use simple replacement for
+        displayed equations.
+        """
 
-        #   things to be ignored in math mode
-        #   - some entries are redundant, if macros are known from text mode
-        #     and expand to 'nothing'
-        #
         self.math_ignore = [
-
             '{',
             '}',
             '\\!',
             '\\label',
             '\\mathrlap',
             '\\nonumber',
-
         ]
+        """
+        List of things to be ignored in math mode.
 
-        #   things that generate space even in math mode
-        #
+        Some entries are redundant, if macros are known from text mode
+        and expand to “nothing”.
+        """
+
         self.math_space = [
-
             '~',
             '\\ ',
             '\\\t',
@@ -397,14 +466,10 @@ class Parameters:
             '\\:',
             '\\,',
             '\\;',
-
         ]
+        """List of things that generate space even in math mode."""
 
-        #   if these operators appear first in a part (only math tokens)
-        #   then one of the replacements in self.math_op_text is inserted
-        #
         self.math_operators = [
-
             '+', '-', '\\cdot', '\\times', '/',
             '=', '\\eq', '\\ne', '\\neq',
             '<', '>', '\\le', '\\leq', '\\ge', '\\geq',
@@ -412,41 +477,58 @@ class Parameters:
             '\\Rightarrow', '\\Leftarrow', '\\Leftrightarrow',
             '\\subset', '\\subseteq', '\\supset', '\\supseteq',
             '\\stackrel',
-
         ]
+        """
+        List of math operators.
 
-        #   macros whose argument is treated in text mode
-        #
+        If one of these operators appear first in a part (only math
+        tokens) then one of the replacements in `self.math_op_text` is
+        inserted.
+        """
+
         self.math_text_macros = [
-
             '\\mbox',
-
         ]
+        """
+        List of macro names whose argument is treated as text even in
+        math mode.
+        """
 
-        #   math environment for $$ and \[
-        #
         self.math_default_env = 'displaymath'
+        r"""
+        Name of math environment used for `$$` and `\[`.
+        """
 
-        #   if a math section ends with a character from here, it is
-        #   appended to the replacement from self_repl_xxx
-        #
         self.math_punctuation = ['.', ',', ';', ':']
+        """
+        List of punctuation characters extracted from math parts.
 
-    #   determine whether a character may be part of macro name
-    #
+        If a math part ends with a character from this list, it is
+        appended to the replacement from `self_repl_xxx`.
+        """
+
     def macro_character(self, c):
+        """
+        Determine whether a character may be part of a LaTeX macro name.
+
+        Returns ``True``, if `c` is in ``[a-zA-Z@]``.
+        """
         return c >= 'a' and c <= 'z' or c >= 'A' and c <= 'Z' or c == '@'
 
-    #   transform given lang into valid key for dictionary
-    #   self.parser_lang_settings
-    #
+
     def check_parser_lang(self, lang):
+        """
+        Transform `lang` into valid key for language dictionary
+        :attr:`parser_lang_settings`.
+        """
         lang = lang[:2].lower()
         return lang if lang in self.parser_lang_settings else 'en'
 
-    #   switch current parser language settings to new language
-    #
+
     def change_parser_lang(self, tok):
+        """
+        Switch current parser language settings to new language.
+        """
         if tok.back:
             if len(self.parser_lang_stack) > 1:
                 self.parser_lang_stack.pop()
@@ -459,15 +541,26 @@ class Parameters:
                 self.parser_lang_stack.append(
                 (self.parser_lang_settings[self.check_parser_lang(tok.lang)],
                         tok.lang))
+        # Already defined in self.init_parser_languages():
+        # pylint: disable-next=attribute-defined-outside-init
         self.lang_context = self.parser_lang_stack[-1][0]
 
+
     def lang_context_lang(self):
+        """
+        Return the language key (e.g. ``en``) for the current language.
+        """
         return self.parser_lang_stack[-1][1]
 
-    #   deactivate special macros and magic comments
-    #
+
     def no_specials(self):
+        """
+        Deactivate special macros and magic comments.
+        """
+        # Already defined in self.init_collections():
+        # pylint: disable-next=attribute-defined-outside-init
         self.comment_skip_begin = 'x'
+        # pylint: disable-next=attribute-defined-outside-init
         self.comment_skip_end = 'x'
         self.macro_defs_python += [
             Macro(self, self.macro_filter_add, args='A', repl=''),
@@ -487,6 +580,9 @@ class Parameters:
 
 
 class ParserLanguageSettings:
+    """
+    Language settings for parser.
+    """
     def __init__(self, proof_name,
                         math_repl_inline, math_repl_inline_vowel,
                         math_repl_display, math_repl_display_vowel,
@@ -512,4 +608,3 @@ class ParserLanguageSettings:
             self.lang_change_repl_vowel = lang_change_repl_vowel
         self.short_macros = short_macros
         self.active_chars = set(k[0] for k in self.short_macros.keys())
-

@@ -26,7 +26,7 @@
 #   - option '--pack mods' calls functions init_module() from packages
 #
 
-from . import parameters, parser, utils
+from yalafi import parameters, parser, utils
 
 def tex2txt(latex, opts, source='<unknown>', source_defs='<unknown>',
                     multi_language=False, modify_parms=None):
@@ -82,9 +82,9 @@ def get_packages(packs, prefix):
     ret = []
     if not packs:
         return ret
-    vars = {}
-    exec('import ' + prefix + ' as mods', vars)
-    load_table = vars['mods'].load_table
+    sub_globals = {}
+    exec('import ' + prefix + ' as mods', sub_globals)
+    load_table = sub_globals['mods'].load_table
     for p in packs.split(','):
         if p in load_table:
             for m in load_table[p]:

@@ -17,7 +17,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from . import utils
+from yalafi.shell import utils
 import sys
 
 #####################################################################

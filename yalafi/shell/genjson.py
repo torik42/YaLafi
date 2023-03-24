@@ -24,7 +24,7 @@
 ##################################################################
 
 import json
-from . import utils
+from yalafi.shell import utils
 
 #   - correct offset and length in each match
 #   - add field priv with sub-fields fromx, fromy, tox, toy
