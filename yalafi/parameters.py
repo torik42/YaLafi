@@ -541,6 +541,8 @@ class Parameters:
                 self.parser_lang_stack.append(
                 (self.parser_lang_settings[self.check_parser_lang(tok.lang)],
                         tok.lang))
+        # Already defined in self.init_parser_languages():
+        # pylint: disable-next=attribute-defined-outside-init
         self.lang_context = self.parser_lang_stack[-1][0]
 
 
@@ -555,7 +557,10 @@ class Parameters:
         """
         Deactivate special macros and magic comments.
         """
+        # Already defined in self.init_collections():
+        # pylint: disable-next=attribute-defined-outside-init
         self.comment_skip_begin = 'x'
+        # pylint: disable-next=attribute-defined-outside-init
         self.comment_skip_end = 'x'
         self.macro_defs_python += [
             Macro(self, self.macro_filter_add, args='A', repl=''),

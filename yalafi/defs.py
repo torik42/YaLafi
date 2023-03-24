@@ -102,6 +102,7 @@ class SpaceToken(TextToken):
     arguments.
     """
 
+    # pylint: disable-next=useless-parent-delegation
     def __init__(self, pos, txt, pos_fix=False):
         super().__init__(pos, txt, pos_fix)
 
@@ -113,6 +114,7 @@ class ParagraphToken(TextToken):
     See :class:`TextToken` for all attributes.
     """
 
+    # pylint: disable-next=useless-parent-delegation
     def __init__(self, pos, txt, pos_fix=False):
         super().__init__(pos, txt, pos_fix)
 

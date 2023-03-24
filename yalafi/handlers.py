@@ -95,7 +95,7 @@ def h_newtheorem(parser, buf, mac, args, delim, pos):
     """
     name = parser.get_text_expanded(args[0])
     title = parser.get_text_expanded(args[2])
-    def f(parser, options, position):
+    def f(parser, options, position):  # pylint: disable=unused-argument
         parms = parser.parms
         envs = [defs.Environ(parms, name, args='O', repl=h_theorem(title))]
         return defs.InitModule(environments=envs)

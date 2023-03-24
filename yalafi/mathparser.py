@@ -191,6 +191,7 @@ class MathParser:
             List of tokens replacing the parsed math material.
         """
         buf.next()
+        # pylint: disable-next=unused-variable
         tokens, x = self.expand_math_section(buf, tok.pos, ['$', '\\)'], None)
         tokens = self.detect_math_parts(tokens)
         out = [defs.ActionToken(tok.pos)]

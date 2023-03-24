@@ -24,3 +24,24 @@ classifiers = [
 
 [tool.setuptools.packages.find]
 include = ["yalafi*"]
+
+[tool.pylint.main]
+enable = [
+    "useless-suppression"
+]
+disable = [
+    "invalid-name",
+    "pointless-string-statement",
+    "unidiomatic-typecheck"
+]
+
+[tool.pylint.variables]
+# Macro handler functions take these arguments, but often do not need all
+ignored-argument-names = "_.*|^parser|^buf|^mac|^args|^delim|^pos"
+
+[tool.pylint.miscellaneous]
+notes = ["FIXME", "XXX", "TODO", "HACK"]
+
+[tool.pylint.spelling]
+spelling-dict = "en_GB"
+spelling-private-dict-file = "pylint-spelling.txt"
