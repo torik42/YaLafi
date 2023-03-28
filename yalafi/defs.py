@@ -395,8 +395,14 @@ class Environ(Expandable):
 
 class EquEnv(Environ):
     def __init__(self, parms, name, args='', repl='', defaults=None,
-                       remove=False):
+                       remove=False, no_first_section=False):
         if defaults is None:
             defaults = []
         super().__init__(parms, name, args, repl, defaults,
                          add_pars=False, remove=remove)
+        self.no_first_section = no_first_section
+        """
+        Boolean indicating that an equation environment has no sections
+        separated by ``&``.  Used for ``multline`` and ``multlined`` to
+        correctly replace the first math operator in a line.
+        """

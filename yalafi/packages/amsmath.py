@@ -53,8 +53,11 @@ def init_module(parser, options, position):
         EquEnv(parms, 'flalign*'),
         EquEnv(parms, 'gather'),
         EquEnv(parms, 'gather*'),
-        EquEnv(parms, 'multiline'),
-        EquEnv(parms, 'multiline*'),
+        EquEnv(parms, 'multline', no_first_section=True),
+        EquEnv(parms, 'multline*', no_first_section=True),
+        EquEnv(parms, 'multlined', args='O', no_first_section=True),
+        # Add aligned such that its begin cycles the replacements:
+        EquEnv(parms, 'aligned', args='O'),
 
     ]
 
