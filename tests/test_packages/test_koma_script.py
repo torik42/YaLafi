@@ -3,7 +3,7 @@
 import pytest
 from yalafi import parameters, parser, utils
 
-preamble = '\\documentclass{scrartcl}\n'
+preamble = '\\usepackage{koma-script}\n'
 
 def get_plain(latex):
     parms = parameters.Parameters()
@@ -17,6 +17,9 @@ data_test_macros_latex = [
 
     (r'A\KOMAoption{opt}B', 'AB'),
     (r'A\KOMAoptions{opts}B', 'AB'),
+    (r'\subject{ho}', 'ho.'),
+    (r'\subtitle{ho}', 'ho.'),
+    (r'\extratitle{ho}', 'ho.'),
 
 ]
 
@@ -24,10 +27,3 @@ data_test_macros_latex = [
 def test_macros_latex(latex, plain_expected):
     plain = get_plain(latex)
     assert plain == plain_expected
-
-
-def test_package_loaded():
-    parms = parameters.Parameters()
-    p = parser.Parser(parms)
-    p.parse(preamble)
-    assert 'koma-script' in p.packages
