@@ -4,156 +4,194 @@
 #   - test of \def
 #
 
+
+import pytest
 from yalafi import parameters, parser, utils
 
-p = parser.Parser(parameters.Parameters())
 
-latex_1 = r"""
-\newcommand{\xxx}[1][X]{#1Z}
-\xxx
-\xxx
-[A]
-"""
-plain_1 = r"""
-XZAZ
-"""
-def test_1():
-    toks = p.parse(latex_1)
-    plain, pos = utils.get_txt_pos(toks)
-
-    assert plain == plain_1
-
-latex_2 = r"""
-\newcommand{\xxx}[2][X]{#2#1}
-\xxx{ A }
-\xxx[B]C
-"""
-plain_2 = r"""
- A X
-CB
-"""
-def test_2():
-    toks = p.parse(latex_2)
-    plain, pos = utils.get_txt_pos(toks)
-
-    assert plain == plain_2
+def trim(string):
+    """
+    Remove first and last line and the first eight characters from every
+    line in string.
+    """
+    lines = string.split('\n')
+    return '\n'.join(line[8:] for line in lines[1:-1])
 
 
-latex_3 = r"""
-\def\xxx#1#2{X#2Y#1Z}
-\xxx AB
-"""
-plain_3 = """
-XBYAZ
-"""
-def test_3():
-    toks = p.parse(latex_3)
-    plain, pos = utils.get_txt_pos(toks)
-    assert plain == plain_3
+def get_plain(latex):
+    parms = parameters.Parameters()
+    p = parser.Parser(parms)
+    plain, pos = utils.get_txt_pos(p.parse(latex, source='t.tex'))
+    return plain
 
-latex_4 = r"""
-\def\zB{z.\,B.\ }
-X \zB Y
-"""
-plain_4 = """
-X z.\N{NARROW NO-BREAK SPACE}B. Y
-"""
-def test_4():
-    toks = p.parse(latex_4)
-    plain, pos = utils.get_txt_pos(toks)
-    assert plain == plain_4
 
-latex_5 = r"""
-\def\xxx[#1]{#1:#1}
-X\xxx
-[a]Y
-"""
-plain_5 = """
-Xa:aY
-"""
-def test_5():
-    toks = p.parse(latex_5)
-    plain, pos = utils.get_txt_pos(toks)
-    assert plain == plain_5
+data_test_newcommand = [
+    # Spaces in the following are important!
+    # From each string, the first and last line will be stripped.
+    # From every other line, the first eight characters (all space)
+    # will be stripped.
+    (
+    # LaTeX:
+        r"""
+        \newcommand{\xxx}[1][X]{#1Z}
+        \xxx
+        \xxx
+        [A]
+        """,
+    # Plain:
+        r"""
+        XZAZ
+        """
+    ),
+    (
+    # LaTeX:
+        r"""
+        \newcommand{\xxx}[2][X]{#2#1}
+        \xxx{ A }
+        \xxx[B]C
+        """,
+    # Plain:
+        r"""
+         A X
+        CB
+        """
+    ),
+    (
+    # LaTeX:
+        r"""
+        \def\xxx#1#2{X#2Y#1Z}
+        \xxx AB
+        """,
+    # Plain:
+        r"""
+        XBYAZ
+        """
+    ),
+    (
+    # LaTeX:
+        r"""
+        \def\zB{z.\,B.\ }
+        X \zB Y
+        """,
+    # Plain:
+        """
+        X z.\N{NARROW NO-BREAK SPACE}B. Y
+        """
+    ),
+    (
+    # LaTeX:
+        r"""
+        \def\xxx[#1]{#1:#1}
+        X\xxx
+        [a]Y
+        """,
+    # Plain:
+        r"""
+        Xa:aY
+        """
+    ),
 
-latex_6 = r"""
-\def
-"""
-plain_6 = """
- LATEXXXERROR """
-stderr_6 = r"""*** LaTeX error: code in 't.tex', line 2, column 1:
-*** \def: missing macro name
-"""
-def test_6(capsys):
+]
+
+
+@pytest.mark.parametrize('latex,plain_expected', data_test_newcommand)
+def test_newcommand(latex, plain_expected):
+    plain = get_plain(trim(latex))
+    assert plain == trim(plain_expected)
+
+
+data_test_newcommand_error = [
+    # Spaces in the following are important!
+    # From each string, the first and last line will be stripped.
+    # From every other line, the first eight characters (all space)
+    # will be stripped.
+    (
+    # LaTeX:
+        r"""
+        \def
+        """,
+    # Plain:
+        r"""
+         LATEXXXERROR 
+        """,
+    # stderr:
+        r"""
+        *** LaTeX error: code in 't.tex', line 1, column 1:
+        *** \def: missing macro name
+
+        """
+    ),
+    (
+    # LaTeX:
+        r"""
+        \def \;
+        """,
+    # Plain:
+        r"""
+         LATEXXXERROR  
+        """,
+    # stderr:
+        r"""
+        *** LaTeX error: code in 't.tex', line 1, column 6:
+        *** \def: illegal macro name "\;"
+
+        """
+    ),
+    (
+    # LaTeX:
+        r"""
+        \def\xxx
+        """,
+    # Plain:
+        r"""
+         LATEXXXERROR 
+        """,
+    # stderr:
+        r"""
+        *** LaTeX error: code in 't.tex', line 1, column 1:
+        *** \def: missing macro body
+
+        """
+    ),
+    (
+    # LaTeX:
+        r"""
+        \def\xxx#1#3{}
+        """,
+    # Plain:
+        r"""
+         LATEXXXERROR 
+        """,
+    # stderr:
+        r"""
+        *** LaTeX error: code in 't.tex', line 1, column 11:
+        *** \def: unexpected argument '#3'
+
+        """
+    ),
+    (
+    # LaTeX:
+        r"""
+        \def\xxx#1{#3}
+        """,
+    # Plain:
+        r"""
+         LATEXXXERROR 
+        """,
+    # stderr:
+        r"""
+        *** LaTeX error: code in 't.tex', line 1, column 12:
+        *** \def: illegal argument reference '#3'
+
+        """
+    ),
+]
+
+
+@pytest.mark.parametrize('latex,plain_expected,stderr_expected', data_test_newcommand_error)
+def test_newcommand_error(latex, plain_expected, stderr_expected, capsys):
     capsys.readouterr()
-    toks = p.parse(latex_6, source='t.tex')
-    plain, pos = utils.get_txt_pos(toks)
+    plain = get_plain(trim(latex))
     cap = capsys.readouterr()
-    assert plain == plain_6
-    assert cap.err == stderr_6
-
-latex_7 = r"""
-\def \;"""
-plain_7 = """
- LATEXXXERROR  """
-stderr_7 = r"""*** LaTeX error: code in 't.tex', line 2, column 6:
-*** \def: illegal macro name "\;"
-"""
-def test_7(capsys):
-    capsys.readouterr()
-    toks = p.parse(latex_7, source='t.tex')
-    plain, pos = utils.get_txt_pos(toks)
-    cap = capsys.readouterr()
-    assert plain == plain_7
-    assert cap.err == stderr_7
-
-latex_8 = r"""
-\def\xxx
-"""
-plain_8 = """
- LATEXXXERROR """
-stderr_8 = r"""*** LaTeX error: code in 't.tex', line 2, column 1:
-*** \def: missing macro body
-"""
-def test_8(capsys):
-    capsys.readouterr()
-    toks = p.parse(latex_8, source='t.tex')
-    plain, pos = utils.get_txt_pos(toks)
-    cap = capsys.readouterr()
-    assert plain == plain_8
-    assert cap.err == stderr_8
-
-latex_9 = r"""
-\def\xxx#1#3{}
-"""
-plain_9 = """
- LATEXXXERROR 
-"""
-stderr_9 = r"""*** LaTeX error: code in 't.tex', line 2, column 11:
-*** \def: unexpected argument '#3'
-"""
-def test_9(capsys):
-    capsys.readouterr()
-    toks = p.parse(latex_9, source='t.tex')
-    plain, pos = utils.get_txt_pos(toks)
-    cap = capsys.readouterr()
-    assert plain == plain_9
-    assert cap.err == stderr_9
-
-latex_10 = r"""
-\def\xxx#1{#3}
-"""
-plain_10 = """
- LATEXXXERROR 
-"""
-stderr_10 = r"""*** LaTeX error: code in 't.tex', line 2, column 12:
-*** \def: illegal argument reference '#3'
-"""
-def test_10(capsys):
-    capsys.readouterr()
-    toks = p.parse(latex_10, source='t.tex')
-    plain, pos = utils.get_txt_pos(toks)
-    cap = capsys.readouterr()
-    assert plain == plain_10
-    assert cap.err == stderr_10
-
+    assert plain == trim(plain_expected)
+    assert cap.err == trim(stderr_expected)
