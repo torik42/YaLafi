@@ -122,6 +122,8 @@ data_test_macros_python = [
     (r'\part{ho?}', 'ho?'),
     (r'A\phantom{X}B', 'A B'),
     (r'A\phantom{\label{l}}B', 'AB'),
+    (r'A\providecommand{\xxx}{X}B', 'AB'),
+    (r'A\providecommand*{\xxx}[1][x]{X}B', 'AB'),
     (r'A\renewcommand{\xxx}{X}B', 'AB'),
     (r'A\renewcommand*{\xxx}[1][x]{X}B', 'AB'),
     (r'\section[hi]{ho}', 'ho.'),

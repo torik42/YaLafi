@@ -1,6 +1,8 @@
 Work in progress
 ----------------
 - LaTeX macros / environments
+  - builtins
+    - added macro \\providecommand (PR [#250](../../pull/250), issue [#247](../../issues/247))
   - package cleveref: added macros \\labelcref and \\labelcpageref
 - improve codebase (remove relative imports, remove bare `except:`, add docstrings, refactor variable names, change space) (see PR [#249](../../pull/249))
 

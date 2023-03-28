@@ -102,6 +102,7 @@ tests: [tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_
 \\paragraph,
 \\part,
 \\phantom,
+\\providecommand (defines macro, but does not overwrite existing ones),
 \\qquad,
 \\quad,
 \\ref,
