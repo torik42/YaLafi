@@ -186,6 +186,172 @@ def test_9():
     plain, pos = utils.get_txt_pos(toks)
     assert plain_9 == plain
 
+
+latex_11 = r"""
+\usepackage{amsmath}
+A
+\begin{multline}
+    a = b \\
+    - c.
+\end{multline}
+B
+"""
+plain_11 = r"""
+A
+  V-V-V
+   minus W-W-W.
+B
+"""
+def test_11():
+    p = parser.Parser(parameters.Parameters())
+    toks = p.parse(latex_11)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_11 == plain
+
+
+latex_12 = r"""
+\usepackage{amsmath}
+A
+\begin{multline}
+    a = b \\
+    c.
+\end{multline}
+B
+"""
+plain_12 = r"""
+A
+  V-V-V
+  V-V-V.
+B
+"""
+def test_12():
+    p = parser.Parser(parameters.Parameters())
+    toks = p.parse(latex_12)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_12 == plain
+
+
+latex_13 = r"""
+\usepackage{amsmath}
+A
+\begin{align}
+    a &=
+    \begin{multlined}[t]
+    b \\
+    + c.
+    \end{multlined}
+\end{align}
+B
+"""
+plain_13 = r"""
+A
+  V-V-V  equal   W-W-W
+   plus X-X-X.
+B
+"""
+def test_13():
+    p = parser.Parser(parameters.Parameters())
+    toks = p.parse(latex_13)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_13 == plain
+
+
+latex_14 = r"""
+\usepackage{amsmath}
+A
+\begin{align}
+    a &=
+    \begin{aligned}[t]
+    \end{aligned}
+\end{align}
+B
+"""
+plain_14 = r"""
+A
+  V-V-V  equal   
+B
+"""
+def test_14():
+    p = parser.Parser(parameters.Parameters())
+    toks = p.parse(latex_14)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_14 == plain
+
+
+latex_15 = r"""
+\usepackage{amsmath}
+A
+\begin{align}
+    a &=
+    \begin{aligned}[t]
+    & c \\
+    &+ d.
+    \end{aligned}
+\end{align}
+B
+"""
+plain_15 = r"""
+A
+  V-V-V  equal    W-W-W
+    plus X-X-X.
+B
+"""
+def test_15():
+    p = parser.Parser(parameters.Parameters())
+    toks = p.parse(latex_15)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_15 == plain
+
+
+latex_16 = r"""
+\usepackage{amsmath}
+A
+\begin{equation}
+    a
+    = \begin{aligned}[t]
+    & c \\
+    &+ d.
+    \end{aligned}
+\end{equation}
+B
+"""
+plain_16 = r"""
+A
+  X-X-X   V-V-V
+    plus W-W-W.
+B
+"""
+def test_16():
+    p = parser.Parser(parameters.Parameters())
+    toks = p.parse(latex_16)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_16 == plain
+
+
+latex_17 = r"""
+\usepackage{amsmath}
+A
+\begin{equation}
+    a=\begin{cases}
+    0&  \text{if something},\\
+    1&  \text{else}.
+\end{cases}
+\end{equation}
+B
+"""
+plain_17 = r"""
+A
+  V-V-V if something,
+  W-W-W else.
+B
+"""
+def test_17():
+    p = parser.Parser(parameters.Parameters())
+    toks = p.parse(latex_17)
+    plain, pos = utils.get_txt_pos(toks)
+    assert plain_17 == plain
+
+
 #   simplified equation parsing
 #
 latex_10 = r"""

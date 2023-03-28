@@ -150,6 +150,8 @@ class MathParser:
                 out.append(defs.SpaceToken(out[-1].pos, '\n  ', pos_fix=True))
                 self.parser.parse_newline_option(buf, False)
                 first_section = True
+                if env.no_first_section:
+                    first_section = False
             else:
                 break
             if buf.cur():
@@ -273,6 +275,10 @@ class MathParser:
                             or tok.txt in parms.math_ignore):
                     t.insert(0, defs.MathElemToken(tok.pos, tok.txt))
                 buf.back(t)
+                continue
+            elif type(tok) is defs.MathBeginToken:
+                # Correctly parse `multlined` and `aligned`
+                out += self.expand_display_math(buf, tok, tok.environ)
                 continue
             elif type(tok) in (defs.MathElemToken, defs.MathOperToken,
                                             defs.MathSpaceToken):

@@ -3,10 +3,12 @@ Work in progress
 - LaTeX macros / environments
   - builtins
     - added macro \\providecommand (PR [#250](../../pull/250), issue [#247](../../issues/247))
+  - package amsmath: added environments aligned, multline and multlined (PR [#251](../../pull/251), issue [#197](../../issues/197))
   - package cleveref: added macros \\labelcref and \\labelcpageref
   - document classes KOMA-Script:
     - move macro definitions into helper package koma-script (PR [#228](../../pull/228))
     - add macros \\extratitle, \\subtitle and \\subject (PR [#228](../../pull/228))
+- yalafi.mathparser: improve handling of nested display equation environments (PR [#251](../../pull/251), issue [#197](../../issues/197))
 - improve codebase (remove relative imports, remove bare `except:`, add docstrings, refactor variable names, change space) (see PR [#249](../../pull/249))
 
 Version 1.4.0 (2022/11/24)

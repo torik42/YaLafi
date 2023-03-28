@@ -165,10 +165,12 @@ tests: [tests/test\_packages/test\_amsmath.py](tests/test_packages/test_amsmath.
 
 align(\*),
 alignat(\*),
+aligned,
 equation(\*),
 flalign(\*),
 gather(\*),
-multiline(\*)
+multline(\*),
+multlined
 
 
 ## Package amsthm
