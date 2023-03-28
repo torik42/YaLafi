@@ -26,32 +26,52 @@ from yalafi import utils
 from yalafi import scanner
 
 
-def h_newcommand(parser, buf, mac, args, delim, pos):
+def g_newcommand(overwrite=True):
     r"""
-    Macro handler for `\newcommand` and `\renewcommand`.
+    Generator for ``\newcommand``, ``\renewcommand`` and ``\providecommand``.
+
+    Args:
+        overwrite: Boolean deciding, whether the returned handler
+          overwrites existing commands. Defaults to True.
+
+    Returns:
+        Macro Handler for ``\newcommand``, ``\renewcommand`` and
+        ``\providecommand``. Set ``overwrite=False`` for
+        ``\providecommand``.
     """
-    name = parser.get_text_direct(args[1])
-    if name in parser.parms.newcommand_ignore:
+    # pylint: disable-next=redefined-outer-name
+    def h_newcommand(parser, buf, mac, args, delim, pos):
+        r"""
+        Macro handler for `\newcommand` and `\renewcommand`.
+        """
+        name = parser.get_text_direct(args[1])
+        if name in parser.parms.newcommand_ignore:
+            return []
+        if not overwrite and name in parser.the_macros:
+            return []
+        nargs = parser.get_text_expanded(args[2])
+        nargs = int(nargs) if nargs.isdecimal() else 0
+        for a in [b for b in args[4] if type(b) is defs.ArgumentToken]:
+            if a.arg < 1 or a.arg > nargs:
+                return utils.latex_error(parser, 'illegal argument #' + str(a.arg)
+                                    + ' in definition of macro ' + name, a.pos)
+        if args[3]:
+            if nargs < 1:
+                return utils.latex_error(parser,
+                        'illegal default value in definition of macro ' + name,
+                        args[1][0].pos)
+            parser.the_macros[name] = defs.Macro(parser.parms,
+                                    name, args='O' + 'A' * (nargs - 1),
+                                    repl=args[4], defaults=[args[3]], scanned=True)
+        else:
+            parser.the_macros[name] = defs.Macro(parser.parms,
+                                    name, args='A' * nargs,
+                                    repl=args[4], scanned=True)
         return []
-    nargs = parser.get_text_expanded(args[2])
-    nargs = int(nargs) if nargs.isdecimal() else 0
-    for a in [b for b in args[4] if type(b) is defs.ArgumentToken]:
-        if a.arg < 1 or a.arg > nargs:
-            return utils.latex_error(parser, 'illegal argument #' + str(a.arg)
-                                + ' in definition of macro ' + name, a.pos)
-    if args[3]:
-        if nargs < 1:
-            return utils.latex_error(parser,
-                    'illegal default value in definition of macro ' + name,
-                    args[1][0].pos)
-        parser.the_macros[name] = defs.Macro(parser.parms,
-                                name, args='O' + 'A' * (nargs - 1),
-                                repl=args[4], defaults=[args[3]], scanned=True)
-    else:
-        parser.the_macros[name] = defs.Macro(parser.parms,
-                                name, args='A' * nargs,
-                                repl=args[4], scanned=True)
-    return []
+    return h_newcommand
+
+
+h_newcommand = g_newcommand(overwrite=True)
 
 
 def h_theorem(name):

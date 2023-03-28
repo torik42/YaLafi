@@ -1,7 +1,5 @@
-
 #
-#   - test  of \newcommand with default value for optional argument
-#   - test of \def
+# Special tests for \newcommand, \renewcommand, \providecommand and \def
 #
 
 
@@ -88,6 +86,56 @@ data_test_newcommand = [
     # Plain:
         r"""
         Xa:aY
+        """
+    ),
+    (
+    # \newcommand currenly overwrites existing commands
+    # LaTeX:
+        r"""
+        \newcommand{\test}[1]{A #1}
+        \newcommand{\test}[1]{B #1}
+        \test{C}
+        """,
+    # Plain:
+        r"""
+        B C
+        """
+    ),
+    (
+    # \renewcommand should overwrite existing commands
+    # LaTeX:
+        r"""
+        \newcommand{\test}[1]{A #1}
+        \renewcommand{\test}[1]{B #1}
+        \test{C}
+        """,
+    # Plain:
+        r"""
+        B C
+        """
+    ),
+    (
+    # \providecommand should NOT overwrite existing commands
+    # LaTeX:
+        r"""
+        \newcommand{\test}[1]{A #1}
+        \providecommand{\test}[1]{B #1}
+        \test{C}
+        """,
+    # Plain:
+        r"""
+        A C
+        """
+    ),
+    (
+    # LaTeX:
+        r"""
+        \providecommand{\test}[1]{B #1}
+        \test{C}
+        """,
+    # Plain:
+        r"""
+        B C
         """
     ),
 

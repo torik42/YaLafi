@@ -155,6 +155,7 @@ class Parameters:
         Macro(self, '\\paragraph', args='*OA', repl=hs.h_heading),
         Macro(self, '\\part', args='*OA', repl=hs.h_heading),
         Macro(self, '\\phantom', args='A', repl=hs.h_phantom),
+        Macro(self, '\\providecommand', args='*AOOA', repl=hs.g_newcommand(overwrite=False)),
         Macro(self, '\\renewcommand', args='*AOOA', repl=hs.h_newcommand),
         Macro(self, '\\section', args='*OA', repl=hs.h_heading),
         Macro(self, '\\subsection', args='*OA', repl=hs.h_heading),
