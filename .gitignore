@@ -136,3 +136,26 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# LaTeX auxiliary files
+*.aux
+*.dvi
+*.fdb_latexmk
+*.fls
+*.gz(busy)
+*.ind
+*.ilg
+*.idx
+*.log
+*.out
+*.synctex.gz
+*.synctex(busy)
+*.toc
+*.snm
+*.nav
+*.bbl
+*.blg
+*.bcf
+*.xdv
+*.vrb
+*.run.xml

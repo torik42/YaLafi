@@ -1,0 +1,19 @@
+\documentclass{standalone}
+
+\input{preamble.tex}
+\usepackage{graphics}
+
+\newcommand{\text}{%
+    \scalebox{0.4}{\sffamily\footnotesize Yet another {\rmfamily\LaTeX{}} filter}%
+}
+
+\begin{document}
+\color{white}%
+% \color{black}%
+\settowidth{\dimen0}{\text{}}%
+\parbox{\dimen0}{
+\centering
+\kern.15em\hologo{YaLafi}\kern.15em\strut\\[-6pt]
+\text{}
+}
+\end{document}
