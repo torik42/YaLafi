@@ -60,7 +60,7 @@ will lead to the text report
 This is the corresponding HTML report (for an example with a Vim
 plugin, `see here <#example-vimtex-plugin>`__):
 
-.. figure:: _static/figs/shell.png
+.. figure:: _static/shell.png
    :alt: HTML report
 
    HTML report
@@ -195,7 +195,7 @@ Interface to Vim
 
  Here is the `introductory example <#example-html-report>`__ from above:
 
-.. figure:: _static/figs/vim-vimtex.png
+.. figure:: _static/vim-vimtex.png
    :alt: Vim plugin vim-vimtex
 
    Vim plugin vim-vimtex
@@ -280,7 +280,7 @@ running the script, Python, yalafi.shell or LanguageTool.
 
 Here is the `introductory example <#example-html-report>`__ from above:
 
-.. figure:: _static/figs/vim-grammarous.png
+.. figure:: _static/vim-grammarous.png
    :alt: Vim plugin vim-grammarous
 
    Vim plugin vim-grammarous
@@ -308,7 +308,7 @@ Please note the general problem indicated in `Issue
 example <#example-html-report>`__ from above. Navigation between
 highlighted text parts is possible with ``:lne`` and ``:lp``.
 
-.. figure:: _static/figs/vim-languagetool.png
+.. figure:: _static/vim-languagetool.png
    :alt: Vim plugin vim-LanguageTool
 
    Vim plugin vim-LanguageTool
@@ -361,7 +361,7 @@ problem context (left with ``q``). Navigation between highlighted text
 parts is possible with ``:lne`` and ``:lp``, an error list is shown with
 ``:lli``.
 
-.. figure:: _static/figs/vim-ale.png
+.. figure:: _static/vim-ale.png
    :alt: Vim plugin ALE
 
    Vim plugin ALE
@@ -430,7 +430,7 @@ your ``~/.profile`` or ``~/.bash_profile`` (and log in again)
 
 Here is the `introductory example <#example-html-report>`__ from above:
 
-.. figure:: _static/figs/emacs-langtool.png
+.. figure:: _static/emacs-langtool.png
    :alt: Emacs plugin Emacs-langtool
 
    Emacs plugin Emacs-langtool
@@ -1309,7 +1309,7 @@ and input
 
 we get
 
-.. figure:: _static/figs/example-equation.png
+.. figure:: _static/example-equation.png
    :alt: HTML report
 
    HTML report
