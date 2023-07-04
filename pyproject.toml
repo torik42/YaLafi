@@ -16,6 +16,13 @@ classifiers = [
     "Topic :: Text Processing :: Filters",
 ]
 
+[project.optional-dependencies]
+docs = [
+    "sphinx",
+    "sphinx_rtd_theme",
+    "sphinx_favicon",
+]
+
 [project.urls]
 "Homepage" = "https://github.com/torik42/YaLafi"
 "Changelog" = "https://github.com/torik42/YaLafi/blob/master/HISTORY.md"
