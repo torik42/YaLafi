@@ -217,8 +217,8 @@ class Parameters:
 
         self.environment_defs += [
 
-        Environ(self, 'enumerate', add_pars=False, items=labs_enumerate),
-        Environ(self, 'itemize', add_pars=False, items=labs_itemize),
+        Environ(self, 'enumerate', args='O', add_pars=False, items=labs_enumerate),
+        Environ(self, 'itemize', args='O', add_pars=False, items=labs_itemize),
 
         ]
 
