@@ -16,6 +16,8 @@ endif
 let s:cpo_save = &cpo
 set cpo&vim
 
+let s:python = executable('python3') ? 'python3' : 'python'
+
 "   set default values
 "
 if !exists("g:ltyc_ltdirectory")
@@ -66,11 +68,11 @@ endif
 "   check installation components
 "
 let s:pref = 'In order to use the ltyc compiler, please '
-if !executable('python')
+if !executable(s:python)
     echoerr s:pref . 'install Python.'
     finish
 endif
-call system('python -c "import yalafi"')
+call system(s:python . ' -c "import yalafi"')
 if v:shell_error != 0
     echoerr s:pref . 'install the Python module YaLafi.'
     finish
@@ -96,7 +98,7 @@ if g:ltyc_server != 'lt'
 endif
 
 let &l:makeprg =
-        \ 'python -m yalafi.shell'
+        \ s:python . ' -m yalafi.shell'
         \ . ' --lt-command "' . g:ltyc_ltcommand . '"'
         \ . (g:ltyc_ltcommand != '' ?
                     \ '' : ' --lt-directory ' . g:ltyc_ltdirectory)
