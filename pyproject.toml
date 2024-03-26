@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "yalafi"
-version = "1.4.0"
+version = "1.5.0"
 authors = [{"name" = "Matthias Baumann"},{"name" = "torik42"}]
 description = "Yet another LaTeX filter"
 readme = "README-short.md"

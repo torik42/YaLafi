@@ -1,5 +1,5 @@
-Work in progress
-----------------
+Version 1.5.0 (2024/03/26)
+--------------------------
 - LaTeX macros / environments
   - builtins
     - added macro \\providecommand (PR [#250](../../pull/250), issue [#247](../../issues/247))
