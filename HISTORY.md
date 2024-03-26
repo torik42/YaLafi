@@ -4,6 +4,7 @@ Work in progress
   - builtins
     - added macro \\providecommand (PR [#250](../../pull/250), issue [#247](../../issues/247))
     - added math operators \\ll, \\gg, \\in, \\ni, \\mapsto
+    - added macros \\addtolength, \\newlength, \\setlength, \\settodepth, \\settoheight, \\settowidth
   - package amsmath: added environments aligned, multline and multlined (PR [#251](../../pull/251), issue [#197](../../issues/197))
   - package cleveref: added macros \\labelcref and \\labelcpageref
   - document classes KOMA-Script:

@@ -89,6 +89,7 @@ class Parameters:
         \newcommand{\aa}{å}
         \newcommand{\AE}{Æ}
         \newcommand{\addtocounter}[2]{}
+        \newcommand{\addtolength}[2]{}
         \newcommand{\ae}{æ}
         \newcommand{\author}[1]{#1.}
         \newcommand{\bibitem}[1]{\item}
@@ -104,6 +105,7 @@ class Parameters:
         \newcommand{\label}[1]{}
         \newcommand{\LaTeX}{LaTeX}
         \newcommand{\newcounter}[1]{}
+        \newcommand{\newlength}[1]{}
         \newcommand{\newline}{ }
         \newcommand{\nobreakspace}{~}
         \newcommand{\O}{Ø}
@@ -122,6 +124,10 @@ class Parameters:
         \newcommand{\refstepcounter}[1]{}
         \newcommand{\S}{§}
         \newcommand{\setcounter}[2]{}
+        \newcommand{\setlength}[2]{}
+        \newcommand{\settodepth}[2]{}
+        \newcommand{\settoheight}[2]{}
+        \newcommand{\settowidth}[2]{}
         \newcommand{\ss}{ß}
         \newcommand{\stepcounter}[1]{}
         \newcommand{\TeX}{TeX}

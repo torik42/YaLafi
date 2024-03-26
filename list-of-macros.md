@@ -55,6 +55,7 @@ tests: [tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_
 \\aa,
 \\AE,
 \\addtocounter,
+\\addtolength
 \\ae,
 \\author,
 \\bibitem,
@@ -89,6 +90,7 @@ tests: [tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_
 \\MakeUppercase,
 \\newcommand (defines macro),
 \\newcounter,
+\\newlength
 \\newline,
 \\newtheorem (defines environment),
 \\nobreakspace
@@ -112,6 +114,10 @@ tests: [tests/test\_packages/test\_latex\_builtins.py](tests/test_packages/test_
 \\S,
 \\section,
 \\setcounter,
+\\setlength
+\\settodepth
+\\settoheight
+\\settowidth
 \\ss,
 \\stepcounter,
 \\subsection,
