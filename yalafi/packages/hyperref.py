@@ -21,6 +21,10 @@ def init_module(parser, options, position):
     macros_python = [
 
         Macro(parms, '\\ref', args='*A', repl='0'),
+        Macro(parms, '\\pdfbookmark', args='OAA', extract='#2'),
+        Macro(parms, '\\currentpdfbookmark', args='AA', extract='#1'),
+        Macro(parms, '\\belowpdfbookmark', args='AA', extract='#1'),
+        Macro(parms, '\\subpdfbookmark', args='AA', extract='#1'),
         
     ]
 

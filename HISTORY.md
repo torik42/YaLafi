@@ -7,6 +7,7 @@ Work in progress
     - added macros \\addtolength, \\newlength, \\setlength, \\settodepth, \\settoheight, \\settowidth
   - package amsmath: added environments aligned, multline and multlined (PR [#251](../../pull/251), issue [#197](../../issues/197))
   - package cleveref: added macros \\labelcref and \\labelcpageref
+  - package hyperref: added macros \\pdfbookmark, \\currentpdfbookmark, \\subpdfbookmark, \\belowpdfbookmark
   - document classes KOMA-Script:
     - move macro definitions into helper package koma-script (PR [#228](../../pull/228))
     - add macros \\extratitle, \\subtitle and \\subject (PR [#228](../../pull/228))

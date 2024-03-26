@@ -20,6 +20,11 @@ data_test_macros_latex = [
     (r'\texorpdfstring XY', 'X'),
     (r'\url XY', 'XY'),
     (r'X \ref*{eq1} Y', 'X 0 Y'),
+    (r'A\pdfbookmark{text}{name}B', 'AB\n\n\ntext\n'),
+    (r'A\pdfbookmark[2]{text}{name}B', 'AB\n\n\ntext\n'),
+    (r'A\currentpdfbookmark{text}{name}B', 'AB\n\n\ntext\n'),
+    (r'A\subpdfbookmark{text}{name}B', 'AB\n\n\ntext\n'),
+    (r'A\belowpdfbookmark{text}{name}B', 'AB\n\n\ntext\n'),
 
 ]
 

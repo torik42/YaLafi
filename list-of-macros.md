@@ -471,8 +471,12 @@ tests: [tests/test\_packages/test\_hyperref.py](tests/test_packages/test_hyperre
 
 **Macros**
 
+\\belowpdfbookmark
+\\currentpdfbookmark
 \\href,
+\\pdfbookmark
 \\ref\*,
+\\subpdfbookmark
 \\texorpdfstring,
 \\url
 
