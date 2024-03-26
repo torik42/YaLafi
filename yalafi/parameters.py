@@ -473,10 +473,14 @@ class Parameters:
         self.math_operators = [
             '+', '-', '\\cdot', '\\times', '/',
             '=', '\\eq', '\\ne', '\\neq',
-            '<', '>', '\\le', '\\leq', '\\ge', '\\geq',
-            ':', ':=', '\\to', '\\cap', '\\cup',
+            '<', '\\le', '\\leq', '\\ll',
+            '>', '\\ge', '\\geq', '\\gg',
+            ':', ':=',
+            '\\to', '\\mapsto',
+            '\\cap', '\\cup',
             '\\Rightarrow', '\\Leftarrow', '\\Leftrightarrow',
             '\\subset', '\\subseteq', '\\supset', '\\supseteq',
+            '\\in', '\\ni',
             '\\stackrel',
         ]
         """
